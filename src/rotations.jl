@@ -26,16 +26,20 @@ function (*)(::SO{M}, ::SO{N}) where {M,N}
 end
 
 function (*)(g1::SO{N}, g2::SO{N}) where {N}
-    if g1.axis == g2.axis
-        θ = g1.θ + g2.θ
-        if θ == 0
-            return IdentityRotationGroup()
+    if g2.pred isa IdentityRotationGroup
+        if g1.axis == g2.axis
+            θ = g1.θ + g2.θ
+            if θ == 0
+                return g1.pred
+            else
+                return SO{N,typeof(θ),typeof(g1.pred)}(g1.pred, θ, g1.axis)
+            end
         else
-            return SO{N,typeof(θ),typeof(g1.pred)}(g1.pred, θ, g1.axis)
+            return SO{N,typeof(g2.θ),typeof(g1)}(g1, g2.θ, g2.axis)
         end
     else
-        g = (g2.pred isa IdentityRotationGroup) ? g1 : g1 * g2.pred
-        return SO{N,typeof(g2.θ),typeof(g)}(g, g2.θ, g2.axis)
+        g = g1 * g2.pred
+        return g * SO{N}(g2.θ, g2.axis)
     end
 end
 

@@ -70,6 +70,10 @@
                              sin(θ)  cos(θ) 0;
                                   0       0 1]
         
+        g1 = SO{3}(45/180*π, 1) * SO{3}(30/180*π, 2)
+        g2 = SO{3}(-30/180*π, 2) * SO{3}(-45/180*π, 1)
+        @test g1 * g2 == IdentityRotationGroup()
+
         @testset "left group action" begin
             # identity
             x = [1, 0, 0]
