@@ -20,10 +20,23 @@
         g3 = SO{2}(90/180*π)
         @test (g1 * g2) * g3 == g1 * (g2 * g3)
 
+        # inverse composition
+        @test inv(g1 * g3) == inv(g3) * inv(g1)
+        @test inv(g1 * g3) == SO{2}(-135/180*π)
+
         # matrix representation
         θ = 45/180*π
         @test Matrix(g1) == [cos(θ) -sin(θ);
                              sin(θ)  cos(θ)]
+        
+        @testset "left group action" begin
+            # identity
+            x = [1, 0]
+            @test identity(g1) ⋉ x == x
+
+            # compatibility
+            @test g2 ⋉ (g1 ⋉ x) ≈ (g1 * g2) ⋉ x
+        end
     end
 
     @testset "SO(3) group" begin
@@ -47,16 +60,23 @@
         g3 = SO{3}(90/180*π, 2)
         @test (g1 * g2) * g3 == g1 * (g2 * g3)
 
+        # inverse composition
+        @test inv(g1 * g3) == inv(g3) * inv(g1)
+        @test inv(g1 * g3) == SO{3}(-90/180*π, 2) * SO{3}(-45/180*π, 3)
+
         # matrix representation
         θ = 45/180*π
         @test Matrix(g1) == [cos(θ) -sin(θ) 0;
                              sin(θ)  cos(θ) 0;
                                   0       0 1]
-    end
-    # R = Matrix(g1)
-    # S = Matrix(g2)
-    # x = [1, 0, 0]
+        
+        @testset "left group action" begin
+            # identity
+            x = [1, 0, 0]
+            @test identity(g1) ⋉ x == x
 
-    # S*R*x ≈ (R*S)*x
-    # inv(S) == R
+            # compatibility
+            @test g2 ⋉ (g1 ⋉ x) ≈ (g1 * g2) ⋉ x
+        end
+    end
 end

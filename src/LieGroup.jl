@@ -6,7 +6,8 @@ export
     # rotations
     AbstractRotationGroup,
     IdentityRotationGroup,
-    SO
+    SO,
+    ⋉
 
 include("rotations.jl")
 include("translations.jl")

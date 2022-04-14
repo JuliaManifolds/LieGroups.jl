@@ -16,7 +16,7 @@ identity(::IdentityRotationGroup) = IdentityRotationGroup()
 identity(::SO) = IdentityRotationGroup()
 
 inv(::IdentityRotationGroup) = IdentityRotationGroup()
-inv(g::SO{N}) where {N} = inv(g.pred) * SO{N}(-g.θ, g.axis)
+inv(g::SO{N}) where {N} = SO{N}(-g.θ, g.axis) * inv(g.pred)
 
 (*)(::IdentityRotationGroup, g::SO{N}) where {N} = g
 (*)(g::SO{N}, ::IdentityRotationGroup) where {N} = g
@@ -77,4 +77,10 @@ function Base.show(io::IO, g::SO{N}) where N
         print(io, g.pred)
         print(io, " ∘ SO{$N}(θ=", g.θ, ", axis=", g.axis, ")")
     end
+end
+
+⋉(::IdentityRotationGroup, x::T) where {T<:AbstractVector} = x
+
+function ⋉(g::SO{N}, x::T) where {N,T<:AbstractVector}
+    return Matrix(g)*x
 end
