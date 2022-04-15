@@ -1,4 +1,5 @@
 using LieGroup
+using LinearAlgebra
 using Test
 
 @testset "LieGroup.jl" begin

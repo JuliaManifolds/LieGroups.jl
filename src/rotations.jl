@@ -1,90 +1,125 @@
-abstract type AbstractRotationGroup end
+# Array Interfaces
 
-struct IdentityRotationGroup <: AbstractRotationGroup end
-
-struct SO{N,T<:Real,P<:AbstractRotationGroup} <: AbstractRotationGroup
-    pred::P  # predecessor
-    θ::T
-    axis::Int
+function ∧(alg::AbstractVector)
+    N = length(alg)
+    if N == 1
+        E1 = [0 -1;
+              1  0]
+        Ω = alg[1]*E1
+    elseif N == 3
+        E1 = [0 0  0;
+              0 0 -1;
+              0 1  0]
+        E2 = [ 0 0 1;
+               0 0 0;
+              -1 0 0]
+        E3 = [0 -1 0;
+              1  0 0;
+              0  0 0]
+        Ω = alg[1]*E1 + alg[2]*E2 + alg[3]*E3
+    else
+        throw(ArgumentError("not support."))
+    end
+    return Ω
 end
 
-SO{2}(θ::T, axis::Int) where {T<:Real} = SO{2,T,IdentityRotationGroup}(IdentityRotationGroup(), θ, 0)
-SO{2}(θ::T) where {T<:Real} = SO{2}(θ, 0)
-SO{3}(θ::T, axis::Int) where {T<:Real} = SO{3,T,IdentityRotationGroup}(IdentityRotationGroup(), θ, axis)
+function ∨(alg::AbstractMatrix)
+    N = size(alg, 1)
+    if N == 2
+        return [alg[2, 1]]
+    elseif N == 3
+        return [alg[3, 2], alg[1, 3], alg[2, 1]]
+    else
+        throw(ArgumentError("not support."))
+    end
+end
 
-identity(::IdentityRotationGroup) = IdentityRotationGroup()
-identity(::SO) = IdentityRotationGroup()
+isskewsymmetric(A::AbstractMatrix) = A' == -A
 
-inv(::IdentityRotationGroup) = IdentityRotationGroup()
-inv(g::SO{N}) where {N} = SO{N}(-g.θ, g.axis) * inv(g.pred)
+check_dim_so(n::Int, d::Int) = d == n*(n-1)/2
 
-(*)(::IdentityRotationGroup, g::SO{N}) where {N} = g
-(*)(g::SO{N}, ::IdentityRotationGroup) where {N} = g
+
+# Algebra Interfaces
+
+abstract type AbstractRotationAlgebra <: AbstractLieAlgebra end
+
+struct so{N,V} <: AbstractLieAlgebra
+    θ::V
+
+    function so{N}(x::T) where {N,T<:AbstractVector}
+        d = length(x)
+        @assert check_dim_so(N, d)
+        return new{N,T}(x)
+    end
+    
+    function so{N}(X::T) where {N,T<:AbstractMatrix}
+        @assert isskewsymmetric(X)
+        @assert size(X, 1) == N
+        return new{N,T}(X)
+    end
+end
+
+(==)(alg1::so{N}, alg2::so{N}) where {N} = alg1.θ == alg2.θ
+Base.isapprox(alg1::so{N}, alg2::so{N}) where {N} = isapprox(alg1.θ, alg2.θ)
+
+identity(alg::so{N,T}) where {N,T<:AbstractVector} =
+    so{N}(fill!(similar(alg.θ), 0))
+
+inv(alg::so{N,T}) where {N,T<:AbstractVector} = so{N}(-alg.θ)
+
+(+)(alg1::so{N}, alg2::so{N}) where {N} = so{N}(alg1.θ + alg2.θ)
+
+∧(alg::so{N,T}) where {N,T<:AbstractVector} = so{N}(∧(alg.θ))
+∧(alg::so{N,T}) where {N,T<:AbstractMatrix} = alg
+
+∨(alg::so{N,T}) where {N,T<:AbstractVector} = alg
+∨(alg::so{N,T}) where {N,T<:AbstractMatrix} = so{N}(∨(alg.θ))
+
+Base.Vector(alg::so{N,T}) where {N,T<:AbstractVector} = alg.θ
+Base.Vector(alg::so{N,T}) where {N,T<:AbstractMatrix} = ∨(alg.θ)
+
+Base.Matrix(alg::so{N,T}) where {N,T<:AbstractVector} = ∧(alg.θ)
+Base.Matrix(alg::so{N,T}) where {N,T<:AbstractMatrix} = alg.θ
+
+
+# Group Interfaces
+
+abstract type AbstractRotationGroup <: AbstractLieGroup end
+
+struct SO{N,T} <: AbstractRotationGroup
+    A::T
+
+    function SO{N}(X::T) where {N,T<:AbstractMatrix}
+        @assert size(X, 1) == N
+        return new{N,T}(X)
+    end
+end
+
+identity(::SO{N}) where {N} = SO{N}(I(N))
+identity(::Type{SO{N}}) where {N} = SO{N}(I(N))
+
+inv(g::SO{N}) where {N} = SO{N}(inv(g.A))
 
 function (*)(::SO{M}, ::SO{N}) where {M,N}
     throw(ArgumentError("* operation for SO{$M} and SO{$N} group is not defined."))
 end
 
-function (*)(g1::SO{N}, g2::SO{N}) where {N}
-    if g2.pred isa IdentityRotationGroup
-        if g1.axis == g2.axis
-            θ = g1.θ + g2.θ
-            if θ == 0
-                return g1.pred
-            else
-                return SO{N,typeof(θ),typeof(g1.pred)}(g1.pred, θ, g1.axis)
-            end
-        else
-            return SO{N,typeof(g2.θ),typeof(g1)}(g1, g2.θ, g2.axis)
-        end
-    else
-        g = g1 * g2.pred
-        return g * SO{N}(g2.θ, g2.axis)
-    end
-end
+(*)(g1::SO{N}, g2::SO{N}) where {N} = SO{N}(g1.A * g2.A)
 
-(==)(g1::SO{N}, g2::SO{N}) where {N} =
-    g1.pred == g2.pred && g1.axis == g2.axis && g1.θ == g2.θ
+(==)(g1::SO{N}, g2::SO{N}) where {N} = g1.A == g2.A
+Base.isapprox(g1::SO{N}, g2::SO{N}) where {N} = isapprox(g1.A, g2.A)
 
-Base.Matrix(g::SO{2}) = [cos(g.θ) -sin(g.θ); sin(g.θ) cos(g.θ)]
-
-Base.Matrix(g::SO{3}) = Matrix(g.pred, g)
-Base.Matrix(g1::SO{3}, g2::SO{3}) = Matrix(IdentityRotationGroup(), g2) * Matrix(g1)
-
-function Base.Matrix(::IdentityRotationGroup, g::SO{3})
-    R = zeros(Float64, 3, 3)
-    for i in 1:3
-        if i == g.axis
-            R[i, i] = 1
-        else
-            R[i, i] = cos(g.θ)
-        end
-    end
-
-    ax = to0base(g.axis)
-    i, j = (ax+1) % 3, (ax+2) % 3
-    i, j = to1base(i), to1base(j)
-
-    R[i, j] = -sin(g.θ)
-    R[j, i] =  sin(g.θ)
-
-    return R
-end
-
-to0base(x) = x - 1
-to1base(x) = x + 1
+Base.Matrix(g::SO) = g.A
 
 function Base.show(io::IO, g::SO{N}) where N
-    if g.pred isa IdentityRotationGroup
-        print(io, "SO{$N}(θ=", g.θ, ", axis=", g.axis, ")")
-    else
-        print(io, g.pred)
-        print(io, " ∘ SO{$N}(θ=", g.θ, ", axis=", g.axis, ")")
-    end
+    print(io, "SO{$N}(A=", g.A, ")")
 end
 
-⋉(::IdentityRotationGroup, x::T) where {T<:AbstractVector} = x
+⋉(g::SO{N}, x::T) where {N,T<:AbstractVector} = Matrix(g) * x
 
-function ⋉(g::SO{N}, x::T) where {N,T<:AbstractVector}
-    return Matrix(g)*x
-end
+
+# Connection between groups and algebra
+
+Base.exp(alg::so{N,T}) where {N,T<:AbstractMatrix} = SO{N}(exp(alg.θ))
+Base.exp(alg::so{N,T}) where {N,T<:AbstractVector} = SO{N}(exp(∧(alg.θ)))
+Base.log(g::SO{N}) where {N} = so{N}(∨(log(g.A)))

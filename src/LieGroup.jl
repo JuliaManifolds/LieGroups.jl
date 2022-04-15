@@ -1,14 +1,22 @@
 module LieGroup
 
+using LinearAlgebra
+
 import Base: identity, +, -, *, inv, ==
 
-export 
+export
+    # liegroup
+    AbstractLieGroup,
+    AbstractLieAlgebra,
+
     # rotations
     AbstractRotationGroup,
-    IdentityRotationGroup,
-    SO,
+    AbstractRotationAlgebra,
+    SO, so,
+    ∧, ∨,
     ⋉
 
+include("liegroup.jl")
 include("rotations.jl")
 include("translations.jl")
 
