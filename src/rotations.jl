@@ -1,44 +1,3 @@
-# Array Interfaces
-
-function ∧(alg::AbstractVector)
-    N = length(alg)
-    if N == 1
-        E1 = [0 -1;
-              1  0]
-        Ω = alg[1]*E1
-    elseif N == 3
-        E1 = [0 0  0;
-              0 0 -1;
-              0 1  0]
-        E2 = [ 0 0 1;
-               0 0 0;
-              -1 0 0]
-        E3 = [0 -1 0;
-              1  0 0;
-              0  0 0]
-        Ω = alg[1]*E1 + alg[2]*E2 + alg[3]*E3
-    else
-        throw(ArgumentError("not support."))
-    end
-    return Ω
-end
-
-function ∨(alg::AbstractMatrix)
-    N = size(alg, 1)
-    if N == 2
-        return [alg[2, 1]]
-    elseif N == 3
-        return [alg[3, 2], alg[1, 3], alg[2, 1]]
-    else
-        throw(ArgumentError("not support."))
-    end
-end
-
-isskewsymmetric(A::AbstractMatrix) = A' == -A
-
-check_dim_so(n::Int, d::Int) = d == n*(n-1)/2
-
-
 # Algebra Interfaces
 
 abstract type AbstractRotationAlgebra <: AbstractLieAlgebra end
@@ -48,7 +7,7 @@ struct so{N,V} <: AbstractLieAlgebra
 
     function so{N}(x::T) where {N,T<:AbstractVector}
         d = length(x)
-        @assert check_dim_so(N, d)
+        @assert check_dim(so{N}, d)
         return new{N,T}(x)
     end
     
@@ -58,6 +17,8 @@ struct so{N,V} <: AbstractLieAlgebra
         return new{N,T}(X)
     end
 end
+
+check_dim(::Type{so{N}}, d::Int) where {N} = d == N*(N-1)/2
 
 (==)(alg1::so{N}, alg2::so{N}) where {N} = alg1.θ == alg2.θ
 Base.isapprox(alg1::so{N}, alg2::so{N}) where {N} = isapprox(alg1.θ, alg2.θ)
@@ -69,16 +30,16 @@ inv(alg::so{N,T}) where {N,T<:AbstractVector} = so{N}(-alg.θ)
 
 (+)(alg1::so{N}, alg2::so{N}) where {N} = so{N}(alg1.θ + alg2.θ)
 
-∧(alg::so{N,T}) where {N,T<:AbstractVector} = so{N}(∧(alg.θ))
+∧(alg::so{N,T}) where {N,T<:AbstractVector} = so{N}(∧(so{N}, alg.θ))
 ∧(alg::so{N,T}) where {N,T<:AbstractMatrix} = alg
 
 ∨(alg::so{N,T}) where {N,T<:AbstractVector} = alg
-∨(alg::so{N,T}) where {N,T<:AbstractMatrix} = so{N}(∨(alg.θ))
+∨(alg::so{N,T}) where {N,T<:AbstractMatrix} = so{N}(∨(so{N}, alg.θ))
 
 Base.Vector(alg::so{N,T}) where {N,T<:AbstractVector} = alg.θ
-Base.Vector(alg::so{N,T}) where {N,T<:AbstractMatrix} = ∨(alg.θ)
+Base.Vector(alg::so{N,T}) where {N,T<:AbstractMatrix} = ∨(so{N}, alg.θ)
 
-Base.Matrix(alg::so{N,T}) where {N,T<:AbstractVector} = ∧(alg.θ)
+Base.Matrix(alg::so{N,T}) where {N,T<:AbstractVector} = ∧(so{N}, alg.θ)
 Base.Matrix(alg::so{N,T}) where {N,T<:AbstractMatrix} = alg.θ
 
 
@@ -118,8 +79,47 @@ end
 ⋉(g::SO{N}, x::T) where {N,T<:AbstractVector} = Matrix(g) * x
 
 
+# Array Interfaces
+
+function ∧(::Type{so{N}}, alg::AbstractVector) where {N}
+    d = length(alg)
+    @assert check_dim(so{N}, d)
+    if N == 2
+        E1 = [0 -1;
+              1  0]
+        Ω = alg[1]*E1
+    elseif N == 3
+        E1 = [0 0  0;
+              0 0 -1;
+              0 1  0]
+        E2 = [ 0 0 1;
+               0 0 0;
+              -1 0 0]
+        E3 = [0 -1 0;
+              1  0 0;
+              0  0 0]
+        Ω = alg[1]*E1 + alg[2]*E2 + alg[3]*E3
+    else
+        throw(ArgumentError("not support."))
+    end
+    return Ω
+end
+
+function ∨(::Type{so{N}}, alg::AbstractMatrix) where {N}
+    d = size(alg, 1)
+    @assert N == d
+    if N == 2
+        return [alg[2, 1]]
+    elseif N == 3
+        return [alg[3, 2], alg[1, 3], alg[2, 1]]
+    else
+        throw(ArgumentError("not support."))
+    end
+end
+
+
 # Connection between groups and algebra
 
 Base.exp(alg::so{N,T}) where {N,T<:AbstractMatrix} = SO{N}(exp(alg.θ))
-Base.exp(alg::so{N,T}) where {N,T<:AbstractVector} = SO{N}(exp(∧(alg.θ)))
-Base.log(g::SO{N}) where {N} = so{N}(∨(log(g.A)))
+Base.exp(alg::so{N,T}) where {N,T<:AbstractVector} = SO{N}(exp(∧(so{N}, alg.θ)))
+Base.log(g::SO{N}) where {N} = so{N}(∨(so{N}, log(g.A)))
