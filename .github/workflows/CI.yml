@@ -53,6 +53,6 @@ jobs:
       - run: |
           julia --project=docs -e '
             using Documenter: DocMeta, doctest
-            using LieGroup
-            DocMeta.setdocmeta!(LieGroup, :DocTestSetup, :(using LieGroup); recursive=true)
-            doctest(LieGroup)'
+            using LieGroups
+            DocMeta.setdocmeta!(LieGroups, :DocTestSetup, :(using LieGroups); recursive=true)
+            doctest(LieGroups)'

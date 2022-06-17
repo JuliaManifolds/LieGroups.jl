@@ -1,8 +1,8 @@
-using LieGroup
+using LieGroups
 using LinearAlgebra
 using Test
 
-@testset "LieGroup.jl" begin
+@testset "LieGroups.jl" begin
     include("rotations.jl")
     include("rigid_motions.jl")
 end

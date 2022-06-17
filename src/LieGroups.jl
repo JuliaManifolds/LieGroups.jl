@@ -1,4 +1,4 @@
-module LieGroup
+module LieGroups
 
 using LinearAlgebra
 

@@ -47,7 +47,7 @@ version = "0.21.3"
 deps = ["Base64", "NetworkOptions", "Printf", "SHA"]
 uuid = "76f85450-5226-5b5a-8eaa-529ad045b433"
 
-[[deps.LieGroup]]
+[[deps.LieGroups]]
 path = ".."
 uuid = "6774de46-80ba-43f8-ba42-e41071ccfc5f"
 version = "0.1.0"

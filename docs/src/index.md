@@ -1,14 +1,14 @@
 ```@meta
-CurrentModule = LieGroup
+CurrentModule = LieGroups
 ```
 
-# LieGroup
+# LieGroups
 
-Documentation for [LieGroup](https://github.com/yuehhua/LieGroup.jl).
+Documentation for [LieGroups](https://github.com/yuehhua/LieGroups.jl).
 
 ```@index
 ```
 
 ```@autodocs
-Modules = [LieGroup]
+Modules = [LieGroups]
 ```

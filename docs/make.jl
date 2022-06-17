@@ -1,16 +1,16 @@
-using LieGroup
+using LieGroups
 using Documenter
 
-DocMeta.setdocmeta!(LieGroup, :DocTestSetup, :(using LieGroup); recursive=true)
+DocMeta.setdocmeta!(LieGroups, :DocTestSetup, :(using LieGroups); recursive=true)
 
 makedocs(;
-    modules=[LieGroup],
+    modules=[LieGroups],
     authors="Yueh-Hua Tu",
-    repo="https://github.com/yuehhua/LieGroup.jl/blob/{commit}{path}#{line}",
-    sitename="LieGroup.jl",
+    repo="https://github.com/yuehhua/LieGroups.jl/blob/{commit}{path}#{line}",
+    sitename="LieGroups.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://yuehhua.github.io/LieGroup.jl",
+        canonical="https://yuehhua.github.io/LieGroups.jl",
         assets=String[],
     ),
     pages=[
@@ -19,6 +19,6 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/yuehhua/LieGroup.jl",
+    repo="github.com/yuehhua/LieGroups.jl",
     devbranch="main",
 )
