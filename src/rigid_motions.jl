@@ -107,6 +107,16 @@ function ⋉(g::SE{N}, x::AbstractVector) where {N}
     return y[1:N]
 end
 
+function LinearAlgebra.adjoint(g::SE{N}) where {N}
+    R, t = g.A[1:N, 1:N], g.A[1:N, end]
+    T = skewsymmetric(t)
+    z = fill!(similar(R), 0)
+    return [R T*R;
+            z   R]
+end
+
+jacobian(::typeof(inv), g::SE{N}) where {N} = -adjoint(g)
+
 """
 Jacobian of action wrt `g`
 """
