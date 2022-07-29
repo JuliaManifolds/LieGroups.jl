@@ -6,8 +6,7 @@ struct so{N,V} <: AbstractLieAlgebra
     θ::V
 
     function so{N}(x::T) where {N,T<:AbstractVector}
-        d = length(x)
-        @assert check_dim(so{N}, d)
+        @assert check_dof(so{N}, length(x))
         return new{N,T}(x)
     end
     
@@ -18,7 +17,7 @@ struct so{N,V} <: AbstractLieAlgebra
     end
 end
 
-check_dim(::Type{so{N}}, d::Int) where {N} = d == sum(1:(N-1))
+check_dof(::Type{so{N}}, d::Int) where {N} = d == dof(SO{N})
 
 (==)(alg1::so{N}, alg2::so{N}) where {N} = alg1.θ == alg2.θ
 Base.isapprox(alg1::so{N}, alg2::so{N}) where {N} = isapprox(alg1.θ, alg2.θ)
@@ -56,9 +55,15 @@ right_jacobian(alg::so{3}) = left_jacobian(alg)'
 
 # Group Interfaces
 
-abstract type AbstractRotationGroup <: AbstractLieGroup end
+abstract type AbstractRotationGroup{N} <: AbstractLieGroup end
 
-struct SO{N,T} <: AbstractRotationGroup
+dim(::Type{AbstractRotationGroup{N}}) where {N} = N
+dim(::AbstractRotationGroup{N}) where {N} = N
+
+dof(::Type{AbstractRotationGroup{N}}) where {N} = sum(1:(N-1))
+dof(::AbstractRotationGroup{N}) where {N} = sum(1:(N-1))
+
+struct SO{N,T} <: AbstractRotationGroup{N}
     A::T
 
     function SO{N}(X::T) where {N,T<:AbstractMatrix}
@@ -90,7 +95,7 @@ Base.show(io::IO, g::SO{N}) where {N} = print(io, "SO{$N}(A=", g.A, ")")
 # Array Interfaces
 
 function ∧(::Type{so{N}}, alg::AbstractVector) where {N}
-    @assert check_dim(so{N}, length(alg))
+    @assert check_dof(so{N}, length(alg))
     return skewsymmetric(alg)
 end
 

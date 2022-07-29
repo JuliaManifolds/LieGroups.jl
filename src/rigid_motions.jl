@@ -7,7 +7,7 @@ struct se{N,V} <: SpecialEuclideanAlgebra
 
     function se{N}(x::T) where {N,T<:AbstractVector}
         d = length(x)
-        @assert check_dim(se{N}, d)
+        @assert check_dof(se{N}, d)
         return new{N,T}(x)
     end
     
@@ -18,7 +18,7 @@ struct se{N,V} <: SpecialEuclideanAlgebra
     end
 end
 
-check_dim(::Type{se{N}}, d::Int) where {N} = d == sum(1:N)
+check_dof(::Type{se{N}}, d::Int) where {N} = d == dof(SE{N})
 
 (==)(alg1::se{N}, alg2::se{N}) where {N} = alg1.ρ == alg2.ρ
 Base.isapprox(alg1::se{N}, alg2::se{N}) where {N} = isapprox(alg1.ρ, alg2.ρ)
@@ -59,9 +59,15 @@ end
 
 # Group Interfaces
 
-abstract type SpecialEuclideanGroup <: AbstractLieGroup end
+abstract type SpecialEuclideanGroup{N} <: AbstractLieGroup end
 
-struct SE{N, T} <: SpecialEuclideanGroup
+dim(::Type{SpecialEuclideanGroup{N}}) where {N} = N
+dim(::SpecialEuclideanGroup{N}) where {N} = N
+
+dof(::Type{SpecialEuclideanGroup{N}}) where {N} = sum(1:N)
+dof(::SpecialEuclideanGroup{N}) where {N} = sum(1:N)
+
+struct SE{N, T} <: SpecialEuclideanGroup{N}
     A::T
 
     function SE{N}(A::T) where {N,T<:AbstractMatrix}
@@ -69,12 +75,6 @@ struct SE{N, T} <: SpecialEuclideanGroup
         return new{N, T}(A)
     end
 end
-
-dim(::Type{SE{N}}) where {N} = N
-dim(::SE{N}) where {N} = N
-
-dof(::Type{SE{3}}) = 6
-dof(::SE{3}) = 6
 
 identity(::Type{SE{N}}) where {N} = SE{N}(I(N+1))
 identity(::SE{N}) where {N} = SE{N}(I(N+1))
@@ -113,8 +113,7 @@ function SE_matrix(R::AbstractMatrix{T}, t::AbstractVector{S}) where {T,S}
 end
 
 function ∧(::Type{se{N}}, alg::AbstractVector{T}) where {N,T}
-    d = length(alg)
-    @assert check_dim(se{N}, d)
+    @assert check_dof(se{N}, length(alg))
 
     p = alg[1:N]
     Ω = ∧(so{N}, alg[N+1:end])
@@ -125,9 +124,9 @@ end
 
 function ∨(::Type{se{N}}, alg::AbstractMatrix) where {N}
     d = size(alg, 1)
-    @assert check_dim(se{N}, sum(1:d-1))
-    
-    return [alg[1:N, N]..., ∨(so{N}, alg[1:N, 1:N])...]
+    @assert check_dof(se{N}, sum(1:d-1))
+    p, R = alg[1:N, N], alg[1:N, 1:N]
+    return [p..., ∨(so{N}, R)...]
 end
 
 Base.show(io::IO, g::SE{N}) where {N} = print(io, "SE{$N}(A=", g.A, ")")
