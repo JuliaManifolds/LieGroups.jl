@@ -163,6 +163,28 @@ Base.show(io::IO, g::SE{N}) where {N} = print(io, "SE{$N}(A=", g.A, ")")
 
 # Connection between groups and algebra
 
-Base.exp(alg::se{N,T}) where {N,T<:AbstractMatrix} = SE{N}(exp(alg.ρ))
-Base.exp(alg::se{N,T}) where {N,T<:AbstractVector} = SE{N}(exp(∧(se{N}, alg.ρ)))
-Base.log(g::SE{N}) where {N} = se{N}(∨(se{N}, log(g.A)))
+V(θ::AbstractVector) = left_jacobian(so{3}(θ))
+
+function Base.exp(alg::se{N,T}) where {N,T<:AbstractMatrix}
+    alg = se{N}(∨(se{N}, alg.ρ))
+    return exp(alg)
+end
+
+function Base.exp(alg::se{N,T}) where {N,T<:AbstractVector}
+    ρ, θ = alg.ρ[1:N], alg.ρ[N+1:end]
+    R = exp(so{N}(θ)).A
+    ρ = V(θ) * ρ
+    z = fill!(similar(ρ, 1, N), 0)
+    return SE{N}(
+        [R ρ;
+         z 1]
+    )
+end
+
+function Base.log(g::SE{N}) where {N}
+    p, R = g.A[1:N, end], g.A[1:N, 1:N]
+    so = log(SO{N}(R))
+    θ = so.θ
+    p = inv(V(θ)) * p
+    return se{N}([p..., θ...])
+end
