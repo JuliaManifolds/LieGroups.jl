@@ -8,6 +8,8 @@ export
     # liegroup
     AbstractLieGroup,
     AbstractLieAlgebra,
+    dim,
+    dof,
 
     # rotations
     AbstractRotationGroup,
@@ -15,6 +17,8 @@ export
     SO, so,
     ∧, ∨,
     ⋉,
+    jacobian,
+    ⊕,
 
     # rigid_motions
     SpecialEuclideanGroup,

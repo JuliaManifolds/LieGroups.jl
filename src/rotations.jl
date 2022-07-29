@@ -18,7 +18,7 @@ struct so{N,V} <: AbstractLieAlgebra
     end
 end
 
-check_dim(::Type{so{N}}, d::Int) where {N} = d == N*(N-1)/2
+check_dim(::Type{so{N}}, d::Int) where {N} = d == sum(1:(N-1))
 
 (==)(alg1::so{N}, alg2::so{N}) where {N} = alg1.θ == alg2.θ
 Base.isapprox(alg1::so{N}, alg2::so{N}) where {N} = isapprox(alg1.θ, alg2.θ)
@@ -42,6 +42,17 @@ Base.Vector(alg::so{N,T}) where {N,T<:AbstractMatrix} = ∨(so{N}, alg.θ)
 Base.Matrix(alg::so{N,T}) where {N,T<:AbstractVector} = ∧(so{N}, alg.θ)
 Base.Matrix(alg::so{N,T}) where {N,T<:AbstractMatrix} = alg.θ
 
+function left_jacobian(alg::so{3})
+    θ² = sum(abs2, alg.θ)
+    θ = √θ²
+    W = skewsymmetric(alg.θ)
+    M1 = (1. - cos(θ))/(θ²) * W
+    M2 = (θ - sin(θ))/(θ² * θ) * W^2
+    return I(3) + M1 + M2
+end
+
+right_jacobian(alg::so{3}) = left_jacobian(alg)'
+
 
 # Group Interfaces
 
@@ -61,9 +72,8 @@ identity(::Type{SO{N}}) where {N} = SO{N}(I(N))
 
 inv(g::SO{N}) where {N} = SO{N}(inv(g.A))
 
-function (*)(::SO{M}, ::SO{N}) where {M,N}
+(*)(::SO{M}, ::SO{N}) where {M,N} =
     throw(ArgumentError("* operation for SO{$M} and SO{$N} group is not defined."))
-end
 
 (*)(g1::SO{N}, g2::SO{N}) where {N} = SO{N}(g1.A * g2.A)
 
@@ -72,9 +82,7 @@ Base.isapprox(g1::SO{N}, g2::SO{N}) where {N} = isapprox(g1.A, g2.A)
 
 Base.Matrix(g::SO) = g.A
 
-function Base.show(io::IO, g::SO{N}) where N
-    print(io, "SO{$N}(A=", g.A, ")")
-end
+Base.show(io::IO, g::SO{N}) where {N} = print(io, "SO{$N}(A=", g.A, ")")
 
 ⋉(g::SO{N}, x::T) where {N,T<:AbstractVector} = Matrix(g) * x
 
@@ -82,27 +90,8 @@ end
 # Array Interfaces
 
 function ∧(::Type{so{N}}, alg::AbstractVector) where {N}
-    d = length(alg)
-    @assert check_dim(so{N}, d)
-    if N == 2
-        E1 = [0 -1;
-              1  0]
-        Ω = alg[1]*E1
-    elseif N == 3
-        E1 = [0 0  0;
-              0 0 -1;
-              0 1  0]
-        E2 = [ 0 0 1;
-               0 0 0;
-              -1 0 0]
-        E3 = [0 -1 0;
-              1  0 0;
-              0  0 0]
-        Ω = alg[1]*E1 + alg[2]*E2 + alg[3]*E3
-    else
-        throw(ArgumentError("not support."))
-    end
-    return Ω
+    @assert check_dim(so{N}, length(alg))
+    return skewsymmetric(alg)
 end
 
 function ∨(::Type{so{N}}, alg::AbstractMatrix) where {N}
