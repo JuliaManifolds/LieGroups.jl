@@ -61,10 +61,10 @@ end
 
 abstract type SpecialEuclideanGroup{N} <: AbstractLieGroup end
 
-dim(::Type{SpecialEuclideanGroup{N}}) where {N} = N
+dim(::Type{<:SpecialEuclideanGroup{N}}) where {N} = N
 dim(::SpecialEuclideanGroup{N}) where {N} = N
 
-dof(::Type{SpecialEuclideanGroup{N}}) where {N} = sum(1:N)
+dof(::Type{<:SpecialEuclideanGroup{N}}) where {N} = sum(1:N)
 dof(::SpecialEuclideanGroup{N}) where {N} = sum(1:N)
 
 struct SE{N, T} <: SpecialEuclideanGroup{N}
@@ -96,6 +96,11 @@ end
 Base.isapprox(g1::SE{N}, g2::SE{N}) where {N} = isapprox(g1.A, g2.A)
 
 Base.Matrix(g::SE) = g.A
+
+function ⋉(g::SE{N}, x::AbstractVector) where {N}
+    y = Matrix(g) * [x..., 1]
+    return y[1:N]
+end
 
 (⊕)(g::SE{N}, alg::se{N}) where {N} = g * exp(alg)
 

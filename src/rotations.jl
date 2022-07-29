@@ -57,10 +57,10 @@ right_jacobian(alg::so{3}) = left_jacobian(alg)'
 
 abstract type AbstractRotationGroup{N} <: AbstractLieGroup end
 
-dim(::Type{AbstractRotationGroup{N}}) where {N} = N
+dim(::Type{<:AbstractRotationGroup{N}}) where {N} = N
 dim(::AbstractRotationGroup{N}) where {N} = N
 
-dof(::Type{AbstractRotationGroup{N}}) where {N} = sum(1:(N-1))
+dof(::Type{<:AbstractRotationGroup{N}}) where {N} = sum(1:(N-1))
 dof(::AbstractRotationGroup{N}) where {N} = sum(1:(N-1))
 
 struct SO{N,T} <: AbstractRotationGroup{N}
