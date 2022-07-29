@@ -1,8 +1,14 @@
 # Algebra Interfaces
 
-abstract type AbstractRotationAlgebra <: AbstractLieAlgebra end
+abstract type AbstractRotationAlgebra{N} <: AbstractLieAlgebra end
 
-struct so{N,V} <: AbstractLieAlgebra
+dim(::Type{<:AbstractRotationAlgebra{N}}) where {N} = N
+dim(::AbstractRotationAlgebra{N}) where {N} = N
+
+dof(::Type{<:AbstractRotationAlgebra{N}}) where {N} = sum(1:(N-1))
+dof(::AbstractRotationAlgebra{N}) where {N} = sum(1:(N-1))
+
+struct so{N,V} <: AbstractRotationAlgebra{N}
     θ::V
 
     function so{N}(x::T) where {N,T<:AbstractVector}

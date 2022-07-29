@@ -1,13 +1,18 @@
 # Algebra Interfaces
 
-abstract type SpecialEuclideanAlgebra <: AbstractLieAlgebra end
+abstract type SpecialEuclideanAlgebra{N} <: AbstractLieAlgebra end
 
-struct se{N,V} <: SpecialEuclideanAlgebra
+dim(::Type{<:SpecialEuclideanAlgebra{N}}) where {N} = N
+dim(::SpecialEuclideanAlgebra{N}) where {N} = N
+
+dof(::Type{<:SpecialEuclideanAlgebra{N}}) where {N} = sum(1:N)
+dof(::SpecialEuclideanAlgebra{N}) where {N} = sum(1:N)
+
+struct se{N,V} <: SpecialEuclideanAlgebra{N}
     ρ::V
 
     function se{N}(x::T) where {N,T<:AbstractVector}
-        d = length(x)
-        @assert check_dof(se{N}, d)
+        @assert check_dof(se{N}, length(x))
         return new{N,T}(x)
     end
     
@@ -102,6 +107,15 @@ function ⋉(g::SE{N}, x::AbstractVector) where {N}
     return y[1:N]
 end
 
+"""
+Jacobian of action wrt `g`
+"""
+function jacobian(::typeof(⋉), g::SE{N}, x::AbstractVector) where {N}
+    R = g.A[1:N, 1:N]
+    X = skewsymmetric(x)
+    return [R -R*X]
+end
+
 (⊕)(g::SE{N}, alg::se{N}) where {N} = g * exp(alg)
 
 # function jacobian(::typeof(⊕), g::SE{N}, alg::se{N}) where {N}
@@ -128,8 +142,8 @@ function ∧(::Type{se{N}}, alg::AbstractVector{T}) where {N,T}
 end
 
 function ∨(::Type{se{N}}, alg::AbstractMatrix) where {N}
-    d = size(alg, 1)
-    @assert check_dof(se{N}, sum(1:d-1))
+    d = size(alg, 1) - 1
+    @assert check_dof(se{N}, sum(1:d))
     p, R = alg[1:N, N], alg[1:N, 1:N]
     return [p..., ∨(so{N}, R)...]
 end
