@@ -73,34 +73,59 @@ dof(::Type{<:SpecialEuclideanGroup{N}}) where {N} = sum(1:N)
 dof(::SpecialEuclideanGroup{N}) where {N} = sum(1:N)
 
 struct SE{N, T} <: SpecialEuclideanGroup{N}
-    A::T
+    R
+    t
 
-    function SE{N}(A::T) where {N,T<:AbstractMatrix}
-        @assert size(A, 1) == N + 1
-        return new{N, T}(A)
+    function SE{N}(R::AbstractMatrix{T}, t::AbstractVector{S}) where {N,T,S}
+        @assert size(R, 1) == N
+        @assert size(t) == (N, )
+        Te = float(promote_type(T, S))
+        return new{N, Te}(Te.(R), Te.(t))
     end
 end
+
+function SE{N}(A::AbstractMatrix) where {N}
+    @assert size(A, 1) == N + 1
+    R = A[1:N, 1:N]
+    t = A[1:N, end]
+    return SE{N}(R, t)
+end
+
+rotation(g::SE) = g.R
+translation(g::SE) = g.t
 
 identity(::Type{SE{N}}) where {N} = SE{N}(I(N+1))
 identity(::SE{N}) where {N} = SE{N}(I(N+1))
 
 function inv(g::SE{N}) where {N}
-    R = g.A[1:N, 1:N]
-    t = g.A[1:N, N+1]
-    E = SE_matrix(R', -R'*t)
-    return SE{N}(E)
+    R, t = rotation(g), translation(g)
+    return SE{N}(R', -R'*t)
 end
 
 function (*)(::SE{M}, ::SE{N}) where {M,N}
     throw(ArgumentError("+ operation for SE{$M} and SE{$N} group is not defined."))
 end
 
-(*)(g1::SE{N}, g2::SE{N}) where {N} = SE{N}(g1.A * g2.A)
+(*)(g1::SE{N}, g2::SE{N}) where {N} = SE{N}(Matrix(g1) * Matrix(g2))
 
-(==)(g1::SE{N}, g2::SE{N}) where {N} = g1.A == g2.A
-Base.isapprox(g1::SE{N}, g2::SE{N}) where {N} = isapprox(g1.A, g2.A)
+function jacobian(::typeof(*), g1::SE{N}, g2::SE{N}) where {N}
+    R2, t2 = rotation(g2), translation(g2)
+    T2 = skewsymmetric(t2)
+    z = fill!(similar(R2, N, N), 0)
+    J = [R2' -R2'*T2;
+           z     R2']
+    return J, I(2N)
+end
 
-Base.Matrix(g::SE) = g.A
+(==)(g1::SE{N}, g2::SE{N}) where {N} = Matrix(g1) == Matrix(g2)
+Base.isapprox(g1::SE{N}, g2::SE{N}) where {N} = isapprox(Matrix(g1), Matrix(g2))
+
+function Base.Matrix(g::SE{N}) where {N}
+    R, t = rotation(g), translation(g)
+    z = fill!(similar(t, 1, N), 0)
+    return [R t;
+            z 1]
+end
 
 function ⋉(g::SE{N}, x::AbstractVector) where {N}
     y = Matrix(g) * [x..., 1]
@@ -108,7 +133,7 @@ function ⋉(g::SE{N}, x::AbstractVector) where {N}
 end
 
 function LinearAlgebra.adjoint(g::SE{N}) where {N}
-    R, t = g.A[1:N, 1:N], g.A[1:N, end]
+    R, t = rotation(g), translation(g)
     T = skewsymmetric(t)
     z = fill!(similar(R), 0)
     return [R T*R;
@@ -121,25 +146,17 @@ jacobian(::typeof(inv), g::SE{N}) where {N} = -adjoint(g)
 Jacobian of action wrt `g`
 """
 function jacobian(::typeof(⋉), g::SE{N}, x::AbstractVector) where {N}
-    R = g.A[1:N, 1:N]
+    R = rotation(g)
     X = skewsymmetric(x)
     return [R -R*X]
 end
 
 (⊕)(g::SE{N}, alg::se{N}) where {N} = g * exp(alg)
 
-# function jacobian(::typeof(⊕), g::SE{N}, alg::se{N}) where {N}
-#     return , right_jacobian(alg)
-# end
+jacobian(::typeof(⊕), g::SE{N}, alg::se{N}) where {N} =
+    jacobian(*, g, exp(alg))[1], right_jacobian(alg)
 
 # Array Interfaces
-
-function SE_matrix(R::AbstractMatrix{T}, t::AbstractVector{S}) where {T,S}
-    n = size(R, 2)
-    Te = promote_type(T, S)
-    return [              R t;
-            zeros(Te, 1, n) 1]
-end
 
 function ∧(::Type{se{N}}, alg::AbstractVector{T}) where {N,T}
     @assert check_dof(se{N}, length(alg))
@@ -158,7 +175,8 @@ function ∨(::Type{se{N}}, alg::AbstractMatrix) where {N}
     return [p..., ∨(so{N}, R)...]
 end
 
-Base.show(io::IO, g::SE{N}) where {N} = print(io, "SE{$N}(A=", g.A, ")")
+Base.show(io::IO, g::SE{N}) where {N} =
+    print(io, "SE{$N}(R=", rotation(g), ", t=", translation(g), ")")
 
 
 # Connection between groups and algebra
@@ -172,7 +190,7 @@ end
 
 function Base.exp(alg::se{N,T}) where {N,T<:AbstractVector}
     ρ, θ = alg.ρ[1:N], alg.ρ[N+1:end]
-    R = exp(so{N}(θ)).A
+    R = Matrix(exp(so{N}(θ)))
     ρ = V(θ) * ρ
     z = fill!(similar(ρ, 1, N), 0)
     return SE{N}(
@@ -182,9 +200,9 @@ function Base.exp(alg::se{N,T}) where {N,T<:AbstractVector}
 end
 
 function Base.log(g::SE{N}) where {N}
-    p, R = g.A[1:N, end], g.A[1:N, 1:N]
+    R, t = rotation(g), translation(g)
     so = log(SO{N}(R))
     θ = so.θ
-    p = inv(V(θ)) * p
+    p = inv(V(θ)) * t
     return se{N}([p..., θ...])
 end
