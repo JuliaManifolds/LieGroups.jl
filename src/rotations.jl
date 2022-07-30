@@ -70,30 +70,32 @@ dof(::Type{<:AbstractRotationGroup{N}}) where {N} = sum(1:(N-1))
 dof(::AbstractRotationGroup{N}) where {N} = sum(1:(N-1))
 
 struct SO{N,T} <: AbstractRotationGroup{N}
-    A::T
+    R::T
 
-    function SO{N}(X::T) where {N,T<:AbstractMatrix}
-        @assert size(X, 1) == N
-        return new{N,T}(X)
+    function SO{N}(R::T) where {N,T<:AbstractMatrix}
+        @assert size(R, 1) == N
+        return new{N,T}(R)
     end
 end
+
+rotation(g::SO) = g.R
 
 identity(::SO{N}) where {N} = SO{N}(I(N))
 identity(::Type{SO{N}}) where {N} = SO{N}(I(N))
 
-inv(g::SO{N}) where {N} = SO{N}(inv(g.A))
+inv(g::SO{N}) where {N} = SO{N}(inv(rotation(g)))
 
 (*)(::SO{M}, ::SO{N}) where {M,N} =
     throw(ArgumentError("* operation for SO{$M} and SO{$N} group is not defined."))
 
-(*)(g1::SO{N}, g2::SO{N}) where {N} = SO{N}(g1.A * g2.A)
+(*)(g1::SO{N}, g2::SO{N}) where {N} = SO{N}(rotation(g1) * rotation(g2))
 
-(==)(g1::SO{N}, g2::SO{N}) where {N} = g1.A == g2.A
-Base.isapprox(g1::SO{N}, g2::SO{N}) where {N} = isapprox(g1.A, g2.A)
+(==)(g1::SO{N}, g2::SO{N}) where {N} = Matrix(g1) == Matrix(g2)
+Base.isapprox(g1::SO{N}, g2::SO{N}) where {N} = isapprox(Matrix(g1), Matrix(g2))
 
-Base.Matrix(g::SO) = g.A
+Base.Matrix(g::SO) = rotation(g)
 
-Base.show(io::IO, g::SO{N}) where {N} = print(io, "SO{$N}(A=", g.A, ")")
+Base.show(io::IO, g::SO{N}) where {N} = print(io, "SO{$N}(R=", rotation(g), ")")
 
 ⋉(g::SO{N}, x::T) where {N,T<:AbstractVector} = Matrix(g) * x
 
@@ -118,8 +120,8 @@ function ∨(::Type{so{N}}, alg::AbstractMatrix) where {N}
 end
 
 
-# Connection between groups and algebra
+# Maps
 
 Base.exp(alg::so{N,T}) where {N,T<:AbstractMatrix} = SO{N}(exp(alg.θ))
 Base.exp(alg::so{N,T}) where {N,T<:AbstractVector} = SO{N}(exp(∧(so{N}, alg.θ)))
-Base.log(g::SO{N}) where {N} = so{N}(∨(so{N}, log(g.A)))
+Base.log(g::SO{N}) where {N} = so{N}(∨(so{N}, log(rotation(g))))

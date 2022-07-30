@@ -179,7 +179,7 @@ Base.show(io::IO, g::SE{N}) where {N} =
     print(io, "SE{$N}(R=", rotation(g), ", t=", translation(g), ")")
 
 
-# Connection between groups and algebra
+# Maps
 
 V(θ::AbstractVector) = left_jacobian(so{3}(θ))
 
