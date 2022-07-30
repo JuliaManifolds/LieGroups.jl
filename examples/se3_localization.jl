@@ -3,8 +3,9 @@
 using LieGroups
 using LinearAlgebra
 using Plots
+plotly()
 
-const NUMBER_OF_LMKS_TO_MEASURE = 5
+const NUMBER_OF_LMKS_TO_MEASURE = 3
 const STEPS = 10
 const LANDMARKS = [2.0  0.0  0.0;
                    3.0 -1.0 -1.0;
@@ -36,6 +37,7 @@ function main()
 
     # START TEMPORAL LOOP
 
+    Xs = []
     for _ in 1:STEPS
         # I. Simulation
         u_noisy = u_nom + u_σs .* ϵ(dof(SE{3}))              # simulate noise
@@ -101,9 +103,18 @@ function main()
         @show log(X)
         @show log(X_unfiltered)
         println("========================================")
+        push!(Xs, X)
     end
+    return Xs
 end
 
-main()
+Xs = main()
+
+traj = zeros(STEPS+1, dim(SE{3}))
+traj[1, :] = [2., 0., 0.]
+for i in 1:STEPS
+    traj[i+1, :] .= Xs[i] ⋉ traj[i, :]
+end
 
 scatter(LANDMARKS[:,1], LANDMARKS[:,2], LANDMARKS[:,3], markercolor=:red)
+scatter!(traj[:, 1], traj[:, 2], traj[:, 3])
