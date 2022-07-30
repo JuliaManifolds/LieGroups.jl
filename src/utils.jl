@@ -1,5 +1,3 @@
-isskewsymmetric(A::AbstractMatrix) = A' == -A
-
 function skewsymmetric(x::AbstractVector)
     N = length(x)
     if N == 2
@@ -21,6 +19,14 @@ function skewsymmetric(x::AbstractVector)
         throw(ArgumentError("not support."))
     end
 end
+
+is_dof(::Type{T}, d::Int) where {T} = dof(T) == d
+is_dim(::Type{T}, d::Int) where {T} = dim(T) == d
+isskewsymmetric(A::AbstractMatrix) = A' == -A
+
+check_dof(::Type{T}, d::Int) where {T} = @assert is_dof(T, d)
+check_dim(::Type{T}, d::Int) where {T} = @assert is_dim(T, d)
+check_skewsymmetric(X::AbstractMatrix)  = @assert isskewsymmetric(X)
 
 euler_axis(R::AbstractArray) = real.(eigvecs(R)[:, size(R, 1)])
 

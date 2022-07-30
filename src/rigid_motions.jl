@@ -8,47 +8,58 @@ dim(::SpecialEuclideanAlgebra{N}) where {N} = N
 dof(::Type{<:SpecialEuclideanAlgebra{N}}) where {N} = sum(1:N)
 dof(::SpecialEuclideanAlgebra{N}) where {N} = sum(1:N)
 
-struct se{N,V} <: SpecialEuclideanAlgebra{N}
-    ρ::V
+struct se{N,T,S} <: SpecialEuclideanAlgebra{N}
+    ρ::S
+    θ::T
 
-    function se{N}(x::T) where {N,T<:AbstractVector}
-        @assert check_dof(se{N}, length(x))
-        return new{N,T}(x)
+    function se{N}(ρ::T, θ::S) where {N,T<:AbstractVector,S<:AbstractVector}
+        check_dof(so{N}, length(θ))
+        check_dim(se{N}, length(ρ))
+        return new{N,S,T}(ρ, θ)
     end
     
-    function se{N}(X::T) where {N,T<:AbstractMatrix}
-        @assert size(X, 1) == N + 1
-        @assert isskewsymmetric(X[1:N, 1:N])
-        return new{N,T}(X)
+    function se{N}(ρ::T, θ::S) where {N,T<:AbstractVector,S<:AbstractMatrix}
+        check_dim(se{N}, size(θ, 1))
+        check_skewsymmetric(θ)
+        check_dim(se{N}, length(ρ))
+        return new{N,S,T}(ρ, θ)
     end
 end
 
-check_dof(::Type{se{N}}, d::Int) where {N} = d == dof(SE{N})
+se{N}(x::AbstractVector) where {N} = se{N}(x[1:N], x[N+1:end])
+se{N}(X::AbstractMatrix) where {N} = se{N}(X[1:N, end], X[1:N, 1:N])
 
-(==)(alg1::se{N}, alg2::se{N}) where {N} = alg1.ρ == alg2.ρ
-Base.isapprox(alg1::se{N}, alg2::se{N}) where {N} = isapprox(alg1.ρ, alg2.ρ)
+Base.angle(alg::se{N}) where {N} = alg.θ
+translation(alg::se{N}) where {N} = alg.ρ
+
+(==)(alg1::se{N}, alg2::se{N}) where {N} = alg1.ρ == alg2.ρ && alg1.θ == alg2.θ
+Base.isapprox(alg1::se{N}, alg2::se{N}) where {N} = alg1.ρ ≈ alg2.ρ && alg1.θ ≈ alg2.θ
 
 identity(alg::se{N,T}) where {N,T<:AbstractVector} =
-    se{N}(fill!(similar(alg.ρ), 0))
+    se{N}(fill!(similar(alg.ρ), 0), fill!(similar(alg.θ), 0))
 
-inv(alg::se{N,T}) where {N,T<:AbstractVector} = se{N}(-alg.ρ)
+inv(alg::se{N,T}) where {N,T<:AbstractVector} = se{N}(-translation(alg), -angle(alg))
 
-(+)(alg1::se{N}, alg2::se{N}) where {N} = se{N}(alg1.ρ + alg2.ρ)
+(+)(alg1::se{N}, alg2::se{N}) where {N} = se{N}(alg1.ρ + alg2.ρ, angle(alg1) + angle(alg2))
 
-function Base.show(io::IO, alg::se{3})
-    print(io, "se{3}(x=", alg.ρ[1], ", y=", alg.ρ[2], ", z=", alg.ρ[3])
-    print(io, ", θ_x=", alg.ρ[4], ", θ_y=", alg.ρ[5], ", θ_z=", alg.ρ[6], ")")
-end
+∧(alg::se{N,T}) where {N,T<:AbstractVector} = se{N}(∧(se{N}, translation(alg), angle(alg)))
+∧(alg::se{N,T}) where {N,T<:AbstractMatrix} = alg
 
-function left_jacobian(alg::se{3})
-    ρ, θ = alg.ρ[1:3], alg.ρ[4:end]
-    J_l = left_jacobian(so{3}(θ))
+∨(alg::se{N,T}) where {N,T<:AbstractVector} = alg
+∨(alg::se{N,T}) where {N,T<:AbstractMatrix} = se{N}(∨(se{N}, translation(alg), angle(alg)))
+
+Base.show(io::IO, alg::se{N}) where {N} =
+    print(io, "se{$N}(ρ=", translation(alg), ", θ=", angle(alg), ")")
+
+function left_jacobian(alg::se{N}) where {N}
+    ρ, θ = translation(alg), angle(alg)
+    J_l = left_jacobian(so{N}(θ))
     z = fill!(similar(J_l), 0)
     return [J_l Q(ρ, θ);
               z     J_l]
 end
 
-right_jacobian(alg::se{3}) = left_jacobian(se{3}(-alg.ρ))
+right_jacobian(alg::se{N}) where {N} = left_jacobian(se{N}(-translation(alg), -angle(alg)))
 
 function Q(ρ::AbstractVector, θ::AbstractVector)
     θ² = sum(abs2, θ)
@@ -158,22 +169,12 @@ jacobian(::typeof(⊕), g::SE{N}, alg::se{N}) where {N} =
 
 # Array Interfaces
 
-function ∧(::Type{se{N}}, alg::AbstractVector{T}) where {N,T}
-    @assert check_dof(se{N}, length(alg))
-
-    p = alg[1:N]
-    Ω = ∧(so{N}, alg[N+1:end])
-    z = zeros(T, 1, N)
-    return [Ω p;
-            z 0]
+function ∧(::Type{se{N}}, ρ::AbstractVector{T}, θ::AbstractVector{T}) where {N,T}
+    check_dim(se{N}, length(ρ))
+    return ρ, ∧(so{N}, θ)
 end
 
-function ∨(::Type{se{N}}, alg::AbstractMatrix) where {N}
-    d = size(alg, 1) - 1
-    @assert check_dof(se{N}, sum(1:d))
-    p, R = alg[1:N, N], alg[1:N, 1:N]
-    return [p..., ∨(so{N}, R)...]
-end
+∨(::Type{se{N}}, ρ::AbstractVector, Θ::AbstractMatrix) where {N} = ρ, ∨(so{N}, Θ)
 
 Base.show(io::IO, g::SE{N}) where {N} =
     print(io, "SE{$N}(R=", rotation(g), ", t=", translation(g), ")")
@@ -184,25 +185,21 @@ Base.show(io::IO, g::SE{N}) where {N} =
 V(θ::AbstractVector) = left_jacobian(so{3}(θ))
 
 function Base.exp(alg::se{N,T}) where {N,T<:AbstractMatrix}
-    alg = se{N}(∨(se{N}, alg.ρ))
-    return exp(alg)
+    ρ, θ = translation(alg), angle(alg)
+    ρ, θ = ∨(se{N}, ρ, θ)
+    return exp(se{N}(ρ, θ))
 end
 
 function Base.exp(alg::se{N,T}) where {N,T<:AbstractVector}
-    ρ, θ = alg.ρ[1:N], alg.ρ[N+1:end]
-    R = Matrix(exp(so{N}(θ)))
-    ρ = V(θ) * ρ
-    z = fill!(similar(ρ, 1, N), 0)
-    return SE{N}(
-        [R ρ;
-         z 1]
-    )
+    ρ, θ = translation(alg), angle(alg)
+    R = rotation(exp(so{N}(θ)))
+    t = V(θ) * ρ
+    return SE{N}(R, t)
 end
 
 function Base.log(g::SE{N}) where {N}
     R, t = rotation(g), translation(g)
-    so = log(SO{N}(R))
-    θ = so.θ
-    p = inv(V(θ)) * t
-    return se{N}([p..., θ...])
+    θ = angle(log(SO{N}(R)))
+    ρ = inv(V(θ)) * t
+    return se{N}(ρ, θ)
 end

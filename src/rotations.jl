@@ -12,18 +12,18 @@ struct so{N,V} <: AbstractRotationAlgebra{N}
     θ::V
 
     function so{N}(x::T) where {N,T<:AbstractVector}
-        @assert check_dof(so{N}, length(x))
+        check_dof(so{N}, length(x))
         return new{N,T}(x)
     end
     
     function so{N}(X::T) where {N,T<:AbstractMatrix}
-        @assert isskewsymmetric(X)
-        @assert size(X, 1) == N
+        check_dim(so{N}, size(X, 1))
+        check_skewsymmetric(X)
         return new{N,T}(X)
     end
 end
 
-check_dof(::Type{so{N}}, d::Int) where {N} = d == dof(SO{N})
+Base.angle(alg::so) = alg.θ
 
 (==)(alg1::so{N}, alg2::so{N}) where {N} = alg1.θ == alg2.θ
 Base.isapprox(alg1::so{N}, alg2::so{N}) where {N} = isapprox(alg1.θ, alg2.θ)
@@ -78,7 +78,7 @@ struct SO{N,T} <: AbstractRotationGroup{N}
     end
 end
 
-rotation(g::SO) = g.R
+rotation(g::SO) = Array(g.R)
 
 identity(::SO{N}) where {N} = SO{N}(I(N))
 identity(::Type{SO{N}}) where {N} = SO{N}(I(N))
@@ -102,18 +102,17 @@ Base.show(io::IO, g::SO{N}) where {N} = print(io, "SO{$N}(R=", rotation(g), ")")
 
 # Array Interfaces
 
-function ∧(::Type{so{N}}, alg::AbstractVector) where {N}
-    @assert check_dof(so{N}, length(alg))
-    return skewsymmetric(alg)
+function ∧(::Type{so{N}}, θ::AbstractVector) where {N}
+    check_dof(so{N}, length(θ))
+    return skewsymmetric(θ)
 end
 
-function ∨(::Type{so{N}}, alg::AbstractMatrix) where {N}
-    d = size(alg, 1)
-    @assert N == d
+function ∨(::Type{so{N}}, Θ::AbstractMatrix) where {N}
+    check_dim(so{N}, size(Θ, 1))
     if N == 2
-        return [alg[2, 1]]
+        return [Θ[2, 1]]
     elseif N == 3
-        return [alg[3, 2], alg[1, 3], alg[2, 1]]
+        return [Θ[3, 2], Θ[1, 3], Θ[2, 1]]
     else
         throw(ArgumentError("not support."))
     end
