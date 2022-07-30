@@ -1,24 +1,29 @@
 # Algebra Interfaces
 
-abstract type AbstractRotationAlgebra <: AbstractLieAlgebra end
+abstract type AbstractRotationAlgebra{N} <: AbstractLieAlgebra end
 
-struct so{N,V} <: AbstractLieAlgebra
+dim(::Type{<:AbstractRotationAlgebra{N}}) where {N} = N
+dim(::AbstractRotationAlgebra{N}) where {N} = N
+
+dof(::Type{<:AbstractRotationAlgebra{N}}) where {N} = sum(1:(N-1))
+dof(::AbstractRotationAlgebra{N}) where {N} = sum(1:(N-1))
+
+struct so{N,V} <: AbstractRotationAlgebra{N}
     θ::V
 
     function so{N}(x::T) where {N,T<:AbstractVector}
-        d = length(x)
-        @assert check_dim(so{N}, d)
+        check_dof(so{N}, length(x))
         return new{N,T}(x)
     end
     
     function so{N}(X::T) where {N,T<:AbstractMatrix}
-        @assert isskewsymmetric(X)
-        @assert size(X, 1) == N
+        check_dim(so{N}, size(X, 1))
+        check_skewsymmetric(X)
         return new{N,T}(X)
     end
 end
 
-check_dim(::Type{so{N}}, d::Int) where {N} = d == N*(N-1)/2
+Base.angle(alg::so) = alg.θ
 
 (==)(alg1::so{N}, alg2::so{N}) where {N} = alg1.θ == alg2.θ
 Base.isapprox(alg1::so{N}, alg2::so{N}) where {N} = isapprox(alg1.θ, alg2.θ)
@@ -42,84 +47,80 @@ Base.Vector(alg::so{N,T}) where {N,T<:AbstractMatrix} = ∨(so{N}, alg.θ)
 Base.Matrix(alg::so{N,T}) where {N,T<:AbstractVector} = ∧(so{N}, alg.θ)
 Base.Matrix(alg::so{N,T}) where {N,T<:AbstractMatrix} = alg.θ
 
+function left_jacobian(alg::so{3})
+    θ² = sum(abs2, alg.θ)
+    θ = √θ²
+    W = skewsymmetric(alg.θ)
+    M1 = (1. - cos(θ))/(θ²) * W
+    M2 = (θ - sin(θ))/(θ² * θ) * W^2
+    return I(3) + M1 + M2
+end
+
+right_jacobian(alg::so{3}) = left_jacobian(alg)'
+
 
 # Group Interfaces
 
-abstract type AbstractRotationGroup <: AbstractLieGroup end
+abstract type AbstractRotationGroup{N} <: AbstractLieGroup end
 
-struct SO{N,T} <: AbstractRotationGroup
-    A::T
+dim(::Type{<:AbstractRotationGroup{N}}) where {N} = N
+dim(::AbstractRotationGroup{N}) where {N} = N
 
-    function SO{N}(X::T) where {N,T<:AbstractMatrix}
-        @assert size(X, 1) == N
-        return new{N,T}(X)
+dof(::Type{<:AbstractRotationGroup{N}}) where {N} = sum(1:(N-1))
+dof(::AbstractRotationGroup{N}) where {N} = sum(1:(N-1))
+
+struct SO{N,T} <: AbstractRotationGroup{N}
+    R::T
+
+    function SO{N}(R::T) where {N,T<:AbstractMatrix}
+        @assert size(R, 1) == N
+        return new{N,T}(R)
     end
 end
+
+rotation(g::SO) = Array(g.R)
 
 identity(::SO{N}) where {N} = SO{N}(I(N))
 identity(::Type{SO{N}}) where {N} = SO{N}(I(N))
 
-inv(g::SO{N}) where {N} = SO{N}(inv(g.A))
+inv(g::SO{N}) where {N} = SO{N}(inv(rotation(g)))
 
-function (*)(::SO{M}, ::SO{N}) where {M,N}
+(*)(::SO{M}, ::SO{N}) where {M,N} =
     throw(ArgumentError("* operation for SO{$M} and SO{$N} group is not defined."))
-end
 
-(*)(g1::SO{N}, g2::SO{N}) where {N} = SO{N}(g1.A * g2.A)
+(*)(g1::SO{N}, g2::SO{N}) where {N} = SO{N}(rotation(g1) * rotation(g2))
 
-(==)(g1::SO{N}, g2::SO{N}) where {N} = g1.A == g2.A
-Base.isapprox(g1::SO{N}, g2::SO{N}) where {N} = isapprox(g1.A, g2.A)
+(==)(g1::SO{N}, g2::SO{N}) where {N} = Matrix(g1) == Matrix(g2)
+Base.isapprox(g1::SO{N}, g2::SO{N}) where {N} = isapprox(Matrix(g1), Matrix(g2))
 
-Base.Matrix(g::SO) = g.A
+Base.Matrix(g::SO) = rotation(g)
 
-function Base.show(io::IO, g::SO{N}) where N
-    print(io, "SO{$N}(A=", g.A, ")")
-end
+Base.show(io::IO, g::SO{N}) where {N} = print(io, "SO{$N}(R=", rotation(g), ")")
 
 ⋉(g::SO{N}, x::T) where {N,T<:AbstractVector} = Matrix(g) * x
 
 
 # Array Interfaces
 
-function ∧(::Type{so{N}}, alg::AbstractVector) where {N}
-    d = length(alg)
-    @assert check_dim(so{N}, d)
-    if N == 2
-        E1 = [0 -1;
-              1  0]
-        Ω = alg[1]*E1
-    elseif N == 3
-        E1 = [0 0  0;
-              0 0 -1;
-              0 1  0]
-        E2 = [ 0 0 1;
-               0 0 0;
-              -1 0 0]
-        E3 = [0 -1 0;
-              1  0 0;
-              0  0 0]
-        Ω = alg[1]*E1 + alg[2]*E2 + alg[3]*E3
-    else
-        throw(ArgumentError("not support."))
-    end
-    return Ω
+function ∧(::Type{so{N}}, θ::AbstractVector) where {N}
+    check_dof(so{N}, length(θ))
+    return skewsymmetric(θ)
 end
 
-function ∨(::Type{so{N}}, alg::AbstractMatrix) where {N}
-    d = size(alg, 1)
-    @assert N == d
+function ∨(::Type{so{N}}, Θ::AbstractMatrix) where {N}
+    check_dim(so{N}, size(Θ, 1))
     if N == 2
-        return [alg[2, 1]]
+        return [Θ[2, 1]]
     elseif N == 3
-        return [alg[3, 2], alg[1, 3], alg[2, 1]]
+        return [Θ[3, 2], Θ[1, 3], Θ[2, 1]]
     else
         throw(ArgumentError("not support."))
     end
 end
 
 
-# Connection between groups and algebra
+# Maps
 
 Base.exp(alg::so{N,T}) where {N,T<:AbstractMatrix} = SO{N}(exp(alg.θ))
 Base.exp(alg::so{N,T}) where {N,T<:AbstractVector} = SO{N}(exp(∧(so{N}, alg.θ)))
-Base.log(g::SO{N}) where {N} = so{N}(∨(so{N}, log(g.A)))
+Base.log(g::SO{N}) where {N} = so{N}(∨(so{N}, log(rotation(g))))
