@@ -134,7 +134,7 @@
 
         # inverse composition
         @test inv(g1 * g3) == inv(g3) * inv(g1)
-        @test inv(g1 * g3) == SO{3}(inv(g3.A)) * SO{3}(inv(g1.A))
+        @test inv(g1 * g3) == SO{3}(inv(Matrix(g3))) * SO{3}(inv(Matrix(g1)))
 
         # matrix representation
         @test Matrix(g1) == [cos(θ) -sin(θ) 0;

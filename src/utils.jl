@@ -1,6 +1,6 @@
 function skewsymmetric(x::AbstractVector)
     N = length(x)
-    if N == 2
+    if N == 1
         E1 = [0 -1;
               1  0]
         return x[1]*E1
@@ -16,7 +16,8 @@ function skewsymmetric(x::AbstractVector)
               0  0 0]
         return x[1]*E1 + x[2]*E2 + x[3]*E3
     else
-        throw(ArgumentError("not support."))
+        msg = "skewsymmetric for N more than 3 is not supported while received N=$N."
+        throw(ArgumentError(msg))
     end
 end
 
