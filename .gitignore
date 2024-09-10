@@ -1,0 +1,14 @@
+*.jl.cov
+*.jl.*.cov
+*.jl.mem
+docs/.CondaPkg
+docs/build/
+docs/src/contributing.md
+docs/src/news.md
+docs/src/tutorials/*/
+docs/src/tutorials/*.md
+Manifest.toml
+temp
+tutorials/*.ipynb
+tutorials/*_files/*
+tutorials/_freeze

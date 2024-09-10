@@ -1,0 +1,19 @@
+{
+    "creators": [
+        {
+            "affiliation": "NTNU Trondheim",
+            "name": "Bergmann, Ronny",
+            "orcid": "0000-0001-8342-7218"
+        }
+    ],
+    "description": "LieGroups.jl provides a library of Lie groups.",
+    "keywords": [
+        "Riemannian manifolds",
+        "Lie groups",
+        "Julia",
+        "Programming"
+    ],
+    "license": "MIT",
+    "title": "LieGroups.jl",
+    "upload_type": "software"
+}
