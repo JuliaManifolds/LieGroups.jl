@@ -1,18 +1,19 @@
 name = "LieGroups"
 uuid = "53f20ee3-da37-474e-9588-41d6043056a5"
-authors = ["Ronny Bergmann <git@ronnybergmann.net>"]
+authors = ["Seth Axen <seth.axen@gmail.com>", "Mateusz Baran <mateuszbaran89@gmail.com>", "Ronny Bergmann <git@ronnybergmann.net>", "Olivier Verdier <olivier.verdier@gmail.com>"]
 version = "0.1.0"
-
 
 [deps]
 Manifolds = "1cead3c2-87b3-11e9-0ccd-23c62b72b94e"
+ManifoldsBase = "3362f125-f0bb-47a3-aa74-596ffd7ef2fb"
+
+[compat]
+Manifolds = "0.10"
+ManifoldsBase = "0.15.16"
 
 [extras]
 Manifolds = "1cead3c2-87b3-11e9-0ccd-23c62b72b94e"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-
-[compat]
-Manifolds = "0.10"
 
 [targets]
 test = ["Test", "Manifolds"]

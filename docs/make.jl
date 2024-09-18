@@ -73,7 +73,7 @@ end
 # (c) load necessary packages for the docs
 using Documenter
 using DocumenterCitations, DocumenterInterLinks
-using Manifolds, LieGroups
+using LieGroups
 
 # (d) add contributing.md to docs
 generated_path = joinpath(@__DIR__, "src")
@@ -111,16 +111,20 @@ makedocs(;
         assets=["assets/favicon.ico", "assets/citations.css"],
     ),
     modules=[LieGroups],
-    authors="Ronny Bergmann and contributors.",
-    sitename="Manopt.jl",
+    authors="Seth Axen, Mateusz Baran, Ronny Bergmann, Olivier Verdier, and contributors",
+    sitename="LieGroups.jl",
     pages=[
         "Home" => "index.md",
         "About" => "about.md",
         (tutorials_in_menu ? [tutorials_menu] : [])...,
-        "Lie groups" => ["List of Solvers" => "groups/index.md"],
+        "An Interface for Lie Groups" => "interface.md",
+        "Lie groups" => [
+            "List of Lie Groups" => "groups/index.md",
+            "Additive group" => "groups/additive.md",
+        ],
         "Contributing to LieGroups.jl" => "contributing.md",
         "Notation" => "notation.md",
-        "Changelog" => "changelog.md",
+        "Changelog" => "news.md",
         "References" => "references.md",
     ],
     plugins=[bib, links],
