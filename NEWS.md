@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - unreleased
 
-Everything denoted by “formerly” refers to the previous name in [`Manifolds.jl`](https://juliamanifolds.github.io/Manifolds.jl/stable/)
+Everything denoted by “formerly” refers to the previous name in [`Manifolds.jl`](https://juliamanifolds.github.io/Manifolds.jl/stable/).
 
 ### Added
 
@@ -24,5 +24,3 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
   * `AdditiveGroup` (formerly `TranslationGroup`)
 * `LieGroups.AbstractGroupOperation` as well as its concrete subtypes
   * `AdditiveGroupOperation`
-* `LieGroups.AbstractGroupVectorRepresentation` as well its concrete subtypes
-  * `LieGroups.LeftInvariantRepresentation`

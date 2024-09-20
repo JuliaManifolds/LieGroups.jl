@@ -1,4 +1,12 @@
-# LieGroups.jl (WIP)
+<div align="center">
+    <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://github.com/JuliaManifolds/Manifolds.jl/raw/master/docs/src/assets/logo_text_readme_dark.png">
+      <img alt="Manifolds.jl logo with text on the side" src="https://github.com/JuliaManifolds/Manifolds.jl/raw/master/docs/src/assets/logo_text_readme.png">
+    </picture>
+</div>
+
+
+# still work-in-progress
 
 This is a package (work-in-progress) rework the Lie group featues of [`Manifolds.jl`](https://juliamanifolds.github.io/Manifolds.jl/stable/) in a unified way.
 

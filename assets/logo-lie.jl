@@ -3,10 +3,10 @@ using Manifolds, LinearAlgebra, PGFPlotsX, Colors, Distributions, Contour, Rando
 #
 # Settings
 #
-dark_mode = false
+dark_mode = true
 
 line_offset_brightness = 0.25
-patch_opacity = 0.75
+patch_opacity = 1.0
 geo_opacity = dark_mode ? 1.0 : 1.0
 geo_line_width = 20
 mesh_line_width = 5
@@ -68,10 +68,13 @@ function plot_patch!(ax, M, x, B, r, θs; options=Dict())
     return ax
 end
 
-function plot_geodesic!(ax, M, x, y; n=100, options=Dict())
+# skip before end removed end-(m-1)...end-1, so m elements
+function plot_geodesic!(ax, M, x, y; n=100, m=0, options=Dict())
     γ = shortest_geodesic(M, x, y)
     T = range(0, 1; length=n)
-    push!(ax, Plot3(options, Coordinates(Tuple.(γ.(T)))))
+    pts = γ.(T)
+    cut = [pts[1:(end - (m + 1))]..., last(pts)]
+    push!(ax, Plot3(options, Coordinates(Tuple.(cut))))
     return ax
 end
 
@@ -162,16 +165,18 @@ options = @pgf {
     color = dark_mode ? "white" : "black",
     "-{Stealth[length=6cm,sharp,bend=-9]}", #length=8mm,width=2mm,inset=3mm
 }
-plot_geodesic!(tp, S, base_points[1], base_points[2]; options=options)
-plot_geodesic!(tp, S, base_points[3], base_points[1]; options=options)
-plot_geodesic!(tp, S, base_points[2], base_points[3]; options=options)
+plot_geodesic!(tp, S, base_points[1], base_points[2]; m=25, options=options)
+plot_geodesic!(tp, S, base_points[3], base_points[1]; m=25, options=options)
+plot_geodesic!(tp, S, base_points[2], base_points[3]; m=25, options=options)
 
+#=
 push!(
     tp,
-    raw"\node [scale=40, color=" *
+    raw"\node [scale=50, color=" *
     "$(dark_mode ? "white" : "black")] at (0,0,0) " *
     raw"{$\circ$};",
 )
+=#
 
 #
 # Export Logo.
