@@ -1,7 +1,7 @@
 <div align="center">
     <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://github.com/JuliaManifolds/Manifolds.jl/raw/master/docs/src/assets/logo_text_readme_dark.png">
-      <img alt="Manifolds.jl logo with text on the side" src="https://github.com/JuliaManifolds/Manifolds.jl/raw/master/docs/src/assets/logo_text_readme.png">
+        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/JuliaManifolds/LieGroups.jl/main/docs/src/assets/logo_text_readme_dark.png">
+      <img alt="Manifolds.jl logo with text on the side" src="https://raw.githubusercontent.com/JuliaManifolds/LieGroups.jl//main/docs/src/assets/logo_text_readme.png">
     </picture>
 </div>
 
