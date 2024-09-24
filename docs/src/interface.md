@@ -24,6 +24,7 @@ LieGroups.HasRightInvariantMetric
 ## Functions on Lie Groups
 
 ```@docs
+base_manifold
 compose
 compose!
 compose_diff_left
@@ -36,6 +37,8 @@ compose_inv_right
 compose_inv_right!
 conjugate
 conjugate!
+exp
+exp!
 identity_element
 identity_element!
 is_identity
@@ -43,6 +46,8 @@ inv
 inv!
 inv_diff
 inv_diff!
+log
+log!
 ```
 
 ## Actions on Lie Groups

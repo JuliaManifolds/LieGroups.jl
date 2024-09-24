@@ -1,7 +1,5 @@
 module LieGroups
 
-import Base: inv
-
 using ManifoldsBase, Manifolds
 
 include("documentation_glossary.jl")
@@ -17,6 +15,7 @@ export AdditiveGroupOperation
 
 export AdditiveGroup
 
+export base_manifold
 export compose,
     compose!,
     compose_diff_left,
@@ -29,7 +28,7 @@ export compose,
     compose_inv_right!,
     conjugate,
     conjugate!
+export exp, exp!, log, log!
 export identity_element, identity_element!, is_identity, inv, inv!, inv_diff, inv_diff!
 export Lie_bracket, Lie_bracket!
-
 end # module LieGroups

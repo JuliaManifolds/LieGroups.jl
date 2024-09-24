@@ -251,6 +251,74 @@ function conjugate!(::LieGroup, k, g, h)
     return k
 end
 
+_doc_exp = """
+    exp(G::LieGroup, g, X, t::Number=1)
+    exp!(G::LieGroup, h, g, X, t::Number=1)
+
+Compute the Lie group exponential map given by
+
+```math
+$(_tex(:exp))_g X = g$(_math(:op))$(_tex(:exp))_{$(_math(:G))}(X)
+```
+
+where `X` can be scaled by `t`, the computation can be performed in-place of `h`,
+and ``$(_tex(:exp))_{$(_math(:G))}`` denotes the  [Lie group exponential function](@ref exp(::LieGroup, ::Identity, :Any)).
+
+!!! note
+    If `g` is the [`Identity`](@ref) the [Lie group exponential function](@ref exp(::LieGroup, ::Identity, :Any)) is computed directly.
+    Implementing the Lie group exponential function introduces a default implementation for this function.
+
+!!! note
+    The Lie group exponential map is usually different from the exponential map with respect
+    to the metric of the underlying Riemannian manifold ``$(_math(:M))``.
+    To access the (Riemannian) exponential map, use `exp(`[`manifold`](@ref)`G, g, X)`.
+"""
+
+@doc "$_doc_exp"
+function ManifoldsBase.exp(G::LieGroup, g, X, t::Number=1)
+    h = allocate_result(G, exp, g)
+    exp!(G, h, g, X, t)
+    return h
+end
+
+@doc "$_doc_exp"
+function ManifoldsBase.exp!(G::LieGroup, h, g, X, t::Number=1)
+    exp!(G, h, Identity(G), X, t)
+    compose!(G, h, g, h)
+    return h
+end
+
+_doc_exp_id = """
+    exp(G::LieGroup, e::Identity, X)
+    exp!(G::LieGroup, h, e::Identity, X)
+
+Compute the (Lie group) exponential function
+
+```math
+$(_tex(:exp))_{$(_math(:G))}: $(_math(:𝔤)) → $(_math(:G)),$(_tex(:qquad)) $(_tex(:exp))_{$(_math(:G))}(X) = γ_X(1),
+```
+
+where ``γ_X`` is the unique solution of the initial value problem
+
+```math
+γ(0) = $(_math(:e)), $(_tex(:quad)) γ'(t) = γ(t)$(_math(:act))X.
+```
+
+The computation can be performed in-place of `h`.
+
+See also [HilgertNeeb:2012; Definition 9.2.2](@cite).
+"""
+
+@doc "$(_doc_exp_id)"
+function ManifoldsBase.exp(G::LieGroup, e::Identity, X, t::Number=1)
+    h = identity_element(G) # allocate
+    exp!(G, h, e, X, t)
+    return h
+end
+
+@doc "$(_doc_exp_id)"
+ManifoldsBase.exp!(::LieGroup, h, ::Identity, X, ::Number=1)
+
 function is_identity end
 @doc """
     is_identity(G::LieGroup, q; kwargs)
@@ -346,3 +414,65 @@ end
 function Lie_bracket! end
 @doc "$(_doc_Lie_bracket)"
 Lie_bracket!(𝔤::LieAlgebra, Z, X, Y)
+
+_doc_log = """
+    log(G::LieGroup, g, h)
+    log!(G::LieGroup, X, g, h)
+
+Compute the Lie group logarithmic map
+
+```math
+$(_tex(:log))_g h = $(_math(:op))$(_tex(:log))_{$(_math(:G))}(g^{-1}$(_math(:op))h)
+```
+
+where ``$(_tex(:log))_{$(_math(:G))}`` denotes the [Lie group logarithmic function](@ref log(::LieGroup, ::Identity, :Any))
+The computation can be performed in-place of `X`.
+
+!!! note
+    If `g` is the [`Identity`](@ref) the [Lie group logarithmic function](@ref log(::LieGroup, ::Identity, :Any)) is computed directly.
+    Implementing the Lie group logarithmic function introduces a default implementation for this function.
+
+!!! note
+    The Lie group logarithmic map is usually different from the logarithmic map with respect
+    to the metric of the underlying Riemannian manifold ``$(_math(:M))``.
+    To access the (Riemannian) logarithmic map, use `log(`[`manifold`](@ref)`G, g, h)`.
+"""
+
+@doc "$_doc_log"
+function ManifoldsBase.log(G::LieGroup, g, h)
+    X = allocate_result(G, log, g, h)
+    log!(G, X, g, h)
+    return X
+end
+
+@doc "$_doc_log"
+function ManifoldsBase.log!(G::LieGroup, X, g, h)
+    log!(G, X, Identity(G), compose(G, inv(G, g), h))
+    return h
+end
+
+_doc_log_id = """
+    log(G::LieGroup, e::Identity, g)
+    log!(G::LieGroup, X, e::Identity, g)
+
+Compute the (Lie group) logarithmic function ``$(_tex(:log))_{$(_math(:G))}: $(_math(:G)) → $(_math(:𝔤))``,
+which is the inverse of the [Lie group exponential function](@ref exp(::LieGroup, ::Identity, :Any))
+The compuation can be performed in-place of `X`.
+"""
+
+@doc "$(_doc_log_id)"
+function ManifoldsBase.log(G::LieGroup, e::Identity, g)
+    X = allocate_result(G, log, g)
+    log!(G, X, e, g)
+    return X
+end
+
+@doc "$(_doc_log_id)"
+ManifoldsBase.log!(::LieGroup, X, ::Identity, g)
+
+@doc """
+    base_manifold(G::LieGroup)
+
+Return the manifold stored within the [`LieGroup`](@ref) `G`.
+"""
+Manifolds.base_manifold(G::LieGroup) = G.manifold

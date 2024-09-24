@@ -57,7 +57,11 @@ define!(:LaTeX, :Big, raw"\Big")
 define!(:LaTeX, :Bigl, raw"\Bigl")
 define!(:LaTeX, :Bigr, raw"\Bigr")
 define!(:LaTeX, :Cal, (letter) -> raw"\mathcal " * "$letter")
+define!(:LaTeX, :exp, raw"\exp")
 define!(:LaTeX, :Frak, (letter) -> raw"\mathfrak " * "$letter")
+define!(:LaTeX, :log, raw"\log")
+define!(:LaTeX, :qquad, raw"\qquad")
+define!(:LaTeX, :quad, raw"\quad")
 define!(:LaTeX, :rm, (letter) -> raw"\mathrm " * "$letter")
 #
 # ---
@@ -65,6 +69,9 @@ define!(:LaTeX, :rm, (letter) -> raw"\mathrm " * "$letter")
 # :symbol the symbol,
 # :description the description
 _math(args...; kwargs...) = glossary(:Math, args...; kwargs...)
+define!(:Math, :GroupAction, :symbol, "⋅")
+define!(:Math, :GroupAction, :descrption, "a Lie Group Action")
+define!(:Math, :act, _math(:GroupAction, :symbol))
 define!(:Math, :GroupOp, :symbol, "∘")
 define!(:Math, :GroupOp, :descrption, "the Lie Group operation")
 define!(:Math, :op, _math(:GroupOp, :symbol))
