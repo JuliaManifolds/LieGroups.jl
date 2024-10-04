@@ -24,39 +24,65 @@ LieGroups.HasRightInvariantMetric
 ## Functions on Lie Groups
 
 ```@docs
+adjoint
+adjoint!
 base_manifold
 compose
 compose!
-compose_diff_left
-compose_diff_left!
-compose_diff_right
-compose_diff_right!
-compose_inv_left
-compose_inv_left!
-compose_inv_right
-compose_inv_right!
+diff_left_compose
+diff_left_compose!
+diff_right_compose
+diff_right_compose!
+inv_left_compose
+inv_left_compose!
+inv_right_compose
+inv_right_compose!
 conjugate
 conjugate!
+diff_conjugate
+diff_conjugate!
 exp
 exp!
 identity_element
 identity_element!
 is_identity
-inv
+inv(::LieGroup, ::Any)
 inv!
-inv_diff
-inv_diff!
+diff_inv
+diff_inv!
 log
 log!
 ```
 
-## Actions on Lie Groups
+## Actions on Lie groups
+
+```@autodocs
+Modules = [LieGroups]
+Pages = ["group_action_interface.jl"]
+Order = [:type]
+```
+
+### Functions for Lie group actions
+
+```@autodocs
+Modules = [LieGroups]
+Pages = ["group_action_interface.jl"]
+Order = [:function]
+```
+
+### Specific Lie group actions
+
+```@autodocs
+Modules = [LieGroups]
+Pages = ["group_operation_action.jl"]
+Order = [:type, :function]
+```
 
 ## Functions on Lie Algebras
 
 ```@docs
-Lie_bracket
-Lie_bracket!
+lie_bracket
+lie_bracket!
 ```
 
 ## Specific Group Operations

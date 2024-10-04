@@ -56,6 +56,7 @@ define!(:LaTeX, :bigr, raw"\bigr")
 define!(:LaTeX, :Big, raw"\Big")
 define!(:LaTeX, :Bigl, raw"\Bigl")
 define!(:LaTeX, :Bigr, raw"\Bigr")
+define!(:LaTeX, :def, raw"\coloneqq")
 define!(:LaTeX, :Cal, (letter) -> raw"\mathcal " * "$letter")
 define!(:LaTeX, :exp, raw"\exp")
 define!(:LaTeX, :Frak, (letter) -> raw"\mathfrak " * "$letter")
@@ -69,12 +70,15 @@ define!(:LaTeX, :rm, (letter) -> raw"\mathrm " * "$letter")
 # :symbol the symbol,
 # :description the description
 _math(args...; kwargs...) = glossary(:Math, args...; kwargs...)
+define!(:Math, :Adjoint, :symbol, raw"\mathrm{Ad}")
+define!(:Math, :Adjoint, :descrption, "the adjoint operation")
+define!(:Math, :Ad, _math(:Adjoint, :symbol))
 define!(:Math, :GroupAction, :symbol, "⋅")
 define!(:Math, :GroupAction, :descrption, "a Lie Group Action")
 define!(:Math, :act, _math(:GroupAction, :symbol))
 define!(:Math, :GroupOp, :symbol, "∘")
 define!(:Math, :GroupOp, :descrption, "the Lie Group operation")
-define!(:Math, :op, _math(:GroupOp, :symbol))
+define!(:Math, :∘, _math(:GroupOp, :symbol))
 define!(:Math, :e, _tex(:rm, "e"))
 define!(:Math, :LieAlgebra, :symbol, (; g="g") -> _tex(:Frak, g))
 define!(:Math, :LieAlgebra, :descrption, "the ie Algebra")
@@ -98,3 +102,37 @@ define!(
     "[`AbstractManifold`](@extref `ManifoldsBase.AbstractManifold`)",
 )
 define!(:Link, :TangentSpace, "[`TangentSpace`](@extref `ManifoldsBase.TangentSpace`)")
+
+#
+# ---
+# Links
+# Collect certain formulae, short texts or even admonitions
+_note(args...; kwargs...) = glossary(:Note, args...; kwargs...)
+
+define!(
+    :Note,
+    :LeftInverseActionIsRight,
+    """
+    ```math
+    τ_g(τ_h(p))
+    = σ^{$(_tex(:rm,"L"))}_{g^{-1}}(σ^{$(_tex(:rm,"L"))}_{h^{-1}}(p))
+    = σ^{$(_tex(:rm,"L"))}_{g^{-1}h^{-1}}(p)
+    = σ^{$(_tex(:rm,"L"))}_{(hg)^{-1}}(p)
+    τ_{hg}(p).
+    ```
+    """,
+)
+
+define!(
+    :Note,
+    :RightInverseActionIsLeft,
+    """
+    ```math
+    τ_g(τ_h(p))
+    = σ^{$(_tex(:rm,"R"))}_{g^{-1}}(σ^{$(_tex(:rm,"R"))}_{h^{-1}}(p))
+    = σ^{$(_tex(:rm,"R"))}_{h^{-1}g^{-1}}(p)
+    = σ^{$(_tex(:rm,"R"))}_{(gh)^{-1}}(p)
+    τ_{gh}(p).
+    ```
+    """,
+)

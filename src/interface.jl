@@ -1,12 +1,12 @@
+#
+#
+# Generic types for the interface of a Lie group
 @doc """
-    AbstractGroupAction
+    AbstractGroupOperation
 
-Represent a type of Group action for a [`LieGroup`](@ref) ``$(_math(:G))``
-Abstract type for smooth binary operations ``$(_math(:op))`` on elements of a Lie group ``$(_math(:G))``:
-
-```math
-$(_math(:op)) : $(_math(:G)) × $(_math(:G)) → $(_math(:G))
-```
+Represent a type of group operation for a [`LieGroup`](@ref) ``$(_math(:G))``, that is a
+smooth binary operation ``$(_math(:∘)) : $(_math(:G)) × $(_math(:G)) → $(_math(:G))``
+on elements of a Lie group ``$(_math(:G))``.
 """
 abstract type AbstractGroupOperation end
 
@@ -16,15 +16,16 @@ abstract type AbstractGroupOperation end
 Represent a Lie Group ``$(_math(:G))``.
 
 A *Lie Group* ``$(_math(:G))`` is a group endowed with the structure of a manifold such that the
-group operations ``$(_math(:op)): $(_math(:G))×$(_math(:G)) → $(_math(:G))``, see [`compose`](@ref)
-and the inverse operation ``⋅^{-1}: $(_math(:G)) → $(_math(:G))``, see [`inv`](@ref) are smooth.
+group operations ``$(_math(:∘)): $(_math(:G))×$(_math(:G)) → $(_math(:G))``, see [`compose`](@ref)
+and the inverse operation ``⋅^{-1}: $(_math(:G)) → $(_math(:G))``, see [`inv`](@ref) are smooth,
+see for example [HilgertNeeb:2012; Definition 9.1.1](@cite).
 
-See for example [HilgertNeeb:2012; Definition 9.1.1](@cite).
+Lie groups are named after the Norwegian mathematician [Marius Sophus Lie](https://en.wikipedia.org/wiki/Sophus_Lie) (1842–1899).
 
 # Fields
 
 * `manifold`: an $(_link(:AbstractManifold)) ``$(_math(:M))``
-* `op`: an [`AbstractGroupOperation`](@ref) ``$(_math(:op))`` on that manifold
+* `op`: an [`AbstractGroupOperation`](@ref) ``$(_math(:∘))`` on that manifold
 
 # Constructor
 
@@ -37,6 +38,8 @@ struct LieGroup{𝔽,M<:ManifoldsBase.AbstractManifold{𝔽},O<:AbstractGroupOpe
     manifold::M
     op::O
 end
+
+Base.show(io::IO, G::LieGroup) = print(io, "LieGroup($(G.manifold), $(G.op))")
 
 @doc """
     Identity{O<:AbstractGroupOperation}
@@ -68,7 +71,7 @@ Identity(::Type{O}) where {O<:AbstractGroupOperation} = Identity{O}()
     LieAlgebra{𝔽, G} <: AbstractManifold{𝔽}
 
 Represent the Lie Algebra ``$(_math(:𝔤))``, that is a ``𝔽``vector space with an associated
-[`Lie_bracket`](@ref) ``[⋅,⋅]: $(_math(:𝔤))×$(_math(:𝔤)) → $(_math(:𝔤))`` which fulfils
+[`lie_bracket`](@ref) ``[⋅,⋅]: $(_math(:𝔤))×$(_math(:𝔤)) → $(_math(:𝔤))`` which fulfills
 
 1. ``[X,X] = 0`` for all ``X ∈ $(_math(:𝔤))``
 2. The Jacobi identity holds ``[X, [Y,Z]] = [[X,Y],Z] = [Y, [X,Z]]`` holds for all ``X, Y, Z ∈ $(_math(:𝔤))``.
@@ -130,12 +133,51 @@ end
 #
 #
 # --- Functions ---
+
+_doc_adjoint = """
+    adjoint(G::LieGroup, g X)
+    adjoint!(G::LieGroup, Y, g, X)
+
+Compute the adjoint ``$(_math(:Ad))(g): $(_math(:𝔤)) → $(_math(:𝔤))``, which is defined as
+the differential [`diff_conjugate`](@ref) of the [`conjugate`](@ref) ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1}``
+evaluated at the [`Identity`](@ref) ``h=$(_math(:e))``.
+The operation can be performed in-place of `Y`.
+
+```math
+  $(_math(:Ad))(g)[X] = D c_g($(_math(:e))) [X], $(_tex(:qquad)) X ∈ $(_math(:𝔤)).
+```
+
+see [HilgertNeeb:2012; Section 9.2.3](@cite).
+
+On matrix Lie groups the adjoint reads ``$(_math(:Ad))(g)[X] = g$(_math(:∘))X$(_math(:∘))g^{-1}``.
+"""
+
+@doc "$(_doc_adjoint)"
+function Base.adjoint(G::LieGroup, g, X)
+    Y = ManifoldsBase.allocate_result(G, adjoint, g, X)
+    return adjoint!(G, Y, g, X)
+end
+
+function adjoint! end
+@doc "$(_doc_adjoint)"
+function adjoint!(::LieGroup, Y, g, X)
+    diff_conjugate!(G, Y, g, Identity(G), X)
+    return Y
+end
+
+@doc """
+    base_manifold(G::LieGroup)
+
+Return the manifold stored within the [`LieGroup`](@ref) `G`.
+"""
+Manifolds.base_manifold(G::LieGroup) = G.manifold
+
 # compose g_1 ∘ g_2 and its frieds
 _doc_compose = """
     compose(G::LieGroup, g, h)
     compose!(G::LieGroup, k, g, h)
 
-Perform the group oepration ``g $(_math(:op)) h`` for two ``g, h ∈ $(_math(:G))``
+Perform the group oepration ``g $(_math(:∘)) h`` for two ``g, h ∈ $(_math(:G))``
 on the [`LieGroup`](@ref) `G`. This can also be done in-place of `h`.
 """
 @doc "$(_doc_compose)"
@@ -148,82 +190,82 @@ function compose! end
 @doc "$(_doc_compose)"
 compose!(::LieGroup, k, g, h)
 
-_doc_compose_diff_left = """
-    compose_diff_left(G::LieGroup, g, h, X)
-    compose_diff_left!(G::LieGroup, Y, g, h, X)
+_doc_diff_left_compose = """
+    diff_left_compose(G::LieGroup, g, h, X)
+    diff_left_compose!(G::LieGroup, Y, g, h, X)
 
-Compute the differential of the left group multiplication ``λ_g(h) = g$(_math(:op))h``,
+Compute the differential of the left group multiplication ``λ_g(h) = g$(_math(:∘))h``,
 on the [`LieGroup`](@ref) `G`, that is Compute ``Dλ_g(h)[X]``, ``X ∈ 𝔤``.
 This can be done in-place of `Y`.
 """
-@doc "$(_doc_compose_diff_left)"
-function compose_diff_left(G::LieGroup, g, h, X)
-    Y = ManifoldsBase.allocate_result(G, compose_diff_left, g, h, X)
-    return compose_diff_left!(G, Y, g, h, X)
+@doc "$(_doc_diff_left_compose)"
+function diff_left_compose(G::LieGroup, g, h, X)
+    Y = ManifoldsBase.allocate_result(G, diff_left_compose, g, h, X)
+    return diff_left_compose!(G, Y, g, h, X)
 end
 
-function compose_diff_left! end
-@doc "$(_doc_compose_diff_left)"
-compose_diff_left!(::LieGroup, Y, g, h, X)
+function diff_left_compose! end
+@doc "$(_doc_diff_left_compose)"
+diff_left_compose!(::LieGroup, Y, g, h, X)
 
-_doc_compose_diff_right = """
-    compose_diff_right(G::LieGroup, h, g, X)
-    compose_diff_right!(G::LieGroup, Y, h, g, X)
+_doc_diff_right_compose = """
+    diff_right_compose(G::LieGroup, h, g, X)
+    diff_right_compose!(G::LieGroup, Y, h, g, X)
 
-Compute the differential of the right group multiplication ``ρ_g(h) = h$(_math(:op))g``,
+Compute the differential of the right group multiplication ``ρ_g(h) = h$(_math(:∘))g``,
 on the [`LieGroup`](@ref) `G`, that is Compute ``Dρ_g(h)[X]``, ``X ∈ 𝔤``
 This can be done in-place of `Y`.
 """
-@doc "$(_doc_compose_diff_right)"
-function compose_diff_right(G::LieGroup, h, g, X)
-    Y = ManifoldsBase.allocate_result(G, compose_diff_right, h, g, X)
-    return compose_diff_right!(G, Y, h, g, X)
+@doc "$(_doc_diff_right_compose)"
+function diff_right_compose(G::LieGroup, h, g, X)
+    Y = ManifoldsBase.allocate_result(G, diff_right_compose, h, g, X)
+    return diff_right_compose!(G, Y, h, g, X)
 end
 
-function compose_diff_right! end
-@doc "$(_doc_compose_diff_right)"
-compose_diff_right!(::LieGroup, h, g1, g2)
+function diff_right_compose! end
+@doc "$(_doc_diff_right_compose)"
+diff_right_compose!(::LieGroup, h, g1, g2)
 
 # ---
-_doc_compose_inv_left = """
-    compose_inv_left(G::LieGroup, g, h)
-    compose_inv_left!(G::LieGroup, k, g, h)
+_doc_inv_left_compose = """
+    inv_left_compose(G::LieGroup, g, h)
+    inv_left_compose!(G::LieGroup, k, g, h)
 
-Compute the inverse of the left group multiplication ``λ_g(h) = g$(_math(:op))h``,
-on the [`LieGroup`](@ref) `G`, that is, compute ``λ_g^{-1}(h) = g^{-1}$(_math(:op))h``.
+Compute the inverse of the left group multiplication ``λ_g(h) = g$(_math(:∘))h``,
+on the [`LieGroup`](@ref) `G`, that is, compute ``λ_g^{-1}(h) = g^{-1}$(_math(:∘))h``.
 This can be done in-place of `k`.
 """
-@doc "$(_doc_compose_inv_left)"
-function compose_inv_left(G::LieGroup, g, h)
-    k = ManifoldsBase.allocate_result(G, compose_inv_left, g, h)
-    return compose_inv_left!(G, k, g, h)
+@doc "$(_doc_inv_left_compose)"
+function inv_left_compose(G::LieGroup, g, h)
+    k = ManifoldsBase.allocate_result(G, inv_left_compose, g, h)
+    return inv_left_compose!(G, k, g, h)
 end
 
-function compose_inv_left! end
+function inv_left_compose! end
 @doc "$(_doc_compose)"
-function compose_inv_left!(::LieGroup, k, g, h)
+function inv_left_compose!(::LieGroup, k, g, h)
     inv!(G, k, g) # g^{-1} in-place of k
     compose!(G, k, k, h) # kh inplace of k
     return k
 end
 
-_doc_compose_inv_right = """
-    compose_inv_right(G::LieGroup, h, g)
-    compose_inv_right!(G::LieGroup, k, h, g)
+_doc_inv_right_compose = """
+    inv_right_compose(G::LieGroup, h, g)
+    inv_right_compose!(G::LieGroup, k, h, g)
 
-Compute the inverse of the right group multiplication ``ρ_g(h) = h$(_math(:op))g``,
-on the [`LieGroup`](@ref) `G`, that is Compute ``ρ_g^{-1}(h) = h$(_math(:op))g^{-1}``.
+Compute the inverse of the right group multiplication ``ρ_g(h) = h$(_math(:∘))g``,
+on the [`LieGroup`](@ref) `G`, that is Compute ``ρ_g^{-1}(h) = h$(_math(:∘))g^{-1}``.
 This can be done in-place of `k`.
 """
-@doc "$(_doc_compose_inv_right)"
-function compose_inv_right(G::LieGroup, h, g)
-    k = ManifoldsBase.allocate_result(G, compose_inv_right, h, g)
-    return compose_inv_right!(G, k, h, g)
+@doc "$(_doc_inv_right_compose)"
+function inv_right_compose(G::LieGroup, h, g)
+    k = ManifoldsBase.allocate_result(G, inv_right_compose, h, g)
+    return inv_right_compose!(G, k, h, g)
 end
 
-function compose_inv_right! end
-@doc "$(_doc_compose_inv_right)"
-function compose_inv_right!(::LieGroup, k, h, g)
+function inv_right_compose! end
+@doc "$(_doc_inv_right_compose)"
+function inv_right_compose!(::LieGroup, k, h, g)
     inv!(G, k, g) # g^{-1} in-place of k
     compose!(G, k, h, h) # hk inplace of k
     return k
@@ -233,12 +275,12 @@ _doc_conjugate = """
     conjugate(G::LieGroup, g, h)
     conjugate!(G::LieGroup, k, g, h)
 
-Compute the conjugation map ``c_g: $(_math(:G)) → $(_math(:G))`` given by ``c_g(h) = g$(_math(:op))h$(_math(:op))g^{-1}``.
+Compute the conjugation map ``c_g: $(_math(:G)) → $(_math(:G))`` given by ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1}``.
 This can be done in-place of `k`.
 """
 @doc "$(_doc_conjugate)"
 function conjugate(G::LieGroup, g, h)
-    k = ManifoldsBase.allocate_result(G, compose_inv_right, h, g)
+    k = ManifoldsBase.allocate_result(G, inv_right_compose, h, g)
     return conjugate!(G, k, g, h)
 end
 
@@ -251,6 +293,27 @@ function conjugate!(::LieGroup, k, g, h)
     return k
 end
 
+_doc_diff_conjugate = """
+    diff_conjugate(G::LieGroup, g, h, X)
+    diff_conjugate!(G::LieGroup, Y, g, h, X)
+
+Compute the differential of the [`conjugate`](@ref) ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1}``,
+which can be performed in-place of `Y`.
+
+```math
+  D(c_g(h))[X], $(_tex(:qquad)) X ∈ $(_math(:𝔤)).
+```
+"""
+@doc "$(_doc_diff_conjugate)"
+function diff_conjugate(G::LieGroup, g, h, X)
+    Y = ManifoldsBase.allocate_result(G, diff_conjugate, g, h, X)
+    return diff_conjugate!(G, Y, g, h, X)
+end
+
+function diff_conjugate! end
+@doc "$(_doc_diff_conjugate)"
+diff_conjugate!(::LieGroup, Y, g, h, X)
+
 _doc_exp = """
     exp(G::LieGroup, g, X, t::Number=1)
     exp!(G::LieGroup, h, g, X, t::Number=1)
@@ -258,7 +321,7 @@ _doc_exp = """
 Compute the Lie group exponential map given by
 
 ```math
-$(_tex(:exp))_g X = g$(_math(:op))$(_tex(:exp))_{$(_math(:G))}(X)
+$(_tex(:exp))_g X = g$(_math(:∘))$(_tex(:exp))_{$(_math(:G))}(X)
 ```
 
 where `X` can be scaled by `t`, the computation can be performed in-place of `h`,
@@ -271,7 +334,7 @@ and ``$(_tex(:exp))_{$(_math(:G))}`` denotes the  [Lie group exponential functio
 !!! note
     The Lie group exponential map is usually different from the exponential map with respect
     to the metric of the underlying Riemannian manifold ``$(_math(:M))``.
-    To access the (Riemannian) exponential map, use `exp(`[`manifold`](@ref)`G, g, X)`.
+    To access the (Riemannian) exponential map, use `exp(`[`base_manifold`](@ref)`G, g, X)`.
 """
 
 @doc "$_doc_exp"
@@ -354,12 +417,12 @@ function identity_element! end
 identity_element!(G::AbstractDecoratorManifold, g)
 
 _doc_inv = """
-    inv(G, g)
-    inv!(G, h, g)
+    inv(G::LieGroup, g)
+    inv!(G::LieGroup, h, g)
 
-Compute the inverse group element ``g^{-1}`` with respect to the [`AbstractGroupOperation`](@ref) ``$(_math(:op))``
+Compute the inverse group element ``g^{-1}`` with respect to the [`AbstractGroupOperation`](@ref) ``$(_math(:∘))``
 on the [`LieGroup`](@ref) ``$(_math(:G))``,
-that is, return the unique element ``h=g^{-1}`` such that ``h$(_math(:op))g=$(_math(:e))``, where ``$(_math(:e))`` denotes the [`Identity`](@ref).
+that is, return the unique element ``h=g^{-1}`` such that ``h$(_math(:∘))g=$(_math(:e))``, where ``$(_math(:e))`` denotes the [`Identity`](@ref).
 
 This can be done in-place of `h`, without side effects, that is you can do `inv!(G, g, g)`.
 """
@@ -374,46 +437,46 @@ function inv! end
 @doc "$_doc_inv"
 inv!(G::LieGroup, h, g)
 
-_doc_inv_diff = """
-    inv_diff(G, g, X)
-    inv_diff!(G, Y, g, X)
+_doc_diff_inv = """
+    diff_inv(G::LieGroup, g, X)
+    diff_inv!(G::LieGroup, Y, g, X)
 
 Compute the differential of the function ``ι_{$(_math(:G))}(p) = p^-1``, where
 ``Dι_{$(_math(:G))}(p): $(_math(:𝔤)) → $(_math(:𝔤)).
 This can be done in-place of `Y`.
 """
 
-@doc "$_doc_inv_diff"
-function inv_diff(::LieGroup, g, X)
-    Y = allocate_result(G, inv_diff, g, X)
-    return inv_diff!(G, Y, g, X)
+@doc "$_doc_diff_inv"
+function diff_inv(::LieGroup, g, X)
+    Y = allocate_result(G, diff_inv, g, X)
+    return diff_inv!(G, Y, g, X)
 end
 
-function inv_diff! end
-@doc "$_doc_inv_diff"
-inv_diff!(G::LieGroup, Y, g, X)
+function diff_inv! end
+@doc "$_doc_diff_inv"
+diff_inv!(G::LieGroup, Y, g, X)
 
-_doc_Lie_bracket = """
-    Lie_bracket!(𝔤::LieAlgebra, X, Y)
-    Lie_bracket!(𝔤::LieAlgebra, Z, X, Y)
+_doc_lie_bracket = """
+    lie_bracket!(𝔤::LieAlgebra, X, Y)
+    lie_bracket!(𝔤::LieAlgebra, Z, X, Y)
 
-Compute the Lie bracket ``[⋅,⋅]: $(_math(:𝔤))×$(_math(:𝔤)) → $(_math(:𝔤))`` which fulfils
+Compute the Lie bracket ``[⋅,⋅]: $(_math(:𝔤))×$(_math(:𝔤)) → $(_math(:𝔤))`` which fulfills
 
 1. ``[X,X] = 0`` for all ``X ∈ $(_math(:𝔤))``
 2. The Jacobi identity holds ``[X, [Y,Z]] = [[X,Y],Z] = [Y, [X,Z]]`` holds for all ``X, Y, Z ∈ $(_math(:𝔤))``.
 
 The computation can be done in-place of `Z`.
 """
-function Lie_bracket end
-@doc "$(_doc_Lie_bracket)"
-function Lie_bracket(𝔤::LieAlgebra, X, Y)
-    Z = ManifoldsBase.allocate_result(𝔤, Lie_bracket, X, Y)
-    return Lie_bracket!(𝔤, Z, X, Y)
+function lie_bracket end
+@doc "$(_doc_lie_bracket)"
+function lie_bracket(𝔤::LieAlgebra, X, Y)
+    Z = ManifoldsBase.allocate_result(𝔤, lie_bracket, X, Y)
+    return lie_bracket!(𝔤, Z, X, Y)
 end
 
-function Lie_bracket! end
-@doc "$(_doc_Lie_bracket)"
-Lie_bracket!(𝔤::LieAlgebra, Z, X, Y)
+function lie_bracket! end
+@doc "$(_doc_lie_bracket)"
+lie_bracket!(𝔤::LieAlgebra, Z, X, Y)
 
 _doc_log = """
     log(G::LieGroup, g, h)
@@ -422,7 +485,7 @@ _doc_log = """
 Compute the Lie group logarithmic map
 
 ```math
-$(_tex(:log))_g h = $(_math(:op))$(_tex(:log))_{$(_math(:G))}(g^{-1}$(_math(:op))h)
+$(_tex(:log))_g h = $(_math(:∘))$(_tex(:log))_{$(_math(:G))}(g^{-1}$(_math(:∘))h)
 ```
 
 where ``$(_tex(:log))_{$(_math(:G))}`` denotes the [Lie group logarithmic function](@ref log(::LieGroup, ::Identity, :Any))
@@ -435,7 +498,7 @@ The computation can be performed in-place of `X`.
 !!! note
     The Lie group logarithmic map is usually different from the logarithmic map with respect
     to the metric of the underlying Riemannian manifold ``$(_math(:M))``.
-    To access the (Riemannian) logarithmic map, use `log(`[`manifold`](@ref)`G, g, h)`.
+    To access the (Riemannian) logarithmic map, use `log(`[`base_manifold`](@ref)`G, g, h)`.
 """
 
 @doc "$_doc_log"
@@ -469,10 +532,3 @@ end
 
 @doc "$(_doc_log_id)"
 ManifoldsBase.log!(::LieGroup, X, ::Identity, g)
-
-@doc """
-    base_manifold(G::LieGroup)
-
-Return the manifold stored within the [`LieGroup`](@ref) `G`.
-"""
-Manifolds.base_manifold(G::LieGroup) = G.manifold

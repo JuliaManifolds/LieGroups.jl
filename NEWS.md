@@ -11,21 +11,39 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
 
 ### Added
 
+* `LieAlgebra`
+* `LieGroup` (formerly `GroupManifold`) as well as the concrete groups
+  * `AdditiveGroup` (formerly `TranslationGroup`)
+* `AbstractGroupOperation` as well as its concrete subtypes
+  * `AdditiveGroupOperation`
+* `AbstractGroupActionType` with its 2 specific (new) abstract
+  * `AbstractLeftGroupActionType`
+  * `AbstractRightGroupActionType`
+* For the group operation actions there are now
+  * `LeftGroupOperation` (formerly `LeftForwardAction`)
+  * `RightGroupOperation` (formerly `RightBackwardAction`)
+  * `InverseLeftGroupOperation` (formerly `RightForwardAction`)
+  * `InverseRightGroupOperation` (formerly `LeftBackwardAction`)
+* `LieGroups.AbstractGroupOperation` as well as its concrete subtypes
+  * `AdditiveGroupOperation`
+* `apply`and `apply!`
+* `base_manifold` to access the manifold within a Lie group
 * `compose` and `compose!`
-* `compose_diff_left`, `compose_diff_left!`, `compose_diff_right`, `compose_diff_right!` (formerly `translate_diff` with different sides)
-* `compose_inv_left` and `compose_inv_right` (formerly only the `inverse_translate` but it had modes that also just did compose, the odes here are `LeftForward` and `RightBackward`)
 * `conjugate` and `conjugate!`
+* `diff_apply`, `diff_apply!`, `diff_group_apply`, and `diff_group_apply!` (formerly `apply_diff_[group][!]`)
+* `diff_left_compose`, `diff_left_compose!`, `diff_right_compose`, `diff_right_compose!` (formerly `translate_diff` with different sides)
 * `exp(G::LieGroup, g, X)` and `exp!(G::LieGroup, h, g, X)` (formerly `exp_inv` and `exp_inv!`)
 * `exp(G::LieGroup, ::Identity, X)` and `exp!(G::LieGroup, h, ::Identity, X)` (formerly `exp_lie` and `exp_lie!`)
 * `Identity`
 * `idenity_element` and `identity_element!`
+* `inv` and `inv!` (`inv(::AbstractGroupAction)` was formerly `switch_direction`)
+* `inv_left_compose`, `inv_left_compose!` and `inv_right_compose`, `inv_right_compose!` (these functions correspond to `inverse_translate` with corresponding direction and side)
 * `is_identity`
-* `inv` and `inv!`
 * `Lie_bracket` and `Lie_bracket!` (formerly `lie_bracket`)
 * `log(G::LieGroup, g, h)` and `log!(G::LieGroup, X, g, h)` (formerly `log_inv` and `log_inv!`)
 * `log(G::LieGroup, ::Identity, g)` and `log!(G::LieGroup, X, ::Identity, g)` (formerly `log_lie` and `log_lie!`)
-* `base_manifold` to access the manifold within a Lie group
-* `LieGroup` (formerly `GroupManifold`) as well as the concrete groups
-  * `AdditiveGroup` (formerly `TranslationGroup`)
-* `LieGroups.AbstractGroupOperation` as well as its concrete subtypes
-  * `AdditiveGroupOperation`
+* `switch` (formerly `switch_side`)
+
+Compared to `Manifolds.jl`
+* all `translate` functions are not implemented here, since you can just use `compose`. The differentials are implemented as listed above with respect to both left and right argument of compose
+* all `inverse_apply` functions are not implemented here, since it is recommended to use `apply(inv(A), g, p)` as a replacement.
