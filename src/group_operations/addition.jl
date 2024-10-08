@@ -7,7 +7,7 @@ to `+` and `-` being overloaded, for example
 """
 struct AdditionGroupOperation <: AbstractGroupOperation end
 
-const _AdditionLieGroup = LieGroup{𝔽,M,AdditionGroupOperation} where {𝔽, M}
+const _AdditionLieGroup = LieGroup{𝔽,M,AdditionGroupOperation} where {𝔽,M}
 
 #
 #
@@ -41,8 +41,7 @@ end
 
 Base.log(::LieGroup{𝔽,M,AdditionGroupOperation}, q) where {𝔽,M} = q
 function Base.log(
-    ::LieGroup{𝔽,M,AdditionGroupOperation},
-    ::Identity{AdditionGroupOperation},
+    ::LieGroup{𝔽,M,AdditionGroupOperation}, ::Identity{AdditionGroupOperation}
 ) where {𝔽,M}
     return zero_vector(G, identity_element(G))
 end
@@ -50,9 +49,7 @@ function ManifoldsBase.log!(G::LieGroup{𝔽,M,AdditionGroupOperation}, X, q) wh
     return copyto!(G, X, q)
 end
 function ManifoldsBase.log!(
-    G::LieGroup{𝔽,M,AdditionGroupOperation},
-    X,
-    ::Identity{AdditionGroupOperation},
+    G::LieGroup{𝔽,M,AdditionGroupOperation}, X, ::Identity{AdditionGroupOperation}
 ) where {𝔽,M}
     return zero_vector!(G, X, identity_element(G))
 end
