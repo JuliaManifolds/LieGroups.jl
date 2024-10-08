@@ -33,19 +33,23 @@ function compose!(::LieGroup{𝔽,M,AdditionGroupOperation}, k, g, h) where {�
     return k
 end
 
-exp(::LieGroup{𝔽,M,AdditionGroupOperation}, X) where {𝔽,M} = X
+Base.exp(::LieGroup{𝔽,M,AdditionGroupOperation}, X) where {𝔽,M} = X
 
-exp!(G::LieGroup{𝔽,M,AdditionGroupOperation}, g, X) where {𝔽,M} = copyto!(G, g, X)
+function ManifoldsBase.exp!(G::LieGroup{𝔽,M,AdditionGroupOperation}, g, X) where {𝔽,M}
+    return copyto!(G, g, X)
+end
 
-log_lie(::LieGroup{𝔽,M,AdditionGroupOperation}, q) where {𝔽,M} = q
-function log_lie(
+Base.log(::LieGroup{𝔽,M,AdditionGroupOperation}, q) where {𝔽,M} = q
+function Base.log(
     ::LieGroup{𝔽,M,AdditionGroupOperation},
     ::Identity{AdditionGroupOperation},
 ) where {𝔽,M}
     return zero_vector(G, identity_element(G))
 end
-log!(G::LieGroup{𝔽,M,AdditionGroupOperation}, X, q) where {𝔽,M} = copyto!(G, X, q)
-function log_lie!(
+function ManifoldsBase.log!(G::LieGroup{𝔽,M,AdditionGroupOperation}, X, q) where {𝔽,M}
+    return copyto!(G, X, q)
+end
+function ManifoldsBase.log!(
     G::LieGroup{𝔽,M,AdditionGroupOperation},
     X,
     ::Identity{AdditionGroupOperation},

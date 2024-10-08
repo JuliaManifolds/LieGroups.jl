@@ -1,7 +1,7 @@
-# Additive Group
+# The Lie group of translations on an Euclidean space
 
 ```@docs
-AdditiveGroup
+TranslationGroup
 ```
 
 ## Functions
