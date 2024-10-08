@@ -98,40 +98,6 @@ end
 
 #
 #
-# Traits for LIe groups
-"""
-    AbstractInvarianceTrait <: AbstractTrait
-
-A common supertype for anz [`AbstractTrait`](@extref `ManifoldsBase.AbstractTrait`) related to metric invariance
-"""
-abstract type AbstractInvarianceTrait <: ManifoldsBase.AbstractTrait end
-
-"""
-    HasLeftInvariantMetric <: AbstractInvarianceTrait
-
-Specify that the defaut metric on a [`LieGroup`](@ref) ``$(_math(:G))`` is left-invariant.
-"""
-struct HasLeftInvariantMetric <: AbstractInvarianceTrait end
-
-"""
-    HasRightInvariantMetric <: AbstractInvarianceTrait
-
-Specify that the defaut metric on a [`LieGroup`](@ref) ``$(_math(:G))`` is right-invariant.
-"""
-struct HasRightInvariantMetric <: AbstractInvarianceTrait end
-
-"""
-    HasBiinvariantMetric <: AbstractInvarianceTrait
-
-Specify that the defaut metric on a [`LieGroup`](@ref) ``$(_math(:G))`` is bi-invariant.
-"""
-struct HasBiinvariantMetric <: AbstractInvarianceTrait end
-function parent_trait(::HasBiinvariantMetric)
-    return ManifoldsBase.TraitList(HasLeftInvariantMetric(), HasRightInvariantMetric())
-end
-
-#
-#
 # --- Functions ---
 
 _doc_adjoint = """

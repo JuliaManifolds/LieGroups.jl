@@ -8,16 +8,21 @@ import Manifolds: apply, apply!
 
 include("documentation_glossary.jl")
 include("interface.jl")
+
+# Gneric Operations
+include("group_operations/addition.jl")
+
+# Actions
 include("group_actions/group_action_interface.jl")
 include("group_actions/group_operation_action.jl")
-include("additive_group_operation.jl")
 
-include("groups/additive.jl")
+# Lie groups
+include("groups/translation_group.jl")
 
 export LieGroup, LieAlgebra
 
 export AbstractGroupOperation, Identity
-export AdditiveGroupOperation
+export AdditionGroupOperation
 
 export AbstractGroupActionType, AbstractGroupAction
 export AbstractLeftGroupActionType, AbstractRightGroupActionType
@@ -25,7 +30,7 @@ export LeftGroupOperation, RightGroupOperation
 export InverseLeftGroupOperation, InverseRightGroupOperation
 export GroupOperationAction
 
-export AdditiveGroup
+export TranslationGroup
 
 export apply, apply!, diff_apply, diff_apply!
 export base_manifold

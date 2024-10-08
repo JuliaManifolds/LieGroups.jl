@@ -2,4 +2,4 @@
 
 | Group | Manifold | ``∘`` | Comment |
 |:------|:---------|:---------:|:------|
-| [`AdditiveGroup`](@ref) | [`Euclidean`](@extref `Manifolds.Euclidean`) | [`+`](@ref AdditiveGroupOperation) | |
+| [`TranslationGroup`](@ref) | [`Euclidean`](@extref `Manifolds.Euclidean`) | [`+`](@ref AdditionGroupOperation) | |

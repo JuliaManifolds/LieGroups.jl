@@ -12,15 +12,6 @@ AbstractGroupOperation
 Identity
 ```
 
-## Properties
-
-```@docs
-LieGroups.AbstractInvarianceTrait
-LieGroups.HasBiinvariantMetric
-LieGroups.HasLeftInvariantMetric
-LieGroups.HasRightInvariantMetric
-```
-
 ## Functions on Lie Groups
 
 ```@docs
@@ -92,7 +83,7 @@ For some generic group operations, an easy generic implementation can be provide
 ### Additive Group operation
 
 ```@docs
-AdditiveGroupOperation
+AdditionGroupOperation
 ```
 
 ### Multiplicative Group operation

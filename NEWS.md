@@ -15,7 +15,7 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
 * `LieGroup` (formerly `GroupManifold`) as well as the concrete groups
   * `AdditiveGroup` (formerly `TranslationGroup`)
 * `AbstractGroupOperation` as well as its concrete subtypes
-  * `AdditiveGroupOperation`
+  * `AdditionGroupOperation` (formerly `AdditionOperation`)
 * `AbstractGroupActionType` with its 2 specific (new) abstract
   * `AbstractLeftGroupActionType`
   * `AbstractRightGroupActionType`
@@ -24,8 +24,6 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
   * `RightGroupOperation` (formerly `RightBackwardAction`)
   * `InverseLeftGroupOperation` (formerly `RightForwardAction`)
   * `InverseRightGroupOperation` (formerly `LeftBackwardAction`)
-* `LieGroups.AbstractGroupOperation` as well as its concrete subtypes
-  * `AdditiveGroupOperation`
 * `apply`and `apply!`
 * `base_manifold` to access the manifold within a Lie group
 * `compose` and `compose!`

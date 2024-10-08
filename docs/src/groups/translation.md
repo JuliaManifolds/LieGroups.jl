@@ -8,6 +8,6 @@ AdditiveGroup
 
 ```@autodocs
 Modules = [LieGroups]
-Pages = ["groups/additive.jl"]
+Pages = ["groups/translation_group.jl"]
 Order = [:function]
 ```
