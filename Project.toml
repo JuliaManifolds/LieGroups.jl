@@ -1,6 +1,6 @@
 name = "LieGroups"
-uuid = "53f20ee3-da37-474e-9588-41d6043056a5"
-authors = ["Seth Axen <seth.axen@gmail.com>", "Mateusz Baran <mateuszbaran89@gmail.com>", "Ronny Bergmann <git@ronnybergmann.net>", "Olivier Verdier <olivier.verdier@gmail.com>"]
+uuid = "6774de46-80ba-43f8-ba42-e41071ccfc5f"
+authors = ["Seth Axen <seth.axen@gmail.com>", "Mateusz Baran <mateuszbaran89@gmail.com>", "Ronny Bergmann <git@ronnybergmann.net>", "Yueh-Hua Tu", "Olivier Verdier <olivier.verdier@gmail.com>" ]
 version = "0.1.0"
 
 [deps]
