@@ -5,10 +5,7 @@
     </picture>
 </div>
 
-
-# still work-in-progress
-
-This is a package (work-in-progress) rework the Lie group featues of [`Manifolds.jl`](https://juliamanifolds.github.io/Manifolds.jl/stable/) in a unified way.
+This is a package to rework the Lie group features of [`Manifolds.jl`](https://juliamanifolds.github.io/Manifolds.jl/stable/) in a unified way into a separate package.
 
 This especially also includes a few different choices in default behabiour that
 is different from the `Manifolds.jl` one. For purely manifold-based operations, any Lie group still is “build upon” a Riemannian manifold.

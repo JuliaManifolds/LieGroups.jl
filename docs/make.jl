@@ -120,7 +120,7 @@ makedocs(;
         "An Interface for Lie Groups" => "interface.md",
         "Lie groups" => [
             "List of Lie Groups" => "groups/index.md",
-            "Additive group" => "groups/additive.md",
+            "Translation group" => "groups/translation.md",
         ],
         "Contributing to LieGroups.jl" => "contributing.md",
         "Notation" => "notation.md",
