@@ -11,7 +11,7 @@ jobs:
         run: |
           import Pkg
           name = "CompatHelper"
-          uuid = "53f20ee3-da37-474e-9588-41d6043056a5"
+          uuid = "6774de46-80ba-43f8-ba42-e41071ccfc5f"
           version = "3"
           Pkg.add(; name, uuid, version)
         shell: julia --color=yes {0}
