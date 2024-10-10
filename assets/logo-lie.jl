@@ -3,7 +3,7 @@ using Manifolds, LinearAlgebra, PGFPlotsX, Colors, Distributions, Contour, Rando
 #
 # Settings
 #
-dark_mode = true
+dark_mode = false
 
 line_offset_brightness = 0.25
 patch_opacity = 1.0
@@ -136,8 +136,11 @@ rs = range(0, π / 5; length=6)
 
 #
 # Plot manifold patches
-patch_colors = rgb_logo_colors[2:end]
-patch_colors_line = dark_mode ? rgb_logo_colors_bright[2:end] : rgb_logo_colors_dark[2:end]
+# rotate color indices
+indices = [3,4,2] # original [2,3,4]
+patch_colors = rgb_logo_colors[indices]
+patch_colors_line =
+    dark_mode ? rgb_logo_colors_bright[indices] : rgb_logo_colors_dark[indices]
 base_points = [p1, p2, p3]
 basis_vectors = [log(S, p1, p2), log(S, p2, p1), log(S, p3, p1)]
 for i in eachindex(base_points)
@@ -163,7 +166,7 @@ options = @pgf {
     roundcaps,
     line_width = geo_line_width,
     color = dark_mode ? "white" : "black",
-    "-{Stealth[length=6cm,sharp,bend=-9]}", #length=8mm,width=2mm,inset=3mm
+    "-{Stealth[length=6.195cm,sharp,bend=-9]}", #length=8mm,width=2mm,inset=3mm
 }
 plot_geodesic!(tp, S, base_points[1], base_points[2]; m=25, options=options)
 plot_geodesic!(tp, S, base_points[3], base_points[1]; m=25, options=options)
