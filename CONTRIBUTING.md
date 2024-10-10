@@ -31,26 +31,23 @@ Currently we are still consolidating most details and defaults, but feel free to
 ## Code style
 
 Try to follow the [documentation guidelines](https://docs.julialang.org/en/v1/manual/documentation/) from the Julia documentation as well as [Blue Style](https://github.com/invenia/BlueStyle).
-Run [`JuliaFormatter.jl`](https://github.com/domluna/JuliaFormatter.jl) on the repository in the way set in the `.JuliaFormatter.toml` file, which enforces a number of conventions consistent with the Blue Style. Furthermore [vale](https://vale.sh) is run on both Markdown and code files, affecting documentation and source code comments
+Run [`JuliaFormatter.jl`](https://github.com/domluna/JuliaFormatter.jl) on the repository in the way set in the `.JuliaFormatter.toml` file, which enforces a number of conventions consistent with the Blue Style.
 
 Please follow a few internal conventions:
 
-- It is preferred that the `AbstractManoptProblem`'s struct contains information about the general structure of the problem.
 - Any implemented function should be accompanied by its mathematical formulae if a closed form exists.
-- `AbstractManoptProblem` and helping functions are stored within the `plan/` folder and sorted by properties of the problem and/or solver at hand.
-- the solver state is usually stored with the solver itself
-- Within the source code of one algorithm, following the state, the high level interface should be next, then the initialization, then the step.
-- Otherwise an alphabetical order of functions is preferable.
+- A Lie group, a Lie group action or a Lie algebra should be implemented in it own file
+- an alphabetical order of functions in every file is preferable.
 - The preceding implies that the mutating variant of a function follows the non-mutating variant.
+- usually, both the allocating and the mutating variants of a function should be documented. For avoiding duplication, one doc string attached to both is preferrable
 - There should be no dangling `=` signs.
 - Always add a newline between things of different types (struct/method/const).
-- Always add a newline between methods for different functions (including mutating/nonmutating variants).
+- Always add a newline between methods for different functions (including allocating/mutating variants).
 - Prefer to have no newline between methods for the same function; when reasonable, merge the documentation strings.
 - All `import`/`using`/`include` should be in the main module file.
+- `import` is discouraged and the explicit full name, like `Base.exp` should be used when implementing functions
 
 Concerning documentation
 
 - if possible provide both mathematical formulae and literature references using [DocumenterCitations.jl](https://juliadocs.org/DocumenterCitations.jl/stable/) and BibTeX where possible
 - Always document all input variables and keyword arguments
-
-If you implement an algorithm with a certain numerical example in mind, it would be great, if this could be added to the [ManoptExamples.jl](https://github.com/JuliaManifolds/ManoptExamples.jl) package as well.
