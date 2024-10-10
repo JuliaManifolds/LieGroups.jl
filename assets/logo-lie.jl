@@ -137,7 +137,7 @@ rs = range(0, π / 5; length=6)
 #
 # Plot manifold patches
 # rotate color indices
-indices = [3,4,2] # original [2,3,4]
+indices = [3, 4, 2] # original [2,3,4]
 patch_colors = rgb_logo_colors[indices]
 patch_colors_line =
     dark_mode ? rgb_logo_colors_bright[indices] : rgb_logo_colors_dark[indices]
