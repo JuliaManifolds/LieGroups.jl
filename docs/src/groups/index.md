@@ -1,6 +1,6 @@
-# An overview of LIe groups
+# An overview of Lie groups
 
-# Alphabetical List of Lie groups
+# Alphabetical list of Lie groups
 
 | Group | Manifold | ``∘`` | Comment |
 |:------|:---------|:---------:|:------|

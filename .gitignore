@@ -12,3 +12,4 @@ temp
 tutorials/*.ipynb
 tutorials/*_files/*
 tutorials/_freeze
+.vscode/settings.json

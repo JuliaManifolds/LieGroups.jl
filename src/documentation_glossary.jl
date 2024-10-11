@@ -11,7 +11,7 @@
 #
 # to keep naming, notation, and formatting in a unifed way
 
-# In general every dictionary here can be either :Symbol-> String or :Symbol -> Dictionary enrties
+# In general every dictionary here can be either `:Symbol-> String` or `:Symbol -> Dictionary enrties`
 
 _LIEGROUPS_DOC_TYPE = Dict{Symbol,Union{String,Dict,Function}}
 
@@ -28,7 +28,7 @@ if that entrs is
 * a function, it is called with `args...` and `kwargs...` passed
 * a dictionary, then the arguments and keyword arguments are passed to this dictionary, assuming `args[1]` is a symbol
 """
-#do not document for now, until we have an internals section
+#Do not attach the doc string here for now, since there is no internals section in the documenttion yet
 glossary(s::Symbol, args...; kwargs...) = glossary(_manopt_glossary, s, args...; kwargs...)
 function glossary(g::_LIEGROUPS_DOC_TYPE, s::Symbol, args...; kwargs...)
     return glossary(g[s], args...; kwargs...)
@@ -93,7 +93,7 @@ define!(:Math, :M, (; M="M") -> _math(:Manifold, :symbol; M=M))
 #
 # ---
 # Links
-# Collect short forms for links, especially Interdocs ones.
+# Collect short forms for links, especially `DocumenterInterlinks` ones.
 _link(args...; kwargs...) = glossary(:Link, args...; kwargs...)
 
 define!(

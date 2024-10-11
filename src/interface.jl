@@ -340,7 +340,7 @@ See also [HilgertNeeb:2012; Definition 9.2.2](@cite).
 
 @doc "$(_doc_exp_id)"
 function ManifoldsBase.exp(G::LieGroup, e::Identity, X, t::Number=1)
-    h = identity_element(G) # allocate
+    h = identity_element(G)
     exp!(G, h, e, X, t)
     return h
 end

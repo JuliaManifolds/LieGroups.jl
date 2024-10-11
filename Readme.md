@@ -10,8 +10,8 @@
 
 This is a package to rework the Lie group features of [`Manifolds.jl`](https://juliamanifolds.github.io/Manifolds.jl/stable/) in a unified way into a separate package.
 
-This especially also includes a few different choices in default behabiour that
+This especially also includes a few different choices in default behaviour that
 is different from the [`Manifolds.jl`](https://juliamanifolds.github.io/Manifolds.jl/stable/) one. For purely manifold-based operations, any Lie group still is “build upon” a Riemannian manifold.
 
-See [#5](https://github.com/JuliaManifolds/LieGroups.jl/issues/5) for an overview of fatures that are plannned.
+See [#5](https://github.com/JuliaManifolds/LieGroups.jl/issues/5) for an overview of features that we plan to implement.
 Feel free to add to this list with opening further issues.
