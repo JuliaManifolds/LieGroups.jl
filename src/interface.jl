@@ -442,8 +442,8 @@ diff_inv!(G::LieGroup, Y, g, X)
     isapprox(M::LieGroup, g, h; kwargs...)
 
 Check if points `g` and `h` from [`LieGroup`](@ref) are approximately equal.
-this function calls the corresponding [`isapprox`](@exref `ManifoldsBase.isapprox`)
-on the $(_link(:AbstractManifold)) after handling the cases where one or more
+this function calls the corresponding $(_link(:isapprox)) on the $(_link(:AbstractManifold))
+after handling the cases where one or more
 of the points are the [`Identity`](@ref).
 All keyword argments are passed to this function as well.
 """

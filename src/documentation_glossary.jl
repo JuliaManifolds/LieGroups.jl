@@ -101,6 +101,11 @@ define!(
     :AbstractManifold,
     "[`AbstractManifold`](@extref `ManifoldsBase.AbstractManifold`)",
 )
+define!(
+    :Link,
+    :isapprox,
+    "[`isapprox`](@extref `Base.isapprox-Tuple{AbstractManifold, Any, Any, Any}`)",
+)
 define!(:Link, :TangentSpace, "[`TangentSpace`](@extref `ManifoldsBase.TangentSpace`)")
 
 #

@@ -30,6 +30,7 @@ exp!
 identity_element
 identity_element!
 is_identity
+isapprox
 inv(::LieGroup, ::Any)
 inv!
 diff_inv
