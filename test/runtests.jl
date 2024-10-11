@@ -1,4 +1,8 @@
-using Manifolds, LieGroups, Test
+using LieGroups, Test
+
+s = joinpath(@__DIR__, "LieGroupsTestSuite.jl")
+!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
+using LieGroupsTestSuite
 
 function include_test(path)
     @info "Testing $path"

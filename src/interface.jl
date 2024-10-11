@@ -39,7 +39,6 @@ struct LieGroup{𝔽,M<:ManifoldsBase.AbstractManifold{𝔽},O<:AbstractGroupOpe
     op::O
 end
 
-
 Base.show(io::IO, G::LieGroup) = print(io, "LieGroup($(G.manifold), $(G.op))")
 
 @doc """
@@ -63,7 +62,6 @@ create the identity of the corresponding subtype `O<:`[`AbstractGroupOperation`]
 """
 struct Identity{O<:AbstractGroupOperation} end
 
-ManifoldsBase.@trait_function Identity(M::ManifoldsBase.AbstractDecoratorManifold)
 Identity(::LieGroup{𝔽,M,O}) where {𝔽,M,O<:AbstractGroupOperation} = Identity{O}()
 Identity(::O) where {O<:AbstractGroupOperation} = Identity(O)
 Identity(::Type{O}) where {O<:AbstractGroupOperation} = Identity{O}()
@@ -130,6 +128,14 @@ function adjoint! end
 function adjoint!(::LieGroup, Y, g, X)
     diff_conjugate!(G, Y, g, Identity(G), X)
     return Y
+end
+
+#
+# Allocation hints
+function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(identity_element))
+    apf = ManifoldsBase.allocation_promotion_function(G, f, ())
+    rs = ManifoldsBase.representation_size(G)
+    return ManifoldsBase.allocate_result_array(G, f, apf(Float64), rs)
 end
 
 @doc """
@@ -260,6 +266,14 @@ function conjugate!(::LieGroup, k, g, h)
     return k
 end
 
+copyto!(G::LieGroup, h, g) = copyto!(G.manifold, h, g)
+function copyto!(G::LieGroup{𝔽,M,O}, h, g::Identity{O}) where {𝔽,M,O}
+    return copyto!(G.manifold, h, identity_element(g))
+end
+function copyto!(G::LieGroup{𝔽,M,O}, h::Identity{O}, g::Identity{O}) where {𝔽,M,O}
+    return copyto!(G.manifold, h, identity_element(g))
+end
+
 _doc_diff_conjugate = """
     diff_conjugate(G::LieGroup, g, h, X)
     diff_conjugate!(G::LieGroup, Y, g, h, X)
@@ -361,7 +375,7 @@ This means it is either the [`Identity`](@ref)`{O}` with the respect to the corr
 
 [`identity_element`](@ref), [`identity_element!`](@ref)
 """
-is_identity(G::AbstractDecoratorManifold, q)
+is_identity(G::LieGroup, q)
 
 _doc_identity_element = """
     identity_element(G::LieGroup)
@@ -373,15 +387,16 @@ It should return the corresponding default representation of ``e`` as a point on
 points are not represented by arrays.
 This can be performed in-place of `g`.
 """
-function identity_element end
+# function identity_element end
 @doc "$(_doc_identity_element)"
-function identity_element(G::AbstractDecoratorManifold)
+function identity_element(G::LieGroup)
     g = ManifoldsBase.allocate_result(G, identity_element)
     return identity_element!(G, g)
 end
+
 function identity_element! end
 @doc "$(_doc_identity_element)"
-identity_element!(G::AbstractDecoratorManifold, g)
+identity_element!(G::LieGroup, g)
 
 _doc_inv = """
     inv(G::LieGroup, g)
@@ -395,7 +410,7 @@ This can be done in-place of `h`, without side effects, that is you can do `inv!
 """
 
 @doc "$_doc_inv"
-function Base.inv(::LieGroup, g)
+function Base.inv(G::LieGroup, g)
     h = allocate_result(G, inv, g)
     return inv!(G, h, g)
 end
@@ -422,6 +437,32 @@ end
 function diff_inv! end
 @doc "$_doc_diff_inv"
 diff_inv!(G::LieGroup, Y, g, X)
+
+"""
+    isapprox(M::LieGroup, g, h; kwargs...)
+
+Check if points `g` and `h` from [`LieGroup`](@ref) are approximately equal.
+this function calls the corresponding [`isapprox`](@exref `ManifoldsBase.isapprox`)
+on the $(_link(:AbstractManifold)) after handling the cases where one or more
+of the points are the [`Identity`](@ref).
+All keyword argments are passed to this function as well.
+"""
+ManifoldsBase.isapprox(G::LieGroup, g, h; kwargs...) = isapprox(G.manifold, g, h; kwargs...)
+function ManifoldsBase.isapprox(
+    G::LieGroup{𝔽,M,O}, g::Identity{<:O}, h; kwargs...
+) where {𝔽,M<:ManifoldsBase.AbstractManifold{𝔽},O<:AbstractGroupOperation}
+    return ManifoldsBase.isapprox(G.manifold, identity_element(G), h; kwargs...)
+end
+function ManifoldsBase.isapprox(
+    G::LieGroup{𝔽,M,O}, g, h::Identity{O}; kwargs...
+) where {𝔽,M<:ManifoldsBase.AbstractManifold{𝔽},O<:AbstractGroupOperation}
+    return ManifoldsBase.isapprox(G.manifold, g, identity_element(G); kwargs...)
+end
+function ManifoldsBase.isapprox(
+    G::LieGroup{𝔽,M,O}, g::Identity{O}, h::Identity{O}; kwargs...
+) where {𝔽,M<:ManifoldsBase.AbstractManifold{𝔽},O<:AbstractGroupOperation}
+    return true
+end
 
 _doc_lie_bracket = """
     lie_bracket!(𝔤::LieAlgebra, X, Y)
@@ -499,3 +540,7 @@ end
 
 @doc "$(_doc_log_id)"
 ManifoldsBase.log!(::LieGroup, X, ::Identity, g)
+
+function ManifoldsBase.representation_size(G::LieGroup)
+    return ManifoldsBase.representation_size(G.manifold)
+end

@@ -4,8 +4,7 @@ using ManifoldsBase, Manifolds
 
 # before removing them from Manifolds.jl, let's for consistency include them here but
 # overwrite them for now. This makes moving away from that (in Manifolds.jl 0.11) here non-breaking.
-import Manifolds: apply, apply!
-import Manifolds: Translation
+import Manifolds: apply, apply!, identity_element
 include("documentation_glossary.jl")
 include("interface.jl")
 
@@ -46,6 +45,7 @@ export adjoint,
     inv_left_compose!,
     inv_right_compose,
     inv_right_compose!
+export isapprox
 export conjugate, conjugate!, diff_conjugate, diff_conjugate!
 export exp, exp!, log, log!
 export identity_element, identity_element!, is_identity, inv, inv!, diff_inv, diff_inv!
