@@ -2,14 +2,14 @@ module LieGroups
 
 using ManifoldsBase, Manifolds
 
-# before removing them from Manifolds.jl – let's for consistency include them here but
-# overwrite them for now. This makes moving away from that (in Manifolds.jl 0.11) here nonbreaking.
+# before removing them from Manifolds.jl, let's for consistency include them here but
+# overwrite them for now. This makes moving away from that (in Manifolds.jl 0.11) here non-breaking.
 import Manifolds: apply, apply!
-
+import Manifolds: Translation
 include("documentation_glossary.jl")
 include("interface.jl")
 
-# Gneric Operations
+# Generic Operations
 include("group_operations/addition.jl")
 
 # Actions

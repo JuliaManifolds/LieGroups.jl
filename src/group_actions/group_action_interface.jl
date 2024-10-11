@@ -126,7 +126,7 @@ This can be perfomed in-place of `q`.
 """
 
 # function apply end
-# un-comment the preceeding line and remove this, once GroupManifolds was deleted from Manifolds.jl
+# un-comment the preceding line and remove this, once GroupManifolds no longer exists in Manifolds.jl
 @doc "$(_doc_apply)"
 function apply(A::AbstractGroupAction, g, p)
     q = allocate_result(A, apply, g, p)

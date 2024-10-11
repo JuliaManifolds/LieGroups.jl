@@ -29,7 +29,7 @@ Lie groups are named after the Norwegian mathematician [Marius Sophus Lie](https
 
 # Constructor
 
-    LieGroup(M::AbstractManifold, op::AbstractGroupOperation; vectors=LeftInvariantRepresentation())
+    LieGroup(M::AbstractManifold, op::AbstractGroupOperation)
 
 Generate a Lie group based on a manifold `M` and a group operation `op`, where vectors by default are stored in the Lie Algebra.
 """
@@ -38,6 +38,7 @@ struct LieGroup{𝔽,M<:ManifoldsBase.AbstractManifold{𝔽},O<:AbstractGroupOpe
     manifold::M
     op::O
 end
+
 
 Base.show(io::IO, G::LieGroup) = print(io, "LieGroup($(G.manifold), $(G.op))")
 
@@ -138,7 +139,7 @@ Return the manifold stored within the [`LieGroup`](@ref) `G`.
 """
 Manifolds.base_manifold(G::LieGroup) = G.manifold
 
-# compose g_1 ∘ g_2 and its frieds
+# compose g ∘ h
 _doc_compose = """
     compose(G::LieGroup, g, h)
     compose!(G::LieGroup, k, g, h)
@@ -211,7 +212,7 @@ function inv_left_compose! end
 @doc "$(_doc_compose)"
 function inv_left_compose!(::LieGroup, k, g, h)
     inv!(G, k, g) # g^{-1} in-place of k
-    compose!(G, k, k, h) # kh inplace of k
+    compose!(G, k, k, h) # compose `k∘h` in-place of k
     return k
 end
 
@@ -233,7 +234,7 @@ function inv_right_compose! end
 @doc "$(_doc_inv_right_compose)"
 function inv_right_compose!(::LieGroup, k, h, g)
     inv!(G, k, g) # g^{-1} in-place of k
-    compose!(G, k, h, h) # hk inplace of k
+    compose!(G, k, h, k) # compose `h∘k` in-place of k
     return k
 end
 
@@ -254,8 +255,8 @@ function conjugate! end
 @doc "$(_doc_conjugate)"
 function conjugate!(::LieGroup, k, g, h)
     inv!(G, k, g) # g^{-1} in-place of k
-    compose!(G, k, h, h) # hk inplace of k
-    compose!(G, k, g, k) # gk inplace of k
+    compose!(G, k, h, h) # `h∘k` in-place of k
+    compose!(G, k, g, k) # `g∘k` in-place of k
     return k
 end
 
