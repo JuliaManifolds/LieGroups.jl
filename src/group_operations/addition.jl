@@ -21,10 +21,10 @@ Base.:+(g, ::Identity{AdditionGroupOperation}) = g
 Base.:-(e::Identity{AdditionGroupOperation}) = e
 Base.:-(e::Identity{AdditionGroupOperation}, ::Identity{AdditionGroupOperation}) = e
 Base.:-(::Identity{AdditionGroupOperation}, g) = -g
-Base.:-(p, ::Identity{AdditionGroupOperation}) = g
+Base.:-(::Any, ::Identity{AdditionGroupOperation}) = g
 
 Base.:*(e::Identity{AdditionGroupOperation}, p) = e
-Base.:*(p, e::Identity{AdditionGroupOperation}) = e
+Base.:*(::Any, e::Identity{AdditionGroupOperation}) = e
 Base.:*(e::Identity{AdditionGroupOperation}, ::Identity{AdditionGroupOperation}) = e
 
 function compose(
