@@ -45,7 +45,7 @@ export adjoint,
     inv_left_compose!,
     inv_right_compose,
     inv_right_compose!
-export isapprox
+export isapprox, is_point, is_vector
 export conjugate, conjugate!, diff_conjugate, diff_conjugate!
 export exp, exp!, log, log!
 export identity_element, identity_element!, is_identity, inv, inv!, diff_inv, diff_inv!

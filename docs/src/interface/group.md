@@ -11,16 +11,6 @@ LieAlgebra
 adjoint
 adjoint!
 base_manifold
-compose
-compose!
-diff_left_compose
-diff_left_compose!
-diff_right_compose
-diff_right_compose!
-inv_left_compose
-inv_left_compose!
-inv_right_compose
-inv_right_compose!
 conjugate
 conjugate!
 diff_conjugate
@@ -31,18 +21,18 @@ identity_element
 identity_element!
 is_identity
 isapprox
-inv(::LieGroup, ::Any)
-inv!
-diff_inv
-diff_inv!
+is_point(::LieGroup, ::Any)
+is_vector(::LieGroup, ::Any)
+is_vector(::LieGroup{𝔽,O}, ::Identity{O}, ::Any) where {𝔽,O}
 log
 log!
 ```
 
 
-## Functions on Lie Algebras
+## Functions on Lie algebras
 
 ```@docs
+is_point(::LieAlgebra, ::Any)
 lie_bracket
 lie_bracket!
 ```

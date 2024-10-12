@@ -304,7 +304,7 @@ _doc_diff_inv = """
     diff_inv!(G::LieGroup, Y, g, X)
 
 Compute the differential of the function ``ι_{$(_math(:G))}(p) = p^-1``, where
-``Dι_{$(_math(:G))}(p): $(_math(:𝔤)) → $(_math(:𝔤)).
+``Dι_{$(_math(:G))}(p): $(_math(:𝔤)) → $(_math(:𝔤))``.
 This can be done in-place of `Y`.
 """
 
