@@ -16,7 +16,7 @@ const _AdditionLieGroup =
 Base.:+(e::Identity{AdditionGroupOperation}) = e
 Base.:+(e::Identity{AdditionGroupOperation}, ::Identity{AdditionGroupOperation}) = e
 Base.:+(::Identity{AdditionGroupOperation}, g) = g
-Base.:+(p, ::Identity{AdditionGroupOperation}) = g
+Base.:+(g, ::Identity{AdditionGroupOperation}) = g
 
 Base.:-(e::Identity{AdditionGroupOperation}) = e
 Base.:-(e::Identity{AdditionGroupOperation}, ::Identity{AdditionGroupOperation}) = e
@@ -34,9 +34,9 @@ function compose(
 end
 
 function compose!(
-    ::LieGroup{𝔽,M,AdditionGroupOperation}, k, g, h
+    G::LieGroup{𝔽,M,AdditionGroupOperation}, k, g, h
 ) where {𝔽,M<:ManifoldsBase.AbstractManifold{𝔽}}
-    k .= g .+ h
+    ManifoldsBase.copyto!(G, k, g + h)
     return k
 end
 

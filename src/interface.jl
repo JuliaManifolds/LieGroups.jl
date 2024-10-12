@@ -266,12 +266,14 @@ function conjugate!(::LieGroup, k, g, h)
     return k
 end
 
-copyto!(G::LieGroup, h, g) = copyto!(G.manifold, h, g)
-function copyto!(G::LieGroup{𝔽,M,O}, h, g::Identity{O}) where {𝔽,M,O}
-    return copyto!(G.manifold, h, identity_element(g))
+ManifoldsBase.copyto!(G::LieGroup, h, g) = ManifoldsBase.copyto!(G.manifold, h, g)
+function ManifoldsBase.copyto!(G::LieGroup{𝔽,M,O}, h, g::Identity{O}) where {𝔽,M,O}
+    return ManifoldsBase.copyto!(G.manifold, h, identity_element(g))
 end
-function copyto!(G::LieGroup{𝔽,M,O}, h::Identity{O}, g::Identity{O}) where {𝔽,M,O}
-    return copyto!(G.manifold, h, identity_element(g))
+function ManifoldsBase.copyto!(
+    G::LieGroup{𝔽,M,O}, h::Identity{O}, g::Identity{O}
+) where {𝔽,M,O}
+    return ManifoldsBase.copyto!(G.manifold, h, identity_element(g))
 end
 
 _doc_diff_conjugate = """
