@@ -11,7 +11,7 @@ on elements of a Lie group ``$(_math(:G))``.
 abstract type AbstractGroupOperation end
 
 """
-    LieGroup{𝔽,M<:AbstractManifold{𝔽}, O<:AbstractGroupOperation}
+    LieGroup{𝔽, O<:AbstractGroupOperation, M<:AbstractManifold{𝔽}}
 
 Represent a Lie Group ``$(_math(:G))``.
 
@@ -33,7 +33,7 @@ Lie groups are named after the Norwegian mathematician [Marius Sophus Lie](https
 
 Generate a Lie group based on a manifold `M` and a group operation `op`, where vectors by default are stored in the Lie Algebra.
 """
-struct LieGroup{𝔽,M<:ManifoldsBase.AbstractManifold{𝔽},O<:AbstractGroupOperation} <:
+struct LieGroup{𝔽,O<:AbstractGroupOperation,M<:ManifoldsBase.AbstractManifold{𝔽}} <:
        ManifoldsBase.AbstractManifold{𝔽}
     manifold::M
     op::O
@@ -52,7 +52,7 @@ See also [`identity_element`](@ref) on how to obtain the corresponding [`Abstrac
 
 # Constructors
 
-    Identity(::LieGroup{𝔽,M,O}) where {𝔽,M,O<:AbstractGroupOperation}
+    Identity(::LieGroup{𝔽,O}) where {𝔽,M,O<:AbstractGroupOperation}
     Identity(o::AbstractGroupOperation)
     Identity(::Type{AbstractGroupOperation})
 
@@ -60,7 +60,7 @@ create the identity of the corresponding subtype `O<:`[`AbstractGroupOperation`]
 """
 struct Identity{O<:AbstractGroupOperation} end
 
-Identity(::LieGroup{𝔽,M,O}) where {𝔽,M,O<:AbstractGroupOperation} = Identity{O}()
+Identity(::LieGroup{𝔽,O}) where {𝔽,O<:AbstractGroupOperation} = Identity{O}()
 Identity(::O) where {O<:AbstractGroupOperation} = Identity(O)
 Identity(::Type{O}) where {O<:AbstractGroupOperation} = Identity{O}()
 
@@ -143,6 +143,23 @@ Return the manifold stored within the [`LieGroup`](@ref) `G`.
 """
 Manifolds.base_manifold(G::LieGroup) = G.manifold
 
+function ManifoldsBase.check_point(
+    G::LieGroup{𝔽,O}, e::Identity{O}; kwargs...
+) where {𝔽,O<:AbstractGroupOperation}
+    return nothing
+end
+function ManifoldsBase.check_point(
+    G::LieGroup{𝔽,O}, e::Identity{O2}; kwargs...
+) where {𝔽,O<:AbstractGroupOperation,O2}
+    return DomainError(
+        e,
+        """
+        The provided point $e is not the Identity on $G.
+        Expected an Identity corresponding to $(G.op).
+        """,
+    )
+end
+
 # compose g ∘ h
 _doc_compose = """
     compose(G::LieGroup, g, h)
@@ -150,17 +167,50 @@ _doc_compose = """
 
 Perform the group oepration ``g $(_math(:∘)) h`` for two ``g, h ∈ $(_math(:G))``
 on the [`LieGroup`](@ref) `G`. This can also be done in-place of `h`.
+
+!!! info
+    This function also handles the case where `g` or/and `h` are the [`Identity`](@ref)`(G)`.
+    Since this would lead to ambiguities when implementing a new group operations,
+    this function calls `_compose` and `compose!`, respectively, which is meant for the actual computation of
+    group operations on (non-[`Identity`](@ref)` but maybe its numerical representation) elements.
 """
 @doc "$(_doc_compose)"
-function compose(G::LieGroup, g, h)
+compose(G::LieGroup, g, h) = _compose(G, g, h)
+compose(::LieGroup{𝔽,O}, g::Identity{O}, h) where {𝔽,O<:AbstractGroupOperation} = h
+compose(::LieGroup{𝔽,O}, g, h::Identity{O}) where {𝔽,O<:AbstractGroupOperation} = g
+function compose(
+    ::LieGroup{𝔽,O}, g::Identity{O}, h::Identity{O}
+) where {𝔽,O<:AbstractGroupOperation}
+    return g
+end
+
+function _compose(G::LieGroup, g, h)
     k = ManifoldsBase.allocate_result(G, compose, g, h)
-    return compose!(G, k, g, h)
+    return _compose!(G, k, g, h)
 end
 
 function compose! end
-@doc "$(_doc_compose)"
-compose!(::LieGroup, k, g, h)
 
+@doc "$(_doc_compose)"
+compose!(G::LieGroup, k, g, h) = _compose!(G, k, g, h)
+function compose!(G::LieGroup{𝔽,O}, k, ::Identity{O}, h) where {𝔽,O<:AbstractGroupOperation}
+    return copyto!(G, k, h)
+end
+function compose!(G::LieGroup{𝔽,O}, k, g, ::Identity{O}) where {𝔽,O<:AbstractGroupOperation}
+    return copyto!(G, k, g)
+end
+function compose!(
+    G::LieGroup{𝔽,O}, k, ::Identity{O}, ::Identity{O}
+) where {𝔽,O<:AbstractGroupOperation}
+    return identity_element!(G, k)
+end
+function compose!(
+    ::LieGroup{𝔽,O}, k::Identity{O}, ::Identity{O}, ::Identity{O}
+) where {𝔽,O<:AbstractGroupOperation}
+    return k
+end
+
+function _compose! end
 
 _doc_conjugate = """
     conjugate(G::LieGroup, g, h)
@@ -185,12 +235,10 @@ function conjugate!(::LieGroup, k, g, h)
 end
 
 ManifoldsBase.copyto!(G::LieGroup, h, g) = ManifoldsBase.copyto!(G.manifold, h, g)
-function ManifoldsBase.copyto!(G::LieGroup{𝔽,M,O}, h, g::Identity{O}) where {𝔽,M,O}
+function ManifoldsBase.copyto!(G::LieGroup{𝔽,O}, h, g::Identity{O}) where {𝔽,O}
     return ManifoldsBase.copyto!(G.manifold, h, identity_element(g))
 end
-function ManifoldsBase.copyto!(
-    G::LieGroup{𝔽,M,O}, h::Identity{O}, g::Identity{O}
-) where {𝔽,M,O}
+function ManifoldsBase.copyto!(G::LieGroup{𝔽,O}, h::Identity{O}, g::Identity{O}) where {𝔽,O}
     return ManifoldsBase.copyto!(G.manifold, h, identity_element(g))
 end
 
@@ -338,7 +386,6 @@ end
 @doc "$(_doc_exp_id)"
 ManifoldsBase.exp!(::LieGroup, h, ::Identity, X, ::Number=1)
 
-
 _doc_inv_left_compose = """
     inv_left_compose(G::LieGroup, g, h)
     inv_left_compose!(G::LieGroup, k, g, h)
@@ -425,7 +472,6 @@ function inv! end
 @doc "$_doc_inv"
 inv!(G::LieGroup, h, g)
 
-
 function is_identity end
 @doc """
     is_identity(G::LieGroup, q; kwargs)
@@ -441,6 +487,58 @@ This means it is either the [`Identity`](@ref)`{O}` with the respect to the corr
 is_identity(G::LieGroup, q)
 
 """
+    is_point(𝔤::LieAlgebra, X; kwargs...)
+
+Check whether `X` is a valid point on the Lie Algebra `𝔤`.
+This falls back to checking whether `X` is a valid point on the tangent space
+at the [`identity_element``](@ref)`]`(G)` on `G.manifold` on the [`LieGroup`](@ref)
+of `G`
+"""
+function ManifoldsBase.is_point(𝔤::LieAlgebra, g; kwargs...)
+    # the manifold stored in the Fiber / Lie Algebra is the Lie Group G
+    G = 𝔤.manifold
+    e = identity_element(G)
+    return ManifoldsBase.is_vector(G.manifold, e, X; kwargs...)
+end
+
+"""
+    is_point(G::LieGroup, g; kwargs...)
+
+Check whether `g` is a valid point on the Lie Group `G`.
+This falls back to checking whether `g` is a valid point on `G.manifold`,
+unless `g` is an [`Identity`](@ref). Then, it is checked whether it is the
+idenity element corresponding to `G`.
+"""
+ManifoldsBase.is_point(G::LieGroup, g; kwargs...) =
+    ManifoldsBase.is_point(G.manifold, g; kwargs...)
+
+# Any Identity: pass to check point
+function ManifoldsBase.is_point(G::LieGroup, e::Identity; kwargs...)
+    return ManifoldsBase.is_point(G, e; kwargs...)
+end
+
+_doc_is_vector = """
+    is_vector(G::LieGroup, X; kwargs...)
+    is_vector(G::LieGroup{𝔽,O}, e::Indentity{O}, X; kwargs...)
+
+Check whether `X` is a tangent vector, that is an element of the |`LieAlgebra`](@ref)
+of `G`.
+The first variant calls [`is_point`](@extref ManifoldsBase.is_point) on the [`LieAlgebra`](@ref) `𝔤` of `G`.
+The second variant calls [`is_vector`](@extref ManifoldsBase.is_vector) on the $(_link(:AbstractManifold)) at the [`identity_element`](@ref).
+
+All kwyword arguments are passed on to the corresponding call
+"""
+
+@doc "$(_doc_is_vector)"
+ManifoldsBase.is_vector(G::LieGroup, X; kwargs...) =
+    ManifoldsBase.is_point(LieAlgebra(G), X; kwargs...)
+
+@doc "$(_doc_is_vector)"
+function ManifoldsBase.is_vector(G::LieGroup{𝔽,O}, e::Identity{O}, X; kwargs...) where {𝔽,O}
+    return ManifoldsBase.is_vector(G.manifold, identity_element(G), X; kwargs...)
+end
+
+"""
     isapprox(M::LieGroup, g, h; kwargs...)
 
 Check if points `g` and `h` from [`LieGroup`](@ref) are approximately equal.
@@ -451,18 +549,18 @@ All keyword argments are passed to this function as well.
 """
 ManifoldsBase.isapprox(G::LieGroup, g, h; kwargs...) = isapprox(G.manifold, g, h; kwargs...)
 function ManifoldsBase.isapprox(
-    G::LieGroup{𝔽,M,O}, g::Identity{<:O}, h; kwargs...
-) where {𝔽,M<:ManifoldsBase.AbstractManifold{𝔽},O<:AbstractGroupOperation}
+    G::LieGroup{𝔽,O}, g::Identity{<:O}, h; kwargs...
+) where {𝔽,O<:AbstractGroupOperation}
     return ManifoldsBase.isapprox(G.manifold, identity_element(G), h; kwargs...)
 end
 function ManifoldsBase.isapprox(
-    G::LieGroup{𝔽,M,O}, g, h::Identity{O}; kwargs...
-) where {𝔽,M<:ManifoldsBase.AbstractManifold{𝔽},O<:AbstractGroupOperation}
+    G::LieGroup{𝔽,O}, g, h::Identity{O}; kwargs...
+) where {𝔽,O<:AbstractGroupOperation}
     return ManifoldsBase.isapprox(G.manifold, g, identity_element(G); kwargs...)
 end
 function ManifoldsBase.isapprox(
-    G::LieGroup{𝔽,M,O}, g::Identity{O}, h::Identity{O}; kwargs...
-) where {𝔽,M<:ManifoldsBase.AbstractManifold{𝔽},O<:AbstractGroupOperation}
+    G::LieGroup{𝔽,O}, g::Identity{O}, h::Identity{O}; kwargs...
+) where {𝔽,O<:AbstractGroupOperation}
     return true
 end
 
