@@ -2,7 +2,14 @@
     LieGroupsTestSuite.jl
 
 This module provides tools and dummy structures to test functionality provided
-within `LieGroups.jl`
+within `LieGroups.jl`.
+
+For every test function, several interactions to other functions can be activated.
+The following functions are expected to be available, since their defaults just pass through to the manifold
+* `is_point` both on the Lie group `G` and the Lie algebra `𝔤`
+* `isapprox(G,g,h)` and `issaprox(𝔤, X, Y)`
+* `copy(G,g)`
+* `norm(𝔤,X)`
 """
 module LieGroupsTestSuite
 using LieGroups
@@ -11,9 +18,10 @@ using Test
 """
     test_compose(G, g, h)
 
-Test functionality of `compose`
+Test functionality of `compose` for given Lie group elements `g`, `h`.
 
 # Keyword arguments
+
 * `test_inverse=true`: test that `g^{-1}g` is the identity (requires `inv`, `inv!`, and `is_identity`)
 * `test_identity=true`: test that composing with the identity yields the identity (requires `identity_element`)
 """
@@ -49,6 +57,52 @@ function test_compose(G::LieGroup, g, h; test_inverse=true, test_identity=true)
     return nothing
 end
 
+"""
+    test_exp_log(G, g, h, X)
+
+Test functionality of `exp` and `log` for given Lie group elements `g`, `h` and
+a vector `X` from the Lie Algebra.
+
+!!! note
+    This function requires`Is_point(G, g)` and `is_point(𝔤, X)` to be implemented
+
+# Keyword arguments
+
+* `test_exp=true`: test the exponential map yields a point on `G`
+* `test_log=true`: test the logarithmic map.
+"""
+function test_exp_log(G::LieGroup, g, h, X; test_exp=true, test_log=true)
+    @testset "exp(G, g, X) & log(G, g, h)" begin
+        𝔤 = LieAlgebra(G)
+        if test_exp
+            k1 = exp(G, g, X)
+            k2 = copy(G, g)
+            exp!(G, k2, g, X)
+            @test isapprox(G, k1, k2)
+            @test is_point(G, k1)
+        end
+        if test_log
+            Y1 = log(G, g, h)
+            Y2 = copy(G, g)
+            log!(G, Y2, g, h)
+            @test isapprox(𝔤, Y1, Y2)
+            @test is_point(𝔤, Y1)
+            @test norm(𝔤, log(G, g, g)) ≈ 0
+            @test norm(𝔤, log(G, h, h)) ≈ 0
+        end
+        if test_exp && test_log
+            k1 = exp(G, g, X)
+            k2 = copy(G, g)
+            exp!(G, k2, g, X)
+            Y1 = log(G, g, k1)
+            Y2 = copy(G, g)
+            log!(G, Y2, g, k2)
+            @test isapprox(𝔤, Y1, Y2)
+            @test isapprox(𝔤, X, Y1)
+        end
+    end
+    return nothing
+end
 """
     test_show(G, repr_string)
 
@@ -96,6 +150,16 @@ function test_LieGroup(G::LieGroup, properties::Dict, expectations::Dict=Dict())
         if (compose in functions)
             ti = all(in.([inv, is_identity], Ref(functions)))
             test_compose(G, points[1], points[2]; test_inverse=ti)
+        end
+        if any(in.([exp, log], Ref(functions)))
+            test_exp_log(
+                G,
+                points[1],
+                points[2],
+                vectors[1];
+                test_exp=(exp in functions),
+                test_log=(log in functions),
+            )
         end
         if (any(in.([show, repr], Ref(functions)))) && haskey(expectations, :repr)
             test_show(G, expectations[:repr])

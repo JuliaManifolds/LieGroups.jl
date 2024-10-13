@@ -13,7 +13,7 @@ begin
         :Name => "The Translation group",
         :Points => [p1, p2, p3],
         :Vectors => [X1, X2, X3],
-        :Functions => [compose, inv, show, is_identity],
+        :Functions => [compose, exp, inv, log, show, is_identity],
     )
     expectations = Dict(
         :repr => "TranslationGroup(Euclidean(3; field=ℝ), AdditionGroupOperation())"
