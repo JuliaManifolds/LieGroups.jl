@@ -16,6 +16,7 @@ begin
     @test repr(𝔤) == rs2
     @test is_identity(G, Identity(op))
     @test !is_identity(G, Identity(op2))
+    @test base_manifold(G) === M
     e = Identity(op)
     @test compose(G, e, e) == e
     @test is_point(G, e)
