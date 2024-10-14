@@ -338,7 +338,7 @@ and ``$(_tex(:exp))_{$(_math(:G))}`` denotes the  [Lie group exponential functio
 !!! note
     The Lie group exponential map is usually different from the exponential map with respect
     to the metric of the underlying Riemannian manifold ``$(_math(:M))``.
-    To access the (Riemannian) exponential map, use `exp(`[`base_manifold`](@ref)`G, g, X)`.
+    To access the (Riemannian) exponential map, use `exp(`[`base_manifold`](@ref)`(G), g, X)`.
 """
 
 @doc "$_doc_exp"
@@ -383,9 +383,15 @@ function ManifoldsBase.exp(G::LieGroup, e::Identity, X, t::Number=1)
     return h
 end
 
+# Fallback to a MethodError to avoid stack overflow
 @doc "$(_doc_exp_id)"
-ManifoldsBase.exp!(::LieGroup, h, ::Identity, X, ::Number=1)
-
+function ManifoldsBase.exp!(G::LieGroup, h, e::Identity, X, t::Number=1)
+    throw(
+        MethodError(
+            ManifoldsBase.exp!, (typeof(G), typeof(h), typeof(e), typeof(X), typeof(t))
+        ),
+    )
+end
 _doc_inv_left_compose = """
     inv_left_compose(G::LieGroup, g, h)
     inv_left_compose!(G::LieGroup, k, g, h)
@@ -494,7 +500,7 @@ This falls back to checking whether `X` is a valid point on the tangent space
 at the [`identity_element``](@ref)`]`(G)` on `G.manifold` on the [`LieGroup`](@ref)
 of `G`
 """
-function ManifoldsBase.is_point(𝔤::LieAlgebra, g; kwargs...)
+function ManifoldsBase.is_point(𝔤::LieAlgebra, X; kwargs...)
     # the manifold stored in the Fiber / Lie Algebra is the Lie Group G
     G = 𝔤.manifold
     e = identity_element(G)
@@ -638,11 +644,28 @@ function ManifoldsBase.log(G::LieGroup, e::Identity, g)
     return X
 end
 
+# explicit method error to avoid stack overflow
 @doc "$(_doc_log_id)"
-ManifoldsBase.log!(::LieGroup, X, ::Identity, g)
+function ManifoldsBase.log!(G::LieGroup, X, e::Identity, g)
+    throw(MethodError(ManifoldsBase.log!, (typeof(G), typeof(X), typeof(e), typeof(g))))
+end
+
+# Move this line already to ManifoldsBase?
+LinearAlgebra.norm(𝔤::LieAlgebra, X) = LinearAlgebra.norm(𝔤.manifold, 𝔤.point, X)
+function LinearAlgebra.norm(
+    G::LieGroup{𝔽,O}, ::Identity{O}, X
+) where {𝔽,O<:AbstractGroupOperation}
+    return LinearAlgebra.norm(G, identity_element(G), X)
+end
+LinearAlgebra.norm(G::LieGroup, g, X) = LinearAlgebra.norm(G.manifold, g, X)
 
 function ManifoldsBase.representation_size(G::LieGroup)
     return ManifoldsBase.representation_size(G.manifold)
 end
 
+Base.show(io::IO, 𝔤::LieAlgebra) = print(io, "Lie Algebra( $(𝔤.manifold) )")
 Base.show(io::IO, G::LieGroup) = print(io, "LieGroup($(G.manifold), $(G.op))")
+
+function ManifoldsBase.zero_vector(G, e::Identity)
+    return ManifoldsBase.zero_vector(G, identity_element(G))
+end

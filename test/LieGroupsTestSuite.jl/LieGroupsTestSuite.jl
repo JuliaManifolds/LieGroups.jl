@@ -72,9 +72,17 @@ a vector `X` from the Lie Algebra.
 * `test_log=true`: test the logarithmic map.
 """
 function test_exp_log(G::LieGroup, g, h, X; test_exp=true, test_log=true)
-    @testset "exp(G, g, X) & log(G, g, h)" begin
+    @testset "(Lie group) exp & log" begin
         𝔤 = LieAlgebra(G)
+        e = Identity(G)
         if test_exp
+            # Lie group exp
+            k1 = exp(G, e, X)
+            k2 = copy(G, g)
+            exp!(G, k2, e, X)
+            @test isapprox(G, k1, k2)
+            @test is_point(G, k1)
+            # exp
             k1 = exp(G, g, X)
             k2 = copy(G, g)
             exp!(G, k2, g, X)
@@ -82,6 +90,15 @@ function test_exp_log(G::LieGroup, g, h, X; test_exp=true, test_log=true)
             @test is_point(G, k1)
         end
         if test_log
+            # Lie group log
+            Y1 = log(G, e, g)
+            Y2 = copy(G, g)
+            log!(G, Y2, e, g)
+            @test isapprox(𝔤, Y1, Y2)
+            @test is_point(𝔤, Y1)
+            @test norm(𝔤, log(G, g, g)) ≈ 0
+            @test norm(𝔤, log(G, h, h)) ≈ 0
+            # log
             Y1 = log(G, g, h)
             Y2 = copy(G, g)
             log!(G, Y2, g, h)
@@ -91,6 +108,16 @@ function test_exp_log(G::LieGroup, g, h, X; test_exp=true, test_log=true)
             @test norm(𝔤, log(G, h, h)) ≈ 0
         end
         if test_exp && test_log
+            # Lie group exp / log
+            k1 = exp(G, e, X)
+            k2 = copy(G, g)
+            exp!(G, k2, e, X)
+            Y1 = log(G, e, k1)
+            Y2 = copy(G, g)
+            log!(G, Y2, e, k2)
+            @test isapprox(𝔤, Y1, Y2)
+            @test isapprox(𝔤, X, Y1)
+            # exp & log
             k1 = exp(G, g, X)
             k2 = copy(G, g)
             exp!(G, k2, g, X)
