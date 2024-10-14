@@ -144,6 +144,11 @@ Return the manifold stored within the [`LieGroup`](@ref) `G`.
 Manifolds.base_manifold(G::LieGroup) = G.manifold
 
 function ManifoldsBase.check_point(
+    G::LieGroup{𝔽,O}, g; kwargs...
+) where {𝔽,O<:AbstractGroupOperation}
+    return ManifoldsBase.check_point(G.manifold, g; kwargs...)
+end
+function ManifoldsBase.check_point(
     G::LieGroup{𝔽,O}, e::Identity{O}; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
     return nothing
@@ -532,8 +537,7 @@ This falls back to checking whether `g` is a valid point on `G.manifold`,
 unless `g` is an [`Identity`](@ref). Then, it is checked whether it is the
 idenity element corresponding to `G`.
 """
-ManifoldsBase.is_point(G::LieGroup, g; kwargs...) =
-    ManifoldsBase.is_point(G.manifold, g; kwargs...)
+ManifoldsBase.is_point(G::LieGroup, g; kwargs...)
 
 _doc_is_vector = """
     is_vector(G::LieGroup, X; kwargs...)

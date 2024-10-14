@@ -16,4 +16,14 @@ begin
     @test repr(𝔤) == rs2
     @test is_identity(G, Identity(op))
     @test !is_identity(G, Identity(op2))
+    e = Identity(op)
+    @test compose(G, e, e) == e
+    @test is_point(G, e)
+    @test !is_point(G, Identity(op2))
+    @test_throws DomainError is_point(G, Identity(op2); error=:error)
+    # Exp log Method Error fallbacks that avoid the stack overflow
+    g = :none
+    X = :nonetoo
+    @test_throws MethodError exp!(G, g, e, X)
+    @test_throws MethodError log!(G, X, e, g)
 end
