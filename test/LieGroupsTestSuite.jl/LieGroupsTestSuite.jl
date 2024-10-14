@@ -15,6 +15,16 @@ module LieGroupsTestSuite
 using LieGroups
 using Test
 
+#
+#
+# Dummy Types
+struct DummyOperation <: AbstractGroupOperation end
+struct DummySecondOperation <: AbstractGroupOperation end
+struct DummyManifold <: LieGroups.AbstractManifold{LieGroups.ℝ} end
+#
+#
+# test component functions
+
 """
     test_compose(G, g, h)
 

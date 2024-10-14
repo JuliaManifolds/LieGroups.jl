@@ -9,6 +9,11 @@ function include_test(path)
     @time include(path)  # show basic timing, (this prints a newline at end)
 end
 
-@testset "Lie Groups" begin
-    include_test("groups/test_translation_group.jl")
+@testset "LieGroups.jl" begin
+    @testset "Lie Group Interface" begin
+        include_test("test_interface.jl")
+    end
+    @testset "Lie Groups" begin
+        include_test("groups/test_translation_group.jl")
+    end
 end

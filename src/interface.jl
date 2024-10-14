@@ -492,6 +492,23 @@ This means it is either the [`Identity`](@ref)`{O}` with the respect to the corr
 """
 is_identity(G::LieGroup, q)
 
+function is_identity(G::LieGroup{𝔽,O}, h; kwargs...) where {𝔽,O<:AbstractGroupOperation}
+    return ManifoldsBase.isapprox(G, Identity{O}(), h; kwargs...)
+end
+function is_identity(
+    ::LieGroup{𝔽,O}, ::Identity{O}; kwargs...
+) where {𝔽,O<:AbstractGroupOperation}
+    return true
+end
+# any other identity than the fitting one
+function is_identity(
+    G::LieGroup{𝔽,<:AbstractGroupOperation},
+    h::Identity{<:AbstractGroupOperation};
+    kwargs...,
+) where {𝔽}
+    return false
+end
+
 """
     is_point(𝔤::LieAlgebra, X; kwargs...)
 
@@ -501,7 +518,7 @@ at the [`identity_element``](@ref)`]`(G)` on `G.manifold` on the [`LieGroup`](@r
 of `G`
 """
 function ManifoldsBase.is_point(𝔤::LieAlgebra, X; kwargs...)
-    # the manifold stored in the Fiber / Lie Algebra is the Lie Group G
+    # the manifold stored in the Fiber / Lie algebra is the Lie group G
     G = 𝔤.manifold
     e = identity_element(G)
     return ManifoldsBase.is_vector(G.manifold, e, X; kwargs...)
@@ -517,11 +534,6 @@ idenity element corresponding to `G`.
 """
 ManifoldsBase.is_point(G::LieGroup, g; kwargs...) =
     ManifoldsBase.is_point(G.manifold, g; kwargs...)
-
-# Any Identity: pass to check point
-function ManifoldsBase.is_point(G::LieGroup, e::Identity; kwargs...)
-    return ManifoldsBase.is_point(G, e; kwargs...)
-end
 
 _doc_is_vector = """
     is_vector(G::LieGroup, X; kwargs...)
@@ -663,9 +675,15 @@ function ManifoldsBase.representation_size(G::LieGroup)
     return ManifoldsBase.representation_size(G.manifold)
 end
 
-Base.show(io::IO, 𝔤::LieAlgebra) = print(io, "Lie Algebra( $(𝔤.manifold) )")
-Base.show(io::IO, G::LieGroup) = print(io, "LieGroup($(G.manifold), $(G.op))")
+function Base.show(io::IO, 𝔤::LieAlgebra)
+    return print(io, "Lie Algebra( $(𝔤.manifold) )")
+end
+function Base.show(io::IO, G::LieGroup)
+    return print(io, "LieGroup($(G.manifold), $(G.op))")
+end
 
-function ManifoldsBase.zero_vector(G, e::Identity)
+function ManifoldsBase.zero_vector(
+    G::LieGroup{𝔽,O}, ::Identity{O}
+) where {𝔽,O<:AbstractGroupOperation}
     return ManifoldsBase.zero_vector(G, identity_element(G))
 end

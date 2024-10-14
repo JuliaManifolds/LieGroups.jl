@@ -10,7 +10,7 @@ struct AdditionGroupOperation <: AbstractGroupOperation end
 #
 #
 # Handle interactions of `+` and `-` with the identity element
-# still necessary? This is handled in compose now anyways
+# still necessary? This is handled in compose now anyways - but just to be safe we caon of course keep them
 Base.:+(e::Identity{AdditionGroupOperation}) = e
 Base.:+(e::Identity{AdditionGroupOperation}, ::Identity{AdditionGroupOperation}) = e
 Base.:+(::Identity{AdditionGroupOperation}, g) = g
@@ -52,20 +52,6 @@ end
 
 function inv!(G::LieGroup{𝔽,AdditionGroupOperation}, h, g) where {𝔽}
     return copyto!(G, h, -g)
-end
-
-function is_identity(G::LieGroup{𝔽,AdditionGroupOperation}, h; kwargs...) where {𝔽}
-    return ManifoldsBase.isapprox(G, Identity{AdditionGroupOperation}(), h; kwargs...)
-end
-function is_identity(
-    G::LieGroup{𝔽,AdditionGroupOperation}, h::Identity{AdditionGroupOperation}; kwargs...
-) where {𝔽}
-    return true
-end
-function is_identity(
-    G::LieGroup{𝔽,AdditionGroupOperation}, h::Identity; kwargs...
-) where {𝔽}
-    return true
 end
 
 """
