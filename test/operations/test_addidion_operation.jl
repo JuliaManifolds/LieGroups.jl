@@ -11,5 +11,6 @@ using LieGroups, Test
         @test (g - e) == g
         @test (e - g) == -g
         @test (e - e) === e
+        @test (-e) === e
     end
 end
