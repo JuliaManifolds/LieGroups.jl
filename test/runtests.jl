@@ -13,6 +13,9 @@ end
     @testset "Lie Group Interface" begin
         include_test("test_interface.jl")
     end
+    @testset "Generic Group Operations" begin
+        include_test("operations/test_addidion_operation.jl")
+    end
     @testset "Lie Groups" begin
         include_test("groups/test_translation_group.jl")
     end
