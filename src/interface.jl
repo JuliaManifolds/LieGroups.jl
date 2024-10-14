@@ -88,7 +88,7 @@ const LieAlgebra{𝔽,G,I} = ManifoldsBase.Fiber{
 } where {𝔽,G<:LieGroup{𝔽},I<:Identity}
 
 function LieAlgebra(G::LieGroup{𝔽}) where {𝔽}
-    return LieAlgebra{𝔽,G,typeof(Identity(G))}(
+    return LieAlgebra{𝔽,typeof(G),typeof(Identity(G))}(
         G, Identity(G), ManifoldsBase.TangentSpaceType()
     )
 end
