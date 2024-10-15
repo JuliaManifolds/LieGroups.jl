@@ -77,7 +77,7 @@ end
 Test functionality of `conjugate`.
 
 # Keyword arguments
-* `expected_value=missing` the result of the conjugate can also be provided directly,
+* `expected_value=missing`: the result of the conjugate can also be provided directly,
   then neither `compose` nor `inv`  are not required.
 """
 function test_conjugate(G::LieGroup, g, h; expected_value=missing)
@@ -94,6 +94,33 @@ function test_conjugate(G::LieGroup, g, h; expected_value=missing)
         @test isapprox(G, k1, v)
     end
     return nothing
+end
+
+"""
+    test_copyto(G, g)
+
+Test that `copyto!` works also when copying over an `Identity`.
+
+The point `g` can be any point _but_ the `identity_element`.
+"""
+function test_copyto(G, g)
+    @testset "copyto!" begin
+        k = copy(G, g)
+        e = Identity(G)
+        copyto!(G, k, e)
+        @test is_identity(G, k)
+        # Test that copying back also works
+        copyto!(G, k, g)
+        @test isapprox(G, k, g)
+        # copy into identity only works if provided the identity
+        @test copyto!(G, e, Identity(G)) == e
+        # but then also always returns e
+        copyto!(G, k, e)
+        @test copyto!(G, e, k) == e
+        # and fails if the point to copy in is not (numerically) e
+        @test_throws DomainError copyto!(G, e, g)
+        return nothing
+    end
 end
 
 """
@@ -194,7 +221,7 @@ Possible properties are
 * `:Functions` is a vector of all defined functions for `G`
   Note that if `f` is in `:Functions`, and `f!` makes sense, for example for `compose`,
   it is assumed that both are defined.
-* `:points` is a vector of at least three points on `G`
+* `:points` is a vector of at least three points on `G`, the first is not allowed to be the identity numerically
 * `:vectors` is a vector of at least 3 elements from the Lie algebra `𝔤` og `G`
 * `:name` is a name of the test. If not provided, defaults to `"\$G"`
 
@@ -214,14 +241,25 @@ function test_LieGroup(G::LieGroup, properties::Dict, expectations::Dict=Dict())
     test_name = get(properties, :Name, "$G")
     @testset "$(test_name)" begin
         # Call function tests based on their presence in alphabetical order
+        #
+        #
+        # --- C
         if (compose in functions)
             ti = all(in.([inv, is_identity], Ref(functions)))
             test_compose(G, points[1], points[2]; test_inverse=ti)
         end
-        if (conjugate in functions)
+        # since there is a default, also providing compose&inv suffices
+        if (conjugate in functions) || (all(in.([compose, inv], Ref(functions))))
             v = get(expectations, :conjugate, missing)
             test_conjugate(G, points[1], points[2]; expected_value=v)
         end
+        # Either `copyto` or the default with `identity_element`` available
+        if any(in.([copyto!, identity_element], Ref(functions)))
+            test_copyto(G, points[1])
+        end
+        #
+        #
+        # --- E
         if any(in.([exp, log], Ref(functions)))
             test_exp_log(
                 G,
@@ -232,6 +270,9 @@ function test_LieGroup(G::LieGroup, properties::Dict, expectations::Dict=Dict())
                 test_log=(log in functions),
             )
         end
+        #
+        #
+        # --- S
         if (any(in.([show, repr], Ref(functions)))) && haskey(expectations, :repr)
             test_show(G, expectations[:repr])
         end

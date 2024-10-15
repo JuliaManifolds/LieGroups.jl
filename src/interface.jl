@@ -240,13 +240,27 @@ function conjugate!(G::LieGroup, k, g, h)
 end
 
 ManifoldsBase.copyto!(G::LieGroup, h, g) = ManifoldsBase.copyto!(G.manifold, h, g)
-function ManifoldsBase.copyto!(G::LieGroup{𝔽,O}, h, g::Identity{O}) where {𝔽,O}
-    return ManifoldsBase.copyto!(G.manifold, h, identity_element(g))
+function ManifoldsBase.copyto!(
+    G::LieGroup{𝔽,O}, h, g::Identity{O}
+) where {𝔽,O<:AbstractGroupOperation}
+    return ManifoldsBase.copyto!(G.manifold, h, identity_element(G))
 end
-function ManifoldsBase.copyto!(G::LieGroup{𝔽,O}, h::Identity{O}, g::Identity{O}) where {𝔽,O}
-    return ManifoldsBase.copyto!(G.manifold, h, identity_element(g))
+function ManifoldsBase.copyto!(
+    ::LieGroup{𝔽,O}, h::Identity{O}, ::Identity{O}
+) where {𝔽,O<:AbstractGroupOperation}
+    return h
 end
-
+function ManifoldsBase.copyto!(
+    G::LieGroup{𝔽,O}, h::Identity{O}, g
+) where {𝔽,O<:AbstractGroupOperation}
+    (is_identity(G, g)) && return h
+    throw(
+        DomainError(
+            g,
+            "copyto! into the identity element of $G ($h) is not defined for a non-identity element g ($g)",
+        ),
+    )
+end
 _doc_diff_conjugate = """
     diff_conjugate(G::LieGroup, g, h, X)
     diff_conjugate!(G::LieGroup, Y, g, h, X)
@@ -397,6 +411,28 @@ function ManifoldsBase.exp!(G::LieGroup, h, e::Identity, X, t::Number=1)
         ),
     )
 end
+
+_doc_identity_element = """
+    identity_element(G::LieGroup)
+    identity_element!(G::LieGroup, g)
+
+Return a point representation of the [`Identity`](@ref) on the [`LieGroup`](@ref) `G`.
+By default this representation is the default array or number representation.
+It should return the corresponding default representation of ``e`` as a point on `G` if
+points are not represented by arrays.
+This can be performed in-place of `g`.
+"""
+# `function identity_element end`
+@doc "$(_doc_identity_element)"
+function identity_element(G::LieGroup)
+    g = ManifoldsBase.allocate_result(G, identity_element)
+    return identity_element!(G, g)
+end
+
+function identity_element! end
+@doc "$(_doc_identity_element)"
+identity_element!(G::LieGroup, g)
+
 _doc_inv_left_compose = """
     inv_left_compose(G::LieGroup, g, h)
     inv_left_compose!(G::LieGroup, k, g, h)
@@ -440,27 +476,6 @@ function inv_right_compose!(::LieGroup, k, h, g)
     compose!(G, k, h, k) # compose `h∘k` in-place of k
     return k
 end
-
-_doc_identity_element = """
-    identity_element(G::LieGroup)
-    identity_element!(G::LieGroup, g)
-
-Return a point representation of the [`Identity`](@ref) on the [`LieGroup`](@ref) `G`.
-By default this representation is the default array or number representation.
-It should return the corresponding default representation of ``e`` as a point on `G` if
-points are not represented by arrays.
-This can be performed in-place of `g`.
-"""
-# `function identity_element end`
-@doc "$(_doc_identity_element)"
-function identity_element(G::LieGroup)
-    g = ManifoldsBase.allocate_result(G, identity_element)
-    return identity_element!(G, g)
-end
-
-function identity_element! end
-@doc "$(_doc_identity_element)"
-identity_element!(G::LieGroup, g)
 
 _doc_inv = """
     inv(G::LieGroup, g)
