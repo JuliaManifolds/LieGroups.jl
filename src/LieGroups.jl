@@ -54,5 +54,5 @@ export exp, exp!
 export identity_element, identity_element!, is_identity, inv, inv!, diff_inv, diff_inv!
 export lie_bracket, lie_bracket!, log, log!
 export norm
-export zero_vector
+export zero_vector, zero_vector!
 end # module LieGroups

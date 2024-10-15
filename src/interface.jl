@@ -312,7 +312,7 @@ end
 
 function diff_right_compose! end
 @doc "$(_doc_diff_right_compose)"
-diff_right_compose!(::LieGroup, h, g1, g2)
+diff_right_compose!(::LieGroup, Y, g, h, X)
 
 function diff_conjugate! end
 @doc "$(_doc_diff_conjugate)"
@@ -706,8 +706,20 @@ function Base.show(io::IO, G::LieGroup)
     return print(io, "LieGroup($(G.manifold), $(G.op))")
 end
 
+function ManifoldsBase.zero_vector(𝔤::LieAlgebra)
+    return ManifoldsBase.zero_vector(𝔤.manifold, identity_element(𝔤.manifold))
+end
 function ManifoldsBase.zero_vector(
     G::LieGroup{𝔽,O}, ::Identity{O}
 ) where {𝔽,O<:AbstractGroupOperation}
     return ManifoldsBase.zero_vector(G, identity_element(G))
+end
+
+function ManifoldsBase.zero_vector!(𝔤::LieAlgebra, X)
+    return ManifoldsBase.zero_vector!(𝔤.manifold, X, identity_element(𝔤.manifold))
+end
+function ManifoldsBase.zero_vector!(
+    G::LieGroup{𝔽,O}, X, ::Identity{O}
+) where {𝔽,O<:AbstractGroupOperation}
+    return ManifoldsBase.zero_vector!(G, X, identity_element(G))
 end
