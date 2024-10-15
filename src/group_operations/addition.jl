@@ -58,6 +58,10 @@ Base.exp(
     ::LieGroup{𝔽,AdditionGroupOperation}, ::Identity{AdditionGroupOperation}, X, t
 ) where {𝔽}
 
+conjugate!(G::LieGroup{𝔽,AdditionGroupOperation}, k, g, h) = copyto!(G, k, h)
+
+diff_conjugate!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, X) = copyto!(LieAlgebra(G), Y, X)
+
 @doc "$(_doc_exp_add)"
 function ManifoldsBase.exp!(
     G::LieGroup{𝔽,AdditionGroupOperation},
