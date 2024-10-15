@@ -9,8 +9,8 @@ struct AdditionGroupOperation <: AbstractGroupOperation end
 
 #
 #
-# Handle interactions of `+` and `-` with the identity element
-# still necessary? This is handled in compose now anyways - but just to be safe, these can be kept
+# Handle interactions of `+` and `-` with the identity element, though they are
+# also already handled on the `compose()` level
 Base.:+(e::Identity{AdditionGroupOperation}) = e
 Base.:+(e::Identity{AdditionGroupOperation}, ::Identity{AdditionGroupOperation}) = e
 Base.:+(::Identity{AdditionGroupOperation}, g) = g

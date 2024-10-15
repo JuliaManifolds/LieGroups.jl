@@ -108,7 +108,9 @@ function test_copyto(G, g)
         k = copy(G, g)
         e = Identity(G)
         copyto!(G, k, e)
-        @test is_identity(G, k)
+        # also check that this holds both ways
+        @test isapprox(G, k, Identity(G))
+        @test isapprox(G, Identity(G), k)
         # Test that copying back also works
         copyto!(G, k, g)
         @test isapprox(G, k, g)

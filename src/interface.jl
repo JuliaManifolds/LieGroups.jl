@@ -600,6 +600,11 @@ function ManifoldsBase.isapprox(
 ) where {𝔽,O<:AbstractGroupOperation}
     return true
 end
+function ManifoldsBase.isapprox(
+    G::LieGroup{𝔽,O}, g::Identity{O}, h::Identity{O2}; kwargs...
+) where {𝔽,O<:AbstractGroupOperation,O2<:AbstractGroupOperation}
+    return false
+end
 
 _doc_lie_bracket = """
     lie_bracket!(𝔤::LieAlgebra, X, Y)

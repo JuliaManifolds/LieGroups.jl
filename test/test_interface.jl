@@ -4,7 +4,7 @@ s = joinpath(@__DIR__, "LieGroupsTestSuite.jl")
 !(s in LOAD_PATH) && (push!(LOAD_PATH, s))
 using LieGroupsTestSuite
 
-begin
+@testset "Generic Lie Group Interface functions" begin
     M = LieGroupsTestSuite.DummyManifold()
     op = LieGroupsTestSuite.DummyOperation()
     G = LieGroup(M, op)
@@ -20,6 +20,8 @@ begin
     e = Identity(op)
     @test compose(G, e, e) == e
     @test compose!(G, e, e, e) === e
+    @test isapprox(G, e, Identity(op))
+    @test !isapprox(G, e, Identity(op2))
     @test is_point(G, e)
     @test !is_point(G, Identity(op2))
     @test_throws DomainError is_point(G, Identity(op2); error=:error)
