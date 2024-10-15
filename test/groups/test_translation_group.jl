@@ -15,8 +15,6 @@ begin
         :Vectors => [X1, X2, X3],
         :Functions => [compose, exp, inv, log, show, is_identity],
     )
-    expectations = Dict(
-        :repr => "TranslationGroup(Euclidean(3; field=ℝ), AdditionGroupOperation())"
-    )
+    expectations = Dict(:repr => "TranslationGroup(3; field=ℝ)")
     test_LieGroup(G, properties, expectations)
 end

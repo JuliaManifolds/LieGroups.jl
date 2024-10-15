@@ -18,6 +18,7 @@ function TranslationGroup(n::Int...; kwargs...)
     return TranslationGroup{typeof(Rn).parameters[[2, 1]]...}(Rn, AdditionGroupOperation())
 end
 
-function Base.show(io::IO, G::TranslationGroup)
-    return print(io, "TranslationGroup($(G.manifold), $(G.op))")
+function Base.show(io::IO, G::TranslationGroup{𝔽}) where {𝔽}
+    size = Manifolds.get_parameter(G.manifold.size)
+    return print(io, "TranslationGroup($(join(size, ", ")); field=$(𝔽))")
 end
