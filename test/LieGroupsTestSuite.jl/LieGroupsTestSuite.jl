@@ -172,6 +172,9 @@ function test_exp_log(G::LieGroup, g, h, X; test_exp=true, test_log=true)
             log!(G, Y2, g, h)
             @test isapprox(𝔤, Y1, Y2)
             @test is_point(𝔤, Y1)
+            # or equivalently
+            @test is_vector(G, Y1)
+            @test is_vector(G, Identity(G), Y1)
             @test norm(𝔤, log(G, g, g)) ≈ 0
             @test norm(𝔤, log(G, h, h)) ≈ 0
         end
