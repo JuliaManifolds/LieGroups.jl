@@ -232,9 +232,9 @@ end
 
 function conjugate! end
 @doc "$(_doc_conjugate)"
-function conjugate!(::LieGroup, k, g, h)
+function conjugate!(G::LieGroup, k, g, h)
     inv!(G, k, g) # g^{-1} in-place of k
-    compose!(G, k, h, h) # `h∘k` in-place of k
+    compose!(G, k, h, k) # `h∘k` in-place of k
     compose!(G, k, g, k) # `g∘k` in-place of k
     return k
 end

@@ -36,7 +36,7 @@ Test functionality of `compose` for given Lie group elements `g`, `h`.
 * `test_identity=true`: test that composing with the identity yields the identity (requires `identity_element`)
 """
 function test_compose(G::LieGroup, g, h; test_inverse=true, test_identity=true)
-    @testset "compose(G, g, h)" begin
+    @testset "compose" begin
         k1 = compose(G, g, h)
         k2 = copy(G, g)
         compose!(G, k2, g, h)
@@ -62,7 +62,36 @@ function test_compose(G::LieGroup, g, h; test_inverse=true, test_identity=true)
                     @test isapprox(G, k1, k2)
                 end
             end
+            e = Identity(G)
+            k3 = copy(G, g)
+            compose!(G, k3, e, e)
+            @test is_identity(G, k3)
         end
+    end
+    return nothing
+end
+
+"""
+    test_conjugate(G::LieGroup, g, h; expected_value=missing)
+
+Test functionality of `conjugate`.
+
+# Keyword arguments
+* `expected_value=missing` the result of the conjugate can also be provided directly,
+  then neither `compose` nor `inv`  are not required.
+"""
+function test_conjugate(G::LieGroup, g, h; expected_value=missing)
+    @testset "conjugate" begin
+        v = if ismissing(expected_value)
+            compose(G, g, compose(G, h, inv(G, g)))
+        else
+            expected_value
+        end
+        k1 = conjugate(G, g, h)
+        k2 = copy(G, g)
+        conjugate!(G, k2, g, h)
+        @test isapprox(G, k1, k2)
+        @test isapprox(G, k1, v)
     end
     return nothing
 end
@@ -173,6 +202,7 @@ Possible `expectations` are
 
 * `:repr` is a sting one gets from `repr(G)`
 * `:atol` a global absolute tolerance, defaults to `1e-8`
+* `:conjugate` for the result of `conjgate in the case where `compose`, `inv` are not provided
 """
 function test_LieGroup(G::LieGroup, properties::Dict, expectations::Dict=Dict())
     a_tol = get(expectations, :atol, 1e-8)
@@ -187,6 +217,10 @@ function test_LieGroup(G::LieGroup, properties::Dict, expectations::Dict=Dict())
         if (compose in functions)
             ti = all(in.([inv, is_identity], Ref(functions)))
             test_compose(G, points[1], points[2]; test_inverse=ti)
+        end
+        if (conjugate in functions)
+            v = get(expectations, :conjugate, missing)
+            test_conjugate(G, points[1], points[2]; expected_value=v)
         end
         if any(in.([exp, log], Ref(functions)))
             test_exp_log(
