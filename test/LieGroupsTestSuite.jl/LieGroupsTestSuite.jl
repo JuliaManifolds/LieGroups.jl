@@ -8,8 +8,8 @@ For every test function, several interactions to other functions can be activate
 The following functions are expected to be available, since their defaults just pass through to the manifold
 * `is_point` both on the Lie group `G` and the Lie algebra `𝔤`
 * `isapprox(G,g,h)` and `issaprox(𝔤, X, Y)`
-* `copy(G,g)`
-* `norm(𝔤,X)`
+* `copy(G, g)`
+* `norm(𝔤, X)`
 """
 module LieGroupsTestSuite
 using LieGroups
@@ -74,7 +74,7 @@ Test functionality of `exp` and `log` for given Lie group elements `g`, `h` and
 a vector `X` from the Lie Algebra.
 
 !!! note
-    This function requires`Is_point(G, g)` and `is_point(𝔤, X)` to be implemented
+    This function requires `is_point(G, g)` and `is_point(LieAlgebra(G), X)` to be implemented
 
 # Keyword arguments
 
