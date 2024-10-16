@@ -24,6 +24,7 @@ begin
             identity_element,
             inv,
             is_identity,
+            lie_bracket,
             log,
             show,
         ],
@@ -33,6 +34,7 @@ begin
         :diff_inv => -X1,
         :diff_left_compose => X1,
         :diff_right_compose => X1,
+        :lie_bracket => zero(X1),
     )
     test_LieGroup(G, properties, expectations)
 end

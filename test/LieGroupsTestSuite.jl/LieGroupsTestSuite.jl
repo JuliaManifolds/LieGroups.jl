@@ -140,9 +140,9 @@ function test_diff_inv(G::LieGroup, g, X; expected_value=missing)
         Y1 = diff_inv(G, g, X)
         Y2 = copy(𝔤, X)
         Y2 = diff_inv!(G, Y2, g, X)
-        @test isapprox(LieAlgebra(G), Y1, Y2)
+        @test isapprox(𝔤, Y1, Y2)
         if !ismissing(expected_value)
-            @test isapprox(LieAlgebra(G), Y1, expected_value)
+            @test isapprox(𝔤, Y1, expected_value)
         end
     end
 end
@@ -161,7 +161,7 @@ function test_diff_left_compose(G::LieGroup, g, h, X; expected_value=missing)
         𝔤 = LieAlgebra(G)
         Y1 = diff_left_compose(G, g, h, X)
         Y2 = copy(𝔤, X)
-        Y2 = diff_left_compose!(G, Y2, g, h, X)
+        diff_left_compose!(G, Y2, g, h, X)
         @test isapprox(LieAlgebra(G), Y1, Y2)
         if !ismissing(expected_value)
             @test isapprox(LieAlgebra(G), Y1, expected_value)
@@ -179,14 +179,14 @@ Test functionality of `diff_right_compose`.
   if not provided, only consistency between the allocating and the in-place variant is checked.
 """
 function test_diff_right_compose(G::LieGroup, g, h, X; expected_value=missing)
-    @testset "diff_inv" begin
+    @testset "diff_right_compose" begin
         𝔤 = LieAlgebra(G)
-        Y1 = diff_left_compose(G, g, h, X)
+        Y1 = diff_right_compose(G, g, h, X)
         Y2 = copy(𝔤, X)
-        Y2 = diff_left_compose!(G, Y2, g, h, X)
-        @test isapprox(LieAlgebra(G), Y1, Y2)
+        diff_right_compose!(G, Y2, g, h, X)
+        @test isapprox(𝔤, Y1, Y2)
         if !ismissing(expected_value)
-            @test isapprox(LieAlgebra(G), Y1, expected_value)
+            @test isapprox(𝔤, Y1, expected_value)
         end
     end
 end
@@ -302,6 +302,31 @@ end
 
 #
 #
+# --- L
+"""
+    test_lie_bracket(G::LieGroup, X, Y; expected_value=missing)
+
+Test functionality of `lie_bracket`.
+
+# Keyword arguments
+* `expected_value=missing`: the result of the lie bracket
+  if not provided, only consistency between the allocating and the in-place variant is checked.
+"""
+function test_lie_bracket(G::LieGroup, X, Y; expected_value=missing)
+    @testset "lie_bracket" begin
+        𝔤 = LieAlgebra(G)
+        Z1 = lie_bracket(𝔤, X, Y)
+        Z2 = copy(𝔤, X)
+        lie_bracket!(𝔤, Z2, X, Y)
+        @test isapprox(𝔤, Z1, Z2)
+        if !ismissing(expected_value)
+            @test isapprox(𝔤, Z1, expected_value)
+        end
+    end
+end
+
+#
+#
 # --- S
 """
     test_show(G, repr_string)
@@ -393,7 +418,7 @@ function test_LieGroup(G::LieGroup, properties::Dict, expectations::Dict=Dict())
 
         if (diff_right_compose in functions)
             v = get(expectations, :diff_right_compose, missing)
-            test_diff_left_compose(G, points[1], points[2], vectors[1]; expected_value=v)
+            test_diff_right_compose(G, points[1], points[2], vectors[1]; expected_value=v)
         end
 
         #
@@ -409,6 +434,15 @@ function test_LieGroup(G::LieGroup, properties::Dict, expectations::Dict=Dict())
                 test_log=(log in functions),
             )
         end
+
+        #
+        #
+        # --- L
+        if (lie_bracket in functions)
+            v = get(expectations, :lie_bracket, missing)
+            test_lie_bracket(G, vectors[1], vectors[2]; expected_value=v)
+        end
+
         #
         #
         # --- S

@@ -75,7 +75,7 @@ function diff_right_compose!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, 
 end
 
 function lie_bracket!(
-    𝔤::LieAlgebra{𝔽,LieGroup{𝔽,AdditionGroupOperation}}, Z, X, Y
+    𝔤::LieAlgebra{𝔽,<:LieGroup{𝔽,AdditionGroupOperation}}, Z, X, Y
 ) where {𝔽}
     return zero_vector!(𝔤, Z)
 end
