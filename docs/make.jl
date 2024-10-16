@@ -54,6 +54,7 @@ if "--quarto" ∈ ARGS
         Pkg.build("IJulia") # build `IJulia` to the right version.
         Pkg.activate(@__DIR__) # but return to the docs one before
         run(`quarto render $(tutorials_folder)`)
+        return nothing
     end
 else # fallback to at least create empty files for Optimize and Implement
     #    touch(joinpath(@__DIR__, "src/tutorials/Optimize.md"))
