@@ -126,6 +126,28 @@ function test_conjugate(G::LieGroup, g, h; expected_value=missing)
 end
 
 """
+    test_diff_inv(G::LieGroup, g, X; expected_value=missing)
+
+Test functionality of `diff_inv`.
+
+# Keyword arguments
+* `expected_value=missing`: the result of the differential of the inverse, if not provided,
+  only consistency between the allocating and the in-place variant is checked.
+"""
+function test_diff_inv(G::LieGroup, g, X; expected_value=missing)
+    @testset "diff_inv" begin
+        𝔤 = LieAlgebra(G)
+        Y1 = diff_inv(G, g, X)
+        Y2 = copy(𝔤, X)
+        Y2 = diff_inv!(G, Y2, g, X)
+        @test isapprox(LieAlgebra(G), Y1, Y2)
+        if !ismissing(expected_value)
+            @test isapprox(LieAlgebra(G), Y1, expected_value)
+        end
+    end
+end
+
+"""
     test_copyto(G, g)
 
 Test that `copyto!` works also when copying over an `Identity`.
@@ -273,6 +295,7 @@ Possible `expectations` are
 
 * `:repr` is a sting one gets from `repr(G)`
 * `:adjoint` for the result of `conjgate` in the case where `diff_conjugate` is not implemented
+* `:diff_inv` for the result of `diff_inv` with respect to the first point and first vector.
 * `:atol` a global absolute tolerance, defaults to `1e-8`
 * `:conjugate` for the result of `conjgate in the case where `compose`, `inv` are not implemented
 """
@@ -288,11 +311,14 @@ function test_LieGroup(G::LieGroup, properties::Dict, expectations::Dict=Dict())
         # Call function tests based on their presence in alphabetical order
         #
         #
-        # --- C
+        # --- A
         if (adjoint in functions)
             v = get(expectations, :adjoint, missing)
             test_adjoint(G, points[1], vectors[1]; expected_value=v)
         end
+        #
+        #
+        # --- C
         if (compose in functions)
             ti = all(in.([inv, is_identity], Ref(functions)))
             test_compose(G, points[1], points[2]; test_inverse=ti)
@@ -306,6 +332,14 @@ function test_LieGroup(G::LieGroup, properties::Dict, expectations::Dict=Dict())
         if any(in.([copyto!, identity_element], Ref(functions)))
             test_copyto(G, points[1])
         end
+        #
+        #
+        # --- D
+        if (diff_inv in functions)
+            v = get(expectations, :diff_inv, missing)
+            test_diff_inv(G, points[1], vectors[1]; expected_value=v)
+        end
+
         #
         #
         # --- E

@@ -328,7 +328,7 @@ This can be done in-place of `Y`.
 """
 
 @doc "$_doc_diff_inv"
-function diff_inv(::LieGroup, g, X)
+function diff_inv(G::LieGroup, g, X)
     Y = allocate_result(G, diff_inv, g, X)
     return diff_inv!(G, Y, g, X)
 end

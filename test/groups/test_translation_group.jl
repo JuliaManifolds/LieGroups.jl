@@ -17,6 +17,7 @@ begin
             adjoint,
             compose,
             conjugate,
+            diff_inv,
             exp,
             identity_element,
             inv,
@@ -25,6 +26,6 @@ begin
             show,
         ],
     )
-    expectations = Dict(:repr => "TranslationGroup(3; field=ℝ)")
+    expectations = Dict(:repr => "TranslationGroup(3; field=ℝ)", :diff_inv => -X1)
     test_LieGroup(G, properties, expectations)
 end
