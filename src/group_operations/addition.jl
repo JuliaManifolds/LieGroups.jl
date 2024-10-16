@@ -58,8 +58,6 @@ Base.exp(
     ::LieGroup{𝔽,AdditionGroupOperation}, ::Identity{AdditionGroupOperation}, X, t
 ) where {𝔽}
 
-conjugate!(G::LieGroup{𝔽,AdditionGroupOperation}, k, g, h) where {𝔽} = copyto!(G, k, h)
-
 function diff_conjugate!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, X) where {𝔽}
     return copyto!(LieAlgebra(G), Y, X)
 end
