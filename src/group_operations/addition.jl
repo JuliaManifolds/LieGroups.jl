@@ -66,11 +66,11 @@ function diff_inv!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, X) where {�
     return copyto!(LieAlgebra(G), Y, -X)
 end
 
-function diff_left_compose!(::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, X) where {𝔽}
+function diff_left_compose!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, X) where {𝔽}
     return copyto!(LieAlgebra(G), Y, X)
 end
 
-function diff_right_compose!(::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, X) where {𝔽}
+function diff_right_compose!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, X) where {𝔽}
     return copyto!(LieAlgebra(G), Y, X)
 end
 

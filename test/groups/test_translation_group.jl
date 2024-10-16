@@ -18,6 +18,8 @@ begin
             compose,
             conjugate,
             diff_inv,
+            diff_left_compose,
+            diff_right_compose,
             exp,
             identity_element,
             inv,
@@ -26,6 +28,11 @@ begin
             show,
         ],
     )
-    expectations = Dict(:repr => "TranslationGroup(3; field=ℝ)", :diff_inv => -X1)
+    expectations = Dict(
+        :repr => "TranslationGroup(3; field=ℝ)",
+        :diff_inv => -X1,
+        :diff_left_compose => X1,
+        :diff_right_compose => X1,
+    )
     test_LieGroup(G, properties, expectations)
 end

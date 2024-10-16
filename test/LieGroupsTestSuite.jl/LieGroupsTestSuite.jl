@@ -148,6 +148,50 @@ function test_diff_inv(G::LieGroup, g, X; expected_value=missing)
 end
 
 """
+    test_diff_left_compose(G::LieGroup, g, h, X; expected_value=missing)
+
+Test functionality of `diff_left_compose`.
+
+# Keyword arguments
+* `expected_value=missing`: the result of the differential of the compose's left argument,
+  if not provided, only consistency between the allocating and the in-place variant is checked.
+"""
+function test_diff_left_compose(G::LieGroup, g, h, X; expected_value=missing)
+    @testset "diff_left_compose" begin
+        𝔤 = LieAlgebra(G)
+        Y1 = diff_left_compose(G, g, h, X)
+        Y2 = copy(𝔤, X)
+        Y2 = diff_left_compose!(G, Y2, g, h, X)
+        @test isapprox(LieAlgebra(G), Y1, Y2)
+        if !ismissing(expected_value)
+            @test isapprox(LieAlgebra(G), Y1, expected_value)
+        end
+    end
+end
+
+"""
+    test_diff_right_compose(G::LieGroup, g, h, X; expected_value=missing)
+
+Test functionality of `diff_right_compose`.
+
+# Keyword arguments
+* `expected_value=missing`: the result of the differential of the compose's right argument,
+  if not provided, only consistency between the allocating and the in-place variant is checked.
+"""
+function test_diff_right_compose(G::LieGroup, g, h, X; expected_value=missing)
+    @testset "diff_inv" begin
+        𝔤 = LieAlgebra(G)
+        Y1 = diff_left_compose(G, g, h, X)
+        Y2 = copy(𝔤, X)
+        Y2 = diff_left_compose!(G, Y2, g, h, X)
+        @test isapprox(LieAlgebra(G), Y1, Y2)
+        if !ismissing(expected_value)
+            @test isapprox(LieAlgebra(G), Y1, expected_value)
+        end
+    end
+end
+
+"""
     test_copyto(G, g)
 
 Test that `copyto!` works also when copying over an `Identity`.
@@ -295,7 +339,9 @@ Possible `expectations` are
 
 * `:repr` is a sting one gets from `repr(G)`
 * `:adjoint` for the result of `conjgate` in the case where `diff_conjugate` is not implemented
-* `:diff_inv` for the result of `diff_inv` with respect to the first point and first vector.
+* `:diff_inv` for the result of `diff_inv` with respect to the first point and the first vector.
+* `:diff_left_compose` for the result of `diff_left_compose` with respect to the first two points and the first vector.
+* `:diff_right_compose` for the result of `diff_right_compose` with respect to the first two points and the first vector.
 * `:atol` a global absolute tolerance, defaults to `1e-8`
 * `:conjugate` for the result of `conjgate in the case where `compose`, `inv` are not implemented
 """
@@ -338,6 +384,16 @@ function test_LieGroup(G::LieGroup, properties::Dict, expectations::Dict=Dict())
         if (diff_inv in functions)
             v = get(expectations, :diff_inv, missing)
             test_diff_inv(G, points[1], vectors[1]; expected_value=v)
+        end
+
+        if (diff_left_compose in functions)
+            v = get(expectations, :diff_left_compose, missing)
+            test_diff_left_compose(G, points[1], points[2], vectors[1]; expected_value=v)
+        end
+
+        if (diff_right_compose in functions)
+            v = get(expectations, :diff_right_compose, missing)
+            test_diff_left_compose(G, points[1], points[2], vectors[1]; expected_value=v)
         end
 
         #
