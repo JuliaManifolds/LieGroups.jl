@@ -13,8 +13,17 @@ begin
         :Name => "The Translation group",
         :Points => [g1, g2, g3],
         :Vectors => [X1, X2, X3],
-        :Functions =>
-            [compose, conjugate, exp, identity_element, inv, is_identity, log, show],
+        :Functions => [
+            adjoint,
+            compose,
+            conjugate,
+            exp,
+            identity_element,
+            inv,
+            is_identity,
+            log,
+            show,
+        ],
     )
     expectations = Dict(:repr => "TranslationGroup(3; field=ℝ)")
     test_LieGroup(G, properties, expectations)

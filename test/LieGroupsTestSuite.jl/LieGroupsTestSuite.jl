@@ -21,12 +21,41 @@ using Test
 struct DummyOperation <: AbstractGroupOperation end
 struct DummySecondOperation <: AbstractGroupOperation end
 struct DummyManifold <: LieGroups.AbstractManifold{LieGroups.ℝ} end
+# Test functionality of single functions
 #
 #
-# test component functions
+# --- A
 
 """
-    test_compose(G, g, h)
+    test_adjoint(G, g, X; kwargs...)
+
+Test functionality of the `adjoint` function for a given Lie group element `g` and a Lie Algebra vector `X`
+
+# Keyword arguments
+* `expected_value=missing` provide the value expected. If none is provided, the
+  default from `diff_conjugate` is used
+"""
+function test_adjoint(G::LieGroup, g, X; expected_value=missing)
+    @testset "adjoint" begin
+        v = if ismissing(expected_value)
+            diff_conjugate(G, g, identity_element(G), X)
+        else
+            expected_value
+        end
+        𝔤 = LieAlgebra(G)
+        Y1 = adjoint(G, g, X)
+        Y2 = copy(𝔤, X)
+        adjoint!(G, Y2, g, X)
+        @test isapprox(𝔤, Y1, Y2)
+        @test isapprox(𝔤, Y1, v)
+    end
+    return nothing
+end
+#
+#
+# --- C
+"""
+    test_compose(G, g, h; kwargs...)
 
 Test functionality of `compose` for given Lie group elements `g`, `h`.
 
@@ -125,6 +154,9 @@ function test_copyto(G, g)
     end
 end
 
+#
+#
+# --- E
 """
     test_exp_log(G, g, h, X)
 
@@ -201,6 +233,10 @@ function test_exp_log(G::LieGroup, g, h, X; test_exp=true, test_log=true)
     end
     return nothing
 end
+
+#
+#
+# --- S
 """
     test_show(G, repr_string)
 
@@ -216,6 +252,9 @@ function test_show(G::LieGroup, repr_string)
     return nothing
 end
 
+# The global test function for a Lie group
+#
+#
 """
     test_LieGroup(G, properties, expectations)
 
@@ -228,13 +267,14 @@ Possible properties are
   it is assumed that both are defined.
 * `:points` is a vector of at least three points on `G`, the first is not allowed to be the identity numerically
 * `:vectors` is a vector of at least 3 elements from the Lie algebra `𝔤` og `G`
-* `:name` is a name of the test. If not provided, defaults to `"\$G"`
+* `:Name` is a name of the test. If not provided, defaults to `"\$G"`
 
 Possible `expectations` are
 
 * `:repr` is a sting one gets from `repr(G)`
+* `:adjoint` for the result of `conjgate` in the case where `diff_conjugate` is not implemented
 * `:atol` a global absolute tolerance, defaults to `1e-8`
-* `:conjugate` for the result of `conjgate in the case where `compose`, `inv` are not provided
+* `:conjugate` for the result of `conjgate in the case where `compose`, `inv` are not implemented
 """
 function test_LieGroup(G::LieGroup, properties::Dict, expectations::Dict=Dict())
     a_tol = get(expectations, :atol, 1e-8)
@@ -249,6 +289,10 @@ function test_LieGroup(G::LieGroup, properties::Dict, expectations::Dict=Dict())
         #
         #
         # --- C
+        if (adjoint in functions)
+            v = get(expectations, :adjoint, missing)
+            test_adjoint(G, points[1], vectors[1]; expected_value=v)
+        end
         if (compose in functions)
             ti = all(in.([inv, is_identity], Ref(functions)))
             test_compose(G, points[1], points[2]; test_inverse=ti)

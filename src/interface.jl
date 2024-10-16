@@ -123,7 +123,7 @@ end
 
 function adjoint! end
 @doc "$(_doc_adjoint)"
-function adjoint!(::LieGroup, Y, g, X)
+function adjoint!(G::LieGroup, Y, g, X)
     diff_conjugate!(G, Y, g, Identity(G), X)
     return Y
 end
