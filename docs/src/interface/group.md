@@ -9,7 +9,7 @@ LieAlgebra
 
 ```@autodocs
 Modules = [LieGroups]
-Pages = ["interface.jl"]
+Pages = ["src/interface.jl"]
 Order = [:function]
 ```
 
@@ -17,7 +17,7 @@ Order = [:function]
 
 ```@autodocs
 Modules = [LieGroups]
-Pages = ["Lie_algebra_interface.jl"]
+Pages = ["src/Lie_algebra/Lie_algebra_interface.jl"]
 Order = [:function]
 ```
 
