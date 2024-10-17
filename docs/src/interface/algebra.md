@@ -1,14 +1,14 @@
-# The interface for Lie Groups
+# The interface for Lie algebras
 
 ```@docs
-LieGroup
+LieAlgebra
 ```
 
-## Functions on Lie groups
+## Functions on Lie algebras
 
 ```@autodocs
 Modules = [LieGroups]
-Pages = ["src/interface.jl"]
+Pages = ["src/Lie_algebra/Lie_algebra_interface.jl"]
 Order = [:function]
 ```
 

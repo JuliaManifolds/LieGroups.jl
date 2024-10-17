@@ -118,10 +118,11 @@ makedocs(;
         "Home" => "index.md",
         "About" => "about.md",
         (tutorials_in_menu ? [tutorials_menu] : [])...,
-        "An Interface for ..." => [
-            "A Lie group and algebra" => "interface/group.md",
-            "A group operation" => "interface/operations.md",
-            "A group action" => "interface/actions.md",
+        "Interfaces" => [
+            "Lie group" => "interface/group.md",
+            "Lie algebra" => "interface/algebra.md",
+            "Group operation" => "interface/operations.md",
+            "Group action" => "interface/actions.md",
         ],
         "Lie groups" => [
             "List of Lie Groups" => "groups/index.md",

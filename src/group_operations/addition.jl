@@ -47,8 +47,8 @@ _doc_diff_conjugate_add = """
     diff_conjugate((G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, X))
     diff_conjugate!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, X)
 
-Compute the differential of the conjutage ````c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1} = g+h-g = h``,
-which simplifies for [`AdditionGroupOperation`] to`` D(c_g(h))[X] = X``.
+Compute the differential of the conjutage ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1} = g+h-g = h``,
+which simplifies for [`AdditionGroupOperation`](@ref) to`` D(c_g(h))[X] = X``.
 """
 
 @doc "$(_doc_diff_conjugate_add)"
@@ -63,8 +63,8 @@ _doc_diff_inv_add = """
     diff_inv(G::LieGroup{𝔽,AdditionGroupOperation}, g, X)
     diff_inv!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, X)
 
-Compute the differential of the inverse operation ``ι_{$(_math(:G))}(g) = g^-1`` = -g``,
-which simplifies for [`AdditionGroupOperation`] to ```Dι_{$(_math(:G))}(g)[X] = -X```
+Compute the differential of the inverse operation ``ι_{$(_math(:G))}(g) = g^-1 = -g``,
+which simplifies for [`AdditionGroupOperation`](@ref) to ``Dι_{$(_math(:G))}(g)[X] = -X``
 """
 
 @doc "$(_doc_diff_inv_add)"
@@ -80,7 +80,7 @@ _doc_diff_left_compose_add = """
     diff_left_compose!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, X)
 
 Compute the differential of the left group multiplication ``λ_g(h) = g$(_math(:∘))h``,
-which simplifies for [`AdditionGroupOperation`] to ``Dλ_g(h)[X] = X``.
+which simplifies for [`AdditionGroupOperation`](@ref) to ``Dλ_g(h)[X] = X``.
 """
 
 @doc "$(_doc_diff_left_compose_add)"
@@ -96,7 +96,7 @@ _doc_diff_right_compose_add = """
     diff_right_compose!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, h, g, X)
 
 Compute the differential of the right group multiplication ``ρ_g(h) = h$(_math(:∘))g``,
-which simplifies for [`AdditionGroupOperation`] to ``Dρ_g(h)[X] = X``.
+which simplifies for [`AdditionGroupOperation`](@ref) to ``Dρ_g(h)[X] = X``.
 """
 
 @doc "$(_doc_diff_right_compose_add)"
@@ -171,7 +171,7 @@ _doc_lie_bracket_add = """
 
 Compute the Lie bracket ``[⋅,⋅]: $(_math(:𝔤))×$(_math(:𝔤)) → $(_math(:𝔤))``,
 which for the for the [`AdditionGroupOperation`](@ref) simplifies to the
-correspondin$(_link(:zero_vector)).
+corresponding $(_link(:zero_vector)).
 The computation can be done in-place of `Z`.
 """
 
