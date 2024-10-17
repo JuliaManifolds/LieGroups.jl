@@ -4,10 +4,4 @@
 TranslationGroup
 ```
 
-## Functions
-
-```@autodocs
-Modules = [LieGroups]
-Pages = ["groups/translation_group.jl"]
-Order = [:function]
-```
+For this groups, all implementations are already covered by the defaults in [`AdditionGroupOperation`](@ref).

@@ -48,7 +48,7 @@ _doc_diff_conjugate_add = """
     diff_conjugate!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, X)
 
 Compute the differential of the conjutage ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1} = g+h-g = h``,
-which simplifies for [`AdditionGroupOperation`](@ref) to`` D(c_g(h))[X] = X``.
+which simplifies for [`AdditionGroupOperation`](@ref) to ``D(c_g(h))[X] = X``.
 """
 
 @doc "$(_doc_diff_conjugate_add)"
