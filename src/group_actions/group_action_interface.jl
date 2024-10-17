@@ -103,14 +103,7 @@ function base_lie_group end
 
 Return the [`LieGroup`](@ref) of the [`AbstractGroupAction`](@ref).
 """
-base_lie_group(::AbstractGroupAction)
-
-@doc """
-    base_manifold(A::AbstractGroupAction)
-
-Return the $(_link(:AbstractManifold)) of the [`AbstractGroupAction`](@ref).
-"""
-ManifoldsBase.base_manifold(::AbstractGroupAction)
+base_Lie_group(::AbstractGroupAction)
 
 #
 #
@@ -125,7 +118,8 @@ where the kind of group action is indicated by the [`AbstractGroupActionType`](@
 This can be perfomed in-place of `q`.
 """
 
-# function apply end # uncomment (remove this comment) when removing this function from Manifolds.jl
+# function apply end
+# un-comment the preceding line and remove this, once GroupManifolds no longer exists in Manifolds.jl
 @doc "$(_doc_apply)"
 function apply(A::AbstractGroupAction, g, p)
     q = allocate_result(A, apply, g, p)
@@ -133,7 +127,8 @@ function apply(A::AbstractGroupAction, g, p)
     return q
 end
 
-# function apply! end # uncomment (remove this comment) when removing this function from Manifolds.jl
+# Define `function apply! end` here as well
+# un-comment (remove this comment) when removing this function from Manifolds.jl
 @doc "$(_doc_apply)"
 apply!(A::AbstractGroupAction, q, g, p)
 

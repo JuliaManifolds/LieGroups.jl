@@ -79,9 +79,7 @@ struct GroupOperationAction{T<:AbstractGroupActionType,G<:LieGroup} <:
     group::G
 end
 
-base_lie_group(A::GroupOperationAction) = A.group
-
-ManifoldsBase.base_manifold(A::GroupOperationAction) = A.group
+base_Lie_group(A::GroupOperationAction) = A.group
 
 _doc_apply_groupop = """
     apply(A::GroupOperationAction, g, h)
