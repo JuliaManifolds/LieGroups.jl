@@ -138,7 +138,7 @@ function test_diff_inv(G::LieGroup, g, X; expected_value=missing)
     @testset "diff_inv" begin
         𝔤 = LieAlgebra(G)
         Y1 = diff_inv(G, g, X)
-        Y2 = copy(𝔤, X)
+        Y2 = zero_vector(𝔤)
         Y2 = diff_inv!(G, Y2, g, X)
         @test isapprox(𝔤, Y1, Y2)
         if !ismissing(expected_value)
@@ -160,7 +160,7 @@ function test_diff_left_compose(G::LieGroup, g, h, X; expected_value=missing)
     @testset "diff_left_compose" begin
         𝔤 = LieAlgebra(G)
         Y1 = diff_left_compose(G, g, h, X)
-        Y2 = copy(𝔤, X)
+        Y2 = zero_vector(𝔤)
         diff_left_compose!(G, Y2, g, h, X)
         @test isapprox(LieAlgebra(G), Y1, Y2)
         if !ismissing(expected_value)
@@ -182,7 +182,7 @@ function test_diff_right_compose(G::LieGroup, g, h, X; expected_value=missing)
     @testset "diff_right_compose" begin
         𝔤 = LieAlgebra(G)
         Y1 = diff_right_compose(G, g, h, X)
-        Y2 = copy(𝔤, X)
+        Y2 = zero_vector(𝔤)
         diff_right_compose!(G, Y2, g, h, X)
         @test isapprox(𝔤, Y1, Y2)
         if !ismissing(expected_value)
@@ -258,7 +258,7 @@ function test_exp_log(G::LieGroup, g, h, X; test_exp=true, test_log=true)
         if test_log
             # Lie group log
             Y1 = log(G, e, g)
-            Y2 = copy(G, g)
+            Y2 = zero_vector(G, e)
             log!(G, Y2, e, g)
             @test isapprox(𝔤, Y1, Y2)
             @test is_point(𝔤, Y1)
@@ -418,13 +418,15 @@ Possible properties are
 
 Possible `expectations` are
 
-* `:repr` is a sting one gets from `repr(G)`
 * `:adjoint` for the result of `conjgate` in the case where `diff_conjugate` is not implemented
+* `:atol` a global absolute tolerance, defaults to `1e-8`
+* `:conjugate` for the result of `conjgate in the case where `compose`, `inv` are not implemented
 * `:diff_inv` for the result of `diff_inv` with respect to the first point and the first vector.
 * `:diff_left_compose` for the result of `diff_left_compose` with respect to the first two points and the first vector.
 * `:diff_right_compose` for the result of `diff_right_compose` with respect to the first two points and the first vector.
-* `:atol` a global absolute tolerance, defaults to `1e-8`
-* `:conjugate` for the result of `conjgate in the case where `compose`, `inv` are not implemented
+* `:inv_left_compose` for the result of `inv_left_right_compose` with respect to the first two points
+* `:inv_right_compose` for the result of `inv_right_compose` with respect to the first two points
+* `:repr` is a sting one gets from `repr(G)`
 """
 function test_LieGroup(G::LieGroup, properties::Dict, expectations::Dict=Dict())
     a_tol = get(expectations, :atol, 1e-8)
