@@ -21,6 +21,10 @@ using Test
 struct DummyOperation <: AbstractGroupOperation end
 struct DummySecondOperation <: AbstractGroupOperation end
 struct DummyManifold <: LieGroups.AbstractManifold{LieGroups.ℝ} end
+struct DummyActionType <: AbstractGroupActionType end
+const DummyLieGroup = LieGroup{LieGroups.ℝ,DummyOperation,DummyManifold}
+struct DummyGroupAction <: AbstractGroupAction{DummyActionType,DummyLieGroup,DummyManifold} end
+
 # Test functionality of single functions
 #
 #

@@ -103,14 +103,7 @@ function base_lie_group end
 
 Return the [`LieGroup`](@ref) of the [`AbstractGroupAction`](@ref).
 """
-base_lie_group(::AbstractGroupAction)
-
-@doc """
-    base_manifold(A::AbstractGroupAction)
-
-Return the $(_link(:AbstractManifold)) of the [`AbstractGroupAction`](@ref).
-"""
-ManifoldsBase.base_manifold(::AbstractGroupAction)
+base_Lie_group(::AbstractGroupAction)
 
 #
 #
