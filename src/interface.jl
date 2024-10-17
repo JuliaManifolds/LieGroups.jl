@@ -64,35 +64,6 @@ Identity(::LieGroup{𝔽,O}) where {𝔽,O<:AbstractGroupOperation} = Identity{O
 Identity(::O) where {O<:AbstractGroupOperation} = Identity(O)
 Identity(::Type{O}) where {O<:AbstractGroupOperation} = Identity{O}()
 
-"""
-    LieAlgebra{𝔽, G} <: AbstractManifold{𝔽}
-
-Represent the Lie Algebra ``$(_math(:𝔤))``, that is a ``𝔽``vector space with an associated
-[`lie_bracket`](@ref) ``[⋅,⋅]: $(_math(:𝔤))×$(_math(:𝔤)) → $(_math(:𝔤))`` which fulfills
-
-1. ``[X,X] = 0`` for all ``X ∈ $(_math(:𝔤))``
-2. The Jacobi identity holds ``[X, [Y,Z]] = [[X,Y],Z] = [Y, [X,Z]]`` holds for all ``X, Y, Z ∈ $(_math(:𝔤))``.
-
-The Lie algebras considered here are those related to a [`LieGroup`](@ref) ``$(_math(:G))``,
-namely the tangent space the tangent space ``T_{$(_math(:e))}$(_math(:G))`` at the [`Identity`](@ref),
-this is internally just a `const` of the corresponding $(_link(:TangentSpace)).
-
-# Constructor
-
-    LieAlgebra(G::LieGroup)
-
-Return the Lie Algebra belonging to the [`LieGroup`](@ref) `G`.
-"""
-const LieAlgebra{𝔽,G,I} = ManifoldsBase.Fiber{
-    𝔽,ManifoldsBase.TangentSpaceType,G,I
-} where {𝔽,G<:LieGroup{𝔽},I<:Identity}
-
-function LieAlgebra(G::LieGroup{𝔽}) where {𝔽}
-    return LieAlgebra{𝔽,typeof(G),typeof(Identity(G))}(
-        G, Identity(G), ManifoldsBase.TangentSpaceType()
-    )
-end
-
 #
 #
 # --- Functions ---
@@ -278,6 +249,29 @@ function diff_conjugate(G::LieGroup, g, h, X)
     return diff_conjugate!(G, Y, g, h, X)
 end
 
+function diff_conjugate! end
+@doc "$(_doc_diff_conjugate)"
+diff_conjugate!(::LieGroup, Y, g, h, X)
+
+_doc_diff_inv = """
+    diff_inv(G::LieGroup, g, X)
+    diff_inv!(G::LieGroup, Y, g, X)
+
+Compute the differential of the function ``ι_{$(_math(:G))}(g) = g^-1``, where
+``Dι_{$(_math(:G))}(g): $(_math(:𝔤)) → $(_math(:𝔤))``.
+This can be done in-place of `Y`.
+"""
+
+@doc "$_doc_diff_inv"
+function diff_inv(G::LieGroup, g, X)
+    Y = allocate_result(G, diff_inv, g, X)
+    return diff_inv!(G, Y, g, X)
+end
+
+function diff_inv! end
+@doc "$_doc_diff_inv"
+diff_inv!(G::LieGroup, Y, g, X)
+
 _doc_diff_left_compose = """
     diff_left_compose(G::LieGroup, g, h, X)
     diff_left_compose!(G::LieGroup, Y, g, h, X)
@@ -313,29 +307,6 @@ end
 function diff_right_compose! end
 @doc "$(_doc_diff_right_compose)"
 diff_right_compose!(::LieGroup, Y, g, h, X)
-
-function diff_conjugate! end
-@doc "$(_doc_diff_conjugate)"
-diff_conjugate!(::LieGroup, Y, g, h, X)
-
-_doc_diff_inv = """
-    diff_inv(G::LieGroup, g, X)
-    diff_inv!(G::LieGroup, Y, g, X)
-
-Compute the differential of the function ``ι_{$(_math(:G))}(p) = p^-1``, where
-``Dι_{$(_math(:G))}(p): $(_math(:𝔤)) → $(_math(:𝔤))``.
-This can be done in-place of `Y`.
-"""
-
-@doc "$_doc_diff_inv"
-function diff_inv(G::LieGroup, g, X)
-    Y = allocate_result(G, diff_inv, g, X)
-    return diff_inv!(G, Y, g, X)
-end
-
-function diff_inv! end
-@doc "$_doc_diff_inv"
-diff_inv!(G::LieGroup, Y, g, X)
 
 _doc_exp = """
     exp(G::LieGroup, g, X, t::Number=1)
@@ -414,24 +385,45 @@ end
 
 _doc_identity_element = """
     identity_element(G::LieGroup)
-    identity_element!(G::LieGroup, g)
+    identity_element!(G::LieGroup, e)
 
 Return a point representation of the [`Identity`](@ref) on the [`LieGroup`](@ref) `G`.
 By default this representation is the default array or number representation.
 It should return the corresponding default representation of ``e`` as a point on `G` if
 points are not represented by arrays.
-This can be performed in-place of `g`.
+This can be performed in-place of `e`.
 """
 # `function identity_element end`
 @doc "$(_doc_identity_element)"
 function identity_element(G::LieGroup)
-    g = ManifoldsBase.allocate_result(G, identity_element)
-    return identity_element!(G, g)
+    e = ManifoldsBase.allocate_result(G, identity_element)
+    return identity_element!(G, e)
 end
 
 function identity_element! end
 @doc "$(_doc_identity_element)"
-identity_element!(G::LieGroup, g)
+identity_element!(G::LieGroup, e)
+
+_doc_inv = """
+    inv(G::LieGroup, g)
+    inv!(G::LieGroup, h, g)
+
+Compute the inverse group element ``g^{-1}`` with respect to the [`AbstractGroupOperation`](@ref) ``$(_math(:∘))``
+on the [`LieGroup`](@ref) ``$(_math(:G))``,
+that is, return the unique element ``h=g^{-1}`` such that ``h$(_math(:∘))g=$(_math(:e))``, where ``$(_math(:e))`` denotes the [`Identity`](@ref).
+
+This can be done in-place of `h`, without side effects, that is you can do `inv!(G, g, g)`.
+"""
+
+@doc "$_doc_inv"
+function Base.inv(G::LieGroup, g)
+    h = allocate_result(G, inv, g)
+    return inv!(G, h, g)
+end
+
+function inv! end
+@doc "$_doc_inv"
+inv!(G::LieGroup, h, g)
 
 _doc_inv_left_compose = """
     inv_left_compose(G::LieGroup, g, h)
@@ -477,27 +469,6 @@ function inv_right_compose!(G::LieGroup, k, h, g)
     return k
 end
 
-_doc_inv = """
-    inv(G::LieGroup, g)
-    inv!(G::LieGroup, h, g)
-
-Compute the inverse group element ``g^{-1}`` with respect to the [`AbstractGroupOperation`](@ref) ``$(_math(:∘))``
-on the [`LieGroup`](@ref) ``$(_math(:G))``,
-that is, return the unique element ``h=g^{-1}`` such that ``h$(_math(:∘))g=$(_math(:e))``, where ``$(_math(:e))`` denotes the [`Identity`](@ref).
-
-This can be done in-place of `h`, without side effects, that is you can do `inv!(G, g, g)`.
-"""
-
-@doc "$_doc_inv"
-function Base.inv(G::LieGroup, g)
-    h = allocate_result(G, inv, g)
-    return inv!(G, h, g)
-end
-
-function inv! end
-@doc "$_doc_inv"
-inv!(G::LieGroup, h, g)
-
 function is_identity end
 @doc """
     is_identity(G::LieGroup, q; kwargs)
@@ -527,21 +498,6 @@ function is_identity(
     kwargs...,
 ) where {𝔽}
     return false
-end
-
-"""
-    is_point(𝔤::LieAlgebra, X; kwargs...)
-
-Check whether `X` is a valid point on the Lie Algebra `𝔤`.
-This falls back to checking whether `X` is a valid point on the tangent space
-at the [`identity_element``](@ref)`]`(G)` on `G.manifold` on the [`LieGroup`](@ref)
-of `G`
-"""
-function ManifoldsBase.is_point(𝔤::LieAlgebra, X; kwargs...)
-    # the manifold stored in the Fiber / Lie algebra is the Lie group G
-    G = 𝔤.manifold
-    e = identity_element(G)
-    return ManifoldsBase.is_vector(G.manifold, e, X; kwargs...)
 end
 
 """
@@ -606,28 +562,6 @@ function ManifoldsBase.isapprox(
     return false
 end
 
-_doc_lie_bracket = """
-    lie_bracket!(𝔤::LieAlgebra, X, Y)
-    lie_bracket!(𝔤::LieAlgebra, Z, X, Y)
-
-Compute the Lie bracket ``[⋅,⋅]: $(_math(:𝔤))×$(_math(:𝔤)) → $(_math(:𝔤))`` which fulfills
-
-1. ``[X,X] = 0`` for all ``X ∈ $(_math(:𝔤))``
-2. The Jacobi identity holds ``[X, [Y,Z]] = [[X,Y],Z] = [Y, [X,Z]]`` holds for all ``X, Y, Z ∈ $(_math(:𝔤))``.
-
-The computation can be done in-place of `Z`.
-"""
-function lie_bracket end
-@doc "$(_doc_lie_bracket)"
-function lie_bracket(𝔤::LieAlgebra, X, Y)
-    Z = ManifoldsBase.allocate_result(𝔤, lie_bracket, X, Y)
-    return lie_bracket!(𝔤, Z, X, Y)
-end
-
-function lie_bracket! end
-@doc "$(_doc_lie_bracket)"
-lie_bracket!(𝔤::LieAlgebra, Z, X, Y)
-
 _doc_log = """
     log(G::LieGroup, g, h)
     log!(G::LieGroup, X, g, h)
@@ -686,38 +620,22 @@ function ManifoldsBase.log!(G::LieGroup, X, e::Identity, g)
     throw(MethodError(ManifoldsBase.log!, (typeof(G), typeof(X), typeof(e), typeof(g))))
 end
 
-# Move this line already to ManifoldsBase?
-LinearAlgebra.norm(𝔤::LieAlgebra, X) = LinearAlgebra.norm(𝔤.manifold, 𝔤.point, X)
-function LinearAlgebra.norm(
-    G::LieGroup{𝔽,O}, ::Identity{O}, X
-) where {𝔽,O<:AbstractGroupOperation}
-    return LinearAlgebra.norm(G, identity_element(G), X)
-end
 LinearAlgebra.norm(G::LieGroup, g, X) = LinearAlgebra.norm(G.manifold, g, X)
 
 function ManifoldsBase.representation_size(G::LieGroup)
     return ManifoldsBase.representation_size(G.manifold)
 end
 
-function Base.show(io::IO, 𝔤::LieAlgebra)
-    return print(io, "Lie Algebra( $(𝔤.manifold) )")
-end
 function Base.show(io::IO, G::LieGroup)
     return print(io, "LieGroup($(G.manifold), $(G.op))")
 end
 
-function ManifoldsBase.zero_vector(𝔤::LieAlgebra)
-    return ManifoldsBase.zero_vector(𝔤.manifold, identity_element(𝔤.manifold))
-end
 function ManifoldsBase.zero_vector(
     G::LieGroup{𝔽,O}, ::Identity{O}
 ) where {𝔽,O<:AbstractGroupOperation}
     return ManifoldsBase.zero_vector(G, identity_element(G))
 end
 
-function ManifoldsBase.zero_vector!(𝔤::LieAlgebra, X)
-    return ManifoldsBase.zero_vector!(𝔤.manifold, X, identity_element(𝔤.manifold))
-end
 function ManifoldsBase.zero_vector!(
     G::LieGroup{𝔽,O}, X, ::Identity{O}
 ) where {𝔽,O<:AbstractGroupOperation}

@@ -11,7 +11,7 @@ import Manifolds: apply, apply!, identity_element, is_identity, compose
 # Manifolds: Identity, TranslationGroup
 include("documentation_glossary.jl")
 include("interface.jl")
-
+include("Lie_algebra/Lie_algebra_interface.jl")
 # Generic Operations
 include("group_operations/addition.jl")
 

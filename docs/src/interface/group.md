@@ -5,36 +5,20 @@ LieGroup
 LieAlgebra
 ```
 
-## Functions on Lie Groups
+## Functions on Lie groups
 
-```@docs
-adjoint
-adjoint!
-base_manifold
-conjugate
-conjugate!
-diff_conjugate
-diff_conjugate!
-exp
-exp!
-identity_element
-identity_element!
-is_identity
-isapprox
-is_point(::LieGroup, ::Any)
-is_vector(::LieGroup, ::Any)
-is_vector(::LieGroup{𝔽,O}, ::Identity{O}, ::Any) where {𝔽,O}
-log
-log!
+```@autodocs
+Modules = [LieGroups]
+Pages = ["interface.jl"]
+Order = [:function]
 ```
-
 
 ## Functions on Lie algebras
 
-```@docs
-is_point(::LieAlgebra, ::Any)
-lie_bracket
-lie_bracket!
+```@autodocs
+Modules = [LieGroups]
+Pages = ["Lie_algebra_interface.jl"]
+Order = [:function]
 ```
 
 ## Literature
