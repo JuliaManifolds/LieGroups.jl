@@ -449,7 +449,7 @@ end
 
 function inv_left_compose! end
 @doc "$(_doc_compose)"
-function inv_left_compose!(::LieGroup, k, g, h)
+function inv_left_compose!(G::LieGroup, k, g, h)
     inv!(G, k, g) # g^{-1} in-place of k
     compose!(G, k, k, h) # compose `k∘h` in-place of k
     return k
@@ -471,7 +471,7 @@ end
 
 function inv_right_compose! end
 @doc "$(_doc_inv_right_compose)"
-function inv_right_compose!(::LieGroup, k, h, g)
+function inv_right_compose!(G::LieGroup, k, h, g)
     inv!(G, k, g) # g^{-1} in-place of k
     compose!(G, k, h, k) # compose `h∘k` in-place of k
     return k

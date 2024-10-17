@@ -23,6 +23,8 @@ begin
             exp,
             identity_element,
             inv,
+            inv_left_compose,
+            inv_right_compose,
             is_identity,
             lie_bracket,
             log,

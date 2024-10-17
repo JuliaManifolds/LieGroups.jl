@@ -302,6 +302,62 @@ end
 
 #
 #
+# --- E
+"""
+    test_inv_compose(G, g, h, X)
+
+Test the special functions combining inv and compose, `inv_left_compose` and `inv_right_compose`.
+For these tests both `compose` and `inv` are required.
+
+# Keyword arguments
+
+* `test_left=true`: test ``g^{-1}∘h``
+* `test_right=true`: test ``g∘h^{-1}``
+"""
+function test_inv_compose(
+    G::LieGroup,
+    g,
+    h;
+    test_left=true,
+    test_right=true,
+    expected_value_left=missing,
+    expected_value_right=missing,
+)
+    @testset "test compose inv combinations" begin
+        if test_left
+            v = if ismissing(expected_value_left)
+                compose(G, inv(G, g), h)
+            else
+                expected_value_left
+            end
+            @testset "g^{-1}∘h" begin
+                k1 = inv_left_compose(G, g, h)
+                k2 = copy(G, g)
+                inv_left_compose!(G, k2, g, h)
+                @test isapprox(G, k1, k2)
+                @test isapprox(G, k1, v)
+            end
+        end
+        if test_right
+            v = if ismissing(expected_value_right)
+                compose(G, g, inv(G, h))
+            else
+                expected_value_right
+            end
+            @testset "g∘h^{-1}" begin
+                k1 = inv_right_compose(G, g, h)
+                k2 = copy(G, g)
+                inv_right_compose!(G, k2, g, h)
+                @test isapprox(G, k1, k2)
+                @test isapprox(G, k1, v)
+            end
+        end
+    end
+    return nothing
+end
+
+#
+#
 # --- L
 """
     test_lie_bracket(G::LieGroup, X, Y; expected_value=missing)
@@ -435,6 +491,22 @@ function test_LieGroup(G::LieGroup, properties::Dict, expectations::Dict=Dict())
             )
         end
 
+        #
+        #
+        # --- I
+        if any(in.([inv_left_compose, inv_right_compose], Ref(functions)))
+            vl = get(expectations, :inv_left_compose, missing)
+            vr = get(expectations, :inv_right_compose, missing)
+            test_inv_compose(
+                G,
+                points[1],
+                points[2];
+                test_left=(inv_left_compose in functions),
+                test_right=(inv_right_compose in functions),
+                expected_value_left=vl,
+                expected_value_right=vr,
+            )
+        end
         #
         #
         # --- L
