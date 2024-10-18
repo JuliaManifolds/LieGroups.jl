@@ -40,6 +40,8 @@ export base_Lie_group, base_manifold
 export compose, compose!
 export diff_apply,
     diff_apply!,
+    diff_group_apply,
+    diff_group_apply!,
     diff_left_compose,
     diff_left_compose!,
     diff_right_compose,

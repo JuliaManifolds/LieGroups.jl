@@ -25,26 +25,25 @@ struct DummyActionType <: AbstractGroupActionType end
 const DummyLieGroup = LieGroup{LieGroups.ℝ,DummyOperation,DummyManifold}
 struct DummyGroupAction <: AbstractGroupAction{DummyActionType,DummyLieGroup,DummyManifold} end
 
-# Test functionality of single functions
+# === Test single functions ===
 #
 #
 # --- A
-
 """
     test_adjoint(G, g, X; kwargs...)
 
-Test functionality of the `adjoint` function for a given Lie group element `g` and a Lie Algebra vector `X`
+Test  `adjoint` function for a given Lie group element `g` and a Lie Algebra vector `X`
 
 # Keyword arguments
-* `expected_value=missing` provide the value expected. If none is provided, the
+* `expected=missing` provide the value expected. If none is provided, the
   default from `diff_conjugate` is used
 """
-function test_adjoint(G::LieGroup, g, X; expected_value=missing)
+function test_adjoint(G::LieGroup, g, X; expected=missing)
     @testset "adjoint" begin
-        v = if ismissing(expected_value)
+        v = if ismissing(expected)
             diff_conjugate(G, g, identity_element(G), X)
         else
-            expected_value
+            expected
         end
         𝔤 = LieAlgebra(G)
         Y1 = adjoint(G, g, X)
@@ -55,13 +54,32 @@ function test_adjoint(G::LieGroup, g, X; expected_value=missing)
     end
     return nothing
 end
+
+"""
+    test_apply(A::AbstractGroupAction, g, p; expected=missing)
+
+Test  `apply`.
+
+# Keyword arguments
+* `expected=missing`: the result of the application of the group action.
+"""
+function test_apply(A::AbstractGroupAction, g, p; expected=missing)
+    @testset "apply" begin
+        q1 = apply(A, g, p)
+        M = base_manifold(A)
+        q2 = copy(M, p)
+        apply!(A, q2, g, p)
+        @test isapprox(M, q1, q2)
+        !ismissing(expected) && @test isapprox(M, q1, expected)
+    end
+end
 #
 #
 # --- C
 """
     test_compose(G, g, h; kwargs...)
 
-Test functionality of `compose` for given Lie group elements `g`, `h`.
+Test  `compose` for given Lie group elements `g`, `h`.
 
 # Keyword arguments
 
@@ -105,20 +123,20 @@ function test_compose(G::LieGroup, g, h; test_inverse=true, test_identity=true)
 end
 
 """
-    test_conjugate(G::LieGroup, g, h; expected_value=missing)
+    test_conjugate(G::LieGroup, g, h; expected=missing)
 
-Test functionality of `conjugate`.
+Test  `conjugate`.
 
 # Keyword arguments
-* `expected_value=missing`: the result of the conjugate can also be provided directly,
+* `expected=missing`: the result of the conjugate can also be provided directly,
   then neither `compose` nor `inv`  are not required.
 """
-function test_conjugate(G::LieGroup, g, h; expected_value=missing)
+function test_conjugate(G::LieGroup, g, h; expected=missing)
     @testset "conjugate" begin
-        v = if ismissing(expected_value)
+        v = if ismissing(expected)
             compose(G, g, compose(G, h, inv(G, g)))
         else
-            expected_value
+            expected
         end
         k1 = conjugate(G, g, h)
         k2 = copy(G, g)
@@ -129,68 +147,110 @@ function test_conjugate(G::LieGroup, g, h; expected_value=missing)
     return nothing
 end
 
+#
+#
+# --- D
 """
-    test_diff_inv(G::LieGroup, g, X; expected_value=missing)
+    test_diff_apply(A::AbstractGroupAction, g, p, X; expected=missing)
 
-Test functionality of `diff_inv`.
+Test  `diff_apply`.
 
 # Keyword arguments
-* `expected_value=missing`: the result of the differential of the inverse, if not provided,
+* `expected=missing`: the result of the application of the group action.
+"""
+function test_diff_apply(A::AbstractGroupAction, g, p, X; expected=missing)
+    @testset "diff_apply" begin
+        Y1 = diff_apply(A, g, p, X)
+        M = base_manifold(A)
+        Y2 = copy(M, p, X)
+        diff_apply!(A, Y2, g, p, X)
+        q = apply(A, g, p)
+        @test isapprox(M, q, Y1, Y2)
+        !ismissing(expected) && @test isapprox(M, q, Y1, expected)
+    end
+end
+
+"""
+    test_diff_apply(A::AbstractGroupAction, g, p, X; expected=missing)
+
+Test  `diff_group_apply`.
+
+# Keyword arguments
+* `expected=missing`: the result of the application of the group action.
+"""
+function test_diff_group_apply(A::AbstractGroupAction, g, p, X; expected=missing)
+    @testset "diff_group_apply" begin
+        Y1 = diff_group_apply(A, g, p, X)
+        𝔤 = LieAlgebra(base_Lie_group(A))
+        Y2 = copy(𝔤, X)
+        diff_group_apply!(A, Y2, g, p, X)
+        @test isapprox(𝔤, Y1, Y2)
+        !ismissing(expected) && @test isapprox(𝔤, Y1, expected)
+    end
+end
+
+"""
+    test_diff_inv(G::LieGroup, g, X; expected=missing)
+
+Test  `diff_inv`.
+
+# Keyword arguments
+* `expected=missing`: the result of the differential of the inverse, if not provided,
   only consistency between the allocating and the in-place variant is checked.
 """
-function test_diff_inv(G::LieGroup, g, X; expected_value=missing)
+function test_diff_inv(G::LieGroup, g, X; expected=missing)
     @testset "diff_inv" begin
         𝔤 = LieAlgebra(G)
         Y1 = diff_inv(G, g, X)
         Y2 = zero_vector(𝔤)
         Y2 = diff_inv!(G, Y2, g, X)
         @test isapprox(𝔤, Y1, Y2)
-        if !ismissing(expected_value)
-            @test isapprox(𝔤, Y1, expected_value)
+        if !ismissing(expected)
+            @test isapprox(𝔤, Y1, expected)
         end
     end
 end
 
 """
-    test_diff_left_compose(G::LieGroup, g, h, X; expected_value=missing)
+    test_diff_left_compose(G::LieGroup, g, h, X; expected=missing)
 
-Test functionality of `diff_left_compose`.
+Test  `diff_left_compose`.
 
 # Keyword arguments
-* `expected_value=missing`: the result of the differential of the compose's left argument,
+* `expected=missing`: the result of the differential of the compose's left argument,
   if not provided, only consistency between the allocating and the in-place variant is checked.
 """
-function test_diff_left_compose(G::LieGroup, g, h, X; expected_value=missing)
+function test_diff_left_compose(G::LieGroup, g, h, X; expected=missing)
     @testset "diff_left_compose" begin
         𝔤 = LieAlgebra(G)
         Y1 = diff_left_compose(G, g, h, X)
         Y2 = zero_vector(𝔤)
         diff_left_compose!(G, Y2, g, h, X)
         @test isapprox(LieAlgebra(G), Y1, Y2)
-        if !ismissing(expected_value)
-            @test isapprox(LieAlgebra(G), Y1, expected_value)
+        if !ismissing(expected)
+            @test isapprox(LieAlgebra(G), Y1, expected)
         end
     end
 end
 
 """
-    test_diff_right_compose(G::LieGroup, g, h, X; expected_value=missing)
+    test_diff_right_compose(G::LieGroup, g, h, X; expected=missing)
 
-Test functionality of `diff_right_compose`.
+Test  `diff_right_compose`.
 
 # Keyword arguments
-* `expected_value=missing`: the result of the differential of the compose's right argument,
+* `expected=missing`: the result of the differential of the compose's right argument,
   if not provided, only consistency between the allocating and the in-place variant is checked.
 """
-function test_diff_right_compose(G::LieGroup, g, h, X; expected_value=missing)
+function test_diff_right_compose(G::LieGroup, g, h, X; expected=missing)
     @testset "diff_right_compose" begin
         𝔤 = LieAlgebra(G)
         Y1 = diff_right_compose(G, g, h, X)
         Y2 = zero_vector(𝔤)
         diff_right_compose!(G, Y2, g, h, X)
         @test isapprox(𝔤, Y1, Y2)
-        if !ismissing(expected_value)
-            @test isapprox(𝔤, Y1, expected_value)
+        if !ismissing(expected)
+            @test isapprox(𝔤, Y1, expected)
         end
     end
 end
@@ -230,7 +290,7 @@ end
 """
     test_exp_log(G, g, h, X)
 
-Test functionality of `exp` and `log` for given Lie group elements `g`, `h` and
+Test  `exp` and `log` for given Lie group elements `g`, `h` and
 a vector `X` from the Lie Algebra.
 
 !!! note
@@ -324,15 +384,15 @@ function test_inv_compose(
     h;
     test_left=true,
     test_right=true,
-    expected_value_left=missing,
-    expected_value_right=missing,
+    expected_left=missing,
+    expected_right=missing,
 )
     @testset "test compose inv combinations" begin
         if test_left
-            v = if ismissing(expected_value_left)
+            v = if ismissing(expected_left)
                 compose(G, inv(G, g), h)
             else
-                expected_value_left
+                expected_left
             end
             @testset "g^{-1}∘h" begin
                 k1 = inv_left_compose(G, g, h)
@@ -343,10 +403,10 @@ function test_inv_compose(
             end
         end
         if test_right
-            v = if ismissing(expected_value_right)
+            v = if ismissing(expected_right)
                 compose(G, g, inv(G, h))
             else
-                expected_value_right
+                expected_right
             end
             @testset "g∘h^{-1}" begin
                 k1 = inv_right_compose(G, g, h)
@@ -364,23 +424,23 @@ end
 #
 # --- L
 """
-    test_lie_bracket(G::LieGroup, X, Y; expected_value=missing)
+    test_lie_bracket(G::LieGroup, X, Y; expected=missing)
 
-Test functionality of `lie_bracket`.
+Test  `lie_bracket`.
 
 # Keyword arguments
-* `expected_value=missing`: the result of the lie bracket
+* `expected=missing`: the result of the lie bracket
   if not provided, only consistency between the allocating and the in-place variant is checked.
 """
-function test_lie_bracket(G::LieGroup, X, Y; expected_value=missing)
+function test_lie_bracket(G::LieGroup, X, Y; expected=missing)
     @testset "lie_bracket" begin
         𝔤 = LieAlgebra(G)
         Z1 = lie_bracket(𝔤, X, Y)
         Z2 = copy(𝔤, X)
         lie_bracket!(𝔤, Z2, X, Y)
         @test isapprox(𝔤, Z1, Z2)
-        if !ismissing(expected_value)
-            @test isapprox(𝔤, Z1, expected_value)
+        if !ismissing(expected)
+            @test isapprox(𝔤, Z1, expected)
         end
     end
 end
@@ -396,7 +456,7 @@ For now this (only) checks that `"\$G"` yields the `repr_string`.
 
 requires `show` (or `repr`) to be implemented.
 """
-function test_show(G::LieGroup, repr_string)
+function test_show(G::Union{AbstractGroupAction,LieGroup}, repr_string)
     @testset "repr(G, g, h)" begin
         @test repr(G) == repr_string
     end
@@ -416,8 +476,8 @@ Possible properties are
 * `:Functions` is a vector of all defined functions for `G`
   Note that if `f` is in `:Functions`, and `f!` makes sense, for example for `compose`,
   it is assumed that both are defined.
-* `:points` is a vector of at least three points on `G`, the first is not allowed to be the identity numerically
-* `:vectors` is a vector of at least 3 elements from the Lie algebra `𝔤` og `G`
+* `:Points` is a vector of at least three points on `G`, the first is not allowed to be the identity numerically
+* `:Vectors` is a vector of at least 3 elements from the Lie algebra `𝔤` og `G`
 * `:Name` is a name of the test. If not provided, defaults to `"\$G"`
 
 Possible `expectations` are
@@ -447,7 +507,7 @@ function test_LieGroup(G::LieGroup, properties::Dict, expectations::Dict=Dict())
         # --- A
         if (adjoint in functions)
             v = get(expectations, :adjoint, missing)
-            test_adjoint(G, points[1], vectors[1]; expected_value=v)
+            test_adjoint(G, points[1], vectors[1]; expected=v)
         end
         #
         #
@@ -459,7 +519,7 @@ function test_LieGroup(G::LieGroup, properties::Dict, expectations::Dict=Dict())
         # since there is a default, also providing compose&inv suffices
         if (conjugate in functions) || (all(in.([compose, inv], Ref(functions))))
             v = get(expectations, :conjugate, missing)
-            test_conjugate(G, points[1], points[2]; expected_value=v)
+            test_conjugate(G, points[1], points[2]; expected=v)
         end
         # Either `copyto` or the default with `identity_element`` available
         if any(in.([copyto!, identity_element], Ref(functions)))
@@ -470,17 +530,17 @@ function test_LieGroup(G::LieGroup, properties::Dict, expectations::Dict=Dict())
         # --- D
         if (diff_inv in functions)
             v = get(expectations, :diff_inv, missing)
-            test_diff_inv(G, points[1], vectors[1]; expected_value=v)
+            test_diff_inv(G, points[1], vectors[1]; expected=v)
         end
 
         if (diff_left_compose in functions)
             v = get(expectations, :diff_left_compose, missing)
-            test_diff_left_compose(G, points[1], points[2], vectors[1]; expected_value=v)
+            test_diff_left_compose(G, points[1], points[2], vectors[1]; expected=v)
         end
 
         if (diff_right_compose in functions)
             v = get(expectations, :diff_right_compose, missing)
-            test_diff_right_compose(G, points[1], points[2], vectors[1]; expected_value=v)
+            test_diff_right_compose(G, points[1], points[2], vectors[1]; expected=v)
         end
 
         #
@@ -509,8 +569,8 @@ function test_LieGroup(G::LieGroup, properties::Dict, expectations::Dict=Dict())
                 points[2];
                 test_left=(inv_left_compose in functions),
                 test_right=(inv_right_compose in functions),
-                expected_value_left=vl,
-                expected_value_right=vr,
+                expected_left=vl,
+                expected_right=vr,
             )
         end
         #
@@ -518,7 +578,7 @@ function test_LieGroup(G::LieGroup, properties::Dict, expectations::Dict=Dict())
         # --- L
         if (lie_bracket in functions)
             v = get(expectations, :lie_bracket, missing)
-            test_lie_bracket(G, vectors[1], vectors[2]; expected_value=v)
+            test_lie_bracket(G, vectors[1], vectors[2]; expected=v)
         end
 
         #
@@ -530,5 +590,83 @@ function test_LieGroup(G::LieGroup, properties::Dict, expectations::Dict=Dict())
     end
 end
 
-export test_LieGroup
+"""
+    test_LieGroup(G, properties, expectations)
+
+Test the Lie group ``G`` based on a `Dict` of properties and a `Dict` of `expectations
+
+Possible properties are
+
+* `:AlgebraVectors` is a vector of at least 3 elements from the Lie algebra `𝔤` of `G`
+* `:Functions` is a vector of all defined functions for `G`
+  Note that if `f` is in `:Functions`, and `f!` makes sense, for example for `compose`,
+  it is assumed that both are defined.
+* `:GroupPoints` is a vector of at least three points on `G`, the first is not allowed to be the identity numerically
+* `:ManifoldPoints` is a vector of at least three points on `M`
+* `:TangentVectors` is a vector of at least three tangent vectors on `M`, each in the tangent space of the corresponting `:ManifoldPoint`
+* `:Name` is a name of the test. If not provided, defaults to `"\$G"`
+
+Possible `expectations` are
+
+* `:apply` for the result of `apply` on the first group and manifold point
+* `:diff_apply` for the result of `apply` on the first group and manifold point together with the first tangent vector
+* `:atol` a global absolute tolerance, defaults to `1e-8`
+* `:group` is the `LieGroup` describing the action
+* `:manifold` is the `AbstractManifold` the action acts upon
+* `:repr` is a sting one gets from `repr(G)`
+"""
+function test_GroupAction(
+    A::AbstractGroupAction, properties::Dict, expectations::Dict=Dict()
+)
+    a_tol = get(expectations, :atol, 1e-8)
+    functions = get(properties, :Functions, Function[])
+    group_points = get(properties, :GroupPoints, [])
+    @assert length(group_points) > 2
+    algebra_vectors = get(properties, :AlgebraVectors, [])
+    @assert length(algebra_vectors) > 2
+    manifold_points = get(properties, :ManifoldPoints, [])
+    @assert length(manifold_points) > 2
+    tangent_vectors = get(properties, :TangentVectors, [])
+    @assert length(tangent_vectors) > 2
+    test_name = get(properties, :Name, "$A")
+    @testset "$(test_name)" begin
+        # Call function tests based on their presence in alphabetical order
+        #
+        #
+        # --- A
+        if (apply in functions)
+            v = get(expectations, :apply, missing)
+            test_apply(A, group_points[1], manifold_points[1]; expected=v)
+        end
+        if (diff_apply in functions)
+            v = get(expectations, :diff_apply, missing)
+            test_diff_apply(
+                A, group_points[1], manifold_points[1], tangent_vectors[1]; expected=v
+            )
+        end
+        if (diff_group_apply in functions)
+            v = get(expectations, :diff_group_apply, missing)
+            test_diff_group_apply(
+                A, group_points[1], manifold_points[1], algebra_vectors[1]; expected=v
+            )
+        end
+        if (base_Lie_group in functions)
+            v = get(expectations, :group, missing)
+            !ismissing(v) && @testset "base_lie_group" begin
+                @test base_Lie_group(A) == v
+            end
+        end
+        if (base_manifold in functions)
+            v = get(expectations, :manifold, missing)
+            !ismissing(v) && @testset "base_manifold" begin
+                @test base_manifold(A) == v
+            end
+        end
+        if (any(in.([show, repr], Ref(functions)))) && haskey(expectations, :repr)
+            test_show(A, expectations[:repr])
+        end
+    end
+end
+
+export test_LieGroup, test_GroupAction
 end # module

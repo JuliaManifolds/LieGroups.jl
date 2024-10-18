@@ -39,4 +39,29 @@ begin
         :lie_bracket => zero(X1),
     )
     test_LieGroup(G, properties, expectations)
+
+    properties2 = Dict(
+        :AlgebraVectors => [X1, X2, X3],
+        :Functions =>
+            [apply, diff_apply, diff_group_apply, base_Lie_group, base_manifold, show],
+        :GroupPoints => [g1, g2, g3],
+        :ManifoldPoints => [g1, g2, g3],
+        :TangentVectors => [X1, X2, X3],
+        :Name => "",
+    )
+    expectations2 = Dict(:manifold => G, :group => G, :repr => "")
+    @testset "Translation group operation action" begin
+        # A first group action Test
+        for t in [
+            RightGroupOperation(),
+            LeftGroupOperation(),
+            InverseLeftGroupOperation(),
+            InverseRightGroupOperation(),
+        ]
+            A = GroupOperationAction(t, G)
+            properties2[:Name] = "with $A"
+            expectations2[:repr] = "GroupOperationAction($t,$G)"
+            test_GroupAction(A, properties2, expectations2)
+        end
+    end
 end
