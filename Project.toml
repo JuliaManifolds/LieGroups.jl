@@ -4,12 +4,15 @@ authors = ["Seth Axen <seth.axen@gmail.com>", "Mateusz Baran <mateuszbaran89@gma
 version = "0.1.0"
 
 [deps]
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Manifolds = "1cead3c2-87b3-11e9-0ccd-23c62b72b94e"
 ManifoldsBase = "3362f125-f0bb-47a3-aa74-596ffd7ef2fb"
 
 [compat]
+LinearAlgebra = "1.6"
 Manifolds = "0.10"
 ManifoldsBase = "0.15.16"
+julia = "1.6"
 
 [extras]
 Manifolds = "1cead3c2-87b3-11e9-0ccd-23c62b72b94e"

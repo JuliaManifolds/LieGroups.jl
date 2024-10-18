@@ -1,17 +1,36 @@
 {
+
     "creators": [
+        {
+            "affiliation": "University of California, San Francisco",
+            "name": "Axen, Seth",
+            "orcid": "0000-0003-3933-8247"
+        },
+        {
+            "affiliation": "AGH University of Science and Technology",
+            "name": "Baran, Mateusz",
+            "orcid": "0000-0001-9667-5579"
+        },
         {
             "affiliation": "NTNU Trondheim",
             "name": "Bergmann, Ronny",
             "orcid": "0000-0001-8342-7218"
+        },
+        {
+            "name": "Tu, Yueh-Hua"
+        },
+        {
+            "affiliation": "KTH Royal Institute of Technology",
+            "name": "Verdier, Olivier",
+            "orcid": "0000-0003-3699-6244"
         }
     ],
-    "description": "LieGroups.jl provides a library of Lie groups.",
+    "description": "LieGroups.jl is a library of Lie groups, Lie algebras",
     "keywords": [
-        "Riemannian manifolds",
-        "Lie groups",
-        "Julia",
-        "Programming"
+        "Lie group",
+        "Lie algebra",
+        "manifold",
+        "Julia"
     ],
     "license": "MIT",
     "title": "LieGroups.jl",

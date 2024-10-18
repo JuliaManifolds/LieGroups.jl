@@ -79,7 +79,7 @@ struct GroupOperationAction{T<:AbstractGroupActionType,G<:LieGroup} <:
     group::G
 end
 
-base_lie_group(A::GroupOperationAction) = A.group
+base_Lie_group(A::GroupOperationAction) = A.group
 
 ManifoldsBase.base_manifold(A::GroupOperationAction) = A.group
 
@@ -112,31 +112,67 @@ end
 
 _doc_diff_apply_groupop = """
 
-Compute the differential ``D_g σ_p(g): T_g$(_math(:G)) → T_{σ_p(g)}$(_math(:M))``
-of a group operation action, that is
+    diff_apply(A::GroupOperationAction, g, p, X)
 
-* for the [`LeftGroupOperation`](@ref) this calls [`diff_left_compose`](@ref)`(G, g, h, X)`
-* for the [`RightGroupOperation`](@ref) this calls [`diff_right_compose`](@ref)`(G, g, h, X)`
-* for the [`InverseLeftGroupOperation`](@ref) this calls [`diff_left_compose`](@ref) with ``g^{-1}``
-* for the [`InverseRightGroupOperation`](@ref) this calls [`diff_right_compose`](@ref) with ``g^{-1}``
+For the group operation action ``σ_g(p)``, compute the differential
+``D_p σ_g(p): T_p$(_math(:G)) → T_{σ_g(p)}$(_math(:M))``, that is
+
+* for the [`LeftGroupOperation`](@ref) this calls [`diff_right_compose`](@ref)`(G, g, p, X)`, since here ``σ_g(p) = g$(_math(:∘))p``
+* for the [`RightGroupOperation`](@ref) this calls [`diff_left_compose`](@ref)`(G, p, g, X)`, since here ``σ_g(p) = p$(_math(:∘))g``
+* for the [`InverseLeftGroupOperation`](@ref) this calls [`diff_right_compose`](@ref) with ``g^{-1}``, since here ``σ_g(p) = g^{-1}$(_math(:∘))p``
+* for the [`InverseRightGroupOperation`](@ref) this calls [`diff_left_compose`](@ref) with ``g^{-1}``, since here ``σ_g(p) = p$(_math(:∘))g^{-1}``
 """
 @doc "$(_doc_diff_apply_groupop)"
-diff_apply(A::GroupOperationAction, g, h, X)
+diff_apply(A::GroupOperationAction, g, p, X)
 
 @doc "$(_doc_diff_apply_groupop)"
-diff_apply!(A::GroupOperationAction, Y, g, h, X)
+diff_apply!(A::GroupOperationAction, Y, g, p, X)
 
-function diff_apply!(A::GroupOperationAction{LeftGroupOperation}, Y, g, h, X)
-    return diff_left_compose!(A.group, k, h, g)
+function diff_apply!(A::GroupOperationAction{LeftGroupOperation}, Y, g, p, X)
+    return diff_right_compose!(A.group, Y, g, p, X)
 end
-function diff_apply!(A::GroupOperationAction{RightGroupOperation}, Y, g, h, X)
-    return diff_right_compose!(A.group, k, h, g)
+function diff_apply!(A::GroupOperationAction{RightGroupOperation}, Y, g, p, X)
+    return diff_left_compose!(A.group, Y, p, g, X)
 end
-function diff_apply!(A::GroupOperationAction{InverseLeftGroupOperation}, Y, g, h, X)
-    return diff_left_compose!(A.group, k, inv(A.group, g), h)
+function diff_apply!(A::GroupOperationAction{InverseLeftGroupOperation}, Y, g, p, X)
+    return diff_right_compose!(A.group, Y, inv(A.group, g), p, X)
 end
-function diff_apply!(A::GroupOperationAction{InverseRightGroupOperation}, Y, g, h, X)
-    return diff_right_compose!(A.group, k, inv(A.group, g), h)
+function diff_apply!(A::GroupOperationAction{InverseRightGroupOperation}, Y, g, p, X)
+    return diff_left_compose!(A.group, Y, p, inv(A.group, g), X)
+end
+
+_doc_diff_group_apply_groupop = """
+
+    diff_group_apply(A::GroupOperationAction, g, p, X)
+
+Compute the differential ``D_g σ_g(p): $(_math(:𝔤)) → $(_math(:𝔤))`` of a group operation action,
+that is
+
+* for the [`LeftGroupOperation`](@ref) this calls [`diff_left_compose`](@ref)`(G, g, p, X)`, since here ``σ_g(p) = g$(_math(:∘))p``
+* for the [`RightGroupOperation`](@ref) this calls [`diff_right_compose`](@ref)`(G, p, g, X)`, since here ``σ_g(p) = p$(_math(:∘))g``
+* for the [`InverseLeftGroupOperation`](@ref) this calls [`diff_left_compose`](@ref) with ``g^{-1}``, since here ``σ_g(p) = g^{-1}$(_math(:∘))p`` together with [`diff_inv`](@ref)
+* for the [`InverseRightGroupOperation`](@ref) this calls [`diff_right_compose`](@ref) with ``g^{-1}``, since here ``σ_g(p) = p$(_math(:∘))g^{-1}`` together with [`diff_inv`](@ref)
+"""
+
+@doc "$(_doc_diff_apply_groupop)"
+diff_group_apply(A::GroupOperationAction, g, p, X)
+
+@doc "$(_doc_diff_apply_groupop)"
+diff_group_apply!(A::GroupOperationAction, Y, g, p, X)
+
+function diff_group_apply!(A::GroupOperationAction{LeftGroupOperation}, Y, g, p, X)
+    return diff_left_compose!(A.group, Y, g, p, X)
+end
+function diff_group_apply!(A::GroupOperationAction{RightGroupOperation}, Y, g, p, X)
+    return diff_right_compose!(A.group, Y, p, g, X)
+end
+function diff_group_apply!(A::GroupOperationAction{InverseLeftGroupOperation}, Y, g, p, X)
+    diff_inv!(A.group, Y, g, X)
+    return diff_left_compose!(A.group, Y, inv(A.group, g), p, Y)
+end
+function diff_group_apply!(A::GroupOperationAction{InverseRightGroupOperation}, Y, g, p, X)
+    diff_inv!(A.group, Y, g, X)
+    return diff_right_compose!(A.group, Y, p, inv(A.group, g), Y)
 end
 
 """
@@ -171,6 +207,10 @@ Base.inv(::InverseLeftGroupOperation) = LeftGroupOperation()
 Return the inverse of the [`InverseRightGroupOperation`](@ref), that is the [`RightGroupOperation`](@ref).
 """
 Base.inv(::InverseRightGroupOperation) = RightGroupOperation()
+
+function Base.show(io::IO, A::GroupOperationAction)
+    return print(io, "GroupOperationAction($(A.type),$(A.group))")
+end
 
 """
     switch(::LeftGroupOperation)

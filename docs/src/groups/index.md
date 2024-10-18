@@ -1,5 +1,7 @@
-# Alphabetical List of Lie groups
+# An overview of Lie groups
+
+# Alphabetical list of Lie groups
 
 | Group | Manifold | ``∘`` | Comment |
 |:------|:---------|:---------:|:------|
-| [`AdditiveGroup`](@ref) | [`Euclidean`](@extref `Manifolds.Euclidean`) | [`+`](@ref AdditiveGroupOperation) | |
+| [`TranslationGroup`](@ref) | [`Euclidean`](@extref `Manifolds.Euclidean`) | [`+`](@ref AdditionGroupOperation) | |
