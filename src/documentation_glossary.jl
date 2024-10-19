@@ -9,7 +9,7 @@
 # * links
 # * notes
 #
-# to keep naming, notation, and formatting in a unifed way
+# to keep naming, notation, and formatting in a unified way
 
 # In general every dictionary here can be either `:Symbol-> String` or `:Symbol -> Dictionary enrties`
 
@@ -28,7 +28,7 @@ if that entrs is
 * a function, it is called with `args...` and `kwargs...` passed
 * a dictionary, then the arguments and keyword arguments are passed to this dictionary, assuming `args[1]` is a symbol
 """
-#Do not attach the doc string here for now, since there is no internals section in the documenttion yet
+#Do not attach the doc string here for now, since there is no internals section in the documentation yet
 glossary(s::Symbol, args...; kwargs...) = glossary(_manopt_glossary, s, args...; kwargs...)
 function glossary(g::_LIEGROUPS_DOC_TYPE, s::Symbol, args...; kwargs...)
     return glossary(g[s], args...; kwargs...)
