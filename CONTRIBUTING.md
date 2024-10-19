@@ -7,7 +7,7 @@ The following is a set of guidelines to [`LieGroups.jl`](https://juliamanifolds.
 
 #### Table of contents
 
-- [Contributing to `LieGroups.jl`](#Contributing-to-manoptjl)
+- [Contributing to `LieGroups.jl`](#Contributing-to-liegroupsjl)
       - [Table of Contents](#Table-of-Contents)
   - [How to just ask a question](#How-to-ask-a-question)
   - [How to file an issue](#How-to-file-an-issue)
