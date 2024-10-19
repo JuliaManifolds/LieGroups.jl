@@ -5,7 +5,8 @@ using ManifoldsBase, Manifolds, LinearAlgebra
 #
 #
 # = Compatibility (and a bit of type piracy for now)
-# The following imports shall be removed once Manifolds.jl does no longer define them (in 0.11)
+# The following imports are necessary to use Manifolds.jl 0.10 with Lie Groups
+# The line is removed when the Groups are removed from possibly 0.11
 import Manifolds: apply, apply!, identity_element, is_identity, compose
 # Both define the following structs, so these for now lead to asking for explicit prefixes
 # Manifolds: Identity, TranslationGroup

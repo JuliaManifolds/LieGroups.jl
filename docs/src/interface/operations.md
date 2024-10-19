@@ -1,5 +1,5 @@
 
-# Lie group operations
+# An interface for Lie group operations
 
 ```@docs
 AbstractGroupOperation

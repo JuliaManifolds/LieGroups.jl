@@ -1,4 +1,4 @@
-# An Interface Actions on Lie groups
+# An Interface for Lie group actions
 
 ```@autodocs
 Modules = [LieGroups]

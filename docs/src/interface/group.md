@@ -1,4 +1,4 @@
-# The interface for Lie Groups
+# An interface for Lie groups
 
 ```@docs
 LieGroup

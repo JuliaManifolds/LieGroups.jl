@@ -559,7 +559,7 @@ function test_LieGroup(G::LieGroup, properties::Dict, expectations::Dict=Dict())
 
         #
         #
-        # --- I
+        # --- `I`
         if any(in.([inv_left_compose, inv_right_compose], Ref(functions)))
             vl = get(expectations, :inv_left_compose, missing)
             vr = get(expectations, :inv_right_compose, missing)

@@ -1,4 +1,4 @@
-# The interface for Lie algebras
+# An interface for Lie algebras
 
 ```@docs
 LieAlgebra
