@@ -166,8 +166,8 @@ function inv!(G::LieGroup{𝔽,AdditionGroupOperation}, h, g) where {𝔽}
 end
 
 _doc_lie_bracket_add = """
-    lie_bracket!(𝔤::LieAlgebra{𝔽,<:LieGroup{𝔽,AdditionGroupOperation}}, X, Y)
-    lie_bracket!(𝔤::LieAlgebra{𝔽,<:LieGroup{𝔽,AdditionGroupOperation}}, Z, X, Y)
+    lie_bracket!(𝔤::LieAlgebra{𝔽,AdditionGroupOperation}, X, Y)
+    lie_bracket!(𝔤::LieAlgebra{𝔽,AdditionGroupOperation}, Z, X, Y)
 
 Compute the Lie bracket ``[⋅,⋅]: $(_math(:𝔤))×$(_math(:𝔤)) → $(_math(:𝔤))``,
 which for the for the [`AdditionGroupOperation`](@ref) simplifies to the
@@ -176,12 +176,10 @@ The computation can be done in-place of `Z`.
 """
 
 @doc "$(_doc_lie_bracket_add)"
-lie_bracket(𝔤::LieAlgebra{𝔽,<:LieGroup{𝔽,AdditionGroupOperation}}, X, Y) where {𝔽}
+lie_bracket(𝔤::LieAlgebra{𝔽,AdditionGroupOperation}, X, Y) where {𝔽}
 
 @doc "$(_doc_lie_bracket_add)"
-function lie_bracket!(
-    𝔤::LieAlgebra{𝔽,<:LieGroup{𝔽,AdditionGroupOperation}}, Z, X, Y
-) where {𝔽}
+function lie_bracket!(𝔤::LieAlgebra{𝔽,AdditionGroupOperation}, Z, X, Y) where {𝔽}
     return zero_vector!(𝔤, Z)
 end
 
