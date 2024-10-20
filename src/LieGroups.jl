@@ -37,7 +37,7 @@ export GroupOperationAction
 export TranslationGroup
 
 export adjoint, adjoint!, apply, apply!
-export base_Lie_group, base_manifold
+export base_lie_group, base_manifold
 export compose, compose!
 export diff_apply,
     diff_apply!,

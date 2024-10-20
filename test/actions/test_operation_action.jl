@@ -29,7 +29,7 @@ using LieGroupsTestSuite
     @test inv(A4) == A2
     As = [A1, A2, A3, A4]
     for A in As
-        @test base_Lie_group(A) == G
+        @test base_lie_group(A) == G
         @test base_manifold(A) == G
     end
 end

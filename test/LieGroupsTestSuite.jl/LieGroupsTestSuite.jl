@@ -181,7 +181,7 @@ Test  `diff_group_apply`.
 function test_diff_group_apply(A::AbstractGroupAction, g, p, X; expected=missing)
     @testset "diff_group_apply" begin
         Y1 = diff_group_apply(A, g, p, X)
-        𝔤 = LieAlgebra(base_Lie_group(A))
+        𝔤 = LieAlgebra(base_lie_group(A))
         Y2 = copy(𝔤, X)
         diff_group_apply!(A, Y2, g, p, X)
         @test isapprox(𝔤, Y1, Y2)
@@ -467,7 +467,7 @@ end
 #
 #
 """
-    test_LieGroup(G, properties, expectations)
+    test_lie_group(G, properties, expectations)
 
 Test the Lie group ``G`` based on a `Dict` of properties and a `Dict` of `expectations
 
@@ -492,7 +492,7 @@ Possible `expectations` are
 * `:inv_right_compose` for the result of `inv_right_compose` with respect to the first two points
 * `:repr` is a sting one gets from `repr(G)`
 """
-function test_LieGroup(G::LieGroup, properties::Dict, expectations::Dict=Dict())
+function test_lie_group(G::LieGroup, properties::Dict, expectations::Dict=Dict())
     a_tol = get(expectations, :atol, 1e-8)
     functions = get(properties, :Functions, Function[])
     points = get(properties, :Points, [])
@@ -591,7 +591,7 @@ function test_LieGroup(G::LieGroup, properties::Dict, expectations::Dict=Dict())
 end
 
 """
-    test_LieGroup(G, properties, expectations)
+    test_lie_group(G, properties, expectations)
 
 Test the Lie group ``G`` based on a `Dict` of properties and a `Dict` of `expectations
 
@@ -650,10 +650,10 @@ function test_GroupAction(
                 A, group_points[1], manifold_points[1], algebra_vectors[1]; expected=v
             )
         end
-        if (base_Lie_group in functions)
+        if (base_lie_group in functions)
             v = get(expectations, :group, missing)
             !ismissing(v) && @testset "base_lie_group" begin
-                @test base_Lie_group(A) == v
+                @test base_lie_group(A) == v
             end
         end
         if (base_manifold in functions)
@@ -668,5 +668,5 @@ function test_GroupAction(
     end
 end
 
-export test_LieGroup, test_GroupAction
+export test_lie_group, test_GroupAction
 end # module

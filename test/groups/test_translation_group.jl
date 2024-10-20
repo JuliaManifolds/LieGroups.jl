@@ -38,12 +38,12 @@ begin
         :diff_right_compose => X1,
         :lie_bracket => zero(X1),
     )
-    test_LieGroup(G, properties, expectations)
+    test_lie_group(G, properties, expectations)
 
     properties2 = Dict(
         :AlgebraVectors => [X1, X2, X3],
         :Functions =>
-            [apply, diff_apply, diff_group_apply, base_Lie_group, base_manifold, show],
+            [apply, diff_apply, diff_group_apply, base_lie_group, base_manifold, show],
         :GroupPoints => [g1, g2, g3],
         :ManifoldPoints => [g1, g2, g3],
         :TangentVectors => [X1, X2, X3],

@@ -99,12 +99,12 @@ abstract type AbstractGroupAction{
 
 function base_lie_group end
 @doc """
-    base_Lie_group(A::AbstractGroupAction)
+    base_lie_group(A::AbstractGroupAction)
 
 Return the [`LieGroup`](@ref) of the [`AbstractGroupAction`](@ref)
 specifying the action.
 """
-base_Lie_group(::AbstractGroupAction)
+base_lie_group(::AbstractGroupAction)
 
 @doc """
     base_manifold(A::AbstractGroupAction)
