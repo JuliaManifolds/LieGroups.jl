@@ -13,6 +13,6 @@ For most of the notation used throughout this package, we follow [HilgertNeeb:20
 | ``λ_g: \mathcal G → \mathcal G`` | the left group operation map ``λ_g(h) = g∘h`` | |
 | ``\mathcal M`` | a manifold | ``\mathcal M_1, \mathcal M_2,\ldots,\mathcal N`` | |
 | ``ρ_g: \mathcal G → \mathcal G`` | the right group operation map ``ρ_g(h) = h∘g`` | |
-| ``σ: \mathcal G × \mathcal M`` | a left group action | ``σ_g(p)`` to emphasize a fixed grou pelement |
-| ``τ: \mathcal M × \mathcal G`` | a right group action | ``σ_\mathrm{R}`` | ``τ_g(p)`` o emphasize a fixed grou pelement |
+| ``σ: \mathcal G × \mathcal M`` | a left group action | ``σ_g(p)`` to emphasize a fixed group element |
+| ``τ: \mathcal M × \mathcal G`` | a right group action | ``σ_\mathrm{R}`` | ``τ_g(p)`` to emphasize a fixed group element |
 | ``T_p \mathcal M`` | the tangent space at ``p`` | | |

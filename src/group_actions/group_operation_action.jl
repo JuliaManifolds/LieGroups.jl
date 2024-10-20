@@ -209,7 +209,7 @@ Return the inverse of the [`InverseRightGroupOperation`](@ref), that is the [`Ri
 Base.inv(::InverseRightGroupOperation) = RightGroupOperation()
 
 function Base.show(io::IO, A::GroupOperationAction)
-    return print(io, "GroupOperationAction($(A.type),$(A.group))")
+    return print(io, "GroupOperationAction($(A.type), $(A.group))")
 end
 
 """
