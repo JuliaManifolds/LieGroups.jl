@@ -52,7 +52,7 @@ See also [`identity_element`](@ref) on how to obtain the corresponding [`Abstrac
 
 # Constructors
 
-    Identity(::LieGroup{𝔽,O}) where {𝔽,M,O<:AbstractGroupOperation}
+    Identity(::LieGroup{𝔽,O}) where {𝔽,O<:AbstractGroupOperation}
     Identity(o::AbstractGroupOperation)
     Identity(::Type{AbstractGroupOperation})
 
@@ -126,7 +126,7 @@ function ManifoldsBase.check_point(
 end
 function ManifoldsBase.check_point(
     G::LieGroup{𝔽,O}, e::Identity{O2}; kwargs...
-) where {𝔽,O<:AbstractGroupOperation,O2}
+) where {𝔽,O<:AbstractGroupOperation,O2<:AbstractGroupOperation}
     return DomainError(
         e,
         """

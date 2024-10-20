@@ -1,4 +1,4 @@
-# The Lie group of translations on an Euclidean space
+# The Lie group of translations on a Euclidean space
 
 ```@docs
 TranslationGroup
