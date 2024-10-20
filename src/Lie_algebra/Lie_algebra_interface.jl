@@ -18,9 +18,9 @@ this is internally just a `const` of the corresponding $(_link(:TangentSpace)).
 
 Return the Lie Algebra belonging to the [`LieGroup`](@ref) `G`.
 """
-const LieAlgebra{𝔽,G} = ManifoldsBase.Fiber{
-    𝔽,ManifoldsBase.TangentSpaceType,G,Identity{O}
-} where {𝔽,O<:AbstractGroupOperation,G<:LieGroup{𝔽,O}}
+const LieAlgebra{𝔽,G,I} = ManifoldsBase.Fiber{
+    𝔽,ManifoldsBase.TangentSpaceType,G,I
+} where {𝔽,G<:LieGroup{𝔽},I<:Identity}
 
 function LieAlgebra(G::LieGroup{𝔽}) where {𝔽}
     return LieAlgebra{𝔽,typeof(G),typeof(Identity(G))}(
