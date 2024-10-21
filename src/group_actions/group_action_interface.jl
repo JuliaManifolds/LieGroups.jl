@@ -99,18 +99,19 @@ abstract type AbstractGroupAction{
 
 function base_lie_group end
 @doc """
-    base_Lie_group(A::AbstractGroupAction)
+    base_lie_group(A::AbstractGroupAction)
 
-Return the [`LieGroup`](@ref) of the [`AbstractGroupAction`](@ref).
+Return the [`LieGroup`](@ref) of the [`AbstractGroupAction`](@ref)
+specifying the action.
 """
 base_lie_group(::AbstractGroupAction)
 
 @doc """
     base_manifold(A::AbstractGroupAction)
 
-Return the $(_link(:AbstractManifold)) of the [`AbstractGroupAction`](@ref).
+Return the $(_link(:AbstractManifold)) the group action acts upon.
 """
-ManifoldsBase.base_manifold(::AbstractGroupAction)
+ManifoldsBase, base_manifold(::AbstractGroupAction)
 
 #
 #
@@ -125,15 +126,17 @@ where the kind of group action is indicated by the [`AbstractGroupActionType`](@
 This can be perfomed in-place of `q`.
 """
 
-# function apply end # uncomment (remove this comment) when removing this function from Manifolds.jl
+# function apply end
+# un-comment the preceding line and remove this, once GroupManifolds no longer exists in Manifolds.jl
 @doc "$(_doc_apply)"
 function apply(A::AbstractGroupAction, g, p)
-    q = allocate_result(A, apply, g, p)
+    q = allocate_result(base_manifold(A), apply, g, p)
     apply!(A, q, g, p)
     return q
 end
 
-# function apply! end # uncomment (remove this comment) when removing this function from Manifolds.jl
+# Define `function apply! end` here as well
+# un-comment (remove this comment) when removing this function from Manifolds.jl
 @doc "$(_doc_apply)"
 apply!(A::AbstractGroupAction, q, g, p)
 
@@ -148,9 +151,9 @@ where for a left group action we have ``σ_g(p) = σ(g,p)``, for a right action 
 function diff_apply end
 @doc "$(_doc_diff_apply)"
 function diff_apply(A::AbstractGroupAction, g, p, X)
-    Y = allocate_result(A, apply, p, g, X)
+    Y = allocate_result(base_manifold(A), apply_diff_group, p, g, X)
     diff_apply!(A, Y, g, p, X)
-    return q
+    return Y
 end
 
 function diff_apply! end
@@ -161,7 +164,7 @@ _doc_diff_group_apply = """
     diff_group_apply(A::AbstractGroupAction{T, L, M}, g, p, X)
     diff_group_apply!(A::AbstractGroupAction{T, L, M}, Y, g, p, X)
 
-Compute the differential ``D_g σ_p(g): T_g$(_math(:G)) → T_{σ_p(g)}$(_math(:M))``,
+Compute the differential ``D_g σ_g(p): $(_math(:𝔤)) → $(_math(:𝔤))``,
 where we use the short hand notation ``σ_p(g) = σ(g,p)`` for a left action,
 and for a right action ``σ_p(g) = σ(p, g)``.
 """
@@ -169,9 +172,9 @@ and for a right action ``σ_p(g) = σ(p, g)``.
 function diff_group_apply end
 @doc "$(_doc_diff_group_apply)"
 function diff_group_apply(A::AbstractGroupAction, g, p, X)
-    Y = allocate_result(A, apply, p, g, X)
+    Y = allocate_result(base_manifold(A), apply, g, p, X)
     diff_group_apply!(A, Y, g, p, X)
-    return q
+    return Y
 end
 
 function diff_group_apply! end
