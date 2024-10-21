@@ -11,7 +11,7 @@ do build a Lie group with. These are
 
 * an [`AdditionGroupOperation`](@ref)
 
-## Additive group operation
+## [Additive group operation](@id addition-operation-sec)
 
 ```@autodocs
 Modules = [LieGroups]
