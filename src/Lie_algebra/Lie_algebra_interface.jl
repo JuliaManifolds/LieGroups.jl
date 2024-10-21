@@ -65,6 +65,8 @@ end
 
 # Move this line already to ManifoldsBase? On Fibers of course.
 LinearAlgebra.norm(𝔤::LieAlgebra, X) = LinearAlgebra.norm(𝔤.manifold, 𝔤.point, X)
+# Non-mutating case with single number -> avoid ambiguity
+LinearAlgebra.norm(𝔤::LieAlgebra, X::Real) = LinearAlgebra.norm(𝔤.manifold, 𝔤.point, X)
 function LinearAlgebra.norm(
     G::LieGroup{𝔽,O}, ::Identity{O}, X
 ) where {𝔽,O<:AbstractGroupOperation}

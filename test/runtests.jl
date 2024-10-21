@@ -23,4 +23,5 @@ end
     @testset "Lie Groups" begin
         include_test("groups/test_translation_group.jl")
     end
+    include("test_aqua.jl")
 end

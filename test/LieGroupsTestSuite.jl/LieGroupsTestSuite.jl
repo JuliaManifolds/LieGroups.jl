@@ -591,7 +591,7 @@ function test_lie_group(G::LieGroup, properties::Dict, expectations::Dict=Dict()
 end
 
 """
-    test_lie_group(G, properties, expectations)
+    test_group_action(G, properties, expectations)
 
 Test the Lie group ``G`` based on a `Dict` of properties and a `Dict` of `expectations
 
@@ -615,7 +615,7 @@ Possible `expectations` are
 * `:manifold` is the `AbstractManifold` the action acts upon
 * `:repr` is a sting one gets from `repr(G)`
 """
-function test_GroupAction(
+function test_group_action(
     A::AbstractGroupAction, properties::Dict, expectations::Dict=Dict()
 )
     a_tol = get(expectations, :atol, 1e-8)
@@ -668,5 +668,5 @@ function test_GroupAction(
     end
 end
 
-export test_lie_group, test_GroupAction
+export test_lie_group, test_group_action
 end # module
