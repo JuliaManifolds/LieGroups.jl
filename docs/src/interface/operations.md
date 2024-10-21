@@ -6,7 +6,10 @@ AbstractGroupOperation
 Identity
 ```
 
-For some generic group operations, generic implementations are available.
+Some specific group operations allow to define functions for all manifolds they
+do build a Lie group with. These are
+
+* an [`AdditionGroupOperation`](@ref)
 
 ## Additive group operation
 
