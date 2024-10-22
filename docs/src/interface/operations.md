@@ -6,8 +6,10 @@ AbstractGroupOperation
 Identity
 ```
 
-Some specific group operations allow to define functions for all manifolds they
-do build a Lie group with. These are
+You can combine some specific group operations with one of several manifolds to form a Lie group.
+You can still define the corresponding functions generically for all groups with this group operation regardless of the manifold.
+The following sections collect these.
+
 
 * an [`AdditionGroupOperation`](@ref)
 
