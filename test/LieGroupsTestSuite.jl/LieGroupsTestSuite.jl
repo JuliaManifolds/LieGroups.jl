@@ -66,9 +66,11 @@ Test  `apply`.
 
 # Keyword arguments
 * `expected=missing`: the result of the application of the group action.
-* `test_mutating=true`: test the mutating functions
+* `test_mutating::Bool=true`: test the mutating functions
 """
-function test_apply(A::AbstractGroupAction, g, p; expected=missing, test_mutating::Bool=true)
+function test_apply(
+    A::AbstractGroupAction, g, p; expected=missing, test_mutating::Bool=true
+)
     @testset "apply" begin
         q1 = apply(A, g, p)
         M = base_manifold(A)
@@ -96,7 +98,12 @@ Test  `compose` for given Lie group elements `g`, `h`.
 * `test_mutating::Bool=true`: test the mutating functions
 """
 function test_compose(
-    G::LieGroup, g, h; test_inverse::Bool=true, test_identity::Bool=true, test_mutating::Bool=true
+    G::LieGroup,
+    g,
+    h;
+    test_inverse::Bool=true,
+    test_identity::Bool=true,
+    test_mutating::Bool=true,
 )
     @testset "compose" begin
         k1 = compose(G, g, h)

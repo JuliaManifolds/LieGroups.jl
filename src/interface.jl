@@ -147,7 +147,7 @@ on the [`LieGroup`](@ref) `G`. This can also be done in-place of `h`.
 !!! info
     This function also handles the case where `g` or/and `h` are the [`Identity`](@ref)`(G)`.
     Since this would lead to ambiguities when implementing a new group operations,
-    this function calls `_compose` and `compose!`, respectively, which is meant for the actual computation of
+    this function calls `_compose` and `_compose!`, respectively, which is meant for the actual computation of
     group operations on (non-[`Identity`](@ref)` but maybe its numerical representation) elements.
 """
 @doc "$(_doc_compose)"
@@ -376,11 +376,7 @@ end
 # Fallback to a MethodError to avoid stack overflow
 @doc "$(_doc_exp_id)"
 function ManifoldsBase.exp!(G::LieGroup, h, e::Identity, X, t::Number=1)
-    throw(
-        MethodError(
-            exp!, (typeof(G), typeof(h), typeof(e), typeof(X), typeof(t))
-        ),
-    )
+    throw(MethodError(exp!, (typeof(G), typeof(h), typeof(e), typeof(X), typeof(t))))
 end
 
 _doc_identity_element = """
@@ -527,7 +523,9 @@ ManifoldsBase.is_vector(G::LieGroup, X; kwargs...) =
     is_point(LieAlgebra(G), X; kwargs...)
 
 @doc "$(_doc_is_vector)"
-function ManifoldsBase.is_vector(G::LieGroup{𝔽,O}, e::Identity{O}, X; kwargs...) where {𝔽,O<:AbstractGroupOperation}
+function ManifoldsBase.is_vector(
+    G::LieGroup{𝔽,O}, e::Identity{O}, X; kwargs...
+) where {𝔽,O<:AbstractGroupOperation}
     return is_vector(G.manifold, identity_element(G), X; kwargs...)
 end
 
