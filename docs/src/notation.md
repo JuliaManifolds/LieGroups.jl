@@ -1,6 +1,6 @@
-# Notation on LIe Groups
+# Notation on Lie Groups
 
-For most of the notation used throughout this package, we follow [HilgertNeeb:2012](@cite)
+For most of the notation used throughout this package, we follow [HilgertNeeb:2012](@cite).
 
 | Symbol | Description | Also used | Comment |
 |:--:|:--------------- |:--:|:-- |

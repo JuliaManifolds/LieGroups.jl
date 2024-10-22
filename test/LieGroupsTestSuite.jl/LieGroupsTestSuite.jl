@@ -30,16 +30,16 @@ struct DummyGroupAction <: AbstractGroupAction{DummyActionType,DummyLieGroup,Dum
 #
 # --- A
 """
-    test_adjoint(G, g, X; kwargs...)
+    test_adjoint(G::LieGroup, g, X; kwargs...)
 
 Test  `adjoint` function for a given Lie group element `g` and a Lie Algebra vector `X`
 
 # Keyword arguments
 * `expected=missing` provide the value expected. If none is provided, the
   default from `diff_conjugate` is used
-* `test_mutating=true`: test the mutating functions
+* `test_mutating::Bool=true`: test the mutating functions
 """
-function test_adjoint(G::LieGroup, g, X; expected=missing, test_mutating=true)
+function test_adjoint(G::LieGroup, g, X; expected=missing, test_mutating::Bool=true)
     @testset "adjoint" begin
         v = if ismissing(expected)
             diff_conjugate(G, g, identity_element(G), X)
@@ -261,9 +261,11 @@ Test  `diff_left_compose`.
 # Keyword arguments
 * `expected=missing`: the result of the differential of the compose's left argument,
   if not provided, only consistency between the allocating and the in-place variant is checked.
-* `test_mutating=true`: test the mutating functions
+* `test_mutating::Bool=true`: test the mutating functions
 """
-function test_diff_left_compose(G::LieGroup, g, h, X; expected=missing, test_mutating=true)
+function test_diff_left_compose(
+    G::LieGroup, g, h, X; expected=missing, test_mutating::Bool=true
+)
     @testset "diff_left_compose" begin
         𝔤 = LieAlgebra(G)
         Y1 = diff_left_compose(G, g, h, X)
@@ -287,9 +289,11 @@ Test  `diff_right_compose`.
 # Keyword arguments
 * `expected=missing`: the result of the differential of the compose's right argument,
   if not provided, only consistency between the allocating and the in-place variant is checked.
-* `test_mutating=true`: test the mutating functions
+* `test_mutating::Bool=true`: test the mutating functions
 """
-function test_diff_right_compose(G::LieGroup, g, h, X; expected=missing, test_mutating=true)
+function test_diff_right_compose(
+    G::LieGroup, g, h, X; expected=missing, test_mutating::Bool=true
+)
     @testset "diff_right_compose" begin
         𝔤 = LieAlgebra(G)
         Y1 = diff_right_compose(G, g, h, X)
@@ -349,12 +353,12 @@ a vector `X` from the Lie Algebra.
 
 # Keyword arguments
 
-* `test_exp=true`: test the exponential map yields a point on `G`
-* `test_log=true`: test the logarithmic map.
-* `test_mutating=true`: test the mutating functions
+* `test_exp::Bool=true`: test the exponential map yields a point on `G`
+* `test_log::Bool=true`: test the logarithmic map.
+* `test_mutating::Bool=true`: test the mutating functions
 """
 function test_exp_log(
-    G::LieGroup, g, h, X; test_exp=true, test_mutating=true, test_log=true
+    G::LieGroup, g, h, X; test_exp::Bool=true, test_mutating::Bool=true, test_log::Bool=true
 )
     @testset "(Lie group) exp & log" begin
         𝔤 = LieAlgebra(G)
@@ -441,9 +445,9 @@ For these tests both `compose` and `inv` are required.
 
 # Keyword arguments
 
-* `test_left=true`: test ``g^{-1}∘h``
-* `test_mutating=true`: test the mutating functions
-* `test_right=true`: test ``g∘h^{-1}``
+* `test_left::Bool=true`: test ``g^{-1}∘h``
+* `test_mutating::Bool=true`: test the mutating functions
+* `test_right::Bool=true`: test ``g∘h^{-1}``
 """
 function test_inv_compose(
     G::LieGroup,
@@ -451,9 +455,9 @@ function test_inv_compose(
     h;
     expected_left=missing,
     expected_right=missing,
-    test_left=true,
-    test_mutating=true,
-    test_right=true,
+    test_left::Bool=true,
+    test_mutating::Bool=true,
+    test_right::Bool=true,
 )
     @testset "test compose inv combinations" begin
         if test_left
@@ -503,9 +507,9 @@ Test  `lie_bracket`.
 # Keyword arguments
 * `expected=missing`: the result of the lie bracket
   if not provided, only consistency between the allocating and the in-place variant is checked.
-* `test_mutating=true`: test the mutating functions
+* `test_mutating::Bool=true`: test the mutating functions
 """
-function test_lie_bracket(G::LieGroup, X, Y; expected=missing, test_mutating=true)
+function test_lie_bracket(G::LieGroup, X, Y; expected=missing, test_mutating::Bool=true)
     @testset "lie_bracket" begin
         𝔤 = LieAlgebra(G)
         Z1 = lie_bracket(𝔤, X, Y)
@@ -524,14 +528,14 @@ end
 #
 # --- S
 """
-    test_show(G, repr_string)
+    test_show(G, repr_string::AbstractString)
 
 Test that show methods work as expected.
 For now this (only) checks that `"\$G"` yields the `repr_string`.
 
 requires `show` (or `repr`) to be implemented.
 """
-function test_show(G::Union{AbstractGroupAction,LieGroup}, repr_string)
+function test_show(G::Union{AbstractGroupAction,LieGroup}, repr_string::AbstractString)
     @testset "repr(G, g, h)" begin
         @test repr(G) == repr_string
     end
@@ -542,7 +546,7 @@ end
 #
 #
 """
-    test_lie_group(G, properties, expectations)
+    test_lie_group(G::LieGroup, properties::Dict, expectations::Dict)
 
 Test the Lie group ``G`` based on a `Dict` of properties and a `Dict` of `expectations
 
@@ -598,7 +602,7 @@ function test_lie_group(G::LieGroup, properties::Dict, expectations::Dict=Dict()
             v = get(expectations, :conjugate, missing)
             test_conjugate(G, points[1], points[2]; expected=v, test_mutating=mutating)
         end
-        # Either `copyto` or the default with `identity_element`` available
+        # Either `copyto` or the default with `identity_element` available
         if any(in.([copyto!, identity_element], Ref(functions))) && (mutating)
             test_copyto(G, points[1])
         end
@@ -674,9 +678,9 @@ function test_lie_group(G::LieGroup, properties::Dict, expectations::Dict=Dict()
 end
 
 """
-    test_group_action(G, properties, expectations)
+    test_group_action(G::LieGroup, properties::Dict, expectations::Dict)
 
-Test the Lie group ``G`` based on a `Dict` of properties and a `Dict` of `expectations
+Test the Lie group ``G`` based on a `Dict` of properties and a `Dict` of `expectations`.
 
 Possible properties are
 

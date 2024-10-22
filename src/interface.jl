@@ -257,7 +257,7 @@ _doc_diff_inv = """
     diff_inv(G::LieGroup, g, X)
     diff_inv!(G::LieGroup, Y, g, X)
 
-Compute the differential of the function ``ι_{$(_math(:G))}(g) = g^-1``, where
+Compute the differential of the function ``ι_{$(_math(:G))}(g) = g^{-1}``, where
 ``Dι_{$(_math(:G))}(g): $(_math(:𝔤)) → $(_math(:𝔤))``.
 This can be done in-place of `Y`.
 """
@@ -510,7 +510,7 @@ _doc_is_vector = """
     is_vector(G::LieGroup, X; kwargs...)
     is_vector(G::LieGroup{𝔽,O}, e::Indentity{O}, X; kwargs...)
 
-Check whether `X` is a tangent vector, that is an element of the |`LieAlgebra`](@ref)
+Check whether `X` is a tangent vector, that is an element of the [`LieAlgebra`](@ref)
 of `G`.
 The first variant calls [`is_point`](@extref ManifoldsBase.is_point) on the [`LieAlgebra`](@ref) `𝔤` of `G`.
 The second variant calls [`is_vector`](@extref ManifoldsBase.is_vector) on the $(_link(:AbstractManifold)) at the [`identity_element`](@ref).
@@ -566,7 +566,7 @@ _doc_log = """
 Compute the Lie group logarithmic map
 
 ```math
-$(_tex(:log))_g h = $(_math(:∘))$(_tex(:log))_{$(_math(:G))}(g^{-1}$(_math(:∘))h)
+$(_tex(:log))_g h = $(_tex(:log))_{$(_math(:G))}(g^{-1}$(_math(:∘))h)
 ```
 
 where ``$(_tex(:log))_{$(_math(:G))}`` denotes the [Lie group logarithmic function](@ref log(::LieGroup, ::Identity, :Any))
