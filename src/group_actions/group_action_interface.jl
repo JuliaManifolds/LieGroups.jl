@@ -111,7 +111,7 @@ base_lie_group(::AbstractGroupAction)
 
 Return the $(_link(:AbstractManifold)) the group action acts upon.
 """
-ManifoldsBase, base_manifold(::AbstractGroupAction)
+ManifoldsBase.base_manifold(::AbstractGroupAction)
 
 #
 #

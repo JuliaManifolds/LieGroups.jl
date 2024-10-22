@@ -3,7 +3,7 @@
 
 A group operation that is realised introducing defaults that fall back
 to `+` and `-` being overloaded, for example
-`_compose(G::LieGroup{𝔽,AdditionGroupOperation}, a,b) = a+b`
+`_compose(G::LieGroup{𝔽,AdditionGroupOperation}, a, b) = a + b`
 """
 struct AdditionGroupOperation <: AbstractGroupOperation end
 
@@ -39,7 +39,7 @@ compose(::LieGroup{𝔽,AdditionGroupOperation}, g, h) where {𝔽}
 compose!(::LieGroup{𝔽,AdditionGroupOperation}, k, g, h) where {𝔽}
 
 function _compose!(G::LieGroup{𝔽,AdditionGroupOperation}, k, g, h) where {𝔽}
-    ManifoldsBase.copyto!(G, k, g + h)
+    k .+= g .+ h
     return k
 end
 
@@ -68,11 +68,12 @@ which simplifies for [`AdditionGroupOperation`](@ref) to ``Dι_{$(_math(:G))}(g)
 """
 
 @doc "$(_doc_diff_inv_add)"
-diff_inv(G::LieGroup{𝔽,AdditionGroupOperation}, g, X) where {𝔽}
+diff_inv(G::LieGroup{𝔽,AdditionGroupOperation}, g, X) where {𝔽} = -X
 
 @doc "$(_doc_diff_inv_add)"
 function diff_inv!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, X) where {𝔽}
-    return copyto!(LieAlgebra(G), Y, -X)
+    Y .= (-1) .* X
+    return Y
 end
 
 _doc_diff_left_compose_add = """
@@ -84,7 +85,7 @@ which simplifies for [`AdditionGroupOperation`](@ref) to ``Dλ_g(h)[X] = X``.
 """
 
 @doc "$(_doc_diff_left_compose_add)"
-diff_left_compose(G::LieGroup{𝔽,AdditionGroupOperation}, g, h, X) where {𝔽}
+diff_left_compose(G::LieGroup{𝔽,AdditionGroupOperation}, g, h, X) where {𝔽} = X
 
 @doc "$(_doc_diff_left_compose_add)"
 function diff_left_compose!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, X) where {𝔽}
@@ -119,8 +120,8 @@ Since `e` is just the zero-element with respect to the corresponding `+`, the fo
 
 @doc "$(_doc_exp_add)"
 Base.exp(
-    ::LieGroup{𝔽,AdditionGroupOperation}, ::Identity{AdditionGroupOperation}, X, t
-) where {𝔽}
+    ::LieGroup{𝔽,AdditionGroupOperation}, ::Identity{AdditionGroupOperation}, X, t::Real
+) where {𝔽} = t * X
 
 @doc "$(_doc_exp_add)"
 function ManifoldsBase.exp!(
@@ -130,7 +131,8 @@ function ManifoldsBase.exp!(
     X,
     t::Number=1,
 ) where {𝔽}
-    return copyto!(G, g, X)
+    g .= t .* X
+    return g
 end
 
 _doc_identity_element_add = """
@@ -162,7 +164,8 @@ inv(G::LieGroup{𝔽,AdditionGroupOperation}, g) where {𝔽}
 
 @doc "$(_doc_inv_add)"
 function inv!(G::LieGroup{𝔽,AdditionGroupOperation}, h, g) where {𝔽}
-    return copyto!(G, h, -g)
+    h .= (-1) .* g
+    return h
 end
 
 _doc_lie_bracket_add = """
@@ -196,7 +199,7 @@ Since `e` is just the zero-element with respect to the corresponding `+`, the fo
 @doc "$(_doc_log_add)"
 ManifoldsBase.log(
     G::LieGroup{𝔽,AdditionGroupOperation}, ::Identity{AdditionGroupOperation}, q
-) where {𝔽}
+) where {𝔽} = q
 
 @doc "$(_doc_log_add)"
 function ManifoldsBase.log!(
