@@ -549,7 +549,7 @@ function ManifoldsBase.isapprox(
     return ManifoldsBase.isapprox(G.manifold, g, identity_element(G); kwargs...)
 end
 function ManifoldsBase.isapprox(
-    G::LieGroup{𝔽,O}, g::Identity{<:O}, h::Identity{O}; kwargs...
+    G::LieGroup{𝔽,O}, g::Identity{O}, h::Identity{O}; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
     return true
 end
