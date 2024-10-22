@@ -74,7 +74,7 @@ function LinearAlgebra.norm(
 end
 
 function Base.show(io::IO, 𝔤::LieAlgebra)
-    return print(io, "Lie Algebra( $(𝔤.manifold) )")
+    return print(io, "LieAlgebra( $(𝔤.manifold) )")
 end
 
 function ManifoldsBase.zero_vector(𝔤::LieAlgebra)
