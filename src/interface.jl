@@ -210,7 +210,7 @@ function conjugate!(G::LieGroup, k, g, h)
     return k
 end
 
-ManifoldsBase.copyto!(G::LieGroup, h, g) = ManifoldsBase.copyto!(G.manifold, h, g)
+ManifoldsBase.copyto!(G::LieGroup, h, g) = copyto!(G.manifold, h, g)
 function ManifoldsBase.copyto!(
     G::LieGroup{𝔽,O}, h, g::Identity{O}
 ) where {𝔽,O<:AbstractGroupOperation}
@@ -378,7 +378,7 @@ end
 function ManifoldsBase.exp!(G::LieGroup, h, e::Identity, X, t::Number=1)
     throw(
         MethodError(
-            ManifoldsBase.exp!, (typeof(G), typeof(h), typeof(e), typeof(X), typeof(t))
+            exp!, (typeof(G), typeof(h), typeof(e), typeof(X), typeof(t))
         ),
     )
 end
@@ -429,7 +429,7 @@ _doc_inv_left_compose = """
     inv_left_compose(G::LieGroup, g, h)
     inv_left_compose!(G::LieGroup, k, g, h)
 
-Compute the inverse of the left group multiplication ``λ_g(h) = g$(_math(:∘))h``,
+Compute the inverse of the left group operation ``λ_g(h) = g$(_math(:∘))h``,
 on the [`LieGroup`](@ref) `G`, that is, compute ``λ_g^{-1}(h) = g^{-1}$(_math(:∘))h``.
 This can be done in-place of `k`.
 """
@@ -451,8 +451,8 @@ _doc_inv_right_compose = """
     inv_right_compose(G::LieGroup, h, g)
     inv_right_compose!(G::LieGroup, k, h, g)
 
-Compute the inverse of the right group multiplication ``ρ_g(h) = h$(_math(:∘))g``,
-on the [`LieGroup`](@ref) `G`, that is Compute ``ρ_g^{-1}(h) = h$(_math(:∘))g^{-1}``.
+Compute the inverse of the right group operation ``ρ_g(h) = h$(_math(:∘))g``,
+on the [`LieGroup`](@ref) `G`, that is compute ``ρ_g^{-1}(h) = h$(_math(:∘))g^{-1}``.
 This can be done in-place of `k`.
 """
 @doc "$(_doc_inv_right_compose)"
@@ -519,16 +519,16 @@ of `G`.
 The first variant calls [`is_point`](@extref ManifoldsBase.is_point) on the [`LieAlgebra`](@ref) `𝔤` of `G`.
 The second variant calls [`is_vector`](@extref ManifoldsBase.is_vector) on the $(_link(:AbstractManifold)) at the [`identity_element`](@ref).
 
-All kwyword arguments are passed on to the corresponding call
+All keyword arguments are passed on to the corresponding call
 """
 
 @doc "$(_doc_is_vector)"
 ManifoldsBase.is_vector(G::LieGroup, X; kwargs...) =
-    ManifoldsBase.is_point(LieAlgebra(G), X; kwargs...)
+    is_point(LieAlgebra(G), X; kwargs...)
 
 @doc "$(_doc_is_vector)"
-function ManifoldsBase.is_vector(G::LieGroup{𝔽,O}, e::Identity{O}, X; kwargs...) where {𝔽,O}
-    return ManifoldsBase.is_vector(G.manifold, identity_element(G), X; kwargs...)
+function ManifoldsBase.is_vector(G::LieGroup{𝔽,O}, e::Identity{O}, X; kwargs...) where {𝔽,O<:AbstractGroupOperation}
+    return is_vector(G.manifold, identity_element(G), X; kwargs...)
 end
 
 """
@@ -542,22 +542,22 @@ All keyword argments are passed to this function as well.
 """
 ManifoldsBase.isapprox(G::LieGroup, g, h; kwargs...) = isapprox(G.manifold, g, h; kwargs...)
 function ManifoldsBase.isapprox(
-    G::LieGroup{𝔽,O}, g::Identity{<:O}, h; kwargs...
+    G::LieGroup{𝔽,O}, g::Identity{O}, h; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
     return ManifoldsBase.isapprox(G.manifold, identity_element(G), h; kwargs...)
 end
 function ManifoldsBase.isapprox(
-    G::LieGroup{𝔽,O}, g, h::Identity{<:O}; kwargs...
+    G::LieGroup{𝔽,O}, g, h::Identity{O}; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
     return ManifoldsBase.isapprox(G.manifold, g, identity_element(G); kwargs...)
 end
 function ManifoldsBase.isapprox(
-    G::LieGroup{𝔽,O}, g::Identity{<:O}, h::Identity{<:O}; kwargs...
+    G::LieGroup{𝔽,O}, g::Identity{<:O}, h::Identity{O}; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
     return true
 end
 function ManifoldsBase.isapprox(
-    G::LieGroup{𝔽,O}, g::Identity{<:O}, h::Identity{<:O2}; kwargs...
+    G::LieGroup{𝔽,O}, g::Identity{O}, h::Identity{O2}; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation,O2<:AbstractGroupOperation}
     return false
 end
@@ -620,10 +620,10 @@ function ManifoldsBase.log!(G::LieGroup, X, e::Identity, g)
     throw(MethodError(ManifoldsBase.log!, (typeof(G), typeof(X), typeof(e), typeof(g))))
 end
 
-LinearAlgebra.norm(G::LieGroup, g, X) = LinearAlgebra.norm(G.manifold, g, X)
+LinearAlgebra.norm(G::LieGroup, g, X) = norm(G.manifold, g, X)
 
 function ManifoldsBase.representation_size(G::LieGroup)
-    return ManifoldsBase.representation_size(G.manifold)
+    return representation_size(G.manifold)
 end
 
 function Base.show(io::IO, G::LieGroup)
@@ -633,11 +633,11 @@ end
 function ManifoldsBase.zero_vector(
     G::LieGroup{𝔽,O}, ::Identity{O}
 ) where {𝔽,O<:AbstractGroupOperation}
-    return ManifoldsBase.zero_vector(G, identity_element(G))
+    return zero_vector(G, identity_element(G))
 end
 
 function ManifoldsBase.zero_vector!(
     G::LieGroup{𝔽,O}, X, ::Identity{O}
 ) where {𝔽,O<:AbstractGroupOperation}
-    return ManifoldsBase.zero_vector!(G, X, identity_element(G))
+    return zero_vector!(G, X, identity_element(G))
 end

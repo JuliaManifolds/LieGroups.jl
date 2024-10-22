@@ -7,7 +7,7 @@ within `LieGroups.jl`.
 For every test function, several interactions to other functions can be activated.
 The following functions are expected to be available, since their defaults just pass through to the manifold
 * `is_point` both on the Lie group `G` and the Lie algebra `𝔤`
-* `isapprox(G,g,h)` and `issaprox(𝔤, X, Y)`
+* `isapprox(G, g, h)` and `isapprox(𝔤, X, Y)`
 * `copy(G, g)`
 * `norm(𝔤, X)`
 """
@@ -68,7 +68,7 @@ Test  `apply`.
 * `expected=missing`: the result of the application of the group action.
 * `test_mutating=true`: test the mutating functions
 """
-function test_apply(A::AbstractGroupAction, g, p; expected=missing, test_mutating=true)
+function test_apply(A::AbstractGroupAction, g, p; expected=missing, test_mutating::Bool=true)
     @testset "apply" begin
         q1 = apply(A, g, p)
         M = base_manifold(A)
@@ -85,18 +85,18 @@ end
 #
 # --- C
 """
-    test_compose(G, g, h; kwargs...)
+    test_compose(G::LieGroup, g, h; kwargs...)
 
 Test  `compose` for given Lie group elements `g`, `h`.
 
 # Keyword arguments
 
-* `test_identity=true`: test that composing with the identity yields the identity (requires `identity_element`)
-* `test_inverse=true`: test that `g^{-1}g` is the identity (requires `inv`, `inv!`, and `is_identity`)
-* `test_mutating=true`: test the mutating functions
+* `test_identity::Bool=true`: test that composing with the identity yields the identity (requires `identity_element`)
+* `test_inverse::Bool=true`: test that `g^{-1}g` is the identity (requires `inv`, `inv!`, and `is_identity`)
+* `test_mutating::Bool=true`: test the mutating functions
 """
 function test_compose(
-    G::LieGroup, g, h; test_inverse=true, test_identity=true, test_mutating=true
+    G::LieGroup, g, h; test_inverse::Bool=true, test_identity::Bool=true, test_mutating::Bool=true
 )
     @testset "compose" begin
         k1 = compose(G, g, h)
@@ -143,9 +143,9 @@ Test  `conjugate`.
 # Keyword arguments
 * `expected=missing`: the result of the conjugate can also be provided directly,
   then neither `compose` nor `inv`  are not required.
-* `test_mutating=true`: test the mutating functions
+* `test_mutating::Bool=true`: test the mutating functions
 """
-function test_conjugate(G::LieGroup, g, h; expected=missing, test_mutating=true)
+function test_conjugate(G::LieGroup, g, h; expected=missing, test_mutating::Bool=true)
     @testset "conjugate" begin
         v = if ismissing(expected)
             compose(G, g, compose(G, h, inv(G, g)))
@@ -174,10 +174,10 @@ Test  `diff_apply`.
 
 # Keyword arguments
 * `expected=missing`: the result of the application of the group action.
-* `test_mutating=true`: test the mutating functions
+* `test_mutating::Bool=true`: test the mutating functions
 """
 function test_diff_apply(
-    A::AbstractGroupAction, g, p, X; expected=missing, test_mutating=true
+    A::AbstractGroupAction, g, p, X; expected=missing, test_mutating::Bool=true
 )
     @testset "diff_apply" begin
         Y1 = diff_apply(A, g, p, X)
@@ -201,10 +201,10 @@ Test  `diff_group_apply`.
 
 # Keyword arguments
 * `expected=missing`: the result of the application of the group action.
-* `test_mutating=true`: test the mutating functions
+* `test_mutating::Bool=true`: test the mutating functions
 """
 function test_diff_group_apply(
-    A::AbstractGroupAction, g, p, X; expected=missing, test_mutating=true
+    A::AbstractGroupAction, g, p, X; expected=missing, test_mutating::Bool=true
 )
     @testset "diff_group_apply" begin
         Y1 = diff_group_apply(A, g, p, X)
@@ -228,9 +228,9 @@ Test  `diff_inv`.
 # Keyword arguments
 * `expected=missing`: the result of the differential of the inverse, if not provided,
   only consistency between the allocating and the in-place variant is checked.
-* `test_mutating=true`: test the mutating functions
+* `test_mutating::Bool=true`: test the mutating functions
 """
-function test_diff_inv(G::LieGroup, g, X; expected=missing, test_mutating=true)
+function test_diff_inv(G::LieGroup, g, X; expected=missing, test_mutating::Bool=true)
     @testset "diff_inv" begin
         𝔤 = LieAlgebra(G)
         Y1 = diff_inv(G, g, X)
@@ -299,14 +299,14 @@ function test_diff_right_compose(G::LieGroup, g, h, X; expected=missing, test_mu
 end
 
 """
-    test_copyto(G, g)
+    test_copyto(G::LieGroup, g)
 
 Test that `copyto!` works also when copying over an `Identity`.
 
 The point `g` can be any point _but_ the `identity_element`.
 The group has to be a mutating one, that is, not work on isbit types.
 """
-function test_copyto(G, g)
+function test_copyto(G::LieGroup, g)
     @testset "copyto!" begin
         k = copy(G, g)
         e = Identity(G)
@@ -332,7 +332,7 @@ end
 #
 # --- E
 """
-    test_exp_log(G, g, h, X)
+    test_exp_log(G::LieGroup, g, h, X)
 
 Test  `exp` and `log` for given Lie group elements `g`, `h` and
 a vector `X` from the Lie Algebra.
@@ -425,9 +425,9 @@ end
 
 #
 #
-# --- E
+# --- I
 """
-    test_inv_compose(G, g, h, X)
+    test_inv_compose(G::LieGroup, g, h, X)
 
 Test the special functions combining inv and compose, `inv_left_compose` and `inv_right_compose`.
 For these tests both `compose` and `inv` are required.
