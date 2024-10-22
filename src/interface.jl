@@ -519,8 +519,7 @@ All keyword arguments are passed on to the corresponding call
 """
 
 @doc "$(_doc_is_vector)"
-ManifoldsBase.is_vector(G::LieGroup, X; kwargs...) =
-    is_point(LieAlgebra(G), X; kwargs...)
+ManifoldsBase.is_vector(G::LieGroup, X; kwargs...) = is_point(LieAlgebra(G), X; kwargs...)
 
 @doc "$(_doc_is_vector)"
 function ManifoldsBase.is_vector(
