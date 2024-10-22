@@ -39,7 +39,7 @@ compose(::LieGroup{𝔽,AdditionGroupOperation}, g, h) where {𝔽}
 compose!(::LieGroup{𝔽,AdditionGroupOperation}, k, g, h) where {𝔽}
 
 function _compose!(G::LieGroup{𝔽,AdditionGroupOperation}, k, g, h) where {𝔽}
-    k .+= g .+ h
+    k .= g .+ h
     return k
 end
 
@@ -163,7 +163,7 @@ simplifies to ``-g``. This can be done in-place of `h`.
 inv(G::LieGroup{𝔽,AdditionGroupOperation}, g) where {𝔽}
 
 @doc "$(_doc_inv_add)"
-function inv!(G::LieGroup{𝔽,AdditionGroupOperation}, h, g) where {𝔽}
+function inv!(::LieGroup{𝔽,AdditionGroupOperation}, h, g) where {𝔽}
     h .= (-1) .* g
     return h
 end
