@@ -6,7 +6,7 @@ Represent the Lie Algebra ``$(_math(:𝔤))``, that is a ``𝔽``vector space wi
 [`lie_bracket`](@ref) ``[⋅,⋅]: $(_math(:𝔤))×$(_math(:𝔤)) → $(_math(:𝔤))`` which fulfills
 
 1. ``[X,X] = 0`` for all ``X ∈ $(_math(:𝔤))``
-2. The Jacobi identity holds ``[X, [Y,Z]] = [[X,Y],Z] = [Y, [X,Z]]`` holds for all ``X, Y, Z ∈ $(_math(:𝔤))``.
+2. The Jacobi identity ``[X, [Y,Z]] = [[X,Y],Z] = [Y, [X,Z]]`` holds for all ``X, Y, Z ∈ $(_math(:𝔤))``.
 
 The Lie algebras considered here are those related to a [`LieGroup`](@ref) ``$(_math(:G))``,
 namely the tangent space the tangent space ``T_{$(_math(:e))}$(_math(:G))`` at the [`Identity`](@ref),
@@ -33,7 +33,7 @@ _doc_lie_bracket = """
 Compute the Lie bracket ``[⋅,⋅]: $(_math(:𝔤))×$(_math(:𝔤)) → $(_math(:𝔤))`` which fulfills
 
 1. ``[X,X] = 0`` for all ``X ∈ $(_math(:𝔤))``
-2. The Jacobi identity holds ``[X, [Y,Z]] = [[X,Y],Z] = [Y, [X,Z]]`` holds for all ``X, Y, Z ∈ $(_math(:𝔤))``.
+2. The Jacobi identity ``[X, [Y,Z]] = [[X,Y],Z] = [Y, [X,Z]]`` holds for all ``X, Y, Z ∈ $(_math(:𝔤))``.
 
 The computation can be done in-place of `Z`.
 """
