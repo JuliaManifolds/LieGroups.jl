@@ -54,6 +54,7 @@ if "--quarto" ∈ ARGS
         Pkg.build("IJulia") # build `IJulia` to the right version.
         Pkg.activate(@__DIR__) # but return to the docs one before
         run(`quarto render $(tutorials_folder)`)
+        return nothing
     end
 else # fallback to at least create empty files for Optimize and Implement
     #    touch(joinpath(@__DIR__, "src/tutorials/Optimize.md"))
@@ -117,10 +118,15 @@ makedocs(;
         "Home" => "index.md",
         "About" => "about.md",
         (tutorials_in_menu ? [tutorials_menu] : [])...,
-        "An Interface for Lie Groups" => "interface.md",
+        "Interfaces" => [
+            "Lie group" => "interface/group.md",
+            "Lie algebra" => "interface/algebra.md",
+            "Group operation" => "interface/operations.md",
+            "Group action" => "interface/actions.md",
+        ],
         "Lie groups" => [
             "List of Lie Groups" => "groups/index.md",
-            "Additive group" => "groups/additive.md",
+            "Translation group" => "groups/translation.md",
         ],
         "Contributing to LieGroups.jl" => "contributing.md",
         "Notation" => "notation.md",

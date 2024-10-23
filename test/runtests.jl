@@ -1,3 +1,27 @@
-using Manifolds, LieGroups, Test
+using LieGroups, Test
 
-@testset "Lie Groups" begin end
+s = joinpath(@__DIR__, "LieGroupsTestSuite.jl")
+!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
+using LieGroupsTestSuite
+
+function include_test(path)
+    @info "Testing $path"
+    @time include(path)  # show basic timing, (this prints a newline at end)
+end
+
+@testset "LieGroups.jl" begin
+    @testset "Lie Group Interface" begin
+        include_test("test_interface.jl")
+    end
+    @testset "Generic Group Operations" begin
+        include_test("operations/test_addidion_operation.jl")
+    end
+    @testset "Generic Group Actions" begin
+        include_test("actions/test_action_interface.jl")
+        include_test("actions/test_operation_action.jl")
+    end
+    @testset "Lie Groups" begin
+        include_test("groups/test_translation_group.jl")
+    end
+    include("test_aqua.jl")
+end

@@ -5,7 +5,7 @@ All notable Changes to the Julia package `LieGroups.jl` will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.0] - unreleased
+## [0.1.0] unreleased
 
 Everything denoted by “formerly” refers to the previous name in [`Manifolds.jl`](https://juliamanifolds.github.io/Manifolds.jl/stable/).
 
@@ -15,7 +15,7 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
 * `LieGroup` (formerly `GroupManifold`) as well as the concrete groups
   * `AdditiveGroup` (formerly `TranslationGroup`)
 * `AbstractGroupOperation` as well as its concrete subtypes
-  * `AdditiveGroupOperation`
+  * `AdditionGroupOperation` (formerly `AdditionOperation`)
 * `AbstractGroupActionType` with its 2 specific (new) abstract
   * `AbstractLeftGroupActionType`
   * `AbstractRightGroupActionType`
@@ -24,8 +24,6 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
   * `RightGroupOperation` (formerly `RightBackwardAction`)
   * `InverseLeftGroupOperation` (formerly `RightForwardAction`)
   * `InverseRightGroupOperation` (formerly `LeftBackwardAction`)
-* `LieGroups.AbstractGroupOperation` as well as its concrete subtypes
-  * `AdditiveGroupOperation`
 * `apply`and `apply!`
 * `base_manifold` to access the manifold within a Lie group
 * `compose` and `compose!`
