@@ -25,7 +25,7 @@ _doc_compose_add = """
     compose(G::LieGroup{𝔽,AdditionGroupOperation}, g, h)
     compose!(G::LieGroup{𝔽,AdditionGroupOperation}, k, g, h)
 
-Copmute the group operation composition of `g` and `h` with respect to
+Compute the group operation composition of `g` and `h` with respect to
 the [`AdditionGroupOperation`](@ref) on `G`, which falls back to calling
 `g+h`, where `+` is assumed to be overloaded accordingly.
 
@@ -44,7 +44,7 @@ function _compose!(G::LieGroup{𝔽,AdditionGroupOperation}, k, g, h) where {�
 end
 
 _doc_diff_conjugate_add = """
-    diff_conjugate((G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, X))
+    diff_conjugate(G::LieGroup{𝔽,AdditionGroupOperation}, g, h, X)
     diff_conjugate!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, X)
 
 Compute the differential of the conjutage ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1} = g+h-g = h``,
@@ -109,8 +109,8 @@ function diff_right_compose!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, 
 end
 
 _doc_exp_add = """
-    exp(G::LieGroup{𝔽,AdditionGroupOperation}, e::Identity{AdditionGroupOperation}, X, t=1)
-    exp!(G::LieGroup{𝔽,AdditionGroupOperation}, g, e::Identity{AdditionGroupOperation}, X, t)
+    exp(G::LieGroup{𝔽,AdditionGroupOperation}, e::Identity{AdditionGroupOperation}, X, t::Number=1)
+    exp!(G::LieGroup{𝔽,AdditionGroupOperation}, g, e::Identity{AdditionGroupOperation}, X, t::Number=1)
 
 Compute the Lie group exponential on a [`LieGroup`](@ref) with an [`AdditionGroupOperation`](@ref).
 This can be computed in-place of `g`.
@@ -120,7 +120,7 @@ Since `e` is just the zero-element with respect to the corresponding `+`, the fo
 
 @doc "$(_doc_exp_add)"
 Base.exp(
-    ::LieGroup{𝔽,AdditionGroupOperation}, ::Identity{AdditionGroupOperation}, X, t::Real
+    ::LieGroup{𝔽,AdditionGroupOperation}, ::Identity{AdditionGroupOperation}, X, t::Number=1
 ) where {𝔽} = t * X
 
 @doc "$(_doc_exp_add)"

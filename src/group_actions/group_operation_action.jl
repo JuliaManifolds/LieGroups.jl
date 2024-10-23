@@ -115,7 +115,7 @@ _doc_diff_apply_groupop = """
     diff_apply(A::GroupOperationAction, g, p, X)
 
 For the group operation action ``σ_g(p)``, compute the differential
-``D_p σ_g(p): T_p$(_math(:G)) → T_{σ_g(p)}$(_math(:M))``, that is
+``D_p σ_g(p): T_p$(_math(:G)) → T_{σ_g(p)}$(_math(:G))``, that is
 
 * for the [`LeftGroupOperation`](@ref) this calls [`diff_right_compose`](@ref)`(G, g, p, X)`, since here ``σ_g(p) = g$(_math(:∘))p``
 * for the [`RightGroupOperation`](@ref) this calls [`diff_left_compose`](@ref)`(G, p, g, X)`, since here ``σ_g(p) = p$(_math(:∘))g``
