@@ -99,7 +99,11 @@ for (md_file, doc_file) in [("CONTRIBUTING.md", "contributing.md"), ("NEWS.md", 
 end
 
 ## Build tutorials menu
-tutorials_menu = "How to..." => ["Get started with Lie Groups" => "index.md"]
+tutorials_menu =
+    "How to..." => [
+        "🚀 Get Started with LieGroups.jl" => "tutorials/getstarted.md",
+        "Transistion from `GroupManifolds`" => "tutorials/transition-from-manifoldsjl.md",
+    ]
 # (e) finally make docs
 bib = CitationBibliography(joinpath(@__DIR__, "src", "references.bib"); style=:alpha)
 links = InterLinks(

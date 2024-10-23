@@ -3,7 +3,7 @@
 In this package,the notation introduced in [Manifolds.jl Notation](https://juliamanifolds.github.io/Manifolds.jl/latest/misc/notation.html) is used with the following additional parts.
 
 | Symbol | Description | Also used | Comment |
-|:--:|:--------------- |:--:|:-- |
+|:----:|:--------------- |:----:|:--- |
 | ``∘`` | a group operation | | |
 | ``c_g:\mathcal G → \mathcal G`` | the conjugation map (with `g`) | | |
 | ``\mathrm{e}`` | identity element of a group | | |

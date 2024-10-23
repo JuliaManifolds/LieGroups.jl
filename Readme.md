@@ -10,6 +10,10 @@
 
 This is a package to rework the Lie group features of [`Manifolds.jl`](https://juliamanifolds.github.io/Manifolds.jl/stable/) in a unified way into a separate package.
 
+> [!NOTE]
+> Since this is a rework of the features from [`Manifolds.jl`](https://juliamanifolds.github.io/Manifolds.jl/stable/), both `LieGroups.jl` and `Manifolds.jl` 0.10 export a few types. For that reason it's not recommended to load both packages in a productive environment, unless you are aware, which variables you want to import wherefrom.
+> see [transition from Manifolds.jl]() for a comprehensive list.
+
 This especially also includes a few different choices in default behaviour that
 is different from the [`Manifolds.jl`](https://juliamanifolds.github.io/Manifolds.jl/stable/) one. For purely manifold-based operations, any Lie group still is “build upon” a Riemannian manifold.
 
