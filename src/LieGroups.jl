@@ -29,6 +29,8 @@ export LieGroup, LieAlgebra
 
 export AbstractGroupOperation, Identity
 export AdditionGroupOperation
+export AbstractMultiplicationGroupOperation
+export MatrixMultiplicationGroupOperation
 
 export AbstractGroupActionType, AbstractGroupAction
 export AbstractLeftGroupActionType, AbstractRightGroupActionType

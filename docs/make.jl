@@ -130,6 +130,7 @@ makedocs(;
         ],
         "Lie groups" => [
             "List of Lie Groups" => "groups/index.md",
+            "General Linear" => "groups/general_linear.md",
             "Translation group" => "groups/translation.md",
         ],
         "Contributing to LieGroups.jl" => "contributing.md",
