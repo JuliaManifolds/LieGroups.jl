@@ -17,6 +17,14 @@ The following sections collect these.
 
 ```@autodocs
 Modules = [LieGroups]
-Pages = ["addition.jl"]
+Pages = ["addition_operation.jl"]
+Order = [:type, :function]
+```
+
+## [Multiplication group operation](@id multiplication-operation-sec)
+
+```@autodocs
+Modules = [LieGroups]
+Pages = ["multiplication_operation.jl"]
 Order = [:type, :function]
 ```

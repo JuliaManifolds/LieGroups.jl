@@ -14,7 +14,8 @@ include("documentation_glossary.jl")
 include("interface.jl")
 include("Lie_algebra/Lie_algebra_interface.jl")
 # Generic Operations
-include("group_operations/addition.jl")
+include("group_operations/addition_operation.jl")
+include("group_operations/multiplication_operation.jl")
 
 # Actions
 include("group_actions/group_action_interface.jl")
@@ -22,11 +23,14 @@ include("group_actions/group_operation_action.jl")
 
 # Lie groups
 include("groups/translation_group.jl")
+include("groups/general_linear_group.jl")
 
 export LieGroup, LieAlgebra
 
 export AbstractGroupOperation, Identity
 export AdditionGroupOperation
+export AbstractMultiplicationGroupOperation
+export MatrixMultiplicationGroupOperation
 
 export AbstractGroupActionType, AbstractGroupAction
 export AbstractLeftGroupActionType, AbstractRightGroupActionType
@@ -34,7 +38,7 @@ export LeftGroupOperation, RightGroupOperation
 export InverseLeftGroupOperation, InverseRightGroupOperation
 export GroupOperationAction
 
-export TranslationGroup
+export TranslationGroup, GeneralLinearGroup
 
 export adjoint, adjoint!, apply, apply!
 export base_lie_group, base_manifold
