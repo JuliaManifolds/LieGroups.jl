@@ -51,6 +51,7 @@ end
 # LaTeX
 # Define LaTeX shortcuts
 _tex(args...; kwargs...) = glossary(:LaTeX, args...; kwargs...)
+define!(:LaTeX, :big, raw"\big")
 define!(:LaTeX, :bigl, raw"\bigl")
 define!(:LaTeX, :bigr, raw"\bigr")
 define!(:LaTeX, :Big, raw"\Big")
@@ -60,10 +61,28 @@ define!(:LaTeX, :def, raw"\coloneqq")
 define!(:LaTeX, :Cal, (letter) -> raw"\mathcal " * "$letter")
 define!(:LaTeX, :exp, raw"\exp")
 define!(:LaTeX, :Frak, (letter) -> raw"\mathfrak " * "$letter")
+define!(:LaTeX, :l, "") # lazy fallback for sets
+define!(:LaTeX, :r, "") # lazy fallback for sets
 define!(:LaTeX, :log, raw"\log")
 define!(:LaTeX, :qquad, raw"\qquad")
 define!(:LaTeX, :quad, raw"\quad")
-define!(:LaTeX, :rm, (letter) -> raw"\mathrm " * "$letter")
+define!(:LaTeX, :rm, (letter) -> raw"\mathrm" * "{$letter}")
+define!(
+    :LaTeX,
+    :Set,
+    (content, size="") ->
+        _tex(Symbol("$(size)l")) *
+        raw"\{ " *
+        "$(content)" *
+        _tex(Symbol("$(size)r")) *
+        raw" \}",
+)
+define!(
+    :LaTeX,
+    :SetDef,
+    (elem, cond, size="") ->
+        _tex(:Set, elem * raw"\ " * _tex(Symbol("$(size)")) * raw"|\ " * "$(cond)", size),
+)
 #
 # ---
 # Mathematics and semantic symbols

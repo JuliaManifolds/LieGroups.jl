@@ -122,16 +122,16 @@ makedocs(;
         "Home" => "index.md",
         "About" => "about.md",
         (tutorials_in_menu ? [tutorials_menu] : [])...,
+        "Lie groups" => [
+            "List of Lie Groups" => "groups/index.md",
+            "General Linear" => "groups/general_linear.md",
+            "Translation group" => "groups/translation.md",
+        ],
         "Interfaces" => [
             "Lie group" => "interface/group.md",
             "Lie algebra" => "interface/algebra.md",
             "Group operation" => "interface/operations.md",
             "Group action" => "interface/actions.md",
-        ],
-        "Lie groups" => [
-            "List of Lie Groups" => "groups/index.md",
-            "General Linear" => "groups/general_linear.md",
-            "Translation group" => "groups/translation.md",
         ],
         "Contributing to LieGroups.jl" => "contributing.md",
         "Notation" => "notation.md",
