@@ -13,7 +13,7 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
 
 * `LieAlgebra`
 * `LieGroup` (formerly `GroupManifold`) as well as the concrete groups
-  * `AdditiveGroup` (formerly `TranslationGroup`)
+  * `TranslationGroup`
 * `AbstractGroupOperation` as well as its concrete subtypes
   * `AdditionGroupOperation` (formerly `AdditionOperation`)
 * `AbstractGroupActionType` with its 2 specific (new) abstract
