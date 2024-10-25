@@ -1,12 +1,11 @@
 # Transition from `GroupManifolds` in `Manifolds.jl`
 
 One predecessor of `LieGroups.jl` are the [`GroupManifold`]()s in `Manifoldsjl`.
-While this package does continue all of the functionality, one reason for a new package is,
+While this package provides the same features, one reason for a new package is,
 that a “restart” offers the opportunity to put the main focus for the functions in this package
 really on Lie groups.
 
-This tutorial provides an overview about necessary changes to your code, when it was
-based on the predecessor.
+This tutorial provides an overview of the necessary changes to your code if you based it on the predecessor.
 
 ## Table of function names and its successors
 

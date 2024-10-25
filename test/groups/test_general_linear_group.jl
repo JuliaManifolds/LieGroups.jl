@@ -6,15 +6,24 @@ using LieGroupsTestSuite
 
 begin
     G = GeneralLinearGroup(2)
-    # Later maybe via auto-discover?
-    g1, g2, g3 = [1.0, 0.0, 0.0], [0.0, 3.0, 0.0], [1.1, 1.2, 3.3]
-    X1, X2, X3 = [0.0, 1.0, 0.0], [2.0, 0.0, 0.0], [0.1, 0.2, 0.3]
+    g1, g2, g3 = [2.0 0.0; 0.0 1.0], [1.0 0.5; 0.5 1.0], [1.0 2.0; 3.0 4.0]
+    X1, X2, X3 = [-1.0 0.0; 0.0 0.0], [0.0 0.5; 0.5 0.0], [1.0 2.0; 3.0 4.0]
     properties = Dict(
         :Name => "The general linear group",
         :Points => [g1, g2, g3],
         :Vectors => [X1, X2, X3],
-        :Functions => [show],
+        :Functions => [
+            compose,
+            conjugate,
+            inv_left_compose,
+            inv_right_compose,
+            is_identity,
+            lie_bracket,
+            show,
+        ],
     )
-    expectations = Dict(:repr => "GeneralLinearGroup(2; field=ℝ)")
+    expectations = Dict(
+        :repr => "GeneralLinearGroup(2; field=ℝ)", :lie_bracket => X1 * X2 - X2 * X1
+    )
     test_lie_group(G, properties, expectations)
 end
