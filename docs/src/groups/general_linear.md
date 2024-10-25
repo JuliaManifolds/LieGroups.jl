@@ -1,5 +1,7 @@
 # The general linear group
 
-```@docs
-GeneralLinearGroup
+```@autodocs
+Modules = [LieGroups]
+Pages = ["groups/general_linear_group.jl"]
+Order = [:type, :function]
 ```
