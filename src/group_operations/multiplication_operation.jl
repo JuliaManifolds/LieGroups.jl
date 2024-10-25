@@ -15,11 +15,21 @@ A grou poperation that is realised by a matrix multiplication.
 struct MatrixMultiplicationGroupOperation <: AbstractMultiplicationGroupOperation end
 
 Base.:*(e::Identity{AbstractMultiplicationGroupOperation}) = e
-Base.:*(::Identity{AbstractMultiplicationGroupOperation}, p) = p
-Base.:*(p, ::Identity{AbstractMultiplicationGroupOperation}) = p
+Base.:*(::Identity{MatrixMultiplicationGroupOperation}, p::AbstractMatrix) = p
+Base.:*(p::AbstractMatrix, ::Identity{MatrixMultiplicationGroupOperation}) = p
 function Base.:*(
     e::Identity{AbstractMultiplicationGroupOperation},
     ::Identity{AbstractMultiplicationGroupOperation},
+)
+    return e
+end
+function Base.:*(
+    ::Identity{AbstractMultiplicationGroupOperation}, e::Identity{AdditionGroupOperation}
+)
+    return e
+end
+function Base.:*(
+    e::Identity{AdditionGroupOperation}, ::Identity{AbstractMultiplicationGroupOperation}
 )
     return e
 end
@@ -89,7 +99,11 @@ function identity_element!(
 end
 
 LinearAlgebra.mul!(q, ::Identity{AbstractMultiplicationGroupOperation}, p) = copyto!(q, p)
-LinearAlgebra.mul!(q, p, ::Identity{AbstractMultiplicationGroupOperation}) = copyto!(q, p)
+function LinearAlgebra.mul!(
+    q::AbstractMatrix, p::AbstractMatrix, ::Identity{MatrixMultiplicationGroupOperation}
+)
+    return copyto!(q, p)
+end
 function LinearAlgebra.mul!(
     q::AbstractMatrix,
     ::Identity{AbstractMultiplicationGroupOperation},
