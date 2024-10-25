@@ -125,7 +125,7 @@ Base.exp(
 
 @doc "$(_doc_exp_add)"
 function ManifoldsBase.exp!(
-    G::LieGroup{𝔽,AdditionGroupOperation},
+    ::LieGroup{𝔽,AdditionGroupOperation},
     g,
     ::Identity{AdditionGroupOperation},
     X,

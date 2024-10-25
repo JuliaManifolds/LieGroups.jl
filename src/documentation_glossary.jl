@@ -60,6 +60,7 @@ define!(:LaTeX, :Bigr, raw"\Bigr")
 define!(:LaTeX, :def, raw"\coloneqq")
 define!(:LaTeX, :Cal, (letter) -> raw"\mathcal " * "$letter")
 define!(:LaTeX, :exp, raw"\exp")
+define!(:LaTeX, :frac, (a, b) -> raw"\frac" * "{$a}{$b}")
 define!(:LaTeX, :Frak, (letter) -> raw"\mathfrak " * "$letter")
 define!(:LaTeX, :l, "") # lazy fallback for sets
 define!(:LaTeX, :r, "") # lazy fallback for sets
@@ -83,6 +84,7 @@ define!(
     (elem, cond, size="") ->
         _tex(:Set, elem * raw"\ " * _tex(Symbol("$(size)")) * raw"|\ " * "$(cond)", size),
 )
+define!(:LaTeX, :sum, raw"\sum")
 #
 # ---
 # Mathematics and semantic symbols

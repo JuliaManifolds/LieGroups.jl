@@ -23,17 +23,6 @@ function Base.:*(
 )
     return e
 end
-function Base.:*(
-    ::Identity{AbstractMultiplicationGroupOperation}, e::Identity{AdditionGroupOperation}
-)
-    return e
-end
-function Base.:*(
-    e::Identity{AbstractMultiplicationGroupOperation},
-    ::Identity{AbstractMultiplicationGroupOperation},
-)
-    return e
-end
 
 Base.:/(p, ::Identity{AbstractMultiplicationGroupOperation}) = p
 Base.:/(::Identity{AbstractMultiplicationGroupOperation}, p) = inv(p)

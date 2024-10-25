@@ -10,6 +10,9 @@ $(_tex(:qquad)) 𝔽 ∈ $(_tex(:Set, "ℝ, ℂ")),
 ```
 equipped with the [`MatrixMultiplicationGroupOperation`](@ref) as the group operation.
 
+The set of invertible matrices is a Riemannian manifold, since it inherits its structure from
+the embedding as an open subset of the space of matrices ``ℝ^{n×n}``.
+
 # Constructor
 
     GeneralLinearGroup(n::Int; kwargs...)
@@ -23,10 +26,30 @@ const GeneralLinearGroup{𝔽,T} = LieGroup{
 
 function GeneralLinearGroup(n::Int...; kwargs...)
     Im = Manifolds.InvertibleMatrices(n...; kwargs...)
-    return TranslationGroup{typeof(Im).parameters[[2, 1]]...}(
+    return GeneralLinearGroup{typeof(Im).parameters[[1, 2]]...}(
         Im, MatrixMultiplicationGroupOperation()
     )
 end
+
+_doc_exp_GLn = """
+    exp(::GeneralLinearGroup, ::Identity{MatrixMultiplicationGroupOperation}, X)
+    exp!(::GeneralLinearGroup, g, ::Identity{MatrixMultiplicationGroupOperation}, X)
+
+Compute the Lie group exponential on the [`GeneralLinearGroup`](@ref), which is given by the
+[matrix exponential](https://en.wikipedia.org/wiki/Matrix_exponential)
+
+```math
+$(_tex(:exp)) X = $(_tex(:sum))_{k=0}^{∞} $(_tex(:frac, "1", "k!"))X^k
+```
+
+see also [HilgertNeeb:2012; Example 9.2.3 (b)](@cite)
+"""
+
+@doc "$(_doc_exp_GLn)"
+exp(::GeneralLinearGroup, ::Identity{MatrixMultiplicationGroupOperation}, X)
+
+@doc "$(_doc_exp_GLn)"
+exp!(::GeneralLinearGroup, g, ::Identity{MatrixMultiplicationGroupOperation}, X)
 
 function Base.show(io::IO, G::GeneralLinearGroup{𝔽}) where {𝔽}
     n = Manifolds.get_parameter(G.manifold.size)[1]
