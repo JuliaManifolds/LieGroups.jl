@@ -28,3 +28,10 @@ Modules = [LieGroups]
 Pages = ["multiplication_operation.jl"]
 Order = [:type, :function]
 ```
+
+## Literature
+
+```@bibliography
+Pages = ["interface/operations.md"]
+Canonical=false
+```
