@@ -21,6 +21,7 @@ end
         include_test("actions/test_operation_action.jl")
     end
     @testset "Lie Groups" begin
+        include_test("groups/test_general_linear_group.jl")
         include_test("groups/test_translation_group.jl")
     end
     include("test_aqua.jl")
