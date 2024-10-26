@@ -85,6 +85,7 @@ define!(
         _tex(:Set, elem * raw"\ " * _tex(Symbol("$(size)")) * raw"|\ " * "$(cond)", size),
 )
 define!(:LaTeX, :sum, raw"\sum")
+define!(:LaTeX, :transp, raw"\mathm{T}")
 #
 # ---
 # Mathematics and semantic symbols
