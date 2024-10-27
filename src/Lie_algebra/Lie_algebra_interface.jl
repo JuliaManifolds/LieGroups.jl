@@ -26,6 +26,43 @@ function LieAlgebra(G::LieGroup{𝔽,O}) where {𝔽,O<:AbstractGroupOperation}
     return LieAlgebra{𝔽,O,typeof(G)}(G, Identity(G), ManifoldsBase.TangentSpaceType())
 end
 
+function ManifoldsBase.get_coordinates(𝔤::LieAlgebra, X, B::ManifoldsBase.AbstractBasis)
+    c = ManifoldsBase.allocate_result(B, get_coordinates, X, B)
+    get_coordinates!(𝔤, c, X, B)
+    return X
+end
+function ManifoldsBase.get_coordinates!(𝔤::LieAlgebra, c, X, B::ManifoldsBase.AbstractBasis)
+    G = 𝔤.manifold
+    get_coordinates!(base_manifold(G), c, identity_element(G), X, B)
+    return c
+end
+
+function ManifoldsBase.get_vector(𝔤::LieAlgebra, c, B::ManifoldsBase.AbstractBasis)
+    X = zero_vector(𝔤)
+    get_vector!(𝔤, X, c, B)
+    return X
+end
+function ManifoldsBase.get_vector!(𝔤::LieAlgebra, X, c, B::ManifoldsBase.AbstractBasis)
+    G = 𝔤.manifold
+    get_vector!(base_manifold(G), X, identity_element(G), c, B)
+    return X
+end
+
+"""
+    is_point(𝔤::LieAlgebra, X; kwargs...)
+
+Check whether `X` is a valid point on the Lie Algebra `𝔤`.
+This falls back to checking whether `X` is a valid point on the tangent space
+at the [`identity_element`](@ref)`(G)` on `G.manifold` on the [`LieGroup`](@ref)
+of `G`
+"""
+function ManifoldsBase.is_point(𝔤::LieAlgebra, X; kwargs...)
+    # the manifold stored in the Fiber / Lie algebra is the Lie group G
+    G = 𝔤.manifold
+    e = identity_element(G)
+    return ManifoldsBase.is_vector(G.manifold, e, X; kwargs...)
+end
+
 _doc_lie_bracket = """
     lie_bracket!(𝔤::LieAlgebra, X, Y)
     lie_bracket!(𝔤::LieAlgebra, Z, X, Y)
@@ -47,21 +84,6 @@ end
 function lie_bracket! end
 @doc "$(_doc_lie_bracket)"
 lie_bracket!(𝔤::LieAlgebra, Z, X, Y)
-
-"""
-    is_point(𝔤::LieAlgebra, X; kwargs...)
-
-Check whether `X` is a valid point on the Lie Algebra `𝔤`.
-This falls back to checking whether `X` is a valid point on the tangent space
-at the [`identity_element`](@ref)`(G)` on `G.manifold` on the [`LieGroup`](@ref)
-of `G`
-"""
-function ManifoldsBase.is_point(𝔤::LieAlgebra, X; kwargs...)
-    # the manifold stored in the Fiber / Lie algebra is the Lie group G
-    G = 𝔤.manifold
-    e = identity_element(G)
-    return ManifoldsBase.is_vector(G.manifold, e, X; kwargs...)
-end
 
 LinearAlgebra.norm(𝔤::LieAlgebra, X::Real) = LinearAlgebra.norm(𝔤.manifold, 𝔤.point, X)
 function LinearAlgebra.norm(

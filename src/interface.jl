@@ -379,6 +379,66 @@ function ManifoldsBase.exp!(G::LieGroup, h, e::Identity, X, t::Number=1)
     throw(MethodError(exp!, (typeof(G), typeof(h), typeof(e), typeof(X), typeof(t))))
 end
 
+_doc_get_coordinates = """
+    get_coordinates(G::LieGroup, g, X, B::AbstractBasis)
+    get_coordinates(𝔤::LieAlgebra, X, B::AbstractBasis)
+    get_coordinates!(G::LieGroup, c, g, X, B::AbstractBasis)
+    get_coordinates!(𝔤::LieAlgebra, c, X, B::AbstractBasis)
+
+Return the vector of coordinates to the decomposition of `X` with respect to an [`AbstractBasis`](@extref `ManifoldsBase.AsbtractBasis`)
+of the [`LieAgreba`](@ref) `𝔤`.
+Since all tangent vectors are assumed to be represented in the Lie algebra,
+both signatures are equivalend.
+The operation can be performed in-place of `c`.
+
+By default this function requires [`identity_element`](@ref)`(G)` and calls
+the corresponding [`get_coordinates`](@extref `ManifoldsBase.get_coordinates-Tuple{AbstractManifold, Any, Any, ManifoldsBase.AbstractBasis}) function
+of the Riemannian manifold the Lie group is build on.
+"""
+
+@doc "$(_doc_get_coordinates)"
+function ManifoldsBase.get_coordinates(G::LieGroup, g, X, B::ManifoldsBase.AbstractBasis)
+    c = ManifoldsBase.allocate_result(B, get_coordinates, g, X, B)
+    get_coordinates!(G, c, g, X, B)
+    return c
+end
+@doc "$(_doc_exp_id)"
+function ManifoldsBase.get_coordinates!(
+    G::LieGroup, c, g, X, B::ManifoldsBase.AbstractBasis
+)
+    get_coordinates!(base_manifold(G), c, identity_element(G), X, B)
+    return c
+end
+
+_doc_get_vector = """
+    get_vector(G::LieGroup, g, c, B::AbstractBasis)
+    get_vector(𝔤::LieAlgebra, c, B::AbstractBasis)
+    get_vector!(G::LieGroup, X, g, c, B::AbstractBasis)
+    get_vector!(𝔤::LieAlgebra, X, c, B::AbstractBasis)
+
+Return the vector corresponding to a set of coefficients in an [`AbstractBasis`](@extref `ManifoldsBase.AsbtractBasis`)
+of the [`LieAgreba`](@ref) `𝔤`.
+Since all tangent vectors are assumed to be represented in the Lie algebra,
+both signatures are equivalend.
+The operation can be performed in-place of a tangent vector `X`.
+
+By default this function requires [`identity_element`](@ref)`(G)` and calls
+the corresponding [`get_vector`](@extref ManifoldsBase.get_vector-Tuple{AbstractManifold, Any, Any, ManifoldsBase.AbstractBasis}) function
+of the Riemannian manifold the Lie group is build on.
+"""
+
+@doc "$(_doc_get_vector)"
+function ManifoldsBase.get_vector(G::LieGroup, g, c, B::ManifoldsBase.AbstractBasis)
+    X = zero_vector(G, identity_element(G))
+    get_vector!(G, X, g, c, B)
+    return X
+end
+@doc "$(_doc_exp_id)"
+function ManifoldsBase.get_vector!(G::LieGroup, X, g, c, B::ManifoldsBase.AbstractBasis)
+    get_vector!(base_manifold(G), X, identity_element(G), c, B)
+    return X
+end
+
 _doc_identity_element = """
     identity_element(G::LieGroup)
     identity_element!(G::LieGroup, e)
