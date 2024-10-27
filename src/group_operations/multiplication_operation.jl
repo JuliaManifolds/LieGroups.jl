@@ -180,6 +180,36 @@ function diff_right_compose!(
     return copyto!(LieAlgebra(G), Y, X * g)
 end
 
+_doc_exp_mult = """
+    exp(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, e::Identity{MatrixMultiplicationGroupOperation}, X, t::Number=1)
+    exp!(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, g, e::Identity{MatrixMultiplicationGroupOperation}, X, t::Number=1)
+
+Compute the Lie group exponential on a [`LieGroup`](@ref) with a [`MatrixMultiplicationGroupOperation`](@ref),
+which simplifies to the [matrix exponential](https://en.wikipedia.org/wiki/Matrix_exponential).
+
+This can be computed in-place of `g`.
+"""
+
+@doc "$(_doc_exp_mult)"
+Base.exp(
+    ::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
+    ::Identity{MatrixMultiplicationGroupOperation},
+    X,
+    t::Number=1,
+) where {𝔽} = exp(t * X)
+
+@doc "$(_doc_exp_mult)"
+function ManifoldsBase.exp!(
+    ::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
+    g,
+    ::Identity{MatrixMultiplicationGroupOperation},
+    X,
+    t::Number=1,
+) where {𝔽}
+    copyto!(g, exp(t .* X))
+    return g
+end
+
 _doc_identity_element_mult = """
     identity_element(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation})
     identity_element!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, e)
@@ -263,6 +293,34 @@ function lie_bracket!(::LieAlgebra{𝔽,MatrixMultiplicationGroupOperation}, Z, 
     mul!(Z, X, Y)
     mul!(Z, Y, X, -1, true)
     return Z
+end
+
+_doc_log_mult = """
+    log(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, e::Identity{MatrixMultiplicationGroupOperation}, g)
+    log!(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, X, e::Identity{MatrixMultiplicationGroupOperation}, g)
+
+Compute the Lie group logarithm on a [`LieGroup`](@ref) with a [`MatrixMultiplicationGroupOperation`](@ref),
+which simplifies to the [matrix logarithm](https://en.wikipedia.org/wiki/Logarithm_of_a_matrix).
+
+This can be computed in-place of `X`.
+"""
+
+@doc "$(_doc_log_mult)"
+Base.log(
+    ::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
+    ::Identity{MatrixMultiplicationGroupOperation},
+    g,
+) where {𝔽} = log(g)
+
+@doc "$(_doc_exp_mult)"
+function ManifoldsBase.log!(
+    ::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
+    X,
+    ::Identity{MatrixMultiplicationGroupOperation},
+    g,
+) where {𝔽}
+    copyto!(X, log(g))
+    return X
 end
 
 LinearAlgebra.mul!(q, ::Identity{<:AbstractMultiplicationGroupOperation}, p) = copyto!(q, p)

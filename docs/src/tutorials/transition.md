@@ -45,3 +45,4 @@ The list is alphabetical, but first lists types, then functions
 | `switch_side(A)` | [`switch`](@ref switch(::AbstractGroupAction))`(A)` | switches from a left action to its corresponding right action. |
 | `translate(G, g, h)` | [`compose`](@ref)`(G, g, h)` | unified to `compose` |
 | `translate_diff(G, g, X, c)` | [`diff_left_compose`](@ref)`(G, g, h, X)`, [`diff_right_compose`](@ref)`(G, g, h, X)` | for compose ``∘(g,h)` we specify now whether we take the derivative with respect to the left (`g`) or right (`h`) argument
+|`VeeOrthogonalBasis` | [`LieAlgebraOrthogonalBasis`](@ref) | |

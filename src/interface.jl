@@ -11,6 +11,17 @@ on elements of a Lie group ``$(_math(:G))``.
 abstract type AbstractGroupOperation end
 
 """
+    LieAlgebraOrthogonalBasis{𝔽} <: ManifoldsBase.AbstractOrthogonalBasis{𝔽,ManifoldsBase.TangentSpaceType}
+
+Specify an orthogonal basis for a Lie algebra. This is used as the default within [`hat`](@ref) and [`vee`](@ref).
+"""
+struct LieAlgebraOrthogonalBasis{𝔽} <:
+       ManifoldsBase.AbstractOrthogonalBasis{𝔽,ManifoldsBase.TangentSpaceType} end
+function LieAlgebraOrthogonalBasis(𝔽::ManifoldsBase.AbstractNumbers=ℝ)
+    return LieAlgebraOrthogonalBasis{𝔽}()
+end
+
+"""
     LieGroup{𝔽, O<:AbstractGroupOperation, M<:AbstractManifold{𝔽}}
 
 Represent a Lie Group ``$(_math(:G))``.
@@ -394,21 +405,17 @@ The operation can be performed in-place of `c`.
 By default this function requires [`identity_element`](@ref)`(G)` and calls
 the corresponding [`get_coordinates`](@extref `ManifoldsBase.get_coordinates-Tuple{AbstractManifold, Any, Any, ManifoldsBase.AbstractBasis}) function
 of the Riemannian manifold the Lie group is build on.
+
+The inverse operation is [`get_vector`](@ref).
+
+See also [`vee`](@ref).
 """
 
 @doc "$(_doc_get_coordinates)"
-function ManifoldsBase.get_coordinates(G::LieGroup, g, X, B::ManifoldsBase.AbstractBasis)
-    c = ManifoldsBase.allocate_result(B, get_coordinates, g, X, B)
-    get_coordinates!(G, c, g, X, B)
-    return c
-end
+ManifoldsBase.get_coordinates(G::LieGroup, g, X, B::ManifoldsBase.AbstractBasis)
+
 @doc "$(_doc_exp_id)"
-function ManifoldsBase.get_coordinates!(
-    G::LieGroup, c, g, X, B::ManifoldsBase.AbstractBasis
-)
-    get_coordinates!(base_manifold(G), c, identity_element(G), X, B)
-    return c
-end
+ManifoldsBase.get_coordinates!(G::LieGroup, c, g, X, B::ManifoldsBase.AbstractBasis)
 
 _doc_get_vector = """
     get_vector(G::LieGroup, g, c, B::AbstractBasis)
@@ -425,17 +432,50 @@ The operation can be performed in-place of a tangent vector `X`.
 By default this function requires [`identity_element`](@ref)`(G)` and calls
 the corresponding [`get_vector`](@extref ManifoldsBase.get_vector-Tuple{AbstractManifold, Any, Any, ManifoldsBase.AbstractBasis}) function
 of the Riemannian manifold the Lie group is build on.
+
+The inverse operation is [`get_coordinates`](@ref).
+
+See also [`hat`](@ref)
 """
 
 @doc "$(_doc_get_vector)"
-function ManifoldsBase.get_vector(G::LieGroup, g, c, B::ManifoldsBase.AbstractBasis)
-    X = zero_vector(G, identity_element(G))
-    get_vector!(G, X, g, c, B)
-    return X
-end
+ManifoldsBase.get_vector(G::LieGroup, g, c, B::ManifoldsBase.AbstractBasis)
+
 @doc "$(_doc_exp_id)"
-function ManifoldsBase.get_vector!(G::LieGroup, X, g, c, B::ManifoldsBase.AbstractBasis)
-    get_vector!(base_manifold(G), X, identity_element(G), c, B)
+ManifoldsBase.get_vector!(G::LieGroup, X, g, c, B::ManifoldsBase.AbstractBasis)
+
+_doc_hat = """
+    hat(G::LieGroup, c)
+    hat(G::LieGroup, X, c)
+
+Compute the hat map ``(⋅)^̂ `` that maps a vector of coordinates ``c_i``
+with respect to a certain basis to an tangent vector in the Lie algebra
+
+```math
+X = $(_tex(:sum))_{i∈$(_tex(:Cal,"I"))} c_iB_i,
+```
+
+where ``$(_tex(:Set, "B_i"))_{i∈$(_tex(:Cal,"I"))}`` is a basis of the Lie algebra
+and ``$(_tex(:Cal,"I"))`` a corresponding index set.
+
+The computation can be performed in-place of `X`.
+The inverse of `hat` is [`vee`](@ref).
+
+Technically `hat` is a specific case of [`get_vector`](@ref) and is implemented using the
+[`LieAlgebraOrthogonalBasis`](@ref)
+"""
+
+# function hat end
+@doc "$(_doc_hat)"
+function hat(G::LieGroup, c)
+    X = zero_vector(LieAlgebra(G))
+    return hat!(G, X, c)
+end
+
+# function hat! end
+@doc "$(_doc_hat)"
+function hat!(G::LieGroup, X, c)
+    get_vector!(G, X, c, LieAlgebraOrthogonalBasis())
     return X
 end
 
@@ -685,6 +725,42 @@ end
 
 function Base.show(io::IO, G::LieGroup)
     return print(io, "LieGroup($(G.manifold), $(G.op))")
+end
+
+_doc_vee = """
+    vee(G::LieGroup, X)
+    vee(G::LieGroup, c, X)
+
+Compute the vee map ``(⋅)^̂ `` that maps a tangent vector `X` from the [`LieAlgebra`](@ref)
+to its coordinates with respect to a certain bvasis in the Lie algebra
+
+```math
+X = $(_tex(:sum))_{i∈$(_tex(:Cal,"I"))} c_iB_i,
+```
+
+where ``$(_tex(:Set, "B_i"))_{i∈$(_tex(:Cal,"I"))}`` is a basis of the Lie algebra
+and ``$(_tex(:Cal,"I"))`` a corresponding index set.
+
+The computation can be performed in-place of `c`.
+The inverse of `hat` is [`hat`](@ref).
+
+Technically `hat` is a specific case of [`get_coordinates`](@ref) and is implemented using the
+[`LieAlgebraOrthogonalBasis`](@ref)
+
+"""
+
+# function vee end
+@doc "$(_doc_vee)"
+function vee(G::LieGroup, X)
+    c = ManifoldsBase.allocate_result(G, vee, X)
+    return vee!(G, X, c)
+end
+
+# function vee! end
+@doc "$(_doc_vee)"
+function vee!(G::LieGroup, c, X)
+    get_coordinates!(G, c, X, LieAlgebraOrthogonalBasis())
+    return X
 end
 
 function ManifoldsBase.zero_vector(
