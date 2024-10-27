@@ -396,14 +396,14 @@ _doc_get_coordinates = """
     get_coordinates!(G::LieGroup, c, g, X, B::AbstractBasis)
     get_coordinates!(𝔤::LieAlgebra, c, X, B::AbstractBasis)
 
-Return the vector of coordinates to the decomposition of `X` with respect to an [`AbstractBasis`](@extref `ManifoldsBase.AsbtractBasis`)
-of the [`LieAgreba`](@ref) `𝔤`.
+Return the vector of coordinates to the decomposition of `X` with respect to an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`)
+of the [`LieAlgebra`](@ref) `𝔤`.
 Since all tangent vectors are assumed to be represented in the Lie algebra,
 both signatures are equivalend.
 The operation can be performed in-place of `c`.
 
 By default this function requires [`identity_element`](@ref)`(G)` and calls
-the corresponding [`get_coordinates`](@extref `ManifoldsBase.get_coordinates-Tuple{AbstractManifold, Any, Any, ManifoldsBase.AbstractBasis}) function
+the corresponding [`get_coordinates`](@extref `ManifoldsBase.get_coordinates-Tuple{AbstractManifold, Any, Any, ManifoldsBase.AbstractBasis}`) function
 of the Riemannian manifold the Lie group is build on.
 
 The inverse operation is [`get_vector`](@ref).
@@ -423,8 +423,8 @@ _doc_get_vector = """
     get_vector!(G::LieGroup, X, g, c, B::AbstractBasis)
     get_vector!(𝔤::LieAlgebra, X, c, B::AbstractBasis)
 
-Return the vector corresponding to a set of coefficients in an [`AbstractBasis`](@extref `ManifoldsBase.AsbtractBasis`)
-of the [`LieAgreba`](@ref) `𝔤`.
+Return the vector corresponding to a set of coefficients in an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`)
+of the [`LieAlgebra`](@ref) `𝔤`.
 Since all tangent vectors are assumed to be represented in the Lie algebra,
 both signatures are equivalend.
 The operation can be performed in-place of a tangent vector `X`.
