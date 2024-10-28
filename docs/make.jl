@@ -102,7 +102,7 @@ end
 tutorials_menu =
     "How to..." => [
         "🚀 Get Started with LieGroups.jl" => "tutorials/getstarted.md",
-        "Transistion from `GroupManifolds`" => "tutorials/transition.md",
+        "Transition from `GroupManifolds`" => "tutorials/transition.md",
     ]
 # (e) finally make docs
 bib = CitationBibliography(joinpath(@__DIR__, "src", "references.bib"); style=:alpha)
@@ -123,7 +123,7 @@ makedocs(;
         "About" => "about.md",
         (tutorials_in_menu ? [tutorials_menu] : [])...,
         "Lie groups" => [
-            "List of Lie Groups" => "groups/index.md",
+            "List of Lie groups" => "groups/index.md",
             "General Linear" => "groups/general_linear.md",
             "Translation group" => "groups/translation.md",
         ],

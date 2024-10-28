@@ -1,6 +1,6 @@
 # Transition from `GroupManifolds` in `Manifolds.jl`
 
-One predecessor of `LieGroups.jl` are the [`GroupManifold`](@extref `Manifolds.GroupManifold`)s in `Manifoldsjl`.
+One predecessor of `LieGroups.jl` are the [`GroupManifold`](@extref `Manifolds.GroupManifold`)s in `Manifolds.jl`.
 While this package provides the same features, one reason for a new package is,
 that a “restart” offers the opportunity to put the main focus for the functions in this package
 really on Lie groups.
@@ -25,7 +25,7 @@ The list is alphabetical, but first lists types, then functions
 | `LeftForwardAction` | [`LeftGroupOperation`](@ref)
 | `RightBackwardAction` | [`RightGroupOperation`](@ref) | |
 | `LeftBackwardAction` | [`InverseRightGroupOperation`](@ref) | note that this is now also aa [`AbstractLeftGroupActionType`](@ref) |
-| | [`LieAlgebra`](@ref)`(G)` | new to emphasize its menifold- and vector structure as well as for a few dispatch methods. |
+| | [`LieAlgebra`](@ref)`(G)` | new alias to emphasize its manifold- and vector structure as well as for a few dispatch methods. |
 | `GroupManifold(M, op)` | [`LieGroup`](@ref)`(M, op)` | |
 | `RightForwardAction` | [`InverseLeftGroupOperation`](@ref) | note that this is an [`AbstractRightGroupActionType`](@ref) |
 | `adjoint` | [`adjoint`](@ref) | now implemented with a default, when you provide [`diff_conjugate!`](@ref).
@@ -44,9 +44,9 @@ The list is alphabetical, but first lists types, then functions
 | `switch_direction(A)` | [`inv`](@ref inv(::AbstractGroupAction))`(A)` | switches from an action to its inverse action (formerly the direction forward/backward, sometimes even left/right, do not confuse with the side left/right). |
 | `switch_side(A)` | [`switch`](@ref switch(::AbstractGroupAction))`(A)` | switches from a left action to its corresponding right action. |
 | `translate(G, g, h)` | [`compose`](@ref)`(G, g, h)` | unified to `compose` |
-| `translate_diff(G, g, X, c)` | [`diff_left_compose`](@ref)`(G, g, h, X)`, [`diff_right_compose`](@ref)`(G, g, h, X)` | for compose ``∘(g,h)` we specify now whether we take the derivative with respect to the left (`g`) or right (`h`) argument
+| `translate_diff(G, g, X, c)` | [`diff_left_compose`](@ref)`(G, g, h, X)`, [`diff_right_compose`](@ref)`(G, g, h, X)` | for compose ``∘(g, h)`` we specify now whether we take the derivative with respect to the left (`g`) or right (`h`) argument |
 |`VeeOrthogonalBasis` | [`LieAlgebraOrthogonalBasis`](@ref) | |
 
 # Notable changes
 
-* The [`GeneralLinearGroup`](@ref) (formerly `GeneralLinear`) switched to using its Lie algebra to represent tangent vectors
+* The [`GeneralLinearGroup`](@ref) (formerly `GeneralLinear`) switched to using its Lie algebra to represent tangent vectors.

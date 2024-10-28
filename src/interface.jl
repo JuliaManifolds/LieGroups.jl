@@ -446,7 +446,7 @@ ManifoldsBase.get_vector!(G::LieGroup, X, g, c, B::ManifoldsBase.AbstractBasis)
 
 _doc_hat = """
     hat(G::LieGroup, c)
-    hat(G::LieGroup, X, c)
+    hat!(G::LieGroup, X, c)
 
 Compute the hat map ``(⋅)^̂ `` that maps a vector of coordinates ``c_i``
 with respect to a certain basis to an tangent vector in the Lie algebra
@@ -761,7 +761,7 @@ end
 
 _doc_vee = """
     vee(G::LieGroup, X)
-    vee(G::LieGroup, c, X)
+    vee!(G::LieGroup, c, X)
 
 Compute the vee map ``(⋅)^̂ `` that maps a tangent vector `X` from the [`LieAlgebra`](@ref)
 to its coordinates with respect to a certain bvasis in the Lie algebra
