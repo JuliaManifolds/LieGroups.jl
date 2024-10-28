@@ -399,7 +399,7 @@ _doc_get_coordinates = """
 Return the vector of coordinates to the decomposition of `X` with respect to an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`)
 of the [`LieAlgebra`](@ref) `𝔤`.
 Since all tangent vectors are assumed to be represented in the Lie algebra,
-both signatures are equivalend.
+both signatures are equivalent.
 The operation can be performed in-place of `c`.
 
 By default this function requires [`identity_element`](@ref)`(G)` and calls
@@ -449,7 +449,7 @@ _doc_hat = """
     hat!(G::LieGroup, X, c)
 
 Compute the hat map ``(⋅)^̂ `` that maps a vector of coordinates ``c_i``
-with respect to a certain basis to an tangent vector in the Lie algebra
+with respect to a certain basis to a tangent vector in the Lie algebra
 
 ```math
 X = $(_tex(:sum))_{i∈$(_tex(:Cal,"I"))} c_iB_i,
@@ -602,7 +602,7 @@ end
 Check whether `g` is a valid point on the Lie Group `G`.
 This falls back to checking whether `g` is a valid point on `G.manifold`,
 unless `g` is an [`Identity`](@ref). Then, it is checked whether it is the
-idenity element corresponding to `G`.
+identity element corresponding to `G`.
 """
 ManifoldsBase.is_point(G::LieGroup, g; kwargs...)
 
@@ -720,10 +720,10 @@ end
 LinearAlgebra.norm(G::LieGroup, g, X) = norm(G.manifold, g, X)
 
 _doc_rand = """
-    rand(::LieGroup; vector_at=nothing, σ=1.0, kwargs...)
-    rand(::LieAlgebra; σ=1.0, kwargs...)
-    rand!(::LieGroup, gX; vector_at=nothing, kwargs...)
-    rand!(::LieAlgebra, X; σ=1.0, kwargs...)
+    rand(::LieGroup; vector_at=nothing, σ::Real=1.0, kwargs...)
+    rand(::LieAlgebra; σ::Real=1.0, kwargs...)
+    rand!(::LieGroup, gX; vector_at=nothing, σ::Real=1.0, kwargs...)
+    rand!(::LieAlgebra, X; σ::Real=1.0, kwargs...)
 
 Compute a random point or tangent vector on a Lie group.
 
