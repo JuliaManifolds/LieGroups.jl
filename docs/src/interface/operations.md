@@ -32,6 +32,6 @@ Order = [:type, :function]
 ## Literature
 
 ```@bibliography
-Pages = ["interface/operations.md"]
+Pages = ["operations.md"]
 Canonical=false
 ```
