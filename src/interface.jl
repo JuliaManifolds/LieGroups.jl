@@ -719,6 +719,38 @@ end
 
 LinearAlgebra.norm(G::LieGroup, g, X) = norm(G.manifold, g, X)
 
+_doc_rand = """
+    rand(::LieGroup; vector_at=nothing, σ=1.0, kwargs...)
+    rand(::LieAlgebra; σ=1.0, kwargs...)
+    rand!(::LieGroup, gX; vector_at=nothing, kwargs...)
+    rand!(::LieAlgebra, X; σ=1.0, kwargs...)
+
+Compute a random point or tangent vector on a Lie group.
+
+For points this just means to generate a random point on the
+underlying manifold itself.
+
+For tangent vectors, an element in the Lie Algebra is generated,
+see also [`rand(::LieAlgebra; kwargs...)`](@ref)
+"""
+
+@doc "$(_doc_rand)"
+Random.rand(::LieGroup; kwargs...)
+
+@doc "$(_doc_rand)"
+function Random.rand!(G::LieGroup, pX; kwargs...)
+    return rand!(Random.default_rng(), G, pX; kwargs...)
+end
+
+function Random.rand!(rng::AbstractRNG, G::LieGroup, pX; vector_at=nothing, kwargs...)
+    M = base_manifold(G)
+    if vector_at === nothing # for points -> pass to manifold
+        rand!(rng, M, pX, kwargs...)
+    else # for tangent vectors -> materialize identity, pass to tangent space there.
+        rand!(rng, M, pX; vector_at=identity_element(G), kwargs...)
+    end
+end
+
 function ManifoldsBase.representation_size(G::LieGroup)
     return representation_size(G.manifold)
 end

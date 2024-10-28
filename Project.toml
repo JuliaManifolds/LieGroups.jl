@@ -1,18 +1,20 @@
 name = "LieGroups"
 uuid = "6774de46-80ba-43f8-ba42-e41071ccfc5f"
-authors = ["Seth Axen <seth.axen@gmail.com>", "Mateusz Baran <mateuszbaran89@gmail.com>", "Ronny Bergmann <git@ronnybergmann.net>", "Yueh-Hua Tu", "Olivier Verdier <olivier.verdier@gmail.com>" ]
+authors = ["Seth Axen <seth.axen@gmail.com>", "Mateusz Baran <mateuszbaran89@gmail.com>", "Ronny Bergmann <git@ronnybergmann.net>", "Yueh-Hua Tu", "Olivier Verdier <olivier.verdier@gmail.com>"]
 version = "0.1.0"
 
 [deps]
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Manifolds = "1cead3c2-87b3-11e9-0ccd-23c62b72b94e"
 ManifoldsBase = "3362f125-f0bb-47a3-aa74-596ffd7ef2fb"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [compat]
 Aqua = "0.8"
 LinearAlgebra = "1.6"
 Manifolds = "0.10.5"
 ManifoldsBase = "0.15.20"
+Random = "1.6"
 Test = "1.6"
 julia = "1.6"
 

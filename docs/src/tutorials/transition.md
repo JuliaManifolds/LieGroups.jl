@@ -1,6 +1,6 @@
 # Transition from `GroupManifolds` in `Manifolds.jl`
 
-One predecessor of `LieGroups.jl` are the [`GroupManifold`]()s in `Manifoldsjl`.
+One predecessor of `LieGroups.jl` are the [`GroupManifold`](@extref `Manifolds.GroupManifold`)s in `Manifoldsjl`.
 While this package provides the same features, one reason for a new package is,
 that a “restart” offers the opportunity to put the main focus for the functions in this package
 really on Lie groups.
@@ -46,3 +46,7 @@ The list is alphabetical, but first lists types, then functions
 | `translate(G, g, h)` | [`compose`](@ref)`(G, g, h)` | unified to `compose` |
 | `translate_diff(G, g, X, c)` | [`diff_left_compose`](@ref)`(G, g, h, X)`, [`diff_right_compose`](@ref)`(G, g, h, X)` | for compose ``∘(g,h)` we specify now whether we take the derivative with respect to the left (`g`) or right (`h`) argument
 |`VeeOrthogonalBasis` | [`LieAlgebraOrthogonalBasis`](@ref) | |
+
+# Notable changes
+
+* The [`GeneralLinearGroup`](@ref) (formerly `GeneralLinear`) switched to using its Lie algebra to represent tangent vectors

@@ -11,8 +11,9 @@
 This is a package to rework the Lie group features of [`Manifolds.jl`](https://juliamanifolds.github.io/Manifolds.jl/stable/) in a unified way into a separate package.
 
 > [!NOTE]
-> Since this is a rework of the features from [`Manifolds.jl`](https://juliamanifolds.github.io/Manifolds.jl/stable/), both `LieGroups.jl` and `Manifolds.jl` 0.10 export a few types. For that reason it's not recommended to load both packages in a productive environment, unless you are aware, which variables you want to import wherefrom.
-> see [transition from Manifolds.jl](https://juliamanifolds.github.io/LieGroups.jl/stable/tutorials/transition-from-manifoldsjl.html) for a comprehensive list.
+> Since this is a rework of the features from [`Manifolds.jl`](https://juliamanifolds.github.io/Manifolds.jl/stable/), both `LieGroups.jl` and `Manifolds.jl` 0.10 export a few types of same name, for example `Identity`.
+While `LieGroups.jl` depends on `Manifolds.jl`, it is not recommended to load both into the same namespace, that is, doing `using Manifolds.jl, LieGroups.jl`, since then these conflicts might lead to unforeseen errors, where you would need to specify the namespace to resolve this ambiguity.
+> See [transition from Manifolds.jl](https://juliamanifolds.github.io/LieGroups.jl/stable/tutorials/transition-from-manifoldsjl.html) for a comprehensive list.
 
 This especially also includes a few different choices in default behaviour that
 is different from the [`Manifolds.jl`](https://juliamanifolds.github.io/Manifolds.jl/stable/) one. For purely manifold-based operations, any Lie group still is “build upon” a Riemannian manifold.
