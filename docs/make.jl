@@ -123,7 +123,7 @@ makedocs(;
         "About" => "about.md",
         (tutorials_in_menu ? [tutorials_menu] : [])...,
         "Lie groups" => [
-            "List of Lie Groups" => "groups/index.md",
+            "List of Lie groups" => "groups/index.md",
             "General Linear" => "groups/general_linear.md",
             "Translation group" => "groups/translation.md",
         ],
