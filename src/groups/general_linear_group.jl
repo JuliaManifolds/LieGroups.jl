@@ -26,7 +26,7 @@ const GeneralLinearGroup{𝔽,T} = LieGroup{
 
 function GeneralLinearGroup(n::Int; kwargs...)
     Im = Manifolds.InvertibleMatrices(n; kwargs...)
-    return GeneralLinearGroup{typeof(Im).parameters[[1, 2]]...}(
+    return GeneralLinearGroup{typeof(Im).parameters...}(
         Im, MatrixMultiplicationGroupOperation()
     )
 end
