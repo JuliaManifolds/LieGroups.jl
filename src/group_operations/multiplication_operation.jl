@@ -101,9 +101,9 @@ function diff_conjugate!(
 end
 
 _doc_diff_inv_mult = """
-    diff_inv(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation},, p, X)
+    diff_inv(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, p, X)
 
-Compute the value of differential ``Dι_{$(_math(:G))}(g)[X] of matrix inversion ``ι_{$(_math(:G))}(g) := g^{-1}`` at ``X ∈ 𝔤``
+Compute the value of differential ``Dι_{$(_math(:G))}(g)[X]`` of matrix inversion ``ι_{$(_math(:G))}(g) := g^{-1}`` at ``X ∈ 𝔤``
 in the [`LieAlgebra`](@ref) ``𝔤`` of the [`LieGroup`](@ref) `G`.
 
 The formula is given by
@@ -113,7 +113,7 @@ Dι_{$(_math(:G))}(g)[X] = -g^{$(_tex(:transp))}Xp^{-1},
 ```
 
 which stems from using the differential of the inverse from [Giles:2008](@cite) given by
-``D(g^-1)[X] = -g^{-1}Xg^{-1}`` composed with the push forward of the left composition
+``D(g^{-1})[X] = -g^{-1}Xg^{-1}`` composed with the push forward of the left composition
 ``Dλ_$(_math(:e))(g)[X] = gX`` mapping from the Liea algebra into the tangent space at ``g``,
 and its adjoint ``D^*λ_$(_math(:e))(g)[X] = g^{$(_tex(:transp))}X``.
 Then we get ``g^{$(_tex(:transp))}(g^{-1}(gX)g^{-1})`` which simplifies to ``-g^{$(_tex(:transp))}Xp^{-1}`` from above.
