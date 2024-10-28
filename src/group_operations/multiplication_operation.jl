@@ -102,6 +102,7 @@ end
 
 _doc_diff_inv_mult = """
     diff_inv(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, p, X)
+    diff_inv!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, p, X)
 
 Compute the value of differential ``Dι_{$(_math(:G))}(g)[X]`` of matrix inversion ``ι_{$(_math(:G))}(g) := g^{-1}`` at ``X ∈ 𝔤``
 in the [`LieAlgebra`](@ref) ``𝔤`` of the [`LieGroup`](@ref) `G`.
