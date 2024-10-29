@@ -10,7 +10,7 @@ abstract type AbstractMultiplicationGroupOperation <: AbstractGroupOperation end
 """
     AbstractMultiplicationGroupOperation <: AbstractMultiplicationGroupOperation
 
-A grou poperation that is realised by a matrix multiplication.
+A group operation that is realised by a matrix multiplication.
 """
 struct MatrixMultiplicationGroupOperation <: AbstractMultiplicationGroupOperation end
 
@@ -309,7 +309,7 @@ Base.log(
     g,
 ) where {𝔽} = log(g)
 
-@doc "$(_doc_exp_mult)"
+@doc "$(_doc_log_mult)"
 function ManifoldsBase.log!(
     ::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
     X,
