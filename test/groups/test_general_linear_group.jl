@@ -15,10 +15,16 @@ begin
         :Functions => [
             compose,
             conjugate,
+            diff_conjugate,
+            diff_inv,
+            diff_left_compose,
+            diff_right_compose,
+            exp,
             inv_left_compose,
             inv_right_compose,
             is_identity,
             lie_bracket,
+            log,
             show,
         ],
     )
