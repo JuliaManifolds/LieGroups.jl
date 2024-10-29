@@ -20,6 +20,7 @@ begin
             diff_left_compose,
             diff_right_compose,
             exp,
+            inv,
             inv_left_compose,
             inv_right_compose,
             is_identity,
