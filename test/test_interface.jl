@@ -1,4 +1,4 @@
-using LieGroups, Test
+using LieGroups, Test, ManifoldsBase
 
 s = joinpath(@__DIR__, "LieGroupsTestSuite.jl")
 !(s in LOAD_PATH) && (push!(LOAD_PATH, s))
@@ -36,6 +36,14 @@ using LieGroupsTestSuite
             # delete both methods again
             Base.delete_method(which(identity_element, (typeof(G),)))
             Base.delete_method(which(exp!, typeof.([G, h, e, X, 1])))
+            #
+            # same for log
+            ManifoldsBase.allocate_result(::typeof(G), ::typeof(log), g) = :g
+            LieGroups.log!(::typeof(G), X, ::Identity, g) = :g
+            @test log(G, e, g) === :g
+            # delete both methods again
+            Base.delete_method(which(ManifoldsBase.allocate_result, typeof.([G, log, g])))
+            Base.delete_method(which(log!, typeof.([G, X, e, g])))
         end
         # so they arae undefined here again but we checked the exp fallback
         @test_throws MethodError exp!(G, g, e, X)
