@@ -85,7 +85,6 @@ function lie_bracket! end
 @doc "$(_doc_lie_bracket)"
 lie_bracket!(𝔤::LieAlgebra, Z, X, Y)
 
-LinearAlgebra.norm(𝔤::LieAlgebra, X::Real) = LinearAlgebra.norm(𝔤.manifold, 𝔤.point, X)
 function LinearAlgebra.norm(
     G::LieGroup{𝔽,O}, ::Identity{O}, X
 ) where {𝔽,O<:AbstractGroupOperation}
