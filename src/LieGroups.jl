@@ -53,7 +53,8 @@ export TranslationGroup, GeneralLinearGroup
 export adjoint, adjoint!, apply, apply!
 export base_lie_group, base_manifold
 export compose, compose!
-export diff_apply,
+export det,
+    diff_apply,
     diff_apply!,
     diff_group_apply,
     diff_group_apply!,

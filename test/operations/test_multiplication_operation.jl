@@ -17,6 +17,9 @@ using LieGroups, Test
         @test inv(e) === e
         @test det(e)
         # Zero array
+        g2 = fill(2.0, ())
+
         # Array
+        g3 = [2.0 0.0; 0.0 2.0]
     end
 end
