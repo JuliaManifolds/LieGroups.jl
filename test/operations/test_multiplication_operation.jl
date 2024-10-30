@@ -34,7 +34,7 @@ using LieGroupsTestSuite
         @test inv(G, e) === e
         h3 = zero(g3)
         X3 = [1.0 0.0; 0.0 2.0]
-        @test diff_conjugate(G, g3, g3, X3) = g3 * X3 * inv(g3)
+        @test diff_conjugate(G, g3, g3, X3) == g3 * X3 * inv(g3)
         # inplace-multiplication with e
         h3 = zero(g3)
         mul!(h3, e, g3)
