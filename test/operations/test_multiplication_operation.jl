@@ -1,7 +1,11 @@
 using LieGroups, Test
 
-@testset "Addition Operation" begin
-    @testset "Base.:+ and Base.:- with the Identity" begin
+s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
+!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
+using LieGroupsTestSuite
+
+@testset "Multiplication Operation" begin
+    @testset "Base.:* and Base.:* with the Identity" begin
         # Generic & Number
         e = Identity(MatrixMultiplicationGroupOperation())
         @test (e * e) === e
@@ -23,5 +27,8 @@ using LieGroups, Test
         g2 = fill(2.0, ())
         # Array
         g3 = [2.0 0.0; 0.0 2.0]
+        M = LieGroupsTestSuite.DummyManifold()
+        G = LieGroup(M, MatrixMultiplicationGroupOperation())
+        @test inv(G, e) === e
     end
 end

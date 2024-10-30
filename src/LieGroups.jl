@@ -64,7 +64,7 @@ export det,
     diff_right_compose!
 export get_coordinates, get_coordinates!, get_vector, get_vector!
 export hat, hat!
-export inv_left_compose, inv_left_compose!, inv_right_compose, inv_right_compose!
+export inv, inv!, inv_left_compose, inv_left_compose!, inv_right_compose, inv_right_compose!
 export isapprox, is_point, is_vector
 export conjugate, conjugate!, diff_conjugate, diff_conjugate!
 export exp, exp!
