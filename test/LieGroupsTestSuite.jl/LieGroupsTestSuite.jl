@@ -13,7 +13,7 @@ The following functions are expected to be available, since their defaults just 
 """
 module LieGroupsTestSuite
 using LieGroups
-using Test
+using Test, Random
 
 #
 #
@@ -561,6 +561,60 @@ end
 
 #
 #
+# --- R
+"""
+    test_rand(G::LieGroup)
+
+Test the random function, both the allocating and the in-place variant,
+as well as the variant with an `rng`, if one is provided.
+
+both the random point and the random tangent vector variants are tested.
+
+# Keyword arguments
+
+* `test_mutating::Bool=true`: test the mutating functions
+* `rng=:missing`: test with a specific rng
+"""
+function test_rand(
+    G::LieGroup, g; test_mutating::Bool=true, rng::Union{Missing,AbstractRNG}=missing
+)
+    @testset "rand" begin
+        g1 = rand(G)
+        @test is_point(G, g1)
+        if test_mutating
+            g2 = copy(G, g)
+            rand!(G, g2)
+            @test is_point(G, g2)
+        end
+        X1 = rand(G; vector_at=g1)
+        @test is_vector(G, g1, X1)
+        if test_mutating
+            X2 = zero_vector(LieAlgebra(G), g1)
+            rand!(G, X2; vector_at=g1)
+            @test is_vector(G, g1, X2)
+        end
+        if !ismissing(rng)
+            g1 = rand(rng, G)
+            @test is_point(G, g1)
+            if test_mutating
+                g2 = copy(G, g)
+                rand!(rng, G, g2)
+                @test is_point(G, g2)
+            end
+            X1 = rand(rng, G; vector_at=g1)
+            @test is_vector(G, g1, X1)
+            if test_mutating
+                X2 = zero_vector(LieAlgebra(G), g1)
+                rand!(rng, G, X2; vector_at=g1)
+                @test is_vector(G, g1, X2)
+            end
+        end
+    end
+    return nothing
+end
+
+#
+#
 # --- S
 """
     test_show(G, repr_string::AbstractString)
@@ -594,6 +648,7 @@ Possible properties are
 * `:Vectors` is a vector of at least 3 elements from the Lie algebra `𝔤` og `G`
 * `:Mutating` is a boolean (`true` by default) whether to test the mutating variants of functions or not.
 * `:Name` is a name of the test. If not provided, defaults to `"\$G"`
+* `:Rng` is a random number generator, if provided, the random functions are tested with this generator as well
 
 Possible `expectations` are
 
@@ -703,6 +758,14 @@ function test_lie_group(G::LieGroup, properties::Dict, expectations::Dict=Dict()
         if (lie_bracket in functions)
             v = get(expectations, :lie_bracket, missing)
             test_lie_bracket(G, vectors[1], vectors[2]; expected=v, test_mutating=mutating)
+        end
+
+        #
+        #
+        # --- R
+        if (rand in functions)
+            v = get(properties, :Rng, missing)
+            test_rand(G, points[1]; rng=v, test_mutating=mutating)
         end
 
         #

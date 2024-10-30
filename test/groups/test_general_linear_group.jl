@@ -1,4 +1,4 @@
-using LieGroups, Test
+using LieGroups, Random, Test
 
 s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 !(s in LOAD_PATH) && (push!(LOAD_PATH, s))
@@ -12,6 +12,7 @@ begin
         :Name => "The general linear group",
         :Points => [g1, g2, g3],
         :Vectors => [X1, X2, X3],
+        :Rng => Random.MersenneTwister(),
         :Functions => [
             compose,
             conjugate,
@@ -26,6 +27,7 @@ begin
             is_identity,
             lie_bracket,
             log,
+            #rand, # requires a fix in Manifolds.jl to have rand on invertive matrices
             show,
         ],
     )
