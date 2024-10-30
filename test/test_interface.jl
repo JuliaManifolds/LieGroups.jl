@@ -1,4 +1,4 @@
-using LieGroups, Test
+using LieGroups, Test, ManifoldsBase
 
 s = joinpath(@__DIR__, "LieGroupsTestSuite.jl")
 !(s in LOAD_PATH) && (push!(LOAD_PATH, s))
@@ -25,9 +25,28 @@ using LieGroupsTestSuite
     @test is_point(G, e)
     @test !is_point(G, Identity(op2))
     @test_throws DomainError is_point(G, Identity(op2); error=:error)
-    # Exp log Method Error fallbacks that avoid the stack overflow
-    g = :none
-    X = :nonetoo
-    @test_throws MethodError exp!(G, g, e, X)
-    @test_throws MethodError log!(G, X, e, g)
+    @testset "Methoderrors for the non-implemented mutating variants" begin
+        g = :none
+        h = :alsonone
+        X = :nonetoo
+        begin # locally define identity element
+            LieGroups.identity_element(::typeof(G)) = :id
+            LieGroups.exp!(::typeof(G), h, ::typeof(e), X, t::Number=1) = :id
+            @test exp(G, e, X) === :id
+            # delete both methods again
+            Base.delete_method(which(identity_element, (typeof(G),)))
+            Base.delete_method(which(exp!, typeof.([G, h, e, X, 1])))
+            #
+            # same for log
+            ManifoldsBase.allocate_result(::typeof(G), ::typeof(log), g) = :g
+            LieGroups.log!(::typeof(G), X, ::Identity, g) = :g
+            @test log(G, e, g) === :g
+            # delete both methods again
+            Base.delete_method(which(ManifoldsBase.allocate_result, typeof.([G, log, g])))
+            Base.delete_method(which(log!, typeof.([G, X, e, g])))
+        end
+        # so they arae undefined here again but we checked the exp fallback
+        @test_throws MethodError exp!(G, g, e, X)
+        @test_throws MethodError log!(G, X, e, g)
+    end
 end
