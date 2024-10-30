@@ -100,7 +100,7 @@ function diff_conjugate!(
 ) where {𝔽}
     inv_right_compose!(G, Y, X, g) # Y = Xg^{-1}
     compose!(G, Y, g, Y) # Y = gY
-    return copyto!(LieAlgebra(G), Y, X)
+    return Y
 end
 
 _doc_diff_inv_mult = """
@@ -324,18 +324,11 @@ function LinearAlgebra.mul!(
     return copyto!(q, p)
 end
 function LinearAlgebra.mul!(
-    q::Union{AbstractMatrix,Number},
+    q::Union{AbstractMatrix},
     ::Identity{<:AbstractMultiplicationGroupOperation},
     ::Identity{<:AbstractMultiplicationGroupOperation},
 )
     return copyto!(q, I)
-end
-function LinearAlgebra.mul!(
-    q,
-    ::Identity{<:AbstractMultiplicationGroupOperation},
-    ::Identity{<:AbstractMultiplicationGroupOperation},
-)
-    return copyto!(q, one(q))
 end
 function LinearAlgebra.mul!(
     q::Identity{<:AbstractMultiplicationGroupOperation},
