@@ -16,9 +16,11 @@ using LieGroups, Test
         @test (e \ e) === e
         @test inv(e) === e
         @test det(e)
+        ea = Identity(AdditionGroupOperation)
+        @test ea * e === e
+        @test e * ea === e
         # Zero array
         g2 = fill(2.0, ())
-
         # Array
         g3 = [2.0 0.0; 0.0 2.0]
     end

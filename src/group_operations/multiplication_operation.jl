@@ -14,7 +14,6 @@ A group operation that is realised by a matrix multiplication.
 """
 struct MatrixMultiplicationGroupOperation <: AbstractMultiplicationGroupOperation end
 
-Base.:*(e::Identity{<:AbstractMultiplicationGroupOperation}) = e
 Base.:*(::Identity{MatrixMultiplicationGroupOperation}, p::Union{AbstractMatrix,Number}) = p
 function Base.:*(
     p::Union{AbstractMatrix,Number}, ::Identity{MatrixMultiplicationGroupOperation}
@@ -28,12 +27,12 @@ function Base.:*(
     return e
 end
 function Base.:*(
-    ::Identity{<:AbstractMultiplicationGroupOperation}, e::Identity{AdditionGroupOperation}
+    e::Identity{<:AbstractMultiplicationGroupOperation}, ::Identity{AdditionGroupOperation}
 )
     return e
 end
 function Base.:*(
-    e::Identity{AdditionGroupOperation}, ::Identity{<:AbstractMultiplicationGroupOperation}
+    ::Identity{AdditionGroupOperation}, e::Identity{<:AbstractMultiplicationGroupOperation}
 )
     return e
 end
