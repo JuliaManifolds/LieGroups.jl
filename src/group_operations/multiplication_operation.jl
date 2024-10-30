@@ -331,7 +331,7 @@ function LinearAlgebra.mul!(
     return copyto!(q, p)
 end
 function LinearAlgebra.mul!(
-    q::AbstractMatrix,
+    q::Union{AbstractMatrix,Number},
     ::Identity{<:AbstractMultiplicationGroupOperation},
     ::Identity{<:AbstractMultiplicationGroupOperation},
 )
