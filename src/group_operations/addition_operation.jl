@@ -168,7 +168,7 @@ function inv!(::LieGroup{𝔽,AdditionGroupOperation}, h, g) where {𝔽}
     return h
 end
 # Resolve ambiguity
-function inv!(G::LieGroup{𝔽,O}, q, ::Identity{O}) where {𝔽,O<:AdditionGroupOperation}
+function inv!(G::LieGroup{𝔽,AdditionGroupOperation}, q, ::Identity{AdditionGroupOperation}) where {𝔽}
     return identity_element!(G, q)
 end
 
