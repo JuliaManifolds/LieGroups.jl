@@ -167,6 +167,10 @@ function inv!(::LieGroup{𝔽,AdditionGroupOperation}, h, g) where {𝔽}
     h .= (-1) .* g
     return h
 end
+# Resolve ambiguity
+function inv!(G::LieGroup{𝔽,O}, q, ::Identity{O}) where {𝔽,O<:AdditionGroupOperation}
+    return identity_element!(G, q)
+end
 
 _doc_lie_bracket_add = """
     lie_bracket!(𝔤::LieAlgebra{𝔽,AdditionGroupOperation}, X, Y)

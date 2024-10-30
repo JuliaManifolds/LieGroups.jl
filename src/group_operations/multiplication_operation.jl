@@ -240,12 +240,6 @@ simplifies to the multiplicative inverse ``g^{-1}``. This can be done in-place o
 @doc "$(_doc_inv_mult)"
 Base.inv(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g) where {𝔽}
 
-function Base.inv(
-    ::LieGroup{𝔽,O}, e::Identity{O}
-) where {𝔽,O<:AbstractMultiplicationGroupOperation}
-    return e
-end
-
 @doc "$(_doc_inv_mult)"
 function inv!(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, h, g) where {𝔽}
     copyto!(h, inv(g))

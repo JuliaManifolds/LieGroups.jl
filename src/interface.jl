@@ -521,6 +521,10 @@ function inv! end
 @doc "$_doc_inv"
 inv!(G::LieGroup, h, g)
 
+function Base.inv(::LieGroup{𝔽,O}, e::Identity{O}) where {𝔽,O<:AbstractGroupOperation}
+    return e
+end
+
 _doc_inv_left_compose = """
     inv_left_compose(G::LieGroup, g, h)
     inv_left_compose!(G::LieGroup, k, g, h)

@@ -496,6 +496,41 @@ function test_inv_compose(
     return nothing
 end
 
+"""
+    test_inv(G::LieGroup, g)
+
+Test the inverse function, both the allocating and the in-place variant,
+and that the double inverse is the identity.
+
+# Keyword arguments
+
+* `test_mutating::Bool=true`: test the mutating functions
+* `test_identity::Bool=true`: test that `inv(e) == e`
+"""
+function test_inv(G::LieGroup, g; test_mutating::Bool=true, test_identity::Bool=true)
+    @testset "inv" begin
+        k1 = inv(G, g)
+        @test is_point(G, k1)
+        g1 = inv(G, k1)
+        @test isapprox(G, g, g1)
+        if test_mutating
+            k2 = copy(G, g)
+            inv!(G, k2, g)
+            @test isapprox(G, k1, k2)
+            # continue in-place
+            inv!(G, k2, k2)
+            @test isapprox(G, k2, g)
+        end
+        if test_identity
+            e = Identity(G)
+            @test inv(G, e) === e
+            e2 = copy(G, g)
+            inv!(G, e2, e)
+            @test is_identity(G, e2)
+        end
+    end
+    return nothing
+end
 #
 #
 # --- L
@@ -660,7 +695,9 @@ function test_lie_group(G::LieGroup, properties::Dict, expectations::Dict=Dict()
                 test_right=(inv_right_compose in functions),
             )
         end
-        #
+        if (inv in functions)
+            test_inv(G, points[1]; test_mutating=mutating)
+        end        #
         #
         # --- L
         if (lie_bracket in functions)
