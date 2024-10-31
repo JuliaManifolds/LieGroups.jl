@@ -33,7 +33,7 @@ function ManifoldsBase.get_coordinates(𝔤::LieAlgebra, X, B::ManifoldsBase.Abs
 end
 function ManifoldsBase.get_coordinates!(𝔤::LieAlgebra, c, X, B::ManifoldsBase.AbstractBasis)
     G = 𝔤.manifold
-    get_coordinates!(base_manifold(G), c, identity_element(G), X, B)
+    get_coordinates!(base_manifold(𝔤), c, identity_element(G), X, B)
     return c
 end
 
@@ -44,7 +44,7 @@ function ManifoldsBase.get_vector(𝔤::LieAlgebra, c, B::ManifoldsBase.Abstract
 end
 function ManifoldsBase.get_vector!(𝔤::LieAlgebra, X, c, B::ManifoldsBase.AbstractBasis)
     G = 𝔤.manifold
-    get_vector!(base_manifold(G), X, identity_element(G), c, B)
+    get_vector!(base_manifold(𝔤), X, identity_element(G), c, B)
     return X
 end
 
