@@ -825,7 +825,7 @@ _doc_vee = """
     vee(G::LieGroup, X)
     vee!(G::LieGroup, c, X)
 
-Compute the vee map ``(⋅)^̂ `` that maps a tangent vector `X` from the [`LieAlgebra`](@ref)
+Compute the vee map ``(⋅)^∨`` that maps a tangent vector `X` from the [`LieAlgebra`](@ref)
 to its coordinates with respect to a certain bvasis in the Lie algebra
 
 ```math
@@ -847,7 +847,7 @@ Technically `hat` is a specific case of [`get_coordinates`](@ref) and is impleme
 @doc "$(_doc_vee)"
 function vee(G::LieGroup, X)
     c = ManifoldsBase.allocate_result(G, vee, X)
-    return vee!(G, X, c)
+    return vee!(G, c, X)
 end
 
 # function vee! end
@@ -856,7 +856,7 @@ function vee!(G::LieGroup, c, X)
     get_coordinates!(
         G, c, identity_element(G), X, LieAlgebraOrthogonalBasis(ManifoldsBase.ℝ)
     )
-    return X
+    return c
 end
 
 function ManifoldsBase.zero_vector(
