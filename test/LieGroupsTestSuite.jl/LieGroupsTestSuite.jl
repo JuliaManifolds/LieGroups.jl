@@ -475,9 +475,9 @@ function test_hat_vee(
         if test_vee
             c1 = vee(G, X)
             if test_mutating
-                Y2 = zero(c1)
-                vee!(G, Y2, X)
-                @test isapprox(G, c1, Y2)
+                c2 = zero(c1)
+                vee!(G, c2, X)
+                @test c1 ≈ c2
             end
             if !ismissing(expected_value)
                 @test c1 ≈ expected_value
