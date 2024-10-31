@@ -21,6 +21,7 @@ begin
             diff_left_compose,
             diff_right_compose,
             exp,
+            hat,
             identity_element,
             inv,
             inv_left_compose,
@@ -30,6 +31,7 @@ begin
             log,
             rand,
             show,
+            vee,
         ],
     )
     expectations = Dict(

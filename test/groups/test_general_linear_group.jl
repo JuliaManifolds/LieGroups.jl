@@ -21,14 +21,16 @@ begin
             diff_left_compose,
             diff_right_compose,
             exp,
+            # hat, # requires a fix in Manifolds.jl to have an ONB on invertible matrices
             inv,
             inv_left_compose,
             inv_right_compose,
             is_identity,
             lie_bracket,
             log,
-            #rand, # requires a fix in Manifolds.jl to have rand on invertive matrices
+            #rand, # requires a fix in Manifolds.jl to have rand on invertible matrices
             show,
+            #vee, # requires a fix in Manifolds.jl to have an ONB on invertible matrices
         ],
     )
     expectations = Dict(

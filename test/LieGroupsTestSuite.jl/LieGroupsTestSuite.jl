@@ -436,9 +436,73 @@ end
 
 #
 #
-# --- I
+# --- H
 """
-    test_inv_compose(G::LieGroup, g, h, X)
+    test_hat_vee(G::LieGroup, g, X; kwargs...)
+
+Test `hat` and `vee` for given Lie group element `g` and a Lie Algebra vector `X`.
+
+# Keyword arguments
+
+* `expected_value=missing`: the expected value of `vee(G,X)`
+* `test_mutating::Bool=true`: test the mutating functions
+* `test_vee::Bool=true`: test the vee function
+* `test_hat::Bool=true`: test the hat function
+"""
+function test_hat_vee(
+    G::LieGroup,
+    g,
+    X;
+    test_mutating::Bool=true,
+    test_vee::Bool=true,
+    test_hat::Bool=true,
+    expected_value=missing,
+)
+    @testset "hat & vee" begin
+        𝔤 = LieAlgebra(G)
+        if test_hat
+            c = ismissing(expected_value) ? zeros(lie_group_dimension(G)) : expected_value
+            Y1 = hat(G, c)
+            @test is_vector(G, g, Y1)
+            ismissing(expected_value) && @test norm(G, g, Y1) ≈ 0
+            !ismissing(expected_value) && @test isapprox(𝔤, X, Y1)
+            if test_mutating
+                Y2 = zero_vector(𝔤)
+                hat!(G, Y2, c)
+                @test isapprox(𝔤, Y1, Y2)
+            end
+        end
+        if test_vee
+            c1 = vee(G, X)
+            if test_mutating
+                Y2 = zero(c1)
+                vee!(G, Y2, X)
+                @test isapprox(G, c1, Y2)
+            end
+            if !ismissing(expected_value)
+                @test c1 ≈ expected_value
+            end
+        end
+        if test_hat && test_vee
+            Y1 = hat(G, vee(G, X))
+            @test isapprox(𝔤, X, Y1)
+            if test_mutating
+                Y2 = zero_vector(𝔤)
+                c = zeros(lie_group_dimension(G))
+                vee!(G, c, X)
+                hat!(G, Y2, c)
+                @test isapprox(𝔤, Y1, Y2)
+            end
+        end
+    end
+    return nothing
+end
+
+#
+#
+# --- `I`
+"""
+    test_inv_compose(G::LieGroup, g, h, X; kwargs...)
 
 Test the special functions combining inv and compose, `inv_left_compose` and `inv_right_compose`.
 For these tests both `compose` and `inv` are required.
@@ -661,6 +725,7 @@ Possible `expectations` are
 * `:inv_left_compose` for the result of `inv_left_right_compose` with respect to the first two points
 * `:inv_right_compose` for the result of `inv_right_compose` with respect to the first two points
 * `:repr` is a sting one gets from `repr(G)`
+* `:vee` for the result of `vee(G, X)` where `X` is the first of the vectors
 """
 function test_lie_group(G::LieGroup, properties::Dict, expectations::Dict=Dict())
     a_tol = get(expectations, :atol, 1e-8)
@@ -730,6 +795,22 @@ function test_lie_group(G::LieGroup, properties::Dict, expectations::Dict=Dict()
                 test_exp=(exp in functions),
                 test_log=(log in functions),
                 test_mutating=mutating,
+            )
+        end
+
+        #
+        #
+        # --- H
+        if any(in.([hat, vee], Ref(functions)))
+            v = get(expectations, :vee, missing)
+            test_hat_vee(
+                G,
+                points[1],
+                vectors[1];
+                expected_value=v,
+                test_hat=(hat in functions),
+                test_mutating=mutating,
+                test_vee=(vee in functions),
             )
         end
 

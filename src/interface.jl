@@ -13,7 +13,15 @@ abstract type AbstractGroupOperation end
 """
     LieAlgebraOrthogonalBasis{𝔽} <: ManifoldsBase.AbstractOrthogonalBasis{𝔽,ManifoldsBase.TangentSpaceType}
 
-Specify an orthogonal basis for a Lie algebra. This is used as the default within [`hat`](@ref) and [`vee`](@ref).
+Specify an orthogonal basis for a Lie algebra.
+This is used as the default within [`hat`](@ref) and [`vee`](@ref).
+
+If not specifically overwritten/implemented for a Lie group, the [`DefaultOrthogonalBasis`](@extref `ManifoldsBase.DefaultOrthogonalBasis`)
+at the [`identity_element`](@ref) on the [`base_manifold](@ref base_manifold(::LieGroup)) acts as a fallback.
+
+!!! note
+    In order to implement the corresponding [`get_coordinates`](@ref) and [`get_vector`](@ref) functions,
+    define `get_coordiinates_lie(::LieGroup, p, X, N)` and `get_vector_lie(::LieGroup, p, X, N)`, resp.
 """
 struct LieAlgebraOrthogonalBasis{𝔽} <:
        ManifoldsBase.AbstractOrthogonalBasis{𝔽,ManifoldsBase.TangentSpaceType} end
@@ -78,6 +86,27 @@ Identity(::Type{O}) where {O<:AbstractGroupOperation} = Identity{O}()
 #
 #
 # --- Functions ---
+
+# Internal pass through for coordinates and vectors
+
+@inline function ManifoldsBase._get_coordinates(
+    G::LieGroup, p, X, B::LieAlgebraOrthogonalBasis
+)
+    return get_coordinates_lie(G, p, X, number_system(B))
+end
+@inline function ManifoldsBase._get_coordinates!(
+    G::LieGroup, Y, p, X, B::LieAlgebraOrthogonalBasis
+)
+    return get_coordinates_lie!(G, Y, p, X, number_system(B))
+end
+@inline function ManifoldsBase._get_vector(G::LieGroup, p, c, B::LieAlgebraOrthogonalBasis)
+    return get_vector_lie(G, p, c, number_system(B))
+end
+@inline function ManifoldsBase._get_vector!(
+    G::LieGroup, Y, p, c, B::LieAlgebraOrthogonalBasis
+)
+    return get_vector_lie!(G, Y, p, c, number_system(B))
+end
 
 _doc_adjoint = """
     adjoint(G::LieGroup, g X)
@@ -417,6 +446,15 @@ ManifoldsBase.get_coordinates(G::LieGroup, g, X, B::ManifoldsBase.AbstractBasis)
 @doc "$(_doc_exp_id)"
 ManifoldsBase.get_coordinates!(G::LieGroup, c, g, X, B::ManifoldsBase.AbstractBasis)
 
+function get_coordinates_lie(G::LieGroup, g, X, N)
+    return get_coordinates(G, identity_element(G), X, DefaultOrthogonalBasis(N))
+end
+function get_coordinates_lie!(G::LieGroup, Y, g, X, N)
+    return get_coordinates!(
+        base_manifold(G), Y, identity_element(G), X, DefaultOrthogonalBasis(N)
+    )
+end
+
 _doc_get_vector = """
     get_vector(G::LieGroup, g, c, B::AbstractBasis)
     get_vector(𝔤::LieAlgebra, c, B::AbstractBasis)
@@ -443,6 +481,15 @@ ManifoldsBase.get_vector(G::LieGroup, g, c, B::ManifoldsBase.AbstractBasis)
 
 @doc "$(_doc_exp_id)"
 ManifoldsBase.get_vector!(G::LieGroup, X, g, c, B::ManifoldsBase.AbstractBasis)
+
+@inline function get_vector_lie(G::LieGroup, g, c, N)
+    return get_vector(base_manifold(G), identity_element(G), c, DefaultOrthogonalBasis(N))
+end
+@inline function get_vector_lie!(G::LieGroup, Y, g, c, N)
+    return get_vector!(
+        base_manifold(G), Y, identity_element(G), c, DefaultOrthogonalBasis(N)
+    )
+end
 
 _doc_hat = """
     hat(G::LieGroup, c)
@@ -475,7 +522,7 @@ end
 # function hat! end
 @doc "$(_doc_hat)"
 function hat!(G::LieGroup, X, c)
-    get_vector!(G, X, c, LieAlgebraOrthogonalBasis())
+    get_vector!(G, X, identity_element(G), c, LieAlgebraOrthogonalBasis())
     return X
 end
 
@@ -663,6 +710,17 @@ function ManifoldsBase.isapprox(
     return false
 end
 
+"""
+    lie_group_dimension(G::LieGroup)
+
+The dimension ``n=$(_tex(:rm, "dim"))_{$(_tex(:Cal,"G"))}`` of real space ``ℝ^n`` to which the neighborhood of
+each point of the [`LieGroup`](@ref) `M` is homeomorphic.
+
+This function is implemented to call [`manifold_dimension`](@extref `ManifoldsBase.manifold_dimension-Tuple{AbstractManifold}`) on the [`AbstractManifold`](@ref) `M`
+within the Lie group `G`.
+"""
+lie_group_dimension(G::LieGroup) = manifold_dimension(G.manifold)
+
 _doc_log = """
     log(G::LieGroup, g, h)
     log!(G::LieGroup, X, g, h)
@@ -795,7 +853,9 @@ end
 # function vee! end
 @doc "$(_doc_vee)"
 function vee!(G::LieGroup, c, X)
-    get_coordinates!(G, c, X, LieAlgebraOrthogonalBasis())
+    get_coordinates!(
+        G, c, identity_element(G), X, LieAlgebraOrthogonalBasis(ManifoldsBase.ℝ)
+    )
     return X
 end
 
