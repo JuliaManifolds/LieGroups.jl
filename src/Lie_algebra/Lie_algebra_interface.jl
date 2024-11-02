@@ -27,24 +27,22 @@ function LieAlgebra(G::LieGroup{𝔽,O}) where {𝔽,O<:AbstractGroupOperation}
 end
 
 function ManifoldsBase.get_coordinates(𝔤::LieAlgebra, X, B::ManifoldsBase.AbstractBasis)
-    c = ManifoldsBase.allocate_result(B, get_coordinates, X, B)
-    get_coordinates!(𝔤, c, X, B)
-    return X
+    G = 𝔤.manifold
+    return get_coordinates(base_manifold(G), identity_element(G), X, B)
 end
 function ManifoldsBase.get_coordinates!(𝔤::LieAlgebra, c, X, B::ManifoldsBase.AbstractBasis)
     G = 𝔤.manifold
-    get_coordinates!(base_manifold(𝔤), c, identity_element(G), X, B)
+    get_coordinates!(base_manifold(G), c, identity_element(G), X, B)
     return c
 end
 
 function ManifoldsBase.get_vector(𝔤::LieAlgebra, c, B::ManifoldsBase.AbstractBasis)
-    X = zero_vector(𝔤)
-    get_vector!(𝔤, X, c, B)
-    return X
+    G = 𝔤.manifold
+    return get_vector(base_manifold(G), identity_element(G), c, B)
 end
 function ManifoldsBase.get_vector!(𝔤::LieAlgebra, X, c, B::ManifoldsBase.AbstractBasis)
     G = 𝔤.manifold
-    get_vector!(base_manifold(𝔤), X, identity_element(G), c, B)
+    get_vector!(base_manifold(G), X, identity_element(G), c, B)
     return X
 end
 

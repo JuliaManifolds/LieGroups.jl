@@ -447,11 +447,13 @@ ManifoldsBase.get_coordinates(G::LieGroup, g, X, B::ManifoldsBase.AbstractBasis)
 ManifoldsBase.get_coordinates!(G::LieGroup, c, g, X, B::ManifoldsBase.AbstractBasis)
 
 function get_coordinates_lie(G::LieGroup, g, X, N)
-    return get_coordinates(G, identity_element(G), X, DefaultOrthogonalBasis(N))
+    return get_coordinates(
+        base_manifold(G), identity_element(G), X, ManifoldsBase.DefaultOrthogonalBasis(N)
+    )
 end
 function get_coordinates_lie!(G::LieGroup, Y, g, X, N)
     return get_coordinates!(
-        base_manifold(G), Y, identity_element(G), X, DefaultOrthogonalBasis(N)
+        base_manifold(G), Y, identity_element(G), X, ManifoldsBase.DefaultOrthogonalBasis(N)
     )
 end
 
@@ -483,11 +485,13 @@ ManifoldsBase.get_vector(G::LieGroup, g, c, B::ManifoldsBase.AbstractBasis)
 ManifoldsBase.get_vector!(G::LieGroup, X, g, c, B::ManifoldsBase.AbstractBasis)
 
 @inline function get_vector_lie(G::LieGroup, g, c, N)
-    return get_vector(base_manifold(G), identity_element(G), c, DefaultOrthogonalBasis(N))
+    return get_vector(
+        base_manifold(G), identity_element(G), c, ManifoldsBase.DefaultOrthogonalBasis(N)
+    )
 end
 @inline function get_vector_lie!(G::LieGroup, Y, g, c, N)
     return get_vector!(
-        base_manifold(G), Y, identity_element(G), c, DefaultOrthogonalBasis(N)
+        base_manifold(G), Y, identity_element(G), c, ManifoldsBase.DefaultOrthogonalBasis(N)
     )
 end
 
@@ -514,15 +518,14 @@ Technically `hat` is a specific case of [`get_vector`](@ref) and is implemented 
 
 # function hat end
 @doc "$(_doc_hat)"
-function hat(G::LieGroup, c)
-    X = zero_vector(LieAlgebra(G))
-    return hat!(G, X, c)
+function hat(G::LieGroup{𝔽}, c) where {𝔽}
+    return get_vector_lie(G, Identity(G), c, 𝔽)
 end
 
 # function hat! end
 @doc "$(_doc_hat)"
-function hat!(G::LieGroup, X, c)
-    get_vector!(G, X, identity_element(G), c, LieAlgebraOrthogonalBasis())
+function hat!(G::LieGroup{𝔽}, X, c) where {𝔽}
+    get_vector_lie!(G, X, Identity(G), c, 𝔽)
     return X
 end
 
@@ -845,17 +848,14 @@ Technically `hat` is a specific case of [`get_coordinates`](@ref) and is impleme
 
 # function vee end
 @doc "$(_doc_vee)"
-function vee(G::LieGroup, X)
-    c = ManifoldsBase.allocate_result(G, vee, X)
-    return vee!(G, c, X)
+function vee(G::LieGroup{𝔽}, X) where {𝔽}
+    return get_coordinates_lie(G, Identity(G), X, 𝔽)
 end
 
 # function vee! end
 @doc "$(_doc_vee)"
-function vee!(G::LieGroup, c, X)
-    get_coordinates!(
-        G, c, identity_element(G), X, LieAlgebraOrthogonalBasis(ManifoldsBase.ℝ)
-    )
+function vee!(G::LieGroup{𝔽}, c, X) where {𝔽}
+    get_coordinates_lie!(G, c, Identity(G), X, 𝔽)
     return c
 end
 
