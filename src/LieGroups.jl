@@ -1,3 +1,13 @@
+@doc raw"""
+LieGroups.jl: Lie groups and Lie algebras in Julia.
+
+The package is named after the norwegian mathematician [Sophus Lie](https://en.wikipedia.org/wiki/Sophus_Lie).
+
+* 📚 Documentation: [manoptjl.org](https://juliamanifolds.github.io/LieGroups.jl/dev/)
+* 📦 Repository: [github.com/JuliaManifolds/LieGroups.jl](https://github.com/JuliaManifolds/LieGroups.jl)
+* 💬 Discussions: [github.com/JuliaManifolds/LieGroups.jl/discussions](https://github.com/JuliaManifolds/LieGroups.jl/discussions)
+* 🎯 Issues: [github.com/JuliaManifolds/LieGroups.jl/issues](https://github.com/JuliaManifolds/LieGroups.jl/issues)
+"""
 module LieGroups
 
 using LinearAlgebra, ManifoldsBase, Manifolds, Random

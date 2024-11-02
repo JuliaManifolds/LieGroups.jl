@@ -782,8 +782,6 @@ function ManifoldsBase.log!(G::LieGroup, X, e::Identity, g)
     throw(MethodError(ManifoldsBase.log!, (typeof(G), typeof(X), typeof(e), typeof(g))))
 end
 
-ManifoldsBase.manifold_dimension(G::LieGroup) = manifold_dimension(G.manifold)
-
 LinearAlgebra.norm(G::LieGroup, g, X) = norm(G.manifold, g, X)
 
 _doc_rand = """
