@@ -49,13 +49,33 @@ using LieGroupsTestSuite
         @test_throws MethodError exp!(G, g, e, X)
         @test_throws MethodError log!(G, X, e, g)
     end
+    @testset "Generic get_coordinates/get_vector passthrough on 𝔤" begin
+        M = ManifoldsBase.DefaultManifold(2)
+        op = AdditionGroupOperation()
+        G = LieGroup(M, op)
+        B2 = LieAlgebraOrthogonalBasis()
+        B = DefaultOrthonormalBasis()
+        p = [1.0, 2.0]
+        q = [0.0, 0.0]
+        # coordinates and vector on 𝔤 are here the same as the ones on M at 0
+        X = [1.0, 0.0]
+        @test get_coordinates(G, q, X, B2) == get_coordinates(M, q, X, B)
+        Y = copy(X)
+        @test get_coordinates!(G, q, Y, X, B2) == get_coordinates!(M, Y, q, X, B)
+        @test X == Y
+        c = [0.0, 1.0]
+        @test get_vector(G, q, c, B2) == get_vector(M, q, c, B)
+        d = copy(c)
+        @test get_vector!(G, q, d, c, B2) == get_vector!(M, d, q, c, B)
+        @test c == d
+    end
 end
 @testset "Generic Lie Algebra Interface functions" begin
-    M = ManifoldsBase.DefaultManifold(2)
-    op = AdditionGroupOperation()
-    G = LieGroup(M, op)
-    𝔤 = LieAlgebra(G)
     @testset "Generic get_coordinates/get_vector passthrough on 𝔤" begin
+        M = ManifoldsBase.DefaultManifold(2)
+        op = AdditionGroupOperation()
+        G = LieGroup(M, op)
+        𝔤 = LieAlgebra(G)
         B = DefaultOrthonormalBasis()
         p = [1.0, 2.0]
         q = [0.0, 0.0]
