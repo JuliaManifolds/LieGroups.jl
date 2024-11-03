@@ -660,6 +660,19 @@ identity element corresponding to `G`.
 """
 ManifoldsBase.is_point(G::LieGroup, g; kwargs...)
 
+function ManifoldsBase.check_point(
+    G::LieGroup{𝔽,O}, e::Identity{O}; kwargs...
+) where {𝔽,O<:AbstractGroupOperation}
+    return nothing
+end
+function ManifoldBase.check_point(
+    G::LieGroup{𝔽,O}, e::Identity{O2}; kwargs...
+) where {𝔽,O<:AbstractGroupOperation,O2<:AbstractGroupOperation}
+    return DomainError(e, "The provided point $e is not the Identity on $G.")
+end
+
+ManifoldsBase.check_size(G::LieGroup, ::Identity) = nothing
+
 _doc_is_vector = """
     is_vector(G::LieGroup, X; kwargs...)
     is_vector(G::LieGroup{𝔽,O}, e::Indentity{O}, X; kwargs...)

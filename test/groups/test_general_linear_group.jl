@@ -40,7 +40,8 @@ using LieGroupsTestSuite
     )
     test_lie_group(G, properties, expectations)
 
-    @test_broken is_point(G, Identity(G); error=:error)
+    @test is_point(G, Identity(G); error=:error)
+    @test_throws DomainError is_point(G, Identity(AdditionGroupOperation()); error=:error)
 end
 
 @testset "GL(1, 𝔽) special cases" begin
