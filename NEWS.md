@@ -17,7 +17,7 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
   * `GeneralLinearGroup` (formerly `GeneralLinear`)
 * `AbstractGroupOperation` as well as its concrete subtypes
   * `AdditionGroupOperation` (formerly `AdditionOperation`)
-* `AbstractGroupActionType` with its 2 specific (new) abstract
+* `AbstractGroupActionType` with its 2 specific (new) abstract subtypes
   * `AbstractLeftGroupActionType`
   * `AbstractRightGroupActionType`
 * For the group operation actions there are now
@@ -25,7 +25,7 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
   * `RightGroupOperation` (formerly `RightBackwardAction`)
   * `InverseLeftGroupOperation` (formerly `RightForwardAction`)
   * `InverseRightGroupOperation` (formerly `LeftBackwardAction`)
-* `LieAlgebraOrthogonalBasis` (replaces `VeeOrthogonalBasis`, which is still available for in `ManifoldsBase.jl`)
+* `LieAlgebraOrthogonalBasis` (replaces `VeeOrthogonalBasis`, which is still available in `ManifoldsBase.jl`)
 * `Identity`
 * `apply`and `apply!`
 * `base_manifold` to access the manifold within a Lie group
@@ -36,8 +36,8 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
 * `diff_left_compose`, `diff_left_compose!`, `diff_right_compose`, `diff_right_compose!` (formerly `translate_diff` with different sides)
 * `exp(G::LieGroup, g, X)` and `exp!(G::LieGroup, h, g, X)` (formerly `exp_inv` and `exp_inv!`)
 * `exp(G::LieGroup, ::Identity, X)` and `exp!(G::LieGroup, h, ::Identity, X)` (formerly `exp_lie` and `exp_lie!`)
-* `hat` and `hat!`, with slightly different signatures, since the base point is omited.
-* `idenity_element` and `identity_element!`
+* `hat` and `hat!`, with slightly different signatures, since the base point is omitted.
+* `identity_element` and `identity_element!`
 * `inv` and `inv!` (`inv(::AbstractGroupAction)` was formerly `switch_direction`)
 * `inv_left_compose`, `inv_left_compose!` and `inv_right_compose`, `inv_right_compose!` (these functions correspond to `inverse_translate` with corresponding direction and side)
 * `is_identity`

@@ -829,7 +829,7 @@ _doc_vee = """
     vee!(G::LieGroup, c, X)
 
 Compute the vee map ``(⋅)^∨`` that maps a tangent vector `X` from the [`LieAlgebra`](@ref)
-to its coordinates with respect to a certain bvasis in the Lie algebra
+to its coordinates with respect to a certain basis in the Lie algebra
 
 ```math
 X = $(_tex(:sum))_{i∈$(_tex(:Cal,"I"))} c_iB_i,

@@ -588,9 +588,11 @@ function test_inv(G::LieGroup, g; test_mutating::Bool=true, test_identity::Bool=
         if test_identity
             e = Identity(G)
             @test inv(G, e) === e
-            e2 = copy(G, g)
-            inv!(G, e2, e)
-            @test is_identity(G, e2)
+            if test_mutating
+                e2 = copy(G, g)
+                inv!(G, e2, e)
+                @test is_identity(G, e2)
+            end
         end
     end
     return nothing
@@ -637,7 +639,7 @@ both the random point and the random tangent vector variants are tested.
 # Keyword arguments
 
 * `test_mutating::Bool=true`: test the mutating functions
-* `rng=:missing`: test with a specific rng
+* `rng=missing`: test with a specific random number generator
 """
 function test_rand(
     G::LieGroup, g; test_mutating::Bool=true, rng::Union{Missing,AbstractRNG}=missing
@@ -686,7 +688,7 @@ end
 Test that show methods work as expected.
 For now this (only) checks that `"\$G"` yields the `repr_string`.
 
-requires `show` (or `repr`) to be implemented.
+Requires `show` (or `repr`) to be implemented.
 """
 function test_show(G::Union{AbstractGroupAction,LieGroup}, repr_string::AbstractString)
     @testset "repr(G, g, h)" begin
