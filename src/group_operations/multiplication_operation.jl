@@ -305,6 +305,13 @@ Base.log(
     ::Identity{MatrixMultiplicationGroupOperation},
     g,
 ) where {𝔽} = log(g)
+function Base.log(
+    G::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
+    e::Identity{MatrixMultiplicationGroupOperation},
+    ::Identity{MatrixMultiplicationGroupOperation},
+) where {𝔽}
+    return zero_vector(G, e)
+end
 
 @doc "$(_doc_log_mult)"
 function ManifoldsBase.log!(
