@@ -15,7 +15,7 @@ the embedding as an open subset of the space of matrices ``ℝ^{n×n}``.
 
 # Constructor
 
-    GeneralLinearGroup(n::Int; kwargs...)
+    GeneralLinearGroup(n::Int; field=ℝ, kwargs...)
 
 Generate the general linear group  group on ``𝔽^{n×n}``.
 All keyword arguments in `kwargs...` are passed on to [`InvertibleMatrices`](@extref `Manifolds.InvertibleMatrices`).
@@ -24,8 +24,8 @@ const GeneralLinearGroup{𝔽,T} = LieGroup{
     𝔽,MatrixMultiplicationGroupOperation,Manifolds.InvertibleMatrices{𝔽,T}
 }
 
-function GeneralLinearGroup(n::Int; kwargs...)
-    Im = Manifolds.InvertibleMatrices(n; kwargs...)
+function GeneralLinearGroup(n::Int; field=ManifoldsBase.ℝ, kwargs...)
+    Im = Manifolds.InvertibleMatrices(n, field; kwargs...)
     return GeneralLinearGroup{typeof(Im).parameters...}(
         Im, MatrixMultiplicationGroupOperation()
     )

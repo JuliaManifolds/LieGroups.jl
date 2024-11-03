@@ -55,16 +55,16 @@ end
         @test log(G, e, exp(X)) ≈ X
         log(G, e, Identity(G)) == zeros(1, 1) # Matrix to matrix
     end
-    # @testset "complex" begin
-    #     G = GeneralLinearGroup(1; field=ℂ)
-    #     e = Identity(G)
-    #     p = (1 + im) * ones(1, 1)
-    #     X = (1 - im) * ones(1, 1)
-    #     @test exp(G, p, X) ≈ p * exp(X)' * exp(X - X')
-    #     q = exp(G, p, X)
-    #     Y = log(G, p, q)
-    #     @test Y ≈ X
-    #     @test exp(G, e, X) ≈ exp(X)
-    #     @test log(G, e, exp(X)) ≈ X
-    # end
+    @testset "complex" begin
+        G = GeneralLinearGroup(1; field=ℂ)
+        e = Identity(G)
+        p = (1 + im) * ones(1, 1)
+        X = (1 - im) * ones(1, 1)
+        @test exp(G, p, X) ≈ p * exp(X)' * exp(X - X')
+        q = exp(G, p, X)
+        Y = log(G, p, q)
+        @test Y ≈ X
+        @test exp(G, e, X) ≈ exp(X)
+        @test log(G, e, exp(X)) ≈ X
+    end
 end
