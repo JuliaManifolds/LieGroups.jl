@@ -39,6 +39,8 @@ using LieGroupsTestSuite
         :repr => "GeneralLinearGroup(2; field=ℝ)", :lie_bracket => X1 * X2 - X2 * X1
     )
     test_lie_group(G, properties, expectations)
+
+    @test_broken is_point(G, Identity(G); error=:error)
 end
 
 @testset "GL(1, 𝔽) special cases" begin
