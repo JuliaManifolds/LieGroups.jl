@@ -176,6 +176,8 @@ function ManifoldsBase.check_point(
     )
 end
 
+ManifoldsBase.check_size(G::LieGroup, ::Identity) = nothing
+
 # compose g ∘ h
 _doc_compose = """
     compose(G::LieGroup, g, h)
@@ -659,19 +661,6 @@ unless `g` is an [`Identity`](@ref). Then, it is checked whether it is the
 identity element corresponding to `G`.
 """
 ManifoldsBase.is_point(G::LieGroup, g; kwargs...)
-
-function ManifoldsBase.check_point(
-    G::LieGroup{𝔽,O}, e::Identity{O}; kwargs...
-) where {𝔽,O<:AbstractGroupOperation}
-    return nothing
-end
-function ManifoldBase.check_point(
-    G::LieGroup{𝔽,O}, e::Identity{O2}; kwargs...
-) where {𝔽,O<:AbstractGroupOperation,O2<:AbstractGroupOperation}
-    return DomainError(e, "The provided point $e is not the Identity on $G.")
-end
-
-ManifoldsBase.check_size(G::LieGroup, ::Identity) = nothing
 
 _doc_is_vector = """
     is_vector(G::LieGroup, X; kwargs...)
