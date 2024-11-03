@@ -512,7 +512,7 @@ and ``$(_tex(:Cal,"I"))`` a corresponding index set, which is usually ``$(_tex(:
 The computation can be performed in-place of `X`.
 The inverse of `hat` is [`vee`](@ref).
 
-Technically `hat` is a specific case of [`get_vector`](@ref) and is implemented using the
+Technically, `hat` is a specific case of [`get_vector`](@ref) and is implemented using the
 [`LieAlgebraOrthogonalBasis`](@ref)
 """
 
@@ -830,10 +830,10 @@ where ``$(_tex(:Set, "B_i"))_{i∈$(_tex(:Cal,"I"))}`` is a basis of the Lie alg
 and ``$(_tex(:Cal,"I"))`` a corresponding index set, which is usually ``$(_tex(:Cal,"I"))=$(_tex(:Set,raw"1,\ldots,n"))``.
 
 The computation can be performed in-place of `c`.
-The inverse of `hat` is [`hat`](@ref).
+The inverse of `vee` is [`hat`](@ref).
 
-Technically `hat` is a specific case of [`get_coordinates`](@ref) and is implemented using the
-[`LieAlgebraOrthogonalBasis`](@ref)
+Technically, `vee` is a specific case of [`get_coordinates`](@ref) and is implemented using
+the [`LieAlgebraOrthogonalBasis`](@ref)
 
 """
 
