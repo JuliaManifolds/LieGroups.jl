@@ -79,7 +79,8 @@ export isapprox, is_point, is_vector
 export conjugate, conjugate!, diff_conjugate, diff_conjugate!
 export exp, exp!
 export identity_element, identity_element!, is_identity, inv, inv!, diff_inv, diff_inv!
-export lie_bracket, lie_bracket!, lie_group_dimension, log, log!
+export lie_bracket, lie_bracket!, log, log!
+export manifold_dimension
 export norm
 export rand, rand!
 export switch

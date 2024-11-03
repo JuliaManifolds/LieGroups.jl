@@ -507,7 +507,7 @@ X = $(_tex(:sum))_{i∈$(_tex(:Cal,"I"))} c_iB_i,
 ```
 
 where ``$(_tex(:Set, "B_i"))_{i∈$(_tex(:Cal,"I"))}`` is a basis of the Lie algebra
-and ``$(_tex(:Cal,"I"))`` a corresponding index set.
+and ``$(_tex(:Cal,"I"))`` a corresponding index set, which is usually ``$(_tex(:Cal,"I"))=$(_tex(:Set,raw"1,\ldots,n"))``.
 
 The computation can be performed in-place of `X`.
 The inverse of `hat` is [`vee`](@ref).
@@ -713,17 +713,6 @@ function ManifoldsBase.isapprox(
     return false
 end
 
-"""
-    lie_group_dimension(G::LieGroup)
-
-The dimension ``n=$(_tex(:rm, "dim"))_{$(_tex(:Cal,"G"))}`` of real space ``ℝ^n`` to which the neighborhood of
-each point of the [`LieGroup`](@ref) `M` is homeomorphic.
-
-This function is implemented to call [`manifold_dimension`](@extref `ManifoldsBase.manifold_dimension-Tuple{AbstractManifold}`) on the [`AbstractManifold`](@ref) `M`
-within the Lie group `G`.
-"""
-lie_group_dimension(G::LieGroup) = manifold_dimension(G.manifold)
-
 _doc_log = """
     log(G::LieGroup, g, h)
     log!(G::LieGroup, X, g, h)
@@ -782,7 +771,9 @@ function ManifoldsBase.log!(G::LieGroup, X, e::Identity, g)
     throw(MethodError(ManifoldsBase.log!, (typeof(G), typeof(X), typeof(e), typeof(g))))
 end
 
-LinearAlgebra.norm(G::LieGroup, g, X) = norm(G.manifold, g, X)
+ManifoldsBase.manifold_dimension(G::LieGroup) = manifold_dimension(G.manifold)
+
+ManifoldsBase.norm(G::LieGroup, g, X) = norm(G.manifold, g, X)
 
 _doc_rand = """
     rand(::LieGroup; vector_at=nothing, σ::Real=1.0, kwargs...)
@@ -829,14 +820,14 @@ _doc_vee = """
     vee!(G::LieGroup, c, X)
 
 Compute the vee map ``(⋅)^∨`` that maps a tangent vector `X` from the [`LieAlgebra`](@ref)
-to its coordinates with respect to a certain basis in the Lie algebra
+to its coordinates with respect to the [`LieAlgebraOrthogonalBasis`](@ref) basis in the Lie algebra
 
 ```math
 X = $(_tex(:sum))_{i∈$(_tex(:Cal,"I"))} c_iB_i,
 ```
 
 where ``$(_tex(:Set, "B_i"))_{i∈$(_tex(:Cal,"I"))}`` is a basis of the Lie algebra
-and ``$(_tex(:Cal,"I"))`` a corresponding index set.
+and ``$(_tex(:Cal,"I"))`` a corresponding index set, which is usually ``$(_tex(:Cal,"I"))=$(_tex(:Set,raw"1,\ldots,n"))``.
 
 The computation can be performed in-place of `c`.
 The inverse of `hat` is [`hat`](@ref).
