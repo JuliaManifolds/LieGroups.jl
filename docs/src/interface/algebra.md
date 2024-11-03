@@ -2,6 +2,7 @@
 
 ```@docs
 LieAlgebra
+LieAlgebraOrthogonalBasis
 ```
 
 ## Functions on Lie algebras

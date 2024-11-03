@@ -1,0 +1,2 @@
+ignore:
+  - "src/documentation_glossary.jl" # exclude this since it is just use to create the docs and code cov goes bogus on this.

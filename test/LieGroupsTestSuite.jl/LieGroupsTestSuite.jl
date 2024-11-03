@@ -13,7 +13,7 @@ The following functions are expected to be available, since their defaults just 
 """
 module LieGroupsTestSuite
 using LieGroups
-using Test
+using Test, Random
 
 #
 #
@@ -436,9 +436,73 @@ end
 
 #
 #
-# --- I
+# --- H
 """
-    test_inv_compose(G::LieGroup, g, h, X)
+    test_hat_vee(G::LieGroup, g, X; kwargs...)
+
+Test `hat` and `vee` for given Lie group element `g` and a Lie Algebra vector `X`.
+
+# Keyword arguments
+
+* `expected_value=missing`: the expected value of `vee(G,X)`
+* `test_mutating::Bool=true`: test the mutating functions
+* `test_vee::Bool=true`: test the vee function
+* `test_hat::Bool=true`: test the hat function
+"""
+function test_hat_vee(
+    G::LieGroup,
+    g,
+    X;
+    test_mutating::Bool=true,
+    test_vee::Bool=true,
+    test_hat::Bool=true,
+    expected_value=missing,
+)
+    @testset "hat & vee" begin
+        𝔤 = LieAlgebra(G)
+        if test_hat
+            c = ismissing(expected_value) ? zeros(manifold_dimension(G)) : expected_value
+            Y1 = hat(G, c)
+            @test is_vector(G, g, Y1)
+            ismissing(expected_value) && @test norm(G, g, Y1) ≈ 0
+            !ismissing(expected_value) && @test isapprox(𝔤, X, Y1)
+            if test_mutating
+                Y2 = zero_vector(𝔤)
+                hat!(G, Y2, c)
+                @test isapprox(𝔤, Y1, Y2)
+            end
+        end
+        if test_vee
+            c1 = vee(G, X)
+            if test_mutating
+                c2 = zero(c1)
+                vee!(G, c2, X)
+                @test c1 ≈ c2
+            end
+            if !ismissing(expected_value)
+                @test c1 ≈ expected_value
+            end
+        end
+        if test_hat && test_vee
+            Y1 = hat(G, vee(G, X))
+            @test isapprox(𝔤, X, Y1)
+            if test_mutating
+                Y2 = zero_vector(𝔤)
+                c = zeros(manifold_dimension(G))
+                vee!(G, c, X)
+                hat!(G, Y2, c)
+                @test isapprox(𝔤, Y1, Y2)
+            end
+        end
+    end
+    return nothing
+end
+
+#
+#
+# --- `I`
+"""
+    test_inv_compose(G::LieGroup, g, h, X; kwargs...)
 
 Test the special functions combining inv and compose, `inv_left_compose` and `inv_right_compose`.
 For these tests both `compose` and `inv` are required.
@@ -496,6 +560,43 @@ function test_inv_compose(
     return nothing
 end
 
+"""
+    test_inv(G::LieGroup, g)
+
+Test the inverse function, both the allocating and the in-place variant,
+and that the double inverse is the identity.
+
+# Keyword arguments
+
+* `test_mutating::Bool=true`: test the mutating functions
+* `test_identity::Bool=true`: test that `inv(e) == e`
+"""
+function test_inv(G::LieGroup, g; test_mutating::Bool=true, test_identity::Bool=true)
+    @testset "inv" begin
+        k1 = inv(G, g)
+        @test is_point(G, k1)
+        g1 = inv(G, k1)
+        @test isapprox(G, g, g1)
+        if test_mutating
+            k2 = copy(G, g)
+            inv!(G, k2, g)
+            @test isapprox(G, k1, k2)
+            # continue in-place
+            inv!(G, k2, k2)
+            @test isapprox(G, k2, g)
+        end
+        if test_identity
+            e = Identity(G)
+            @test inv(G, e) === e
+            if test_mutating
+                e2 = copy(G, g)
+                inv!(G, e2, e)
+                @test is_identity(G, e2)
+            end
+        end
+    end
+    return nothing
+end
 #
 #
 # --- L
@@ -526,6 +627,60 @@ end
 
 #
 #
+# --- R
+"""
+    test_rand(G::LieGroup)
+
+Test the random function, both the allocating and the in-place variant,
+as well as the variant with an `rng`, if one is provided.
+
+both the random point and the random tangent vector variants are tested.
+
+# Keyword arguments
+
+* `test_mutating::Bool=true`: test the mutating functions
+* `rng=missing`: test with a specific random number generator
+"""
+function test_rand(
+    G::LieGroup, g; test_mutating::Bool=true, rng::Union{Missing,AbstractRNG}=missing
+)
+    @testset "rand" begin
+        g1 = rand(G)
+        @test is_point(G, g1)
+        if test_mutating
+            g2 = copy(G, g)
+            rand!(G, g2)
+            @test is_point(G, g2)
+        end
+        X1 = rand(G; vector_at=g1)
+        @test is_vector(G, g1, X1)
+        if test_mutating
+            X2 = zero_vector(LieAlgebra(G), g1)
+            rand!(G, X2; vector_at=g1)
+            @test is_vector(G, g1, X2)
+        end
+        if !ismissing(rng)
+            g1 = rand(rng, G)
+            @test is_point(G, g1)
+            if test_mutating
+                g2 = copy(G, g)
+                rand!(rng, G, g2)
+                @test is_point(G, g2)
+            end
+            X1 = rand(rng, G; vector_at=g1)
+            @test is_vector(G, g1, X1)
+            if test_mutating
+                X2 = zero_vector(LieAlgebra(G), g1)
+                rand!(rng, G, X2; vector_at=g1)
+                @test is_vector(G, g1, X2)
+            end
+        end
+    end
+    return nothing
+end
+
+#
+#
 # --- S
 """
     test_show(G, repr_string::AbstractString)
@@ -533,7 +688,7 @@ end
 Test that show methods work as expected.
 For now this (only) checks that `"\$G"` yields the `repr_string`.
 
-requires `show` (or `repr`) to be implemented.
+Requires `show` (or `repr`) to be implemented.
 """
 function test_show(G::Union{AbstractGroupAction,LieGroup}, repr_string::AbstractString)
     @testset "repr(G, g, h)" begin
@@ -559,6 +714,7 @@ Possible properties are
 * `:Vectors` is a vector of at least 3 elements from the Lie algebra `𝔤` og `G`
 * `:Mutating` is a boolean (`true` by default) whether to test the mutating variants of functions or not.
 * `:Name` is a name of the test. If not provided, defaults to `"\$G"`
+* `:Rng` is a random number generator, if provided, the random functions are tested with this generator as well
 
 Possible `expectations` are
 
@@ -571,6 +727,7 @@ Possible `expectations` are
 * `:inv_left_compose` for the result of `inv_left_right_compose` with respect to the first two points
 * `:inv_right_compose` for the result of `inv_right_compose` with respect to the first two points
 * `:repr` is a sting one gets from `repr(G)`
+* `:vee` for the result of `vee(G, X)` where `X` is the first of the vectors
 """
 function test_lie_group(G::LieGroup, properties::Dict, expectations::Dict=Dict())
     a_tol = get(expectations, :atol, 1e-8)
@@ -645,6 +802,22 @@ function test_lie_group(G::LieGroup, properties::Dict, expectations::Dict=Dict()
 
         #
         #
+        # --- H
+        if any(in.([hat, vee], Ref(functions)))
+            v = get(expectations, :vee, missing)
+            test_hat_vee(
+                G,
+                points[1],
+                vectors[1];
+                expected_value=v,
+                test_hat=(hat in functions),
+                test_mutating=mutating,
+                test_vee=(vee in functions),
+            )
+        end
+
+        #
+        #
         # --- `I`
         if any(in.([inv_left_compose, inv_right_compose], Ref(functions)))
             vl = get(expectations, :inv_left_compose, missing)
@@ -660,12 +833,22 @@ function test_lie_group(G::LieGroup, properties::Dict, expectations::Dict=Dict()
                 test_right=(inv_right_compose in functions),
             )
         end
-        #
+        if (inv in functions)
+            test_inv(G, points[1]; test_mutating=mutating)
+        end        #
         #
         # --- L
         if (lie_bracket in functions)
             v = get(expectations, :lie_bracket, missing)
             test_lie_bracket(G, vectors[1], vectors[2]; expected=v, test_mutating=mutating)
+        end
+
+        #
+        #
+        # --- R
+        if (rand in functions)
+            v = get(properties, :Rng, missing)
+            test_rand(G, points[1]; rng=v, test_mutating=mutating)
         end
 
         #

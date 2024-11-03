@@ -1,13 +1,13 @@
 name: CI
 on:
   push:
-    branches: [master]
+    branches: [main]
     tags: [v*]
   pull_request:
 
 jobs:
   test:
-    name: Julia ${{ matrix.julia-version }} - ${{ matrix.group }} - ${{ matrix.os }}
+    name: Julia ${{ matrix.julia-version }} - ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
