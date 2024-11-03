@@ -44,7 +44,7 @@ The list is alphabetical, but first lists types, then functions
 | `switch_direction(A)` | [`inv`](@ref inv(::AbstractGroupAction))`(A)` | switches from an action to its inverse action (formerly the direction forward/backward, sometimes even left/right, do not confuse with the side left/right). |
 | `switch_side(A)` | [`switch`](@ref switch(::AbstractGroupAction))`(A)` | switches from a left action to its corresponding right action. |
 | `translate(G, g, h)` | [`compose`](@ref)`(G, g, h)` | unified to `compose` |
-| `translate_diff(G, g, X, c)` | [`diff_left_compose`](@ref)`(G, g, h, X)`, [`diff_right_compose`](@ref)`(G, g, h, X)` | for compose ``∘(g, h)`` the functions now specify whether the derivative is taken w.r.t. to the left (`g`) or right (`h`) argument |
+| `translate_diff(G, g, X, c)` | [`diff_left_compose`](@ref)`(G, g, h, X)`, [`diff_right_compose`](@ref)`(G, g, h, X)` | for compose `` ∘(g, h) `` the functions now specify whether the derivative is taken w.r.t. to the left (`g`) or right (`h`) argument |
 |`VeeOrthogonalBasis` | [`LieAlgebraOrthogonalBasis`](@ref) | |
 
 # Notable changes
