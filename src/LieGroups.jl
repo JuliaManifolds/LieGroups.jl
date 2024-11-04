@@ -27,6 +27,9 @@ include("Lie_algebra/Lie_algebra_interface.jl")
 # Generic Operations
 include("group_operations/addition_operation.jl")
 include("group_operations/multiplication_operation.jl")
+include("group_operations/power_operation.jl")
+include("group_operations/product_operation.jl")
+include("group_operations/semidirect_product_operation.jl")
 
 # Actions
 include("group_actions/group_action_interface.jl")
@@ -37,6 +40,7 @@ include("groups/translation_group.jl")
 include("groups/general_linear_group.jl")
 
 export LieGroup, LieAlgebra
+export PowerLieGroup
 export LieAlgebraOrthogonalBasis
 #
 #
@@ -54,7 +58,7 @@ export AbstractLeftGroupActionType, AbstractRightGroupActionType
 export LeftGroupOperation, RightGroupOperation
 export InverseLeftGroupOperation, InverseRightGroupOperation
 export GroupOperationAction
-
+export ProductGroupAction
 #
 #
 # Specific groups

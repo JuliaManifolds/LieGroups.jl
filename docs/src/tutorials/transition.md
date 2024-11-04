@@ -47,6 +47,11 @@ The list is alphabetical, but first lists types, then functions
 | `translate_diff(G, g, X, c)` | [`diff_left_compose`](@ref)`(G, g, h, X)`, [`diff_right_compose`](@ref)`(G, g, h, X)` | for compose ``g∘h`` the functions now specify whether the derivative is taken w.r.t. to the left (`g`) or right (`h`) argument |
 |`VeeOrthogonalBasis` | [`LieAlgebraOrthogonalBasis`](@ref) | |
 
-# Notable changes
+# Further notable changes
 
-* The [`GeneralLinearGroup`](@ref) (formerly `GeneralLinear`) switched to using its Lie algebra to represent tangent vectors.
+1. The [`GeneralLinearGroup`](@ref) (formerly `GeneralLinear`) switched to using its Lie algebra to represent tangent vectors.
+2. Formerly, both a power of LieGroups as well as a LieGroup on the power manifold was possible. This is now unified to the latter,
+  the operation for power manifolds can hence stay the same as for the single manifold.
+3. Formerly, product manifolds were stored as a [`ProductManifold`](@ref) of Lie groups and an indicator for the group operation, that the direct product should be used. This is switched to (as for the last point) internally only store a [`ProductManifold`](@ref) as well as a (new) [`ProductGroupOperation`](@ref) that specifies one group operation for every factor.
+4. both the last two points achieve one unified modelling aspect of Lie groups: They are now always a Riemannian manifold `M` together with a group operation `op`,
+but a Lie group does not store another Lie group (or product of them) internally.
