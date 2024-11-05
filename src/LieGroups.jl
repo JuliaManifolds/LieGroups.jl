@@ -58,7 +58,6 @@ export AbstractLeftGroupActionType, AbstractRightGroupActionType
 export LeftGroupOperation, RightGroupOperation
 export InverseLeftGroupOperation, InverseRightGroupOperation
 export GroupOperationAction
-export ProductGroupAction
 #
 #
 # Specific groups
