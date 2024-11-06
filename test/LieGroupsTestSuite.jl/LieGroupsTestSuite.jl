@@ -710,8 +710,8 @@ Possible properties are
 * `:Functions` is a vector of all defined functions for `G`
   Note that if `f` is in `:Functions`, and `f!` makes sense, for example for `compose`,
   it is assumed that both are defined.
-* `:Points` is a vector of at least three points on `G`, the first is not allowed to be the identity numerically
-* `:Vectors` is a vector of at least 3 elements from the Lie algebra `𝔤` og `G`
+* `:Points` is a vector of at least 2 points on `G`, the first is not allowed to be the identity numerically
+* `:Vectors` is a vector of at least 2 elements from the Lie algebra `𝔤` og `G`
 * `:Mutating` is a boolean (`true` by default) whether to test the mutating variants of functions or not.
 * `:Name` is a name of the test. If not provided, defaults to `"\$G"`
 * `:Rng` is a random number generator, if provided, the random functions are tested with this generator as well
@@ -734,9 +734,9 @@ function test_lie_group(G::LieGroup, properties::Dict, expectations::Dict=Dict()
     mutating = get(properties, :Mutating, true)
     functions = get(properties, :Functions, Function[])
     points = get(properties, :Points, [])
-    @assert length(points) > 2
+    @assert length(points) > 1
     vectors = get(properties, :Vectors, [])
-    @assert length(vectors) > 2
+    @assert length(vectors) > 1
     test_name = get(properties, :Name, "$G")
     @testset "$(test_name)" begin
         # Call function tests based on their presence in alphabetical order

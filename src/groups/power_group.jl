@@ -4,7 +4,7 @@
 # the same group operation is used. Hence we also only need one group operation,
 # we can recognize power Lie groups when the manifold is a power manifold.
 
-"""
+@doc """
     PowerLieGroup(G::LieGroup, size::Int...; kwargs...)
     PowerLieGroup(M::AbstractManifold, op::AbstractGroupOperation, size:Int...; kwargs...)
     (L::LueGroup)^(n...) = PowerLieGroup(L, n...)
@@ -16,16 +16,20 @@ The keyword arguments `kwargs...` are passed on to the constructor of the [`Powe
 """
 PowerLieGroup(::AbstractManifold, size::Int...; kwargs...)
 
-function PowerLieGroup(L::LieGroup, size::Int...; kwargs...)
-    pM = Manifolds.PowerManifold(L.manifold, size; kwargs...)
-    return LieGroup(pM, L.op)
-end
-
 function PowerLieGroup(
     M::AbstractManifold, op::AbstractGroupOperation, size::Int...; kwargs...
 )
-    pM = Manifolds.PowerManifold(M, size; kwargs...)
-    return LieGroup(pM, L.op)
+    pM = Manifolds.PowerManifold(M, size...; kwargs...)
+    return LieGroup(pM, op)
+end
+function PowerLieGroup(L::LieGroup, size::Int...; kwargs...)
+    return PowerLieGroup(L.manifold, L.op, size...; kwargs...)
 end
 
 Base.:^(L::LieGroup, n...) = PowerLieGroup(L, n...)
+
+function show(io::IO, G::LieGroup{𝔽,O,<:ManifoldsBase.AbstractPowerManifold}) where {𝔽,O}
+    M = G.manifold.manifold
+    size = get_parameter(G.manifold.size)
+    return print(io, "PowerLieGroup($(M), $(G.op), $(join(size, ", ")))")
+end

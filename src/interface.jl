@@ -10,6 +10,15 @@ on elements of a Lie group ``$(_math(:G))``.
 """
 abstract type AbstractGroupOperation end
 
+@doc """
+    AbstractLieGroup{𝔽,O<:AbstractGroupOperation,M<:ManifoldsBase.AbstractManifold{𝔽}} <: AbstractManifold{𝔽}
+
+Represent a Lie group ``$(_math(:G))`` with a group operation `O=```$(_math(:∘))`` on a manifold `M=```$(_math(:M))``.
+"""
+abstract type AbstractLieGroup{
+    𝔽,O<:AbstractGroupOperation,M<:ManifoldsBase.AbstractManifold{𝔽}
+} <: ManifoldsBase.AbstractManifold{𝔽} end
+
 """
     LieAlgebraOrthogonalBasis{𝔽} <: ManifoldsBase.AbstractOrthogonalBasis{𝔽,ManifoldsBase.TangentSpaceType}
 
@@ -30,7 +39,7 @@ function LieAlgebraOrthogonalBasis(𝔽::ManifoldsBase.AbstractNumbers=ℝ)
 end
 
 """
-    LieGroup{𝔽, O<:AbstractGroupOperation, M<:AbstractManifold{𝔽}}
+    LieGroup{𝔽, O<:AbstractGroupOperation, M<:AbstractManifold{𝔽}} <: LieGroup{𝔽,O,M} <: AbstractLieGroup{𝔽,O,M}
 
 Represent a Lie Group ``$(_math(:G))``.
 
@@ -53,7 +62,7 @@ Lie groups are named after the Norwegian mathematician [Marius Sophus Lie](https
 Generate a Lie group based on a manifold `M` and a group operation `op`, where vectors by default are stored in the Lie Algebra.
 """
 struct LieGroup{𝔽,O<:AbstractGroupOperation,M<:ManifoldsBase.AbstractManifold{𝔽}} <:
-       ManifoldsBase.AbstractManifold{𝔽}
+       AbstractLieGroup{𝔽,O,M}
     manifold::M
     op::O
 end

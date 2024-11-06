@@ -1,3 +1,7 @@
+#!/usr/bin/env julia --optimize=0
+#
+#
+
 using LieGroups, Test
 
 s = joinpath(@__DIR__, "LieGroupsTestSuite.jl")
@@ -22,6 +26,11 @@ end
         include_test("actions/test_operation_action.jl")
     end
     @testset "Lie Groups" begin
+        @testset "Meta Lie Groups" begin
+            include_test("groups/test_power_group.jl")
+            include_test("groups/test_product_group.jl")
+            include_test("groups/test_semidirect_product_group.jl")
+        end
         include_test("groups/test_general_linear_group.jl")
         include_test("groups/test_translation_group.jl")
     end
