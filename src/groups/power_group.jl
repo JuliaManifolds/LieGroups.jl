@@ -28,8 +28,8 @@ Base.:^(G::LieGroup, n...) = PowerLieGroup(G, n...)
 
 function Base.show(
     io::IO, G::LieGroup{𝔽,O,<:ManifoldsBase.AbstractPowerManifold}
-) where {𝔽,O}
+) where {𝔽,O<:AbstractGroupOperation}
     M = G.manifold.manifold
-    size = get_parameter(G.manifold.size)
+    size = Manifolds.get_parameter(G.manifold.size)
     return print(io, "PowerLieGroup($(M), $(G.op), $(join(size, ", ")))")
 end
