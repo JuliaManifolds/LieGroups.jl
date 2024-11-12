@@ -46,37 +46,36 @@ function LinearAlgebra.cross(P1::ProductOperation, P2::ProductOperation)
 end
 
 """
-    ProductLieGroup(L1, L2, ...)
+    ProductLieGroup(G, H, ...)
 
-Return the [`LieGroup`](@ref) of the product of Lie groups `L1` and `L2`,
-or manifolds `M1` and `M2` with group operations `op1` and `op2`.
+Return the [`LieGroup`](@ref) of the product of Lie groups `G` and `H`.
 
-Alternatively, the short hand `L1 × L2` can be used.
+Alternatively, the short hand `G × H` can be used.
 """
-function ProductLieGroup(L1::LieGroup, L2::LieGroup)
-    return LieGroup(L1.manifold × L2.manifold, L1.op × L2.op)
+function ProductLieGroup(G::LieGroup, H::LieGroup)
+    return LieGroup(G.manifold × H.manifold, G.op × H.op)
 end
 
 @doc raw"""
-    cross(L1, L2)
-    L1 × L2
-    L1 × L2 × L3 × ...
+    cross(G, H)
+    G × H
+    G1 × G2 × G3 × ...
 
-Return the [`ProductLieGroup`](@ref) For two [`LieGroups`](@ref) `L1` and `L2`,
+Return the [`ProductLieGroup`](@ref) For two [`LieGroups`](@ref) `G` and `H`,
 where for the case that one of them is a [`ProductLieGroup`](@ref) itself,
-the other is either prepended (if `L1` is a product) or appenden (if `L2` is).
+the other is either prepended (if `H` is a product) or appenden (if `G` is).
 If both are product Lie groups, they are combined into one, keeping the order of operations.
 
 For the case that more than two are concatenated with `×` this is iterated.
 """
 cross(::LieGroup...)
-function LinearAlgebra.cross(L1::LieGroup, L2::LieGroup)
-    return ProductLieGroup(L1, L2)
+function LinearAlgebra.cross(G::LieGroup, H::LieGroup)
+    return ProductLieGroup(G, H)
 end
 
-function show(
-    io::IO, G::L
-) where {𝔽,O<:ProductOperation,TM<:ManifoldsBase.ProductManifold,L<:LieGroup{𝔽,O,TM}}
+function Base.show(
+    io::IO, G::LieGroup{𝔽,<:ProductOperation,<:ManifoldsBase.ProductManifold}
+) where {𝔽}
     M = G.manifold.manifolds
     ops = G.op.operations
     return print(io, "ProductLieGroup($(join(M, " × ")), $(join(ops, " × ")))")

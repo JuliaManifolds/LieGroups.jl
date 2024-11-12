@@ -734,9 +734,7 @@ function test_lie_group(G::LieGroup, properties::Dict, expectations::Dict=Dict()
     mutating = get(properties, :Mutating, true)
     functions = get(properties, :Functions, Function[])
     points = get(properties, :Points, [])
-    @assert length(points) > 1
     vectors = get(properties, :Vectors, [])
-    @assert length(vectors) > 1
     test_name = get(properties, :Name, "$G")
     @testset "$(test_name)" begin
         # Call function tests based on their presence in alphabetical order

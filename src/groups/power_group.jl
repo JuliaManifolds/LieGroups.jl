@@ -1,8 +1,6 @@
 #
 #
-# Lie groups over  a power manifold work as large products, where on every factor
-# the same group operation is used. Hence we also only need one group operation,
-# we can recognize power Lie groups when the manifold is a power manifold.
+# Power Lie groups: work element wise
 
 @doc """
     PowerLieGroup(G::LieGroup, size::Int...; kwargs...)
@@ -22,13 +20,15 @@ function PowerLieGroup(
     pM = Manifolds.PowerManifold(M, size...; kwargs...)
     return LieGroup(pM, op)
 end
-function PowerLieGroup(L::LieGroup, size::Int...; kwargs...)
-    return PowerLieGroup(L.manifold, L.op, size...; kwargs...)
+function PowerLieGroup(G::LieGroup, size::Int...; kwargs...)
+    return PowerLieGroup(G.manifold, G.op, size...; kwargs...)
 end
 
-Base.:^(L::LieGroup, n...) = PowerLieGroup(L, n...)
+Base.:^(G::LieGroup, n...) = PowerLieGroup(G, n...)
 
-function show(io::IO, G::LieGroup{𝔽,O,<:ManifoldsBase.AbstractPowerManifold}) where {𝔽,O}
+function Base.show(
+    io::IO, G::LieGroup{𝔽,O,<:ManifoldsBase.AbstractPowerManifold}
+) where {𝔽,O}
     M = G.manifold.manifold
     size = get_parameter(G.manifold.size)
     return print(io, "PowerLieGroup($(M), $(G.op), $(join(size, ", ")))")
