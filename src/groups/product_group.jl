@@ -4,28 +4,30 @@
 # One for each factor, we define the product operation as acting element wise.
 
 """
-    ProductOperation{O} <: AbstractGroupOperation
+    ProductGroupOperation{O} <: AbstractGroupOperation
 
 A struct do model a tuple of group operations, one for each factor of a product group,
 that together forms a new group operation.
 
 # Constructor
 
-    ProductOperation(O...)
-    ×(O...) = ProductOperation(O...)
+    ProductGroupOperation(O...)
+    ×(O...) = ProductGroupOperation(O...)
 """
-struct ProductOperation{OTM<:Tuple} <: AbstractGroupOperation
+struct ProductGroupOperation{OTM<:Tuple} <: AbstractGroupOperation
     operations::OTM
 end
-ProductOperation(operations::AbstractGroupOperation...) = ProductOperation(operations)
+function ProductGroupOperation(operations::AbstractGroupOperation...)
+    return ProductGroupOperation(operations)
+end
 
 @doc raw"""
     cross(O1, O2)
     O1 × O2
     O1 × O2 × O3 × ...
 
-Return the [`ProductOperation`](@ref) For two [AbstractGroupOperation`](@ref) `O1` and `O2`,
-where for the case that one of them is a [`ProductOperation`](@ref) itself,
+Return the [`ProductGroupOperation`](@ref) For two [AbstractGroupOperation`](@ref) `O1` and `O2`,
+where for the case that one of them is a [`ProductGroupOperation`](@ref) itself,
 the other is either prepended (if `O1` is a product) or appenden (if `O2` is).
 If both are product operations, they are combined into one, keeping the order of operations.
 
@@ -33,16 +35,16 @@ For the case that more than two are concatenated with `×` this is iterated.
 """
 cross(::AbstractGroupOperation...)
 function LinearAlgebra.cross(O1::AbstractGroupOperation, O2::AbstractGroupOperation)
-    return ProductOperation(O1, O2)
+    return ProductGroupOperation(O1, O2)
 end
-function LinearAlgebra.cross(P::ProductOperation, O::AbstractGroupOperation)
-    return ProductOperation(P.operations..., O)
+function LinearAlgebra.cross(P::ProductGroupOperation, O::AbstractGroupOperation)
+    return ProductGroupOperation(P.operations..., O)
 end
-function LinearAlgebra.cross(O::AbstractGroupOperation, P::ProductOperation)
-    return ProductOperation(O, P.operations...)
+function LinearAlgebra.cross(O::AbstractGroupOperation, P::ProductGroupOperation)
+    return ProductGroupOperation(O, P.operations...)
 end
-function LinearAlgebra.cross(P1::ProductOperation, P2::ProductOperation)
-    return ProductOperation(P1.operations..., P2.operations...)
+function LinearAlgebra.cross(P1::ProductGroupOperation, P2::ProductGroupOperation)
+    return ProductGroupOperation(P1.operations..., P2.operations...)
 end
 
 """
@@ -74,7 +76,7 @@ function LinearAlgebra.cross(G::LieGroup, H::LieGroup)
 end
 
 function Base.show(
-    io::IO, G::LieGroup{𝔽,<:ProductOperation,<:ManifoldsBase.ProductManifold}
+    io::IO, G::LieGroup{𝔽,<:ProductGroupOperation,<:ManifoldsBase.ProductManifold}
 ) where {𝔽}
     M = G.manifold.manifolds
     ops = G.op.operations

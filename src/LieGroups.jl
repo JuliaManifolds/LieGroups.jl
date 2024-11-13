@@ -41,9 +41,9 @@ include("groups/translation_group.jl")
 include("groups/general_linear_group.jl")
 
 export LieGroup, LieAlgebra
-export PowerLieGroup, ProductLieGroup
+export PowerLieGroup, ProductLieGroup, SemidirectProductLieGroup
 export LieAlgebraOrthogonalBasis
-export ×, ^
+export ×, ^, ⋉, ⋊
 #
 #
 # Group Operations
@@ -51,6 +51,7 @@ export AbstractGroupOperation, Identity
 export AdditionGroupOperation
 export AbstractMultiplicationGroupOperation
 export MatrixMultiplicationGroupOperation
+export ProductGroupOperation, SemidirectProductGroupOperation
 
 #
 #
@@ -60,7 +61,6 @@ export AbstractLeftGroupActionType, AbstractRightGroupActionType
 export LeftGroupOperation, RightGroupOperation
 export InverseLeftGroupOperation, InverseRightGroupOperation
 export GroupOperationAction
-export ProductOperation
 #
 #
 # Specific groups

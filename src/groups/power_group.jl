@@ -10,7 +10,7 @@
 Generate the [`LieGroup`](@ref) of the `n`-th power of a Lie group `G` or manifold `M`.
 If passed a Lie group `G`, the group operation is the same as on `G`, but applied elementwise.
 
-The keyword arguments `kwargs...` are passed on to the constructor of the [`PowerManifold`](@exref).
+The keyword arguments `kwargs...` are passed on to the constructor of the [`PowerManifold`](@extref `ManifoldsBase.PowerManifold`).
 """
 PowerLieGroup(::AbstractManifold, size::Int...; kwargs...)
 
