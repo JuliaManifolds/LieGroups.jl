@@ -68,7 +68,9 @@ and ``$(_tex(:Cal, "G")) = N ⋉ H`` for an [`AbstractRightGroupActionType`](@re
 
 see [`SemidirectProductGroupOperation`](@ref) for the group operation definition as well as [HilgertNeeb:2012; Definition 9.2.22](@cite) for more details.
 """
-function SemidirectProductLieGroup(N::LieGroup, H::LieGroup; action=LeftGroupOperationAction())
+function SemidirectProductLieGroup(
+    N::LieGroup, H::LieGroup; action::AbstractGroupActionType=LeftGroupOperation()
+)
     return LieGroup(
         N.manifold × H.manifold, SemidirectProductGroupOperation(N.op, H.op; action=action)
     )
