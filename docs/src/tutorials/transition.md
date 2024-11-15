@@ -41,8 +41,8 @@ The list is alphabetical, but first lists types, then functions
 | `log(G, g, h)` | `log(`[`base_manifold`](@ref base_manifold(G::LieGroup))`(G), g, h)` | you can now access the previous defaults on the internal manifold whenever they do not agree with the invariant one |
 | `log_inv(G, g, h)` | [`log`](@ref log(G::LieGroup, g, h))`(G, g, h)` | the logarithmic map invariant to the group operation is the default on Lie groups here |
 | `log_lie(G, g)` | [`log`](@ref log(G::LieGroup, e::Identity, g))`(G, `[`Identity`](@ref)`(G), g)` | the (matrix) logarithm is now the one at the identity, since there it agrees with the invariant one |
-| `switch_direction(A)` | [`inv`](@ref inv(::AbstractGroupAction))`(A)` | switches from an action to its inverse action (formerly the direction forward/backward, sometimes even left/right, do not confuse with the side left/right). |
-| `switch_side(A)` | [`switch`](@ref switch(::AbstractGroupAction))`(A)` | switches from a left action to its corresponding right action. |
+| `switch_direction(A)` | [`inv`](@ref inv(::GroupAction))`(A)` | switches from an action to its inverse action (formerly the direction forward/backward, sometimes even left/right, do not confuse with the side left/right). |
+| `switch_side(A)` | [`switch`](@ref switch(::GroupAction))`(A)` | switches from a left action to its corresponding right action. |
 | `translate(G, g, h)` | [`compose`](@ref)`(G, g, h)` | unified to `compose` |
 | `translate_diff(G, g, X, c)` | [`diff_left_compose`](@ref)`(G, g, h, X)`, [`diff_right_compose`](@ref)`(G, g, h, X)` | for compose ``g∘h`` the functions now specify whether the derivative is taken w.r.t. to the left (`g`) or right (`h`) argument |
 |`VeeOrthogonalBasis` | [`LieAlgebraOrthogonalBasis`](@ref) | |

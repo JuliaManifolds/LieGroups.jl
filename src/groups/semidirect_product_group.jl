@@ -48,7 +48,7 @@ struct LeftSemidirectProductGroupOperation{
     ) where {
         O1<:AbstractGroupOperation,O2<:AbstractGroupOperation,A<:AbstractGroupActionType
     }
-        return LeftSemidirectProductGroupOperation{O1,O2,A}(op1, op2, action)
+        return new{O1,O2,A}(op1, op2, action)
     end
 end
 
@@ -97,7 +97,7 @@ struct RightSemidirectProductGroupOperation{
     ) where {
         O1<:AbstractGroupOperation,O2<:AbstractGroupOperation,A<:AbstractGroupActionType
     }
-        return RightSemidirectProductGroupOperation{O1,O2,A}(op1, op2, action)
+        return new{O1,O2,A}(op1, op2, action)
     end
 end
 

@@ -160,7 +160,7 @@ base_lie_group(A::GroupAction) = A.group
 
 Return the $(_link(:AbstractManifold)) the group action acts upon.
 """
-ManifoldsBase.base_manifold(A::GroupOperationAction) = A.manifold
+ManifoldsBase.base_manifold(A::GroupAction) = A.manifold
 
 function default_left_action end
 """
@@ -225,7 +225,7 @@ diff_group_apply!(A::GroupAction, q, g, p)
 Return the [`GroupAction`](@ref) representing the inverse of an [`GroupAction`](@ref) of [`AbstractGroupActionType`](@ref) `T`.
 This is usually done by returning the group action with the inverse type of `T`.
 """
-Base.inv(A::GroupAction) = GroupAction(inv(A.type), A.group)
+Base.inv(A::GroupAction) = GroupAction(inv(A.type), A.group, A.manifold)
 
 """
     inv(::AbstractGroupActionType)
@@ -236,7 +236,7 @@ inverse operation.
 Base.inv(::AbstractGroupActionType)
 
 function Base.show(io::IO, A::GroupAction)
-    return print(io, "GroupAction($(A.type), $(A.group))")
+    return print(io, "GroupAction($(A.type), $(A.group), $(A.manifold))")
 end
 
 function switch end

@@ -434,7 +434,7 @@ both signatures are equivalent.
 The operation can be performed in-place of `c`.
 
 By default this function requires [`identity_element`](@ref)`(G)` and calls
-the corresponding [`get_coordinates`](@extref `ManifoldsBase.get_coordinates-Tuple{AbstractManifold, Any, Any, ManifoldsBase.AbstractBasis}`) function
+the corresponding [`get_coordinates`](@extref ManifoldsBase :jl:function:`ManifoldsBase.get_coordinates`) function
 of the Riemannian manifold the Lie group is build on.
 
 The inverse operation is [`get_vector`](@ref).
@@ -472,7 +472,7 @@ both signatures are equivalend.
 The operation can be performed in-place of a tangent vector `X`.
 
 By default this function requires [`identity_element`](@ref)`(G)` and calls
-the corresponding [`get_vector`](@extref ManifoldsBase.get_vector-Tuple{AbstractManifold, Any, Any, ManifoldsBase.AbstractBasis}) function
+the corresponding [`get_vector`](@extref ManifoldsBase :jl:function:`ManifoldsBase.get_vectors`) function
 of the Riemannian manifold the Lie group is build on.
 
 The inverse operation is [`get_coordinates`](@ref).

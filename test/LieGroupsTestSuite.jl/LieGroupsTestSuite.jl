@@ -23,7 +23,6 @@ struct DummySecondOperation <: AbstractGroupOperation end
 struct DummyManifold <: LieGroups.AbstractManifold{LieGroups.ℝ} end
 struct DummyActionType <: AbstractGroupActionType end
 const DummyLieGroup = LieGroup{LieGroups.ℝ,DummyOperation,DummyManifold}
-struct DummyGroupAction <: AbstractGroupAction{DummyActionType,DummyLieGroup,DummyManifold} end
 
 # === Test single functions ===
 #
@@ -60,7 +59,7 @@ function test_adjoint(G::LieGroup, g, X; expected=missing, test_mutating::Bool=t
 end
 
 """
-    test_apply(A::AbstractGroupAction, g, p; expected=missing)
+    test_apply(A::GroupAction, g, p; expected=missing)
 
 Test  `apply`.
 
@@ -68,9 +67,7 @@ Test  `apply`.
 * `expected=missing`: the result of the application of the group action.
 * `test_mutating::Bool=true`: test the mutating functions
 """
-function test_apply(
-    A::AbstractGroupAction, g, p; expected=missing, test_mutating::Bool=true
-)
+function test_apply(A::GroupAction, g, p; expected=missing, test_mutating::Bool=true)
     @testset "apply" begin
         q1 = apply(A, g, p)
         M = base_manifold(A)
@@ -175,7 +172,7 @@ end
 #
 # --- D
 """
-    test_diff_apply(A::AbstractGroupAction, g, p, X; expected=missing)
+    test_diff_apply(A::GroupAction, g, p, X; expected=missing)
 
 Test  `diff_apply`.
 
@@ -184,7 +181,7 @@ Test  `diff_apply`.
 * `test_mutating::Bool=true`: test the mutating functions
 """
 function test_diff_apply(
-    A::AbstractGroupAction, g, p, X; expected=missing, test_mutating::Bool=true
+    A::GroupAction, g, p, X; expected=missing, test_mutating::Bool=true
 )
     @testset "diff_apply" begin
         Y1 = diff_apply(A, g, p, X)
@@ -202,7 +199,7 @@ function test_diff_apply(
 end
 
 """
-    test_diff_apply(A::AbstractGroupAction, g, p, X; expected=missing)
+    test_diff_apply(A::GroupAction, g, p, X; expected=missing)
 
 Test  `diff_group_apply`.
 
@@ -211,7 +208,7 @@ Test  `diff_group_apply`.
 * `test_mutating::Bool=true`: test the mutating functions
 """
 function test_diff_group_apply(
-    A::AbstractGroupAction, g, p, X; expected=missing, test_mutating::Bool=true
+    A::GroupAction, g, p, X; expected=missing, test_mutating::Bool=true
 )
     @testset "diff_group_apply" begin
         Y1 = diff_group_apply(A, g, p, X)
@@ -690,7 +687,7 @@ For now this (only) checks that `"\$G"` yields the `repr_string`.
 
 Requires `show` (or `repr`) to be implemented.
 """
-function test_show(G::Union{AbstractGroupAction,LieGroup}, repr_string::AbstractString)
+function test_show(G::Union{GroupAction,LieGroup}, repr_string::AbstractString)
     @testset "repr(G, g, h)" begin
         @test repr(G) == repr_string
     end
@@ -884,9 +881,7 @@ Possible `expectations` are
 * `:manifold` is the `AbstractManifold` the action acts upon
 * `:repr` is a sting one gets from `repr(G)`
 """
-function test_group_action(
-    A::AbstractGroupAction, properties::Dict, expectations::Dict=Dict()
-)
+function test_group_action(A::GroupAction, properties::Dict, expectations::Dict=Dict())
     a_tol = get(expectations, :atol, 1e-8)
     mutating = get(properties, :Mutating, true)
     functions = get(properties, :Functions, Function[])
