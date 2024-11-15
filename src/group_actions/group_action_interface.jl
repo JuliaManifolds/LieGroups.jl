@@ -5,7 +5,7 @@
 @doc """
     AbstractGroupActionType
 
-An abstract supertype for group actions.
+An abstract supertype for group action types.
 """
 abstract type AbstractGroupActionType end
 
@@ -85,17 +85,28 @@ $(_note_action_argument_order)
 """
 abstract type AbstractRightGroupActionType <: AbstractGroupActionType end
 
-@doc """
-    AbstractGroupAction{T<:AbstractGroupActionType, L<:LieGroup, M<:AbstractManifold}
+"""
+    LieGroupOperationAction{T<:AbstractLeftGroupActionType,G<:LieGroup} <: AbstractGroupAction{T,G,G}
 
-An abstract group action of [`AbstractGroupActionType`](@ref) `T` of a [`LieGroup`](@ref) of type `L`
+A group action of [`AbstractGroupActionType`](@ref) `T` of a [`LieGroup`](@ref) of type `L`
 acting on an $(_link(:AbstractManifold)) of type `M`.
 
+# Fields
+
+* `type::T`: The type of the group action.
+* `group::L`: The group acting.
+* `manifold::M`: The manifold the group acts upon.
+
 See [HilgertNeeb:2012; Section 9.1.3](@cite) for more details.
+
 """
-abstract type AbstractGroupAction{
-    T<:AbstractGroupActionType,L<:LieGroup,M<:AbstractManifold
-} end
+struct GroupAction{T<:AbstractGroupActionType, L<:LieGroup, M<:Manifold}
+    type::T
+    group::L
+    manifold::M
+end
+
+
 
 function base_lie_group end
 @doc """
@@ -104,14 +115,14 @@ function base_lie_group end
 Return the [`LieGroup`](@ref) of the [`AbstractGroupAction`](@ref)
 specifying the action.
 """
-base_lie_group(::AbstractGroupAction)
+base_lie_group(A::GroupAction) = A.group
 
 @doc """
     base_manifold(A::AbstractGroupAction)
 
 Return the $(_link(:AbstractManifold)) the group action acts upon.
 """
-ManifoldsBase.base_manifold(::AbstractGroupAction)
+ManifoldsBase.base_manifold(A::GroupOperationAction) = A.manifold
 
 #
 #

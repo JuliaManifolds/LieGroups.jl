@@ -22,10 +22,10 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
   * `AbstractLeftGroupActionType`
   * `AbstractRightGroupActionType`
 * For the group operation actions there are now
-  * `LeftGroupOperation` (formerly `LeftForwardAction`)
-  * `RightGroupOperation` (formerly `RightBackwardAction`)
-  * `InverseLeftGroupOperation` (formerly `RightForwardAction`)
-  * `InverseRightGroupOperation` (formerly `LeftBackwardAction`)
+  * `LeftGroupOperationAction` (formerly `LeftForwardAction`)
+  * `RightGroupOperationAction` (formerly `RightBackwardAction`)
+  * `InverseLeftGroupOperationActionAction` (formerly `RightForwardAction`)
+  * `InverseRightGroupOperationActionAction` (formerly `LeftBackwardAction`)
 * `LieAlgebraOrthogonalBasis` (replaces `VeeOrthogonalBasis`, which is still available in `ManifoldsBase.jl`)
 * `Identity`
 * `apply`and `apply!`

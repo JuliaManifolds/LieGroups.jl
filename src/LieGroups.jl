@@ -58,8 +58,8 @@ export ProductGroupOperation, SemidirectProductGroupOperation
 # Group Actions
 export AbstractGroupActionType, AbstractGroupAction
 export AbstractLeftGroupActionType, AbstractRightGroupActionType
-export LeftGroupOperation, RightGroupOperation
-export InverseLeftGroupOperation, InverseRightGroupOperation
+export LeftGroupOperationAction, RightGroupOperationAction
+export InverseLeftGroupOperationActionAction, InverseRightGroupOperationActionAction
 export GroupOperationAction
 #
 #

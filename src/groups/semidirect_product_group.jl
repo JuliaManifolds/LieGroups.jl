@@ -31,25 +31,23 @@ See [HilgertNeeb:2012; Definition 9.2.22](@cite) for more details.
 
 # Constructor
 
-    SemidirectProductGroupOperation(op1::AbstractGroupOperation, op2::AbstractGroupOperation, action=LeftGroupOperation())
-    op1 ⋊ op2
-    op1 ⋉ op2
+    SemidirectProductGroupOperation(op1::AbstractGroupOperation, op2::AbstractGroupOperation, action)
 
 Create a `SemidirectProductGroupOperation` for [`AbstractGroupOperation`](@ref) `op1=```⋄`` and `pü2=```⋆``
-together with an [`AbstractGroupActionType`](@ref) `action` that defaults to the [`LeftGroupOperation`](@ref), which yields the corresponding [`GroupOperationAction`](@ref),
+together with an [`AbstractGroupActionType`](@ref) `action` that defaults to the [`LeftGroupOperationAction`](@ref), which yields the corresponding [`GroupOperationAction`](@ref),
 that is where the action is given by the group operation of ``$(_tex(:Cal, "H"))`` acting on ``$(_tex(:Cal, "N"))``.
 The first shorthand `op1 ⋊ op2` is a short form for this.
 
-For the second form, use for example the [`RightGroupOperation`](@ref) to also have the [`GroupOperationAction`](@ref) mentioned.
+For the second form, use for example the [`RightGroupOperationAction`](@ref) to also have the [`GroupOperationAction`](@ref) mentioned.
 """
 struct SemidirectProductGroupOperation{
     O1<:AbstractGroupOperation,O2<:AbstractGroupOperation,A<:AbstractGroupActionType
 } <: AbstractGroupOperation
     op1::O1
     op2::O2
-    action::A
+    action_type::A
     function SemidirectProductGroupOperation(
-        op1::O1, op2::O2; action::A=LeftGroupOperation()
+        op1::O1, op2::O2; action::A=LeftGroupOperationAction()
     ) where {
         O1<:AbstractGroupOperation,O2<:AbstractGroupOperation,A<:AbstractGroupActionType
     }
@@ -57,33 +55,20 @@ struct SemidirectProductGroupOperation{
     end
 end
 
-"""
-    op1 ⋊ op2
 
-For two [`AbstractGroupOperation`](@ref), generate the [`SemidirectProductGroupOperation`](@ref)`(op1, op2; action=`[`LeftGroupOperation`](@ref)`())`
+# LeftSemidirectProductLieGroup
+# RightSemidirectProductLieGroup
+# default_left_action(L1,L2)
+# default_right_action(L1,L2)
 """
-function ⋊(op1::O1, op2::O2) where {O1<:AbstractGroupOperation,O2<:AbstractGroupOperation}
-    return SemidirectProductGroupOperation(op1, op2; action=LeftGroupOperation())
-end
-
-"""
-    op1 ⋉ op2
-
-For two [`AbstractGroupOperation`](@ref), generate the [`SemidirectProductGroupOperation`](@ref)`(op1, op2; action=`[`RightGroupOperation`](@ref)`())`
-"""
-function ⋉(op1::O1, op2::O2) where {O1<:AbstractGroupOperation,O2<:AbstractGroupOperation}
-    return SemidirectProductGroupOperation(op1, op2; action=RightGroupOperation())
-end
-
-"""
-    SemidirectProductLieGroup(N::LieGroup, H::LieGroup; action=LeftGroupOperation())
+    SemidirectProductLieGroup(N::LieGroup, H::LieGroup; action=LeftGroupOperationAction())
 
 Generate the semidirect product Lie Group ``$(_tex(:Cal, "G")) = N ⋊ H`` for an [`AbstractLeftGroupActionType`](@ref),
 and ``$(_tex(:Cal, "G")) = N ⋉ H`` for an [`AbstractRightGroupActionType`](@ref),
 
 see [`SemidirectProductGroupOperation`](@ref) for the group operation definition as well as [HilgertNeeb:2012; Definition 9.2.22](@cite) for more details.
 """
-function SemidirectProductLieGroup(N::LieGroup, H::LieGroup; action=LeftGroupOperation())
+function SemidirectProductLieGroup(N::LieGroup, H::LieGroup; action=LeftGroupOperationAction())
     return LieGroup(
         N.manifold × H.manifold, SemidirectProductGroupOperation(N.op, H.op; action=action)
     )
@@ -92,17 +77,17 @@ end
 """
     L1 ⋊ L2
 
-For two [`LieGroups`](@ref), generate the [`SemidirectProductLieGroup`](@ref)`(L1, L2; action=`[`LeftGroupOperation`](@ref)`())`
+For two [`LieGroups`](@ref), generate the [`SemidirectProductLieGroup`](@ref)`(L1, L2; action=`[`LeftGroupOperationAction`](@ref)`())`
 """
 function ⋊(L1::LieGroup, L2::LieGroup)
-    return SemidirectProductLieGroup(L1, L2; action=LeftGroupOperation())
+    return SemidirectProductLieGroup(L1, L2; action=LeftGroupOperationAction())
 end
 
 """
     L1 ⋉ L2
 
-For two [`LieGroups`](@ref), generate the [`SemidirectProductLieGroup`](@ref)`(L1, L2; action=`[`RightGroupOperation`](@ref)`())`
+For two [`LieGroups`](@ref), generate the [`SemidirectProductLieGroup`](@ref)`(L1, L2; action=`[`RightGroupOperationAction`](@ref)`())`
 """
 function ⋉(L1::LieGroup, L2::LieGroup)
-    return SemidirectProductLieGroup(L1, L2; action=RightGroupOperation())
+    return SemidirectProductLieGroup(L1, L2; action=RightGroupOperationAction())
 end
