@@ -119,24 +119,6 @@ struct GroupAction{T<:AbstractGroupActionType,L<:LieGroup,M<:ManifoldsBase.Abstr
     manifold::M
 end
 
-
-
-function base_lie_group end
-@doc """
-    base_lie_group(A::GroupAction)
-
-Return the [`LieGroup`](@ref) of the [`GroupAction`](@ref)
-specifying the action.
-"""
-base_lie_group(A::GroupAction) = A.group
-
-@doc """
-    base_manifold(A::GroupAction)
-
-Return the $(_link(:AbstractManifold)) the group action acts upon.
-"""
-ManifoldsBase.base_manifold(A::GroupOperationAction) = A.manifold
-
 #
 #
 # Functions
@@ -159,6 +141,28 @@ function apply(A::GroupAction, g, p)
     return q
 end
 
+# Define `function apply! end` here as well
+# un-comment (remove this comment) when removing this function from Manifolds.jl
+@doc "$(_doc_apply)"
+apply!(A::GroupAction, q, g, p)
+
+function base_lie_group end
+@doc """
+    base_lie_group(A::GroupAction)
+
+Return the [`LieGroup`](@ref) of the [`GroupAction`](@ref)
+specifying the action.
+"""
+base_lie_group(A::GroupAction) = A.group
+
+@doc """
+    base_manifold(A::GroupAction)
+
+Return the $(_link(:AbstractManifold)) the group action acts upon.
+"""
+ManifoldsBase.base_manifold(A::GroupOperationAction) = A.manifold
+
+function default_left_action end
 """
     default_left_action(G::LieGroup, M::AbstractManifold)
 
@@ -166,19 +170,13 @@ Return the default left action for a Lie group `G` acting on a manifold `M`.
 """
 default_left_action(N::LieGroup, M::AbstractManifold)
 
+function default_right_action end
 """
     default_right_action(G::LieGroup, M::AbstractManifold)
 
 Return the default right action for a Lie group `G` acting on a manifold `M`.
 """
 default_right_action(N::LieGroup, M::AbstractManifold)
-
-# Define `function apply! end` here as well
-# un-comment (remove this comment) when removing this function from Manifolds.jl
-@doc "$(_doc_apply)"
-apply!(A::GroupAction, q, g, p)
-
-
 
 _doc_diff_apply = """
     diff_apply(A::GroupAction{T, L, M}, g, p, X)

@@ -59,7 +59,7 @@ export ProductGroupOperation, SemidirectProductGroupOperation
 export AbstractGroupActionType, AbstractGroupAction
 export AbstractLeftGroupActionType, AbstractRightGroupActionType
 export LeftGroupOperationAction, RightGroupOperationAction
-export InverseLeftGroupOperationActionAction, InverseRightGroupOperationActionAction
+export InverseLeftGroupOperationAction, InverseRightGroupOperationAction
 export GroupOperationAction
 #
 #
@@ -69,7 +69,9 @@ export TranslationGroup, GeneralLinearGroup
 export adjoint, adjoint!, apply, apply!
 export base_lie_group, base_manifold
 export compose, compose!
-export det,
+export default_left_action,
+    default_right_action,
+    det,
     diff_apply,
     diff_apply!,
     diff_group_apply,

@@ -44,7 +44,8 @@ struct LeftSemidirectProductGroupOperation{
     op2::O2
     action_type::A
     function LeftSemidirectProductGroupOperation(
-        op1::O1, op2::O2, action::A) where {
+        op1::O1, op2::O2, action::A
+    ) where {
         O1<:AbstractGroupOperation,O2<:AbstractGroupOperation,A<:AbstractGroupActionType
     }
         return LeftSemidirectProductGroupOperation{O1,O2,A}(op1, op2, action)
@@ -111,9 +112,7 @@ The short form `N `[`⋉`](@ref ⋉(L1::LieGroup, L2::LieGroup))` H` can be used
 corresponding [`default_left_action`](@ref)`(N,H)` is the one you want to use.
 """
 function LeftSemidirectProductLieGroup(
-    N::LieGroup,
-    H::LieGroup,
-    action::AbstractGroupActionType=default_left_action(N,H),
+    N::LieGroup, H::LieGroup, action::AbstractGroupActionType=default_left_action(N, H)
 )
     return LieGroup(
         N.manifold × H.manifold, LeftSemidirectProductGroupOperation(N.op, H.op, action)
@@ -131,7 +130,7 @@ The short form `N `[`⋊`](@ref ⋊(L1::LieGroup, L2::LieGroup))` H` can be used
 corresponding [`default_right_action`](@ref)`(N,H)` is the one you want to use.
 """
 function RightSemidirectProductLieGroup(
-    N::LieGroup, H::LieGroup; action::AbstractGroupActionType=default_right_action(N, H)
+    N::LieGroup, H::LieGroup, action::AbstractGroupActionType=default_right_action(N, H)
 )
     return LieGroup(
         N.manifold × H.manifold, RightSemidirectProductGroupOperation(N.op, H.op, action)
@@ -146,7 +145,7 @@ For two [`LieGroups`](@ref) `L1`, `L2`, generate the [`LeftSemidirectProductLieG
 where the corresponding [`default_left_action`](@ref)`(L1, L2)` is used.
 """
 function ⋉(L1::LieGroup, L2::LieGroup)
-    return SemidirectProductLieGroup(L1, L2; action=RightGroupOperationAction())
+    return LeftSemidirectProductLieGroup(L1, L2, default_left_action(L1, L2))
 end
 
 """
@@ -157,5 +156,38 @@ For two [`LieGroups`](@ref) `L1`, `L2`, generate the [`RightSemidirectProductLie
 where the corresponding [`default_right_action`](@ref)`(L1, L2)` is used.
 """
 function ⋊(L1::LieGroup, L2::LieGroup)
-    return RightSemidirectProductLieGroup(L1, L2)
+    return RightSemidirectProductLieGroup(L1, L2, default_right_action(L1, L2))
+end
+
+function Base.show(io::IO, LSDOp::LeftSemidirectProductGroupOperation)
+    return print(
+        io,
+        "LeftSemidirectProductGroupOperation($(LSDOp.op1), $(LSDOp.op2), $(LSDOp.action_type))",
+    )
+end
+function Base.show(io::IO, RSDOp::RightSemidirectProductGroupOperation)
+    return print(
+        io,
+        "RightSemidirectProductGroupOperation($(RSDOp.op1), $(RSDOp.op2), $(RSDOp.action_type))",
+    )
+end
+function Base.show(
+    io::IO,
+    LSDL::LieGroup{𝔽,<:LeftSemidirectProductGroupOperation,<:ManifoldsBase.ProductManifold},
+) where {𝔽}
+    L1 = LieGroup(LSDL.manifold[1], LSDL.op.op1)
+    L2 = LieGroup(LSDL.manifold[2], LSDL.op.op2)
+    at = LSDL.op.action_type
+    return print(io, "LeftSemidirectProductLieGroup($L1, $L2, $at)")
+end
+function Base.show(
+    io::IO,
+    RSDL::LieGroup{
+        𝔽,<:RightSemidirectProductGroupOperation,<:ManifoldsBase.ProductManifold
+    },
+) where {𝔽}
+    L1 = LieGroup(RSDL.manifold[1], RSDL.op.op1)
+    L2 = LieGroup(RSDL.manifold[2], RSDL.op.op2)
+    at = RSDL.op.action_type
+    return print(io, "RightSemidirectProductLieGroup($L1, $L2, $at)")
 end

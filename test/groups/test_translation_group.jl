@@ -58,8 +58,8 @@ begin
         for t in [
             RightGroupOperationAction(),
             LeftGroupOperationAction(),
-            InverseLeftGroupOperationActionAction(),
-            InverseRightGroupOperationActionAction(),
+            InverseLeftGroupOperationAction(),
+            InverseRightGroupOperationAction(),
         ]
             A = GroupOperationAction(t, G)
             properties2[:Name] = "with $A"
