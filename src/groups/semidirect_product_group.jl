@@ -76,14 +76,18 @@ function ⋉(op1::O1, op2::O2) where {O1<:AbstractGroupOperation,O2<:AbstractGro
 end
 
 """
-    SemidirectProductLieGroup(N::LieGroup, H::LieGroup; action=LeftGroupOperation())
+    SemidirectProductLieGroup(
+        N::LieGroup, H::LieGroup; action::AbstractGroupActionType=LeftGroupOperation()
+    )
 
 Generate the semidirect product Lie Group ``$(_tex(:Cal, "G")) = N ⋊ H`` for an [`AbstractLeftGroupActionType`](@ref),
 and ``$(_tex(:Cal, "G")) = N ⋉ H`` for an [`AbstractRightGroupActionType`](@ref),
 
 see [`SemidirectProductGroupOperation`](@ref) for the group operation definition as well as [HilgertNeeb:2012; Definition 9.2.22](@cite) for more details.
 """
-function SemidirectProductLieGroup(N::LieGroup, H::LieGroup; action=LeftGroupOperation())
+function SemidirectProductLieGroup(
+    N::LieGroup, H::LieGroup; action::AbstractGroupActionType=LeftGroupOperation()
+)
     return LieGroup(
         N.manifold × H.manifold, SemidirectProductGroupOperation(N.op, H.op; action=action)
     )
