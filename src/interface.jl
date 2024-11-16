@@ -139,6 +139,11 @@ function adjoint!(G::LieGroup, Y, g, X)
     return Y
 end
 
+# Pass through for allocation
+function ManifoldsBase.allocate_result(G::LieGroup, args...)
+    return ManifoldsBase.allocate_result(G.manifold, args...)
+end
+
 #
 # Allocation hints
 function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(identity_element))
@@ -565,6 +570,7 @@ This can be done in-place of `h`, without side effects, that is you can do `inv!
 
 @doc "$_doc_inv"
 function Base.inv(G::LieGroup, g)
+    print(g)
     h = allocate_result(G, inv, g)
     return inv!(G, h, g)
 end

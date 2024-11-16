@@ -643,33 +643,33 @@ function test_rand(
 )
     @testset "rand" begin
         g1 = rand(G)
-        @test is_point(G, g1)
+        @test is_point(G, g1; error=:error)
         if test_mutating
             g2 = copy(G, g)
             rand!(G, g2)
-            @test is_point(G, g2)
+            @test is_point(G, g2; error=:error)
         end
         X1 = rand(G; vector_at=g1)
-        @test is_vector(G, g1, X1)
+        @test is_vector(G, g1, X1; error=:error)
         if test_mutating
             X2 = zero_vector(LieAlgebra(G), g1)
             rand!(G, X2; vector_at=g1)
-            @test is_vector(G, g1, X2)
+            @test is_vector(G, g1, X2; error=:error)
         end
         if !ismissing(rng)
             g1 = rand(rng, G)
-            @test is_point(G, g1)
+            @test is_point(G, g1; error=:error)
             if test_mutating
                 g2 = copy(G, g)
                 rand!(rng, G, g2)
-                @test is_point(G, g2)
+                @test is_point(G, g2; error=:error)
             end
             X1 = rand(rng, G; vector_at=g1)
-            @test is_vector(G, g1, X1)
+            @test is_vector(G, g1, X1; error=:error)
             if test_mutating
                 X2 = zero_vector(LieAlgebra(G), g1)
                 rand!(rng, G, X2; vector_at=g1)
-                @test is_vector(G, g1, X2)
+                @test is_vector(G, g1, X2; error=:error)
             end
         end
     end

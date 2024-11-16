@@ -1,4 +1,4 @@
-using LieGroups, Test, ManifoldsBase
+using LieGroups, Test, ManifoldsBase, Random
 
 s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 !(s in LOAD_PATH) && (push!(LOAD_PATH, s))
@@ -10,9 +10,21 @@ using LieGroupsTestSuite
     G = LieGroup(M, op)
     pG = G^2
 
-    properties = Dict(
-        :Name => "The Power Manifold",
-        # :Rng => Random.MersenneTwister(),
+    properties1 = Dict(:Name => "The generic Power Manifold", :Functions => [show])
+    expectations1 = Dict(
+        :repr => "PowerLieGroup(LieGroupsTestSuite.DummyManifold(), LieGroupsTestSuite.DummyOperation(), 2)",
+    )
+    test_lie_group(pG, properties1, expectations1)
+
+    # Explicit one to test element-wise methods
+    pG2 = PowerLieGroup(TranslationGroup(2), NestedPowerRepresentation(), 2)
+    g, h = [[1.0, 0.0], [0.0, 3.0]], [[0.0, 1.0], [2.0, 0.0]]
+    X, Y = [[0.0, 0.1], [0.2, 0.0]], [[0.1, 0.2], [0.0, 0.3]]
+    properties2 = Dict(
+        :Name => "The generic Power Manifold",
+        :Points => [g, h],
+        :Vectors => [X, Y],
+        :Rng => Random.MersenneTwister(),
         :Functions => [
             # compose,
             # conjugate,
@@ -28,13 +40,12 @@ using LieGroupsTestSuite
             # is_identity,
             # lie_bracket,
             # log,
-            # rand,
-            show,
-            #vee,
+            rand,
+            # vee,
         ],
     )
-    expectations = Dict(
+    expectations2 = Dict(
         :repr => "PowerLieGroup(LieGroupsTestSuite.DummyManifold(), LieGroupsTestSuite.DummyOperation(), 2)",
     )
-    test_lie_group(pG, properties, expectations)
+    test_lie_group(pG2, properties2, expectations2)
 end
