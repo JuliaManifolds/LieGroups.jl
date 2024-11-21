@@ -21,7 +21,7 @@ using LieGroupsTestSuite
     g, h = [[1.0, 0.0], [0.0, 3.0]], [[0.0, 1.0], [2.0, 0.0]]
     X, Y = [[0.0, 0.1], [0.2, 0.0]], [[0.1, 0.2], [0.0, 0.3]]
     properties2 = Dict(
-        :Name => "The generic Power Manifold",
+        :Name => "The generic nested Power Manifold",
         :Points => [g, h],
         :Vectors => [X, Y],
         :Rng => Random.MersenneTwister(),

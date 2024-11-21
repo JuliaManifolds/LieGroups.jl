@@ -149,6 +149,9 @@ end
 function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(zero_vector), g)
     return ManifoldsBase.allocate_result(G.manifold, f, g)
 end
+function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(rand))
+    return ManifoldsBase.allocate_result(G.manifold, f)
+end
 
 @doc """
     base_manifold(G::LieGroup)
