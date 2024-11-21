@@ -867,5 +867,5 @@ end
 function ManifoldsBase.zero_vector!(
     G::LieGroup{𝔽,O}, X, ::Identity{O}
 ) where {𝔽,O<:AbstractGroupOperation}
-    return zero_vector!(G, X, identity_element(G))
+    return zero_vector!(G.manifold, X, identity_element(G))
 end

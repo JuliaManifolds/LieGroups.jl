@@ -11,8 +11,8 @@ that together forms a new group operation.
 
 # Constructor
 
-    ProductGroupOperation(O...)
-    ×(O...) = ProductGroupOperation(O...)
+    ProductGroupOperation(o::O...)
+    ×(o::O...) = ProductGroupOperation(o...)
 """
 struct ProductGroupOperation{OTM<:Tuple} <: AbstractGroupOperation
     operations::OTM

@@ -12,7 +12,7 @@ using LieGroupsTestSuite
 
     properties1 = Dict(:Name => "The generic Power Manifold", :Functions => [show])
     expectations1 = Dict(
-        :repr => "PowerLieGroup(LieGroupsTestSuite.DummyManifold(), LieGroupsTestSuite.DummyOperation(), 2)",
+        :repr => "PowerLieGroup(LieGroup(LieGroupsTestSuite.DummyManifold(), LieGroupsTestSuite.DummyOperation()), 2)",
     )
     test_lie_group(pG, properties1, expectations1)
 
@@ -45,7 +45,7 @@ using LieGroupsTestSuite
         ],
     )
     expectations2 = Dict(
-        :repr => "PowerLieGroup(LieGroupsTestSuite.DummyManifold(), LieGroupsTestSuite.DummyOperation(), 2)",
+        :repr => "PowerLieGroup(LieGroup(LieGroupsTestSuite.DummyManifold(), LieGroupsTestSuite.DummyOperation()), 2)",
     )
     test_lie_group(pG2, properties2, expectations2)
 end
