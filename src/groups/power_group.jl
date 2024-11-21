@@ -134,6 +134,23 @@ function inv!(
     end
     return h
 end
+function inv!(
+    PG::LieGroup{𝔽,Op,M}, h, ::Identity{Op}
+) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
+    PM = PG.manifold
+    rep_size = representation_size(PM)
+    G = LieGroup(PM.manifold, PG.op.op)
+    e_g = Identity(G.op)
+    for i in ManifoldsBase.get_iterator(PM)
+        inv!(G, ManifoldsBase._write(PM, rep_size, h, i), e_g)
+    end
+    return h
+end
+function inv!(
+    ::LieGroup{𝔽,Op,M}, h::Identity{Op}, ::Identity{Op}
+) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
+    return h
+end
 
 function ManifoldsBase.log!(
     PG::LieGroup{𝔽,Op,M}, X, g
@@ -145,6 +162,23 @@ function ManifoldsBase.log!(
         log!(
             G,
             ManifoldsBase._write(PM, rep_size, X, i),
+            ManifoldsBase._read(PM, rep_size, g, i),
+        )
+    end
+    return X
+end
+function ManifoldsBase.log!(
+    PG::LieGroup{𝔽,Op,M}, X, ::Identity{Op}, g
+) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
+    PM = PG.manifold
+    rep_size = representation_size(PM)
+    G = LieGroup(PM.manifold, PG.op.op)
+    e_g = Identity(G.op)
+    for i in ManifoldsBase.get_iterator(PM)
+        log!(
+            G,
+            ManifoldsBase._write(PM, rep_size, X, i),
+            e_g,
             ManifoldsBase._read(PM, rep_size, g, i),
         )
     end

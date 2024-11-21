@@ -139,20 +139,6 @@ function adjoint!(G::LieGroup, Y, g, X)
     return Y
 end
 
-#
-# Allocation hints - mainly pass-through
-function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(identity_element))
-    apf = ManifoldsBase.allocation_promotion_function(G, f, ())
-    rs = ManifoldsBase.representation_size(G)
-    return ManifoldsBase.allocate_result_array(G, f, apf(Float64), rs)
-end
-function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(zero_vector), g)
-    return ManifoldsBase.allocate_result(G.manifold, f, g)
-end
-function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(rand))
-    return ManifoldsBase.allocate_result(G.manifold, f)
-end
-
 @doc """
     base_manifold(G::LieGroup)
 
@@ -245,7 +231,7 @@ This can be done in-place of `k`.
 """
 @doc "$(_doc_conjugate)"
 function conjugate(G::LieGroup, g, h)
-    k = ManifoldsBase.allocate_result(G, inv_right_compose, h, g)
+    k = ManifoldsBase.allocate_result(G, conjugate, h, g)
     return conjugate!(G, k, g, h)
 end
 
@@ -585,6 +571,10 @@ function Base.inv(::LieGroup{𝔽,O}, e::Identity{O}) where {𝔽,O<:AbstractGro
     return e
 end
 
+function inv!(G::LieGroup{𝔽,O}, q, ::Identity{O}) where {𝔽,O<:AbstractGroupOperation}
+    return identity_element!(G, q)
+end
+
 _doc_inv_left_compose = """
     inv_left_compose(G::LieGroup, g, h)
     inv_left_compose!(G::LieGroup, k, g, h)
@@ -870,4 +860,25 @@ function ManifoldsBase.zero_vector!(
     G::LieGroup{𝔽,O}, X, ::Identity{O}
 ) where {𝔽,O<:AbstractGroupOperation}
     return zero_vector!(G.manifold, X, identity_element(G))
+end
+
+#
+# Allocation hints - mainly pass-through, especially for power manifolds
+function ManifoldsBase.allocate_result(
+    G::LieGroup,
+    f::Union{typeof(compose),typeof(inv),typeof(conjugate),typeof(exp)},
+    args...,
+)
+    return ManifoldsBase.allocate_result(G.manifold, ManifoldsBase.exp, args...)
+end
+function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(log), args...)
+    return ManifoldsBase.allocate_result(G.manifold, f, args...)
+end
+function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(zero_vector), g)
+    return ManifoldsBase.allocate_result(G.manifold, f, g)
+end
+function ManifoldsBase.allocate_result(
+    G::LieGroup, f::Union{typeof(rand),typeof(identity_element)}
+)
+    return ManifoldsBase.allocate_result(G.manifold, f)
 end
