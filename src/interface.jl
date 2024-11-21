@@ -139,17 +139,15 @@ function adjoint!(G::LieGroup, Y, g, X)
     return Y
 end
 
-# Pass through for allocation
-function ManifoldsBase.allocate_result(G::LieGroup, args...)
-    return ManifoldsBase.allocate_result(G.manifold, args...)
-end
-
 #
-# Allocation hints
+# Allocation hints - mainly pass-through
 function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(identity_element))
     apf = ManifoldsBase.allocation_promotion_function(G, f, ())
     rs = ManifoldsBase.representation_size(G)
     return ManifoldsBase.allocate_result_array(G, f, apf(Float64), rs)
+end
+function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(zero_vector), g)
+    return ManifoldsBase.allocate_result(G.manifold, f, g)
 end
 
 @doc """
@@ -422,7 +420,9 @@ end
 
 # Fallback to a MethodError to avoid stack overflow
 @doc "$(_doc_exp_id)"
-function ManifoldsBase.exp!(G::LieGroup, h, e::Identity, X, t::Number=1)
+function ManifoldsBase.exp!(
+    G::LieGroup{𝔽,Op}, h, e::Identity{Op}, X, t::Number=1
+) where {𝔽,Op<:AbstractGroupOperation}
     throw(MethodError(exp!, (typeof(G), typeof(h), typeof(e), typeof(X), typeof(t))))
 end
 
@@ -570,7 +570,6 @@ This can be done in-place of `h`, without side effects, that is you can do `inv!
 
 @doc "$_doc_inv"
 function Base.inv(G::LieGroup, g)
-    print(g)
     h = allocate_result(G, inv, g)
     return inv!(G, h, g)
 end

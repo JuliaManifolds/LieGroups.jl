@@ -17,7 +17,6 @@ end
 
 @doc """
     PowerLieGroup(G::LieGroup, args...; kwargs...)
-    PowerLieGroup(M::AbstractManifold, op::PowerGroupOperation, args...; kwargs...)
     (L::LueGroup)^(n...) = PowerLieGroup(L, n...)
 
 Generate the [`LieGroup`](@ref) of the `n`-th power of a Lie group `G` or manifold `M`.
@@ -31,17 +30,15 @@ This especially includes the `size` of the manifold and allows to specify a [`Ne
 """
 PowerLieGroup(::AbstractManifold, args...; kwargs...)
 
-function PowerLieGroup(M::AbstractManifold, op::PowerGroupOperation, args...; kwargs...)
-    pM = Manifolds.PowerManifold(M, args...; kwargs...)
-    return LieGroup(pM, op)
-end
 function PowerLieGroup(G::LieGroup, args...; kwargs...)
-    return PowerLieGroup(G.manifold, PowerGroupOperation(G.op), args...; kwargs...)
+    M = G.manifold
+    pM = Manifolds.PowerManifold(M, args...; kwargs...)
+    return LieGroup(pM, PowerGroupOperation(G.op))
 end
 
 Base.:^(G::LieGroup, n...) = PowerLieGroup(G, n...)
 
-function compose!(
+function _compose!(
     PG::LieGroup{𝔽,Op,M}, k, g, h
 ) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
     PM = PG.manifold
@@ -64,6 +61,11 @@ function ManifoldsBase.check_size(
     return ManifoldsBase.check_size(PG.manifold, g)
 end
 function ManifoldsBase.check_size(
+    ::LieGroup{𝔽,Op,M}, ::Identity
+) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
+    return nothing
+end
+function ManifoldsBase.check_size(
     PG::LieGroup{𝔽,Op,M}, g, X
 ) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
     return ManifoldsBase.check_size(PG.manifold, g, X)
@@ -80,6 +82,24 @@ function ManifoldsBase.exp!(
             G,
             ManifoldsBase._write(PM, rep_size, h, i),
             ManifoldsBase._read(PM, rep_size, g, i),
+            ManifoldsBase._read(PM, rep_size, X, i),
+            t,
+        )
+    end
+    return h
+end
+function ManifoldsBase.exp!(
+    PG::LieGroup{𝔽,Op,M}, h, ::Identity{Op}, X, t::Number=1
+) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
+    PM = PG.manifold
+    rep_size = representation_size(PM)
+    G = LieGroup(PM.manifold, PG.op.op)
+    e_g = Identity(G)
+    for i in ManifoldsBase.get_iterator(PM)
+        exp!(
+            G,
+            ManifoldsBase._write(PM, rep_size, h, i),
+            e_g,
             ManifoldsBase._read(PM, rep_size, X, i),
             t,
         )
