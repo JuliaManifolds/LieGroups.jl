@@ -71,6 +71,94 @@ function ManifoldsBase.check_size(
     return ManifoldsBase.check_size(PG.manifold, g, X)
 end
 
+function conjugate!(
+    PG::LieGroup{𝔽,Op,M}, h, g, k
+) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
+    PM = PG.manifold
+    rep_size = representation_size(PM)
+    G = LieGroup(PM.manifold, PG.op.op)
+    for i in ManifoldsBase.get_iterator(PM)
+        conjugate!(
+            G,
+            ManifoldsBase._write(PM, rep_size, h, i),
+            ManifoldsBase._read(PM, rep_size, g, i),
+            ManifoldsBase._read(PM, rep_size, k, i),
+        )
+    end
+    return h
+end
+
+function diff_conjugate!(
+    PG::LieGroup{𝔽,Op,M}, Y, g, h, X
+) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
+    PM = PG.manifold
+    rep_size = representation_size(PM)
+    G = LieGroup(PM.manifold, PG.op.op)
+    for i in ManifoldsBase.get_iterator(PM)
+        diff_conjugate!(
+            G,
+            ManifoldsBase._write(PM, rep_size, Y, i),
+            ManifoldsBase._read(PM, rep_size, g, i),
+            ManifoldsBase._read(PM, rep_size, h, i),
+            ManifoldsBase._read(PM, rep_size, X, i),
+        )
+    end
+    return Y
+end
+
+function diff_inv!(
+    PG::LieGroup{𝔽,Op,M}, Y, g, X
+) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
+    PM = PG.manifold
+    rep_size = representation_size(PM)
+    G = LieGroup(PM.manifold, PG.op.op)
+    for i in ManifoldsBase.get_iterator(PM)
+        diff_inv!(
+            G,
+            ManifoldsBase._write(PM, rep_size, Y, i),
+            ManifoldsBase._read(PM, rep_size, g, i),
+            ManifoldsBase._read(PM, rep_size, X, i),
+        )
+    end
+    return Y
+end
+
+function diff_left_compose!(
+    PG::LieGroup{𝔽,Op,M}, Y, g, h, X
+) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
+    PM = PG.manifold
+    rep_size = representation_size(PM)
+    G = LieGroup(PM.manifold, PG.op.op)
+    for i in ManifoldsBase.get_iterator(PM)
+        diff_left_compose!(
+            G,
+            ManifoldsBase._write(PM, rep_size, Y, i),
+            ManifoldsBase._read(PM, rep_size, g, i),
+            ManifoldsBase._read(PM, rep_size, h, i),
+            ManifoldsBase._read(PM, rep_size, X, i),
+        )
+    end
+    return Y
+end
+
+function diff_right_compose!(
+    PG::LieGroup{𝔽,Op,M}, Y, g, h, X
+) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
+    PM = PG.manifold
+    rep_size = representation_size(PM)
+    G = LieGroup(PM.manifold, PG.op.op)
+    for i in ManifoldsBase.get_iterator(PM)
+        diff_right_compose!(
+            G,
+            ManifoldsBase._write(PM, rep_size, Y, i),
+            ManifoldsBase._read(PM, rep_size, g, i),
+            ManifoldsBase._read(PM, rep_size, h, i),
+            ManifoldsBase._read(PM, rep_size, X, i),
+        )
+    end
+    return Y
+end
+
 function ManifoldsBase.exp!(
     PG::LieGroup{𝔽,Op,M}, h, g, X, t::Number=1
 ) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
