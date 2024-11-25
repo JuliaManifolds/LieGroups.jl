@@ -880,5 +880,6 @@ end
 function ManifoldsBase.allocate_result(
     G::LieGroup, f::Union{typeof(rand),typeof(identity_element)}
 )
-    return ManifoldsBase.allocate_result(G.manifold, f)
+    # both get a type allocated like rand
+    return ManifoldsBase.allocate_result(G.manifold, rand)
 end

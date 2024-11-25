@@ -90,12 +90,13 @@ end
 function conjugate!(
     PrG::LieGroup{𝔽,Op,M}, k, g, h
 ) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PrM = PrG.manifold
     map(
-        conjugate,
-        LieGroup.(PrG.manifold.manifolds, PrG.op.operations),
-        submanifold_components(PrG.manifold, k),
-        submanifold_components(PrG.manifold, g),
-        submanifold_components(PrG.manifold, h),
+        conjugate!,
+        LieGroup.(PrM.manifolds, PrG.op.operations),
+        submanifold_components(PrM, k),
+        submanifold_components(PrM, g),
+        submanifold_components(PrM, h),
     )
     return k
 end
@@ -117,14 +118,40 @@ function LinearAlgebra.cross(G::LieGroup, H::LieGroup)
     return ProductLieGroup(G, H)
 end
 
+function identity_element!(
+    PrG::LieGroup{𝔽,Op,M}, e
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PrM = PrG.manifold
+    map(
+        identity_element!,
+        LieGroup.(PrM.manifolds, PrG.op.operations),
+        submanifold_components(PrG, e),
+    )
+    return e
+end
+
 function inv!(
     PrG::LieGroup{𝔽,Op,M}, h, g
 ) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PrM = PrG.manifold
     map(
         inv!,
-        LieGroup.(PrG.manifold.manifolds, PrG.op.operations),
-        submanifold_components(M, h),
-        submanifold_components(M, g),
+        LieGroup.(PrM.manifolds, PrG.op.operations),
+        submanifold_components(PrM, h),
+        submanifold_components(PrM, g),
+    )
+    return h
+end
+
+function inv!(
+    PrG::LieGroup{𝔽,Op,M}, h, ::Identity{Op}
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PrM = PrG.manifold
+    map(
+        inv!,
+        LieGroup.(PrM.manifolds, PrG.op.operations),
+        submanifold_components(PrM, h),
+        Identity.(PrG.op.operations),
     )
     return h
 end
