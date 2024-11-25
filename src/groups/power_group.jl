@@ -282,7 +282,3 @@ function Base.show(
     size = Manifolds.get_parameter(G.manifold.size)
     return print(io, "PowerLieGroup($L, $(join(size, ", ")))")
 end
-
-function Base.show(io::IO, POp::PowerGroupOperation)
-    return print(io, "PowerGroupOperation($(POp.op))")
-end

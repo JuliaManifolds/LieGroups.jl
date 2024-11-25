@@ -18,6 +18,7 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
   * `LeftSemidirectProductLieGroup` (formerly `SemidirectProductGroup`)
   * `⋉` (alias for `LeftSemidirectProductGroupOperation` when a `default_left_action(G,H)` is defined for the two groups)
   * `PowerLieGroup` (formerly `PowerGroup`)
+  * `PowerGroupOperation` to internally avoid ambiguities. Since the constructor always expects a Lie group, this is only necessary internally
   * `ProductLieGroup` (formerly `ProductGroup`)
   * `RightSemidirectProductLieGroup`
   * `⋉` (alias for `RightSemidirectProductGroupOperation` when a `default_right_action(G,H)` is defined for the two groups)
@@ -26,7 +27,7 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
   * `MultiplicationGroupOperation` (formerly `MultiplicationOperation`)
   * `PowerGroupOperation` (formerly the Lie group was stored inside a power manifold)
   * `ProductGroupOperation` (formerly the Lie groups were stored inside a product manifold)
-  * `LeftSemidirectProductGroupOperation` (this was formerly only implictly stored in the `SemidirectProductGroup`)
+  * `LeftSemidirectProductGroupOperation` (this was formerly only implicitly stored in the `SemidirectProductGroup`)
   * `RightSemidirectProductGroupOperation`
 * `AbstractGroupActionType` with its 2 specific (new) abstract subtypes
   * `AbstractLeftGroupActionType`
