@@ -9,11 +9,18 @@ Manifolds = "1cead3c2-87b3-11e9-0ccd-23c62b72b94e"
 ManifoldsBase = "3362f125-f0bb-47a3-aa74-596ffd7ef2fb"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
+[weakdeps]
+RecursiveArrayTools = "731186ca-8d62-57ce-b412-fbd966d074cd"
+
+[extensions]
+LieGroupsRecursiveArrayToolsExt = "RecursiveArrayTools"
+
 [compat]
 Aqua = "0.8"
 LinearAlgebra = "1.6"
 Manifolds = "0.10.5"
 ManifoldsBase = "0.15.20"
+RecursiveArrayTools = "2, 3"
 Random = "1.6"
 Test = "1.6"
 julia = "1.6"

@@ -58,6 +58,48 @@ function ProductLieGroup(G::LieGroup, H::LieGroup)
     return LieGroup(G.manifold × H.manifold, G.op × H.op)
 end
 
+function _compose!(
+    PrG::LieGroup{𝔽,Op,M}, k, g, h
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    map(
+        compose!,
+        LieGroup.(PrG.manifold.manifolds, PrG.op.operations),
+        submanifold_components(PrG.manifold, k),
+        submanifold_components(PrG.manifold, g),
+        submanifold_components(PrG.manifold, h),
+    )
+    return k
+end
+
+function ManifoldsBase.check_size(
+    PrG::LieGroup{𝔽,Op,M}, g
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    return ManifoldsBase.check_size(PrG.manifold, g)
+end
+function ManifoldsBase.check_size(
+    ::LieGroup{𝔽,Op,M}, ::Identity
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    return nothing
+end
+function ManifoldsBase.check_size(
+    PrG::LieGroup{𝔽,Op,M}, g, X
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    return ManifoldsBase.check_size(PrG.manifold, g, X)
+end
+
+function conjugate!(
+    PrG::LieGroup{𝔽,Op,M}, k, g, h
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    map(
+        conjugate,
+        LieGroup.(PrG.manifold.manifolds, PrG.op.operations),
+        submanifold_components(PrG.manifold, k),
+        submanifold_components(PrG.manifold, g),
+        submanifold_components(PrG.manifold, h),
+    )
+    return k
+end
+
 @doc raw"""
     cross(G, H)
     G × H
@@ -73,6 +115,18 @@ For the case that more than two are concatenated with `×` this is iterated.
 cross(::LieGroup...)
 function LinearAlgebra.cross(G::LieGroup, H::LieGroup)
     return ProductLieGroup(G, H)
+end
+
+function inv!(
+    PrG::LieGroup{𝔽,Op,M}, h, g
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    map(
+        inv!,
+        LieGroup.(PrG.manifold.manifolds, PrG.op.operations),
+        submanifold_components(M, h),
+        submanifold_components(M, g),
+    )
+    return h
 end
 
 function Base.show(
