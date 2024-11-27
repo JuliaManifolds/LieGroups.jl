@@ -177,18 +177,6 @@ function diff_right_compose!(
     return Y
 end
 
-function identity_element!(
-    PrG::LieGroup{𝔽,Op,M}, e
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
-    PrM = PrG.manifold
-    map(
-        identity_element!,
-        LieGroup.(PrM.manifolds, PrG.op.operations),
-        submanifold_components(PrG, e),
-    )
-    return e
-end
-
 function ManifoldsBase.exp!(
     PrG::LieGroup{𝔽,Op,M}, h, ::Identity{Op}, X, t::Number=1
 ) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
