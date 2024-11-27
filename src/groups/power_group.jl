@@ -176,6 +176,7 @@ function ManifoldsBase.exp!(
     end
     return h
 end
+
 function ManifoldsBase.exp!(
     PoG::LieGroup{𝔽,Op,M}, h, ::Identity{Op}, X, t::Number=1
 ) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
@@ -240,21 +241,6 @@ function inv!(
     return h
 end
 
-function ManifoldsBase.log!(
-    PoG::LieGroup{𝔽,Op,M}, X, g
-) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
-    PM = PoG.manifold
-    rep_size = representation_size(PM)
-    G = LieGroup(PM.manifold, PoG.op.op)
-    for i in ManifoldsBase.get_iterator(PM)
-        log!(
-            G,
-            ManifoldsBase._write(PM, rep_size, X, i),
-            ManifoldsBase._read(PM, rep_size, g, i),
-        )
-    end
-    return X
-end
 function ManifoldsBase.log!(
     PoG::LieGroup{𝔽,Op,M}, X, ::Identity{Op}, g
 ) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}

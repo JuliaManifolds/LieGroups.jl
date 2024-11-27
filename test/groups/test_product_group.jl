@@ -1,4 +1,4 @@
-using LieGroups, Test, ManifoldsBase, RecursiveArrayTools
+using LieGroups, Test, ManifoldsBase, Random, RecursiveArrayTools
 
 s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 !(s in LOAD_PATH) && (push!(LOAD_PATH, s))
@@ -11,25 +11,25 @@ using LieGroupsTestSuite
 
     properties = Dict(
         :Name => "The Product Manifold",
-        # :Rng => Random.MersenneTwister(),
+        :Rng => Random.MersenneTwister(),
         :Points => [g, h],
         :Vectors => [X, Y],
         :Functions => [
             compose,
             conjugate,
-            # diff_conjugate,
-            # diff_inv,
-            # diff_left_compose,
-            # diff_right_compose,
-            # exp,
+            diff_conjugate,
+            diff_inv,
+            diff_left_compose,
+            diff_right_compose,
+            exp,
             # hat,
             inv,
-            # inv_left_compose,
-            # inv_right_compose,
-            # is_identity,
+            inv_left_compose,
+            inv_right_compose,
+            is_identity,
             # lie_bracket,
-            # log,
-            #rand,
+            log,
+            rand,
             show,
             #vee,
         ],

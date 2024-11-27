@@ -118,6 +118,65 @@ function LinearAlgebra.cross(G::LieGroup, H::LieGroup)
     return ProductLieGroup(G, H)
 end
 
+function diff_conjugate!(
+    PrG::LieGroup{𝔽,Op,M}, Y, g, h, X
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PrM = PrG.manifold
+    map(
+        diff_conjugate!,
+        LieGroup.(PrM.manifolds, PrG.op.operations),
+        submanifold_components(PrG, Y),
+        submanifold_components(PrG, g),
+        submanifold_components(PrG, h),
+        submanifold_components(PrG, X),
+    )
+    return Y
+end
+
+function diff_inv!(
+    PrG::LieGroup{𝔽,Op,M}, Y, g, X
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PrM = PrG.manifold
+    map(
+        diff_inv!,
+        LieGroup.(PrM.manifolds, PrG.op.operations),
+        submanifold_components(PrG, Y),
+        submanifold_components(PrG, g),
+        submanifold_components(PrG, X),
+    )
+    return Y
+end
+
+function diff_left_compose!(
+    PrG::LieGroup{𝔽,Op,M}, Y, g, h, X
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PrM = PrG.manifold
+    map(
+        diff_left_compose!,
+        LieGroup.(PrM.manifolds, PrG.op.operations),
+        submanifold_components(PrG, Y),
+        submanifold_components(PrG, g),
+        submanifold_components(PrG, h),
+        submanifold_components(PrG, X),
+    )
+    return Y
+end
+
+function diff_right_compose!(
+    PrG::LieGroup{𝔽,Op,M}, Y, g, h, X
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PrM = PrG.manifold
+    map(
+        diff_right_compose!,
+        LieGroup.(PrM.manifolds, PrG.op.operations),
+        submanifold_components(PrG, Y),
+        submanifold_components(PrG, g),
+        submanifold_components(PrG, h),
+        submanifold_components(PrG, X),
+    )
+    return Y
+end
+
 function identity_element!(
     PrG::LieGroup{𝔽,Op,M}, e
 ) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
@@ -126,6 +185,32 @@ function identity_element!(
         identity_element!,
         LieGroup.(PrM.manifolds, PrG.op.operations),
         submanifold_components(PrG, e),
+    )
+    return e
+end
+
+function ManifoldsBase.exp!(
+    PrG::LieGroup{𝔽,Op,M}, h, ::Identity{Op}, X, t::Number=1
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PrM = PrG.manifold
+    map(
+        (M, h, e, X) -> exp!(M, h, e, X, t), # introduce a function with “hard coded” t
+        LieGroup.(PrM.manifolds, PrG.op.operations),
+        submanifold_components(PrM, h),
+        Identity.(PrG.op.operations),
+        submanifold_components(PrM, X),
+    )
+    return h
+end
+
+function identity_element!(
+    PrG::LieGroup{𝔽,Op,M}, e
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PrM = PrG.manifold
+    map(
+        identity_element!,
+        LieGroup.(PrM.manifolds, PrG.op.operations),
+        submanifold_components(PrM, e),
     )
     return e
 end
@@ -142,7 +227,6 @@ function inv!(
     )
     return h
 end
-
 function inv!(
     PrG::LieGroup{𝔽,Op,M}, h, ::Identity{Op}
 ) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
@@ -156,10 +240,24 @@ function inv!(
     return h
 end
 
+function ManifoldsBase.log!(
+    PrG::LieGroup{𝔽,Op,M}, X, ::Identity{Op}, g
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PrM = PrG.manifold
+    map(
+        log!,
+        LieGroup.(PrM.manifolds, PrG.op.operations),
+        submanifold_components(PrM, X),
+        Identity.(PrG.op.operations),
+        submanifold_components(PrM, g),
+    )
+    return X
+end
+
 function Base.show(
-    io::IO, G::LieGroup{𝔽,<:ProductGroupOperation,<:ManifoldsBase.ProductManifold}
-) where {𝔽}
-    M = G.manifold.manifolds
+    io::IO, G::LieGroup{𝔽,Op,M}
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PrM = G.manifold.manifolds
     ops = G.op.operations
-    return print(io, "ProductLieGroup($(join(M, " × ")), $(join(ops, " × ")))")
+    return print(io, "ProductLieGroup($(join(PrM, " × ")), $(join(ops, " × ")))")
 end
