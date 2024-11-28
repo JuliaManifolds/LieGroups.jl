@@ -199,7 +199,8 @@ function hat!(
     @assert length(c) == sum(dims)
     dim_ranges = ManifoldsBase._get_dim_ranges(dims)
     Prc = map(dr -> (@inbounds view(c, dr)), dim_ranges)
-    ts = ManifoldsBase.ziptuples(PM.manifolds, submanifold_components(PM, X), Prc)
+    PrL = LieGroup.(PrM.manifolds, PrG.op.operations)
+    ts = ManifoldsBase.ziptuples(PrL, submanifold_components(PrM, X), Prc)
     map(ts) do t
         return hat!(t...)
     end
@@ -283,11 +284,14 @@ function vee!(
     PrG::LieGroup{𝔽,Op,M}, c, X
 ) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     PrM = PrG.manifold
-    map(
-        vee!,
-        LieGroup.(PrM.manifolds, PrG.op.operations),
-        submanifold_components(PrM, c),
-        submanifold_components(PrM, X),
-    )
-    return X
+    dims = map(manifold_dimension, PrM.manifolds)
+    @assert length(c) == sum(dims)
+    dim_ranges = ManifoldsBase._get_dim_ranges(dims)
+    Prc = map(dr -> (@inbounds view(c, dr)), dim_ranges)
+    PrL = LieGroup.(PrM.manifolds, PrG.op.operations)
+    ts = ManifoldsBase.ziptuples(PrL, Prc, submanifold_components(PrM, X))
+    map(ts) do t
+        return vee!(t...)
+    end
+    return c
 end
