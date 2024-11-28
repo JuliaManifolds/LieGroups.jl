@@ -61,7 +61,7 @@ function ManifoldsBase.check_size(
     return ManifoldsBase.check_size(PoG.manifold, g)
 end
 function ManifoldsBase.check_size(
-    ::LieGroup{𝔽,Op,M}, ::Identity
+    ::LieGroup{𝔽,Op,M}, ::Identity{Op}
 ) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
     return nothing
 end

@@ -594,6 +594,20 @@ function test_inv(G::LieGroup, g; test_mutating::Bool=true, test_identity::Bool=
     end
     return nothing
 end
+
+"""
+    test_is_identity(G::LieGroup, g)
+
+Test that the `Identity` returns that `is_identity` is true and that it is a point
+"""
+function test_identity(G::LieGroup)
+    @testset "Identity" begin
+        e = Identity(G)
+        @test is_point(G, e)
+        @test is_identity(G, e)
+    end
+    return nothing
+end
 #
 #
 # --- L
@@ -830,7 +844,11 @@ function test_lie_group(G::LieGroup, properties::Dict, expectations::Dict=Dict()
         end
         if (inv in functions)
             test_inv(G, points[1]; test_mutating=mutating)
-        end        #
+        end
+        if (is_identity in functions)
+            test_identity(G)
+        end
+        #
         #
         # --- L
         if (lie_bracket in functions)
