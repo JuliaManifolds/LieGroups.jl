@@ -196,6 +196,21 @@ function ManifoldsBase.exp!(
     return h
 end
 
+function hat!(
+    PoG::LieGroup{𝔽,Op,M}, X, c
+) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
+    PM = PoG.manifold
+    rep_size = representation_size(PM.manifold)
+    dim = manifold_dimension(PM.manifold)
+    v_iter = 1
+    G = LieGroup(PM.manifold, PoG.op.op)
+    for i in ManifoldsBase.get_iterator(PM)
+        hat!(G, ManifoldsBase._write(PM, rep_size, X, i), c[v_iter:(v_iter + dim - 1)])
+        v_iter += dim
+    end
+    return X
+end
+
 function identity_element!(
     PoG::LieGroup{𝔽,Op,M}, e
 ) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
@@ -241,6 +256,22 @@ function inv!(
     return h
 end
 
+function lie_bracket!(
+    PoA::LieAlgebra{𝔽,<:LieGroup{𝔽,Op,M}}, Z, X, Y
+) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
+    PM = PoA.manifold.manifold
+    rep_size = representation_size(PM)
+    𝔤 = LieAlgebra(LieGroup(PM.manifold, PoA.manifold.op.op))
+    for i in ManifoldsBase.get_iterator(PM)
+        lie_bracket!(
+            𝔤,
+            ManifoldsBase._write(PM, rep_size, Z, i),
+            ManifoldsBase._read(PM, rep_size, X, i),
+            ManifoldsBase._read(PM, rep_size, Y, i),
+        )
+    end
+end
+
 function ManifoldsBase.log!(
     PoG::LieGroup{𝔽,Op,M}, X, ::Identity{Op}, g
 ) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
@@ -267,4 +298,19 @@ function Base.show(
     L = LieGroup(PM.manifold, POp.op)
     size = Manifolds.get_parameter(G.manifold.size)
     return print(io, "PowerLieGroup($L, $(join(size, ", ")))")
+end
+
+function vee!(
+    PoG::LieGroup{𝔽,Op,M}, c, X
+) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
+    PM = PoG.manifold
+    rep_size = representation_size(PM.manifold)
+    dim = manifold_dimension(PM.manifold)
+    G = LieGroup(PM.manifold, PoG.op.op)
+    v_iter = 1
+    for i in ManifoldsBase.get_iterator(PM)
+        vee!(G, view(c, v_iter:(v_iter + dim - 1)), ManifoldsBase._read(PM, rep_size, X, i))
+        v_iter += dim
+    end
+    return c
 end

@@ -191,6 +191,21 @@ function ManifoldsBase.exp!(
     return h
 end
 
+function hat!(
+    PrG::LieGroup{𝔽,Op,M}, X, c
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PrM = PrG.manifold
+    dims = map(manifold_dimension, PrM.manifolds)
+    @assert length(c) == sum(dims)
+    dim_ranges = ManifoldsBase._get_dim_ranges(dims)
+    Prc = map(dr -> (@inbounds view(c, dr)), dim_ranges)
+    ts = ManifoldsBase.ziptuples(PM.manifolds, submanifold_components(PM, X), Prc)
+    map(ts) do t
+        return hat!(t...)
+    end
+    return X
+end
+
 function identity_element!(
     PrG::LieGroup{𝔽,Op,M}, e
 ) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
@@ -228,6 +243,20 @@ function inv!(
     return h
 end
 
+function lie_bracket!(
+    PrA::LieAlgebra{𝔽,<:LieGroup{𝔽,Op,M}}, Z, X, Y
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PrM = PrA.manifold.manifold
+    map(
+        lie_bracket!,
+        LieAlgebra.(LieGroup.(PrM.manifolds, PrA.op.operations)),
+        submanifold_components(PrM, Z),
+        submanifold_components(PrM, X),
+        submanifold_components(PrM, Y),
+    )
+    return Z
+end
+
 function ManifoldsBase.log!(
     PrG::LieGroup{𝔽,Op,M}, X, ::Identity{Op}, g
 ) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
@@ -248,4 +277,17 @@ function Base.show(
     PrM = G.manifold.manifolds
     ops = G.op.operations
     return print(io, "ProductLieGroup($(join(PrM, " × ")), $(join(ops, " × ")))")
+end
+
+function vee!(
+    PrG::LieGroup{𝔽,Op,M}, c, X
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PrM = PrG.manifold
+    map(
+        vee!,
+        LieGroup.(PrM.manifolds, PrG.op.operations),
+        submanifold_components(PrM, c),
+        submanifold_components(PrM, X),
+    )
+    return X
 end
