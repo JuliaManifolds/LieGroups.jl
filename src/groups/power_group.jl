@@ -66,6 +66,13 @@ function ManifoldsBase.check_size(
     return nothing
 end
 function ManifoldsBase.check_size(
+    G::LieGroup{𝔽,Op,M}, e::Identity
+) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
+    return DomainError(
+        "The Identity $e is not the identity of the group, expected $(Identity(G.op))."
+    )
+end
+function ManifoldsBase.check_size(
     PoG::LieGroup{𝔽,Op,M}, g, X
 ) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
     return ManifoldsBase.check_size(PoG.manifold, g, X)
@@ -105,7 +112,24 @@ function diff_conjugate!(
     end
     return Y
 end
-
+function diff_conjugate!(
+    PoG::LieGroup{𝔽,Op,M}, Y, g, ::Identity{Op}, X
+) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
+    PM = PoG.manifold
+    rep_size = representation_size(PM)
+    G = LieGroup(PM.manifold, PoG.op.op)
+    e_g = Identity(G)
+    for i in ManifoldsBase.get_iterator(PM)
+        diff_conjugate!(
+            G,
+            ManifoldsBase._write(PM, rep_size, Y, i),
+            ManifoldsBase._read(PM, rep_size, g, i),
+            e_g,
+            ManifoldsBase._read(PM, rep_size, X, i),
+        )
+    end
+    return Y
+end
 function diff_inv!(
     PoG::LieGroup{𝔽,Op,M}, Y, g, X
 ) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}

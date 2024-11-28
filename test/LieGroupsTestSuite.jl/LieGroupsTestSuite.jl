@@ -603,8 +603,12 @@ Test that the `Identity` returns that `is_identity` is true and that it is a poi
 function test_identity(G::LieGroup)
     @testset "Identity" begin
         e = Identity(G)
-        @test is_point(G, e)
+        @test is_point(G, e; error=:error)
         @test is_identity(G, e)
+        e2 = Identity(DummyOperation)
+        @test !is_point(G, e2)
+        @test_throws DomainError !is_point(G, e2; error=:error)
+        @test !is_identity(G, e2)
     end
     return nothing
 end
