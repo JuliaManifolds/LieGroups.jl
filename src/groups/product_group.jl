@@ -4,17 +4,18 @@
 # One for each factor, we define the product operation as acting element wise.
 
 """
-    ProductGroupOperation{O} <: AbstractGroupOperation
+    ProductGroupOperation{O<:<:NTuple{N,AbstractGroupOperation} where N} <: AbstractGroupOperation
 
 A struct do model a tuple of group operations, one for each factor of a product group,
 that together forms a new group operation.
 
 # Constructor
 
-    ProductGroupOperation(o::O...)
-    ×(o::O...) = ProductGroupOperation(o...)
+    ProductGroupOperation(o::AbstractGroupOperation...)
+    ×(o::AbstractGroupOperation...) = ProductGroupOperation(o...)
 """
-struct ProductGroupOperation{OTM<:Tuple} <: AbstractGroupOperation
+struct ProductGroupOperation{OTM<:NTuple{N,AbstractGroupOperation} where {N}} <:
+       AbstractGroupOperation
     operations::OTM
 end
 function ProductGroupOperation(operations::AbstractGroupOperation...)
@@ -22,13 +23,13 @@ function ProductGroupOperation(operations::AbstractGroupOperation...)
 end
 
 @doc raw"""
-    cross(O1, O2)
+    cross(O1::AbstractGroupOperation, O2::AbstractGroupOperation)
     O1 × O2
     O1 × O2 × O3 × ...
 
 Return the [`ProductGroupOperation`](@ref) For two [AbstractGroupOperation`](@ref) `O1` and `O2`,
 where for the case that one of them is a [`ProductGroupOperation`](@ref) itself,
-the other is either prepended (if `O1` is a product) or appenden (if `O2` is).
+the other is either prepended (if `O1` is a product) or appended (if `O2` is).
 If both are product operations, they are combined into one, keeping the order of operations.
 
 For the case that more than two are concatenated with `×` this is iterated.
@@ -102,13 +103,13 @@ function conjugate!(
 end
 
 @doc raw"""
-    cross(G, H)
+    cross(G::LieGroup, H::LieGroup)
     G × H
     G1 × G2 × G3 × ...
 
 Return the [`ProductLieGroup`](@ref) For two [`LieGroups`](@ref) `G` and `H`,
 where for the case that one of them is a [`ProductLieGroup`](@ref) itself,
-the other is either prepended (if `H` is a product) or appenden (if `G` is).
+the other is either prepended (if `H` is a product) or appended (if `G` is).
 If both are product Lie groups, they are combined into one, keeping the order of operations.
 
 For the case that more than two are concatenated with `×` this is iterated.

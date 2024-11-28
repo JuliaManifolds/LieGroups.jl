@@ -3,21 +3,21 @@
 # Power Lie groups: work element wise
 
 @doc """
-    PowerGroupOperation{O} <: AbstractGroupOperation
+    PowerGroupOperation{O<:AbstractGroupOperation} <: AbstractGroupOperation
 
 A struct do model a that a certain group operation is applied element-wise on a [`PowerManifold`](@extref `ManifoldsBase.PowerManifold`).
 
 # Constructor
 
-    PowerGroupOperation(o:O)
+    PowerGroupOperation(o::AbstractGroupOperation)
 """
-struct PowerGroupOperation{O} <: AbstractGroupOperation
+struct PowerGroupOperation{O<:AbstractGroupOperation} <: AbstractGroupOperation
     op::O
 end
 
 @doc """
-    PowerLieGroup(G::LieGroup, args...; kwargs...)
-    (L::LueGroup)^(n...) = PowerLieGroup(L, n...)
+    PowerLieGroup(G::LieGroup, args::Integer...; kwargs...)
+    (G::LieGroup)^(n) = PowerLieGroup(G, n)
 
 Generate the [`LieGroup`](@ref) of the `n`-th power of a Lie group `G` or manifold `M`.
 If passed a Lie group `G`, the group operation on the [`PowerLieGroup`](@ref) is the same as on `G`,
@@ -32,11 +32,11 @@ PowerLieGroup(::AbstractManifold, args...; kwargs...)
 
 function PowerLieGroup(G::LieGroup, args...; kwargs...)
     M = G.manifold
-    pM = Manifolds.PowerManifold(M, args...; kwargs...)
+    pM = ManifoldsBase.PowerManifold(M, args...; kwargs...)
     return LieGroup(pM, PowerGroupOperation(G.op))
 end
 
-Base.:^(G::LieGroup, n...) = PowerLieGroup(G, n...)
+Base.:^(G::LieGroup, n::Integer) = PowerLieGroup(G, n)
 
 function _compose!(
     PoG::LieGroup{𝔽,Op,M}, k, g, h

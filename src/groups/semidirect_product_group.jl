@@ -102,7 +102,9 @@ struct RightSemidirectProductGroupOperation{
 end
 
 """
-    LeftSemidirectProductLieGroup(N::LieGroup, H::LieGroup, action=default_left_action(N,H))
+    LeftSemidirectProductLieGroup(
+        N::LieGroup, H::LieGroup, action::AbstractGroupActionType=default_left_action(N, H)
+    )
 
 Generate the semidirect product Lie Group ``$(_tex(:Cal, "G")) = N ⋉ H`` for an [`AbstractLeftGroupActionType`](@ref)
 using the [`LeftSemidirectProductGroupOperation`](@ref) for the group operation definition
@@ -120,7 +122,9 @@ function LeftSemidirectProductLieGroup(
 end
 
 """
-    RightSemidirectProductLieGroup(N::LieGroup, H::LieGroup, action=default_right_action(N,H))
+    RightSemidirectProductLieGroup(
+        N::LieGroup, H::LieGroup, action::AbstractGroupActionType=default_right_action(N,H)
+    )
 
 Generate the semidirect product Lie Group ``$(_tex(:Cal, "G")) = N ⋊ H`` for an [`AbstractLeftGroupActionType`](@ref)
 using the [`RightSemidirectProductGroupOperation`](@ref) for the group operation definition

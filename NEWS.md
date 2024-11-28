@@ -21,7 +21,7 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
   * `PowerGroupOperation` to internally avoid ambiguities. Since the constructor always expects a Lie group, this is only necessary internally
   * `ProductLieGroup` (formerly `ProductGroup`)
   * `RightSemidirectProductLieGroup`
-  * `⋉` (alias for `RightSemidirectProductGroupOperation` when a `default_right_action(G,H)` is defined for the two groups)
+  * `⋊` (alias for `RightSemidirectProductGroupOperation` when a `default_right_action(G,H)` is defined for the two groups)
 * `AbstractGroupOperation` as well as its concrete subtypes
   * `AdditionGroupOperation` (formerly `AdditionOperation`)
   * `MultiplicationGroupOperation` (formerly `MultiplicationOperation`)

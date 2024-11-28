@@ -125,8 +125,8 @@ makedocs(;
         "Lie groups" => [
             "List of Lie groups" => "groups/index.md",
             "General Linear" => "groups/general_linear.md",
-            "power group" => "groups/power_group.md",
-            "product group" => "groups/product_group.md",
+            "Power group" => "groups/power_group.md",
+            "Product group" => "groups/product_group.md",
             "Semidirect product group" => "groups/semidirect_product_group.md",
             "Translation group" => "groups/translation.md",
         ],

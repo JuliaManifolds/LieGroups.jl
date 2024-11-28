@@ -30,7 +30,7 @@ function LieAlgebraOrthogonalBasis(𝔽::ManifoldsBase.AbstractNumbers=ℝ)
 end
 
 """
-    LieGroup{𝔽, O<:AbstractGroupOperation, M<:AbstractManifold{𝔽}} <: LieGroup{𝔽,O,M} <: AbstractManifold{𝔽}
+    LieGroup{𝔽, O<:AbstractGroupOperation, M<:AbstractManifold{𝔽}} <: AbstractManifold{𝔽}
 
 Represent a Lie Group ``$(_math(:G))``.
 
