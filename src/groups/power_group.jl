@@ -257,7 +257,7 @@ function inv!(
 end
 
 function lie_bracket!(
-    PoA::LieAlgebra{𝔽,<:LieGroup{𝔽,Op,M}}, Z, X, Y
+    PoA::LieAlgebra{𝔽,Op,<:LieGroup{𝔽,Op,M}}, Z, X, Y
 ) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
     PM = PoA.manifold.manifold
     rep_size = representation_size(PM)
@@ -270,6 +270,7 @@ function lie_bracket!(
             ManifoldsBase._read(PM, rep_size, Y, i),
         )
     end
+    return Z
 end
 
 function ManifoldsBase.log!(

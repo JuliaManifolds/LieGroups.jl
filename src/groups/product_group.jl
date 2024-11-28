@@ -245,12 +245,12 @@ function inv!(
 end
 
 function lie_bracket!(
-    PrA::LieAlgebra{𝔽,<:LieGroup{𝔽,Op,M}}, Z, X, Y
+    PrA::LieAlgebra{𝔽,Op,<:LieGroup{𝔽,Op,M}}, Z, X, Y
 ) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     PrM = PrA.manifold.manifold
     map(
         lie_bracket!,
-        LieAlgebra.(LieGroup.(PrM.manifolds, PrA.op.operations)),
+        LieAlgebra.(LieGroup.(PrM.manifolds, PrA.manifold.op.operations)),
         submanifold_components(PrM, Z),
         submanifold_components(PrM, X),
         submanifold_components(PrM, Y),
