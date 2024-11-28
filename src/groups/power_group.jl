@@ -274,11 +274,6 @@ function inv!(
     end
     return h
 end
-function inv!(
-    ::LieGroup{𝔽,Op,M}, h::Identity{Op}, ::Identity{Op}
-) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
-    return h
-end
 
 function lie_bracket!(
     PoA::LieAlgebra{𝔽,Op,<:LieGroup{𝔽,Op,M}}, Z, X, Y
