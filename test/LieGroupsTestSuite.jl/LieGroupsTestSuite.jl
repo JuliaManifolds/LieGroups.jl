@@ -23,7 +23,7 @@ struct DummySecondOperation <: AbstractGroupOperation end
 struct DummyManifold <: LieGroups.AbstractManifold{LieGroups.ℝ} end
 struct DummyActionType <: AbstractGroupActionType end
 const DummyLieGroup = LieGroup{LieGroups.ℝ,DummyOperation,DummyManifold}
-
+LieGroups.switch(a::DummyActionType) = a
 # === Test single functions ===
 #
 #
@@ -338,6 +338,32 @@ end
 
 #
 #
+# --- D
+"""
+    test_diff_conjugate(A::GroupAction, g, p, X; expected=missing)
+
+Test  `diff_conjugate`
+"""
+function test_diff_conjugate(
+    G::LieGroup, g, h, X; expected=missing, test_mutating::Bool=true
+)
+    𝔤 = LieAlgebra(G)
+    @testset "diff_conjugate" begin
+        Y1 = diff_conjugate(G, g, h, X)
+        @test is_point(𝔤, Y1; error=:error)
+        if test_mutating
+            Y2 = zero_vector(𝔤)
+            diff_conjugate!(G, Y2, g, h, X)
+            @test isapprox(𝔤, Y1, Y2)
+        end
+        if !ismissing(expected)
+            @test isapprox(𝔤, Y1, expected)
+        end
+        return nothing
+    end
+end
+#
+#
 # --- E
 """
     test_exp_log(G::LieGroup, g, h, X)
@@ -589,6 +615,11 @@ function test_inv(G::LieGroup, g; test_mutating::Bool=true, test_identity::Bool=
                 e2 = copy(G, g)
                 inv!(G, e2, e)
                 @test is_identity(G, e2)
+                e3 = copy(G, g)
+                println(e3)
+                inv!(G, e3, e) # materialize identity
+                println(e3)
+                @test is_identity(G, e3)
             end
         end
     end
@@ -779,6 +810,13 @@ function test_lie_group(G::LieGroup, properties::Dict, expectations::Dict=Dict()
         #
         #
         # --- D
+        if (diff_conjugate in functions)
+            v = get(expectations, :diff_conjugate, missing)
+            test_diff_conjugate(
+                G, points[1], points[2], vectors[1]; expected=v, test_mutating=mutating
+            )
+        end
+
         if (diff_inv in functions)
             v = get(expectations, :diff_inv, missing)
             test_diff_inv(G, points[1], vectors[1]; expected=v, test_mutating=mutating)

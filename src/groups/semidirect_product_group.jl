@@ -162,19 +162,6 @@ where the corresponding [`default_right_action`](@ref)`(L1, L2)` is used.
 function ⋊(L1::LieGroup, L2::LieGroup)
     return RightSemidirectProductLieGroup(L1, L2, default_right_action(L1, L2))
 end
-
-function Base.show(io::IO, LSDOp::LeftSemidirectProductGroupOperation)
-    return print(
-        io,
-        "LeftSemidirectProductGroupOperation($(LSDOp.op1), $(LSDOp.op2), $(LSDOp.action_type))",
-    )
-end
-function Base.show(io::IO, RSDOp::RightSemidirectProductGroupOperation)
-    return print(
-        io,
-        "RightSemidirectProductGroupOperation($(RSDOp.op1), $(RSDOp.op2), $(RSDOp.action_type))",
-    )
-end
 function Base.show(
     io::IO,
     LSDL::LieGroup{𝔽,<:LeftSemidirectProductGroupOperation,<:ManifoldsBase.ProductManifold},
