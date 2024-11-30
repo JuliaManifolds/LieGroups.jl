@@ -10,5 +10,6 @@ using LieGroupsTestSuite
     G = LieGroupsTestSuite.DummyLieGroup(M, LieGroupsTestSuite.DummyOperation())
     a = GroupAction(T, G, M)
     @test repr(a) === "GroupAction($T, $G, $M)"
-    @test switch(T) == T
+    @test switch(T) === T
+    @test switch(a) === a
 end

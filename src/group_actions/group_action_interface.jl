@@ -249,7 +249,7 @@ Return the group operation action representing the similar [`GroupAction`](@ref)
 but acting from the other side. It switches left to right and vice versa.
 This is done by returning the group action with the “switched” type of `T`.
 """
-switch(A::GroupAction) = GroupAction(switch(A.type), A.group)
+switch(A::GroupAction) = GroupAction(switch(A.type), A.group, A.manifold)
 
 @doc """
     switch(T::AbstractGroupActionType)
