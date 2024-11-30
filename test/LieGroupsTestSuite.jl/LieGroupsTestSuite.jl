@@ -22,8 +22,12 @@ struct DummyOperation <: AbstractGroupOperation end
 struct DummySecondOperation <: AbstractGroupOperation end
 struct DummyManifold <: LieGroups.AbstractManifold{LieGroups.ℝ} end
 struct DummyActionType <: AbstractGroupActionType end
+struct DummyLeftActionType <: AbstractLeftGroupActionType end
+struct DummyRightActionType <: AbstractRightGroupActionType end
 const DummyLieGroup = LieGroup{LieGroups.ℝ,DummyOperation,DummyManifold}
 LieGroups.switch(a::DummyActionType) = a
+LieGroups.switch(::DummyLeftActionType) = DummyRightActionType()
+LieGroups.switch(::DummyRightActionType) = DummyLeftActionType()
 # === Test single functions ===
 #
 #

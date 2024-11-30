@@ -6,10 +6,10 @@ using LieGroupsTestSuite
 
 @testset "Group Action Interface" begin
     M = LieGroupsTestSuite.DummyManifold()
-    T = LieGroupsTestSuite.DummyActionType()
+    T = LieGroupsTestSuite.DummyLeftActionType()
     G = LieGroupsTestSuite.DummyLieGroup(M, LieGroupsTestSuite.DummyOperation())
     a = GroupAction(T, G, M)
     @test repr(a) === "GroupAction($T, $G, $M)"
-    @test switch(T) === T
-    @test switch(a) === a
+    @test switch(T) === LieGroupsTestSuite.DummyRightActionType()
+    @test switch(a) === GroupAction(switch(T), G, M)
 end
