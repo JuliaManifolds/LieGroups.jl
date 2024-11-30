@@ -15,16 +15,28 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
 * `LieGroup` (formerly `GroupManifold`) as well as the concrete groups
   * `TranslationGroup`
   * `GeneralLinearGroup` (formerly `GeneralLinear`)
+  * `LeftSemidirectProductLieGroup` (formerly `SemidirectProductGroup`)
+  * `⋉` (alias for `LeftSemidirectProductGroupOperation` when a `default_left_action(G,H)` is defined for the two groups)
+  * `PowerLieGroup` (formerly `PowerGroup`)
+  * `PowerGroupOperation` to internally avoid ambiguities. Since the constructor always expects a Lie group, this is only necessary internally
+  * `ProductLieGroup` (formerly `ProductGroup`)
+  * `RightSemidirectProductLieGroup`
+  * `⋊` (alias for `RightSemidirectProductGroupOperation` when a `default_right_action(G,H)` is defined for the two groups)
 * `AbstractGroupOperation` as well as its concrete subtypes
   * `AdditionGroupOperation` (formerly `AdditionOperation`)
+  * `MultiplicationGroupOperation` (formerly `MultiplicationOperation`)
+  * `PowerGroupOperation` (formerly the Lie group was stored inside a power manifold)
+  * `ProductGroupOperation` (formerly the Lie groups were stored inside a product manifold)
+  * `LeftSemidirectProductGroupOperation` (this was formerly only implicitly stored in the `SemidirectProductGroup`)
+  * `RightSemidirectProductGroupOperation`
 * `AbstractGroupActionType` with its 2 specific (new) abstract subtypes
   * `AbstractLeftGroupActionType`
   * `AbstractRightGroupActionType`
 * For the group operation actions there are now
-  * `LeftGroupOperation` (formerly `LeftForwardAction`)
-  * `RightGroupOperation` (formerly `RightBackwardAction`)
-  * `InverseLeftGroupOperation` (formerly `RightForwardAction`)
-  * `InverseRightGroupOperation` (formerly `LeftBackwardAction`)
+  * `LeftGroupOperationAction` (formerly `LeftForwardAction`)
+  * `RightGroupOperationAction` (formerly `RightBackwardAction`)
+  * `InverseLeftGroupOperationAction` (formerly `RightForwardAction`)
+  * `InverseRightGroupOperationAction` (formerly `LeftBackwardAction`)
 * `LieAlgebraOrthogonalBasis` (replaces `VeeOrthogonalBasis`, which is still available in `ManifoldsBase.jl`)
 * `Identity`
 * `apply`and `apply!`

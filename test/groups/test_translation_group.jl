@@ -56,10 +56,10 @@ begin
     @testset "Translation group operation action" begin
         # A first group action Test
         for t in [
-            RightGroupOperation(),
-            LeftGroupOperation(),
-            InverseLeftGroupOperation(),
-            InverseRightGroupOperation(),
+            RightGroupOperationAction(),
+            LeftGroupOperationAction(),
+            InverseLeftGroupOperationAction(),
+            InverseRightGroupOperationAction(),
         ]
             A = GroupOperationAction(t, G)
             properties2[:Name] = "with $A"

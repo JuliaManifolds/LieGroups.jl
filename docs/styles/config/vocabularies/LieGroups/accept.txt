@@ -1,8 +1,8 @@
-julia
-Julia
+[jJ]ulia
 LieGroups.jl
 Lie algebra
 Lie algebras
 Lie group
 Lie groups
 Riemannian
+semidirect

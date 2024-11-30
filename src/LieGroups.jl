@@ -32,12 +32,19 @@ include("group_operations/multiplication_operation.jl")
 include("group_actions/group_action_interface.jl")
 include("group_actions/group_operation_action.jl")
 
+# Meta Lie groups
+include("groups/power_group.jl")
+include("groups/product_group.jl")
+include("groups/semidirect_product_group.jl")
 # Lie groups
 include("groups/translation_group.jl")
 include("groups/general_linear_group.jl")
 
 export LieGroup, LieAlgebra
+export PowerLieGroup, ProductLieGroup
+export LeftSemidirectProductLieGroup, RightSemidirectProductLieGroup
 export LieAlgebraOrthogonalBasis
+export ×, ^, ⋉, ⋊
 #
 #
 # Group Operations
@@ -45,16 +52,17 @@ export AbstractGroupOperation, Identity
 export AdditionGroupOperation
 export AbstractMultiplicationGroupOperation
 export MatrixMultiplicationGroupOperation
+export ProductGroupOperation
+export LeftSemidirectProductGroupOperation, RightSemidirectProductGroupOperation
 
 #
 #
 # Group Actions
-export AbstractGroupActionType, AbstractGroupAction
+export AbstractGroupActionType
 export AbstractLeftGroupActionType, AbstractRightGroupActionType
-export LeftGroupOperation, RightGroupOperation
-export InverseLeftGroupOperation, InverseRightGroupOperation
-export GroupOperationAction
-
+export LeftGroupOperationAction, RightGroupOperationAction
+export InverseLeftGroupOperationAction, InverseRightGroupOperationAction
+export GroupAction, GroupOperationAction
 #
 #
 # Specific groups
@@ -63,7 +71,9 @@ export TranslationGroup, GeneralLinearGroup
 export adjoint, adjoint!, apply, apply!
 export base_lie_group, base_manifold
 export compose, compose!
-export det,
+export default_left_action,
+    default_right_action,
+    det,
     diff_apply,
     diff_apply!,
     diff_group_apply,

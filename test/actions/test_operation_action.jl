@@ -5,8 +5,8 @@ s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 using LieGroupsTestSuite
 
 @testset "Group Operation as a Group Action" begin
-    a1 = RightGroupOperation()
-    a2 = LeftGroupOperation()
+    a1 = RightGroupOperationAction()
+    a2 = LeftGroupOperationAction()
     @test switch(a1) == a2
     @test switch(a2) == a1
     a3 = inv(a1)
