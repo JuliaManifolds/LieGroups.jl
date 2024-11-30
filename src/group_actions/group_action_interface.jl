@@ -90,7 +90,8 @@ abstract type AbstractRightGroupActionType <: AbstractGroupActionType end
 
 Specify a group action of [`AbstractGroupActionType`](@ref) `T` of a [`LieGroup`](@ref) `G` acting on `M`.
 
-Let ``$(_math(:M))`` be a $(_link(:AbstractManifold)) and ``$(_math(:G))`` be a [`LieGroup`](@ref) woth group operation ``$(_math(:∘))``.
+Let ``$(_math(:M))`` be a $(_link(:AbstractManifold)) and ``$(_math(:G))`` be a [`LieGroup`](@ref)
+with group operation ``$(_math(:∘))``.
 
 A (smooth) action of the group ``$(_math(:G))`` on the manifold ``$(_math(:M))`` is a map
 
@@ -129,7 +130,7 @@ _doc_apply = """
 
 Apply the group action induced by ``g ∈ $(_math(:G))`` to ``p ∈ $(_math(:M))``,
 where the kind of group action is indicated by the [`AbstractGroupActionType`](@ref) `T`.
-This can be perfomed in-place of `q`.
+This can be performed in-place of `q`.
 """
 
 # function apply end

@@ -64,7 +64,7 @@ function _compose!(
 ) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     map(
         compose!,
-        LieGroup.(PrG.manifold.manifolds, PrG.op.operations),
+        map(LieGroup, PrG.manifold.manifolds, PrG.op.operations),
         submanifold_components(PrG.manifold, k),
         submanifold_components(PrG.manifold, g),
         submanifold_components(PrG.manifold, h),
@@ -94,7 +94,7 @@ function conjugate!(
     PrM = PrG.manifold
     map(
         conjugate!,
-        LieGroup.(PrM.manifolds, PrG.op.operations),
+        map(LieGroup, PrM.manifolds, PrG.op.operations),
         submanifold_components(PrM, k),
         submanifold_components(PrM, g),
         submanifold_components(PrM, h),
@@ -184,9 +184,9 @@ function ManifoldsBase.exp!(
     PrM = PrG.manifold
     map(
         (M, h, e, X) -> exp!(M, h, e, X, t), # introduce a function with “hard coded” t
-        LieGroup.(PrM.manifolds, PrG.op.operations),
+        map(LieGroup, PrM.manifolds, PrG.op.operations),
         submanifold_components(PrM, h),
-        Identity.(PrG.op.operations),
+        map(Identity, PrG.op.operations),
         submanifold_components(PrM, X),
     )
     return h
@@ -226,7 +226,7 @@ function inv!(
     PrM = PrG.manifold
     map(
         inv!,
-        LieGroup.(PrM.manifolds, PrG.op.operations),
+        map(LieGroup, PrM.manifolds, PrG.op.operations),
         submanifold_components(PrM, h),
         submanifold_components(PrM, g),
     )
@@ -238,9 +238,9 @@ function inv!(
     PrM = PrG.manifold
     map(
         inv!,
-        LieGroup.(PrM.manifolds, PrG.op.operations),
+        map(LieGroup, PrM.manifolds, PrG.op.operations),
         submanifold_components(PrM, h),
-        Identity.(PrG.op.operations),
+        map(Identity, PrG.op.operations),
     )
     return h
 end
@@ -251,7 +251,7 @@ function lie_bracket!(
     PrM = PrA.manifold.manifold
     map(
         lie_bracket!,
-        LieAlgebra.(LieGroup.(PrM.manifolds, PrA.manifold.op.operations)),
+        map(LieAlgebra, LieGroup.(PrM.manifolds, PrA.manifold.op.operations)),
         submanifold_components(PrM, Z),
         submanifold_components(PrM, X),
         submanifold_components(PrM, Y),
@@ -265,9 +265,9 @@ function ManifoldsBase.log!(
     PrM = PrG.manifold
     map(
         log!,
-        LieGroup.(PrM.manifolds, PrG.op.operations),
+        map(LieGroup, PrM.manifolds, PrG.op.operations),
         submanifold_components(PrM, X),
-        Identity.(PrG.op.operations),
+        map(Identity, PrG.op.operations),
         submanifold_components(PrM, g),
     )
     return X

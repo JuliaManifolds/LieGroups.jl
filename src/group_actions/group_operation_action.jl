@@ -16,7 +16,7 @@ struct LeftGroupOperationAction <: AbstractLeftGroupActionType end
     RightGroupOperationAction <: AbstractRightGroupActionType
 
 A type for the [`AbstractLeftGroupActionType`](@ref) when acting on the group itself
-gfrom the right
+from the right.
 
 ```math
 σ_h(g) = σ(h,g) = g$(_math(:∘))h
