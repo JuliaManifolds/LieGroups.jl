@@ -1,7 +1,7 @@
 
 #
 #
-# Semidirect product groups – model semidirect products of rwo Lie groups
+# Semidirect product groups – model semidirect products of two Lie groups
 #
 """
     LeftSemidirectProductGroupOperation{O1,O2,A} <: AbstractGroupOperation
@@ -10,14 +10,15 @@ A struct to model a semidirect Lie group product.
 
 Let ``($(_tex(:Cal, "N")), ⋄)`` and ``($(_tex(:Cal, "H")), ⋆)`` be two Lie groups
 with group operations ``⋄`` and ``⋆``, respectively, as well as a group action
-``σ: $(_tex(:Cal, "H"))×$(_tex(:Cal, "N")) → $(_tex(:Cal, "N"))``, cf [`AbstractLeftGroupActionType`](#ref).
+``σ: $(_tex(:Cal, "H"))×$(_tex(:Cal, "N")) → $(_tex(:Cal, "N"))``, cf [`AbstractLeftGroupActionType`](@ref).
 
-We use here as well use the notation ``σ_h: $(_tex(:Cal, "N")) → $(_tex(:Cal, "N"))`` as a family of maps on ``$(_tex(:Cal, "N"))``
+We use here as well use the notation ``σ_h: $(_tex(:Cal, "N")) → $(_tex(:Cal, "N"))``
+as a family of maps on ``$(_tex(:Cal, "N"))``
 
-Then we define a group operation ``∘`` on the product manifold $(_tex(:Cal, "N"))×$(_tex(:Cal, "H")) by
+Then we define a group operation ``∘`` on the product manifold ``$(_tex(:Cal, "N"))×$(_tex(:Cal, "H"))`` by
 
 ```math
-    (h_1,n_1) ∘ (h_2,n_2) := (h_1 ⋆ h_2, τ_{h_2}(n_1) ⋄ n_1).
+    (h_1,n_1) ∘ (h_2,n_2) := (h_1 ⋆ h_2, σ_{h_2}(n_1) ⋄ n_1).
 ```
 
 See [HilgertNeeb:2012; Definition 9.2.22](@cite), second definition for more details.
@@ -61,9 +62,10 @@ Let ``($(_tex(:Cal, "N")), ⋄)`` and ``($(_tex(:Cal, "H")), ⋆)`` be two Lie g
 with group operations ``⋄`` and ``⋆``, respectively, as well as a group action
 ``σ: $(_tex(:Cal, "H"))×$(_tex(:Cal, "N")) → $(_tex(:Cal, "N"))``, cf [`AbstractGroupActionType`](#ref).
 
-We use here as well use the notation ``σ_h: $(_tex(:Cal, "N")) → $(_tex(:Cal, "N"))`` as a family of maps on ``$(_tex(:Cal, "N"))``
+We use here as well use the notation ``σ_h: $(_tex(:Cal, "N")) → $(_tex(:Cal, "N"))``
+as a family of maps on ``$(_tex(:Cal, "N"))``
 
-Then we define a group operation ``∘`` on the product manifold $(_tex(:Cal, "N"))×$(_tex(:Cal, "H")) by
+Then we define a group operation ``∘`` on the product manifold ``$(_tex(:Cal, "N"))×$(_tex(:Cal, "H"))`` by
 
 ```math
     (n_1,h_1) ∘ (n_2,h_2) := (n_1 ⋄ σ_{h_1}(n_2), h_1 ⋆ h_2)
