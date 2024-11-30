@@ -68,10 +68,10 @@ for its inverse ``(σ_h)^{-1}`` see [`InverseLeftGroupOperationAction`](@ref).
 struct InverseRightGroupOperationAction <: AbstractLeftGroupActionType end
 
 """
-    GroupOperationAction(action::AbstractLeftGroupActionType, group::LieGroup)
+    GroupOperationAction(action::AbstractGroupActionType, group::LieGroup)
 
-Return a [`GroupAction`](@ref) for an [`AbstractLeftGroupActionType`](@ref) `action` representing
-the action of the group operation as an action of the group on itself.
+Return a [`GroupAction`](@ref) for an [`AbstractGroupActionType`](@ref) `action`
+representing the group operation as an action of the group on itself.
 """
 function GroupOperationAction(action::AbstractGroupActionType, G::LieGroup)
     return GroupAction(action, G, G)
