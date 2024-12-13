@@ -128,6 +128,7 @@ makedocs(;
             "Power group" => "groups/power_group.md",
             "Product group" => "groups/product_group.md",
             "Semidirect product group" => "groups/semidirect_product_group.md",
+            "Special orthogonal group" => "groups/special_orthogonal.md",
             "Translation group" => "groups/translation.md",
         ],
         "Interfaces" => [

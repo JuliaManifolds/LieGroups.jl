@@ -14,6 +14,7 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
 * `LieAlgebra`
 * `LieGroup` (formerly `GroupManifold`) as well as the concrete groups
   * `TranslationGroup`
+  * `SpecialOrthogonalGroup` (formerly `SpecialOrthogonal`)
   * `GeneralLinearGroup` (formerly `GeneralLinear`)
   * `LeftSemidirectProductLieGroup` (formerly `SemidirectProductGroup`)
   * `⋉` (alias for `LeftSemidirectProductGroupOperation` when a `default_left_action(G,H)` is defined for the two groups)
@@ -24,7 +25,7 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
   * `⋊` (alias for `RightSemidirectProductGroupOperation` when a `default_right_action(G,H)` is defined for the two groups)
 * `AbstractGroupOperation` as well as its concrete subtypes
   * `AdditionGroupOperation` (formerly `AdditionOperation`)
-  * `MultiplicationGroupOperation` (formerly `MultiplicationOperation`)
+  * `MatrixMultiplicationGroupOperation` (formerly `MultiplicationOperation`)
   * `PowerGroupOperation` (formerly the Lie group was stored inside a power manifold)
   * `ProductGroupOperation` (formerly the Lie groups were stored inside a product manifold)
   * `LeftSemidirectProductGroupOperation` (this was formerly only implicitly stored in the `SemidirectProductGroup`)

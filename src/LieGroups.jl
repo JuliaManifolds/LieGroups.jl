@@ -36,9 +36,11 @@ include("group_actions/group_operation_action.jl")
 include("groups/power_group.jl")
 include("groups/product_group.jl")
 include("groups/semidirect_product_group.jl")
+
 # Lie groups
 include("groups/translation_group.jl")
 include("groups/general_linear_group.jl")
+include("groups/special_orthogonal_group.jl")
 
 export LieGroup, LieAlgebra
 export PowerLieGroup, ProductLieGroup
@@ -66,7 +68,7 @@ export GroupAction, GroupOperationAction
 #
 #
 # Specific groups
-export TranslationGroup, GeneralLinearGroup
+export TranslationGroup, GeneralLinearGroup, SpecialOrthogonalGroup
 
 export adjoint, adjoint!, apply, apply!
 export base_lie_group, base_manifold

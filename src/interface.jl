@@ -666,7 +666,7 @@ _doc_is_vector = """
 
 Check whether `X` is a tangent vector, that is an element of the [`LieAlgebra`](@ref)
 of `G`.
-The first variant calls [`is_point`](@extref ManifoldsBase.is_point) on the [`LieAlgebra`](@ref) `𝔤` of `G`.
+The first variant calls [`is_point`](@extref `ManifoldsBase.is_point-Tuple{AbstractManifold, Any, Bool}`) on the [`LieAlgebra`](@ref) `𝔤` of `G`.
 The second variant calls [`is_vector`](@extref ManifoldsBase.is_vector) on the $(_link(:AbstractManifold)) at the [`identity_element`](@ref).
 
 All keyword arguments are passed on to the corresponding call
