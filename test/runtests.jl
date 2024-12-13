@@ -30,9 +30,10 @@ end
             include_test("groups/test_power_group.jl")
             include_test("groups/test_product_group.jl")
             include_test("groups/test_semidirect_product_group.jl")
-            include_test("groups/test_special_orthogonal_group.jl")
         end
         include_test("groups/test_general_linear_group.jl")
+        include_test("groups/test_special_orthogonal_group.jl")
+        include_test("groups/test_special_euclidean_group.jl")
         include_test("groups/test_translation_group.jl")
     end
     include("test_aqua.jl")

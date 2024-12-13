@@ -14,6 +14,7 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
 * `LieAlgebra`
 * `LieGroup` (formerly `GroupManifold`) as well as the concrete groups
   * `TranslationGroup`
+  * `SpecialEuclideanGroup` (formerly `SpecialEuclidean`)
   * `SpecialOrthogonalGroup` (formerly `SpecialOrthogonal`)
   * `GeneralLinearGroup` (formerly `GeneralLinear`)
   * `LeftSemidirectProductLieGroup` (formerly `SemidirectProductGroup`)
