@@ -221,7 +221,7 @@ function identity_element!(
     PrM = PrG.manifold
     map(
         identity_element!,
-        LieGroup.(PrM.manifolds, PrG.op.operations),
+        map(LieGroup, PrM.manifolds, PrG.op.operations),
         submanifold_components(PrM, e),
     )
     return e
