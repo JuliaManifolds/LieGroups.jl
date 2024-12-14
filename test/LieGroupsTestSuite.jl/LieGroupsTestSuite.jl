@@ -155,11 +155,6 @@ Test  `conjugate`.
 """
 function test_conjugate(G::LieGroup, g, h; expected=missing, test_mutating::Bool=true)
     @testset "conjugate" begin
-        v = if ismissing(expected)
-            compose(G, g, compose(G, h, inv(G, g)))
-        else
-            expected
-        end
         k1 = conjugate(G, g, h)
         @test is_point(G, k1)
         if test_mutating
@@ -167,7 +162,9 @@ function test_conjugate(G::LieGroup, g, h; expected=missing, test_mutating::Bool
             conjugate!(G, k2, g, h)
             @test isapprox(G, k1, k2)
         end
-        @test isapprox(G, k1, v)
+        if !ismissing(expected)
+            @test isapprox(G, k1, expected)
+        end
     end
     return nothing
 end

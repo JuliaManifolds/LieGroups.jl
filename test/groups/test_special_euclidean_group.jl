@@ -27,7 +27,7 @@ begin
             # exp,
             # hat,
             identity_element,
-            # inv,
+            inv,
             # inv_left_compose,
             # inv_right_compose,
             # is_identity,
