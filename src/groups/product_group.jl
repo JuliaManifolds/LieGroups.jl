@@ -4,7 +4,14 @@
 # One for each factor, we define the product operation as acting element wise.
 
 """
-    ProductGroupOperation{O<:<:NTuple{N,AbstractGroupOperation} where N} <: AbstractGroupOperation
+    AbstractProductGroupOperation <: AbstractGroupOperation
+
+An abstract type to model group operations on a product manifold
+"""
+abstract type AbstractProductGroupOperation <: AbstractGroupOperation end
+
+"""
+    ProductGroupOperation{O<:<:NTuple{N,AbstractGroupOperation} where N} <: AbstractProductGroupOperation
 
 A struct do model a tuple of group operations, one for each factor of a product group,
 that together forms a new group operation.
@@ -15,7 +22,7 @@ that together forms a new group operation.
     ×(o::AbstractGroupOperation...) = ProductGroupOperation(o...)
 """
 struct ProductGroupOperation{OTM<:NTuple{N,AbstractGroupOperation} where {N}} <:
-       AbstractGroupOperation
+       AbstractProductGroupOperation
     operations::OTM
 end
 function ProductGroupOperation(operations::AbstractGroupOperation...)
@@ -74,17 +81,17 @@ end
 
 function ManifoldsBase.check_size(
     PrG::LieGroup{𝔽,Op,M}, g
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:AbstractProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     return ManifoldsBase.check_size(PrG.manifold, g)
 end
 function ManifoldsBase.check_size(
     ::LieGroup{𝔽,Op,M}, ::Identity
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:AbstractProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     return nothing
 end
 function ManifoldsBase.check_size(
     PrG::LieGroup{𝔽,Op,M}, g, X
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:AbstractProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     return ManifoldsBase.check_size(PrG.manifold, g, X)
 end
 
@@ -194,7 +201,7 @@ end
 
 function hat!(
     PrG::LieGroup{𝔽,Op,M}, X, c
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:AbstractProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     PrM = PrG.manifold
     dims = map(manifold_dimension, PrM.manifolds)
     @assert length(c) == sum(dims)
@@ -283,7 +290,7 @@ end
 
 function vee!(
     PrG::LieGroup{𝔽,Op,M}, c, X
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:AbstractProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     PrM = PrG.manifold
     dims = map(manifold_dimension, PrM.manifolds)
     @assert length(c) == sum(dims)

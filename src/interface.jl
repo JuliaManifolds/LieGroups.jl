@@ -851,13 +851,12 @@ function vee!(G::LieGroup{𝔽}, c, X) where {𝔽}
 end
 
 function ManifoldsBase.zero_vector(
-    G::LieGroup{𝔽,O}, ::Identity{O}
+    G::LieGroup{𝔽,<:O}, ::Identity{<:O}
 ) where {𝔽,O<:AbstractGroupOperation}
     return zero_vector(G, identity_element(G))
 end
-
 function ManifoldsBase.zero_vector!(
-    G::LieGroup{𝔽,O}, X, ::Identity{O}
+    G::LieGroup{𝔽,<:O}, X, ::Identity{<:O}
 ) where {𝔽,O<:AbstractGroupOperation}
     return zero_vector!(G.manifold, X, identity_element(G))
 end

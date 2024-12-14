@@ -7,26 +7,26 @@ using LieGroupsTestSuite
 begin
     G = SpecialEuclideanGroup(2)
     g1 = ArrayPartition(1 / sqrt(2) * [1.0 1.0; -1.0 1.0], [1.0, 0.0])
-    #g2 = [0.0 -1.0; 1.0 0.0]
-    #g3 = [1.0 0.0; 0.0 1.0]
-    # X1, X2, X3 = [1.0 0.0; 0.0 0.0], [0.0 0.0; 0.0 1.0], [0.0 0.5; 0.5 0.0]
+    g2 = ArrayPartition([0.0 -1.0; 1.0 0.0], [0.0, 1.0])
+    g3 = ArrayPartition([1.0 0.0; 0.0 1.0], [1.0, 1.0])
+    X1 = ArrayPartition([1.0 0.0; 0.0 0.0], [0.0, 1.0])
+    X2 = ArrayPartition([0.0 0.0; 0.0 1.0], [1.0, 1.0])
+    X3 = ArrayPartition([9.0 0.5; 0.5 0.0], [1.0, 0.0])
     properties = Dict(
         :Name => "The special Euclidean group",
-        :Points => [
-            g1, #, g2, g3
-        ],
-        # :Vectors => [X1, X2, X3],
+        :Points => [g1, g2, g3],
+        :Vectors => [X1, X2, X3],
         :Rng => Random.MersenneTwister(),
         :Functions => [
             # adjoint,
-            # compose,
+            compose,
             # conjugate,
             # diff_inv,
             # diff_left_compose,
             # diff_right_compose,
             # exp,
             # hat,
-            # identity_element,
+            identity_element,
             # inv,
             # inv_left_compose,
             # inv_right_compose,
@@ -34,7 +34,7 @@ begin
             # lie_bracket,
             # log,
             rand,
-            show,
+            # show, # dispatch still broken
             # vee,
         ],
     )
