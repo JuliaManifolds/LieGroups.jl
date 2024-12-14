@@ -198,7 +198,7 @@ function _compose!(
     h,
 ) where {𝔽}
     PM = SDPG.manifold
-    G, H = LieGroup.(PM.manifolds, SDPG.op.operations)
+    G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
     A = GroupAction(SDPG.op.action_type, G, H)
     # for the first components, just perform the group op
     _compose!(
@@ -230,9 +230,10 @@ function _compose!(
     g,
     h,
 ) where {𝔽}
-    PM = SPDG.manifold
-    G, H = LieGroup.(SDPG.manifold, SDPG.op.operations)
-    A = GroupAction(SDPG.op.action_type, G, H)
+    PM = SDPG.manifold
+    G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
+    println(G, H)
+    A = GroupAction(SDPG.op.action_type, H, G)
     # for the first components, just perform the group op
     # apply the first element from g to
     apply!(
@@ -247,6 +248,7 @@ function _compose!(
         submanifold_component(PM, g, 1),
         submanifold_component(PM, k, 1),
     )
+    # For the second just do the group op
     _compose!(
         H,
         submanifold_component(PM, k, 2),
