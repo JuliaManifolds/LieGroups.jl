@@ -42,7 +42,7 @@ const SpecialEuclideanGroup{T} = LieGroup{
         <:AdditionGroupOperation,
         LeftGroupOperationAction,
     },
-    <:Manifolds.ProductManifold{<:Manifolds.Rotations{T},<:Manifolds.Euclidean{T,ℝ}},
+    <:Manifolds.ProductManifold{ℝ,Tuple{<:Manifolds.Rotations{T},<:Manifolds.Euclidean{T,ℝ}}},
 }
 
 """
