@@ -34,12 +34,11 @@ begin
             # lie_bracket,
             # log,
             rand,
-            # show, # dispatch still broken
+            show,
             # vee,
         ],
     )
     expectations = Dict(
-        # dispatch of show does not yet work.
         :repr => "SpecialEuclideanGroup(2)",
         #:diff_inv => -X1,
         #:diff_left_compose => X1,
