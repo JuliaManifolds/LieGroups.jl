@@ -274,11 +274,11 @@ function Base.show(
 end
 function Base.show(
     io::IO,
-    RSDL::LieGroup{
+    SDPG::LieGroup{
         𝔽,<:RightSemidirectProductGroupOperation,<:ManifoldsBase.ProductManifold
     },
 ) where {𝔽}
     G, H = LieGroup.(SDPG.manifold.manifolds, SDPG.op.operations)
-    at = RSDL.op.action_type
+    at = SDPG.op.action_type
     return print(io, "RightSemidirectProductLieGroup($G, $H, $at)")
 end
