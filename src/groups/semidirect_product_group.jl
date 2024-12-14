@@ -294,7 +294,7 @@ function inv!(
     return k
 end
 function inv!(
-    SDPG::LieGroup{𝔽,O,<:ManifoldsBase.ProductManifold}, k, ::Identity{O}
+    SDPG::LieGroup{𝔽,O,M}, k, ::Identity{O}
 ) where {𝔽,O<:SemiDirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     PrM = SDPG.manifold
     map(
