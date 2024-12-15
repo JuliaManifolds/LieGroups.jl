@@ -15,10 +15,17 @@ const SpecialOrthogonalGroup{T} = LieGroup{
 }
 
 function SpecialOrthogonalGroup(n; kwargs...)
-    R = Manifolds.Rotations(n...; kwargs...)
+    R = Manifolds.Rotations(n; kwargs...)
     return SpecialOrthogonalGroup{typeof(R).parameters[1]}(
         R, MatrixMultiplicationGroupOperation()
     )
+end
+
+inv!(G::SpecialOrthogonalGroup, k, g) = copyto!(G, k, transpose(g))
+function inv!(
+    G::SpecialOrthogonalGroup, q, ::Identity{O}
+) where {O<:AbstractMultiplicationGroupOperation}
+    return identity_element!(G, q)
 end
 
 function Base.show(io::IO, G::SpecialOrthogonalGroup)

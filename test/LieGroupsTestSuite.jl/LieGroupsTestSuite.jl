@@ -395,7 +395,7 @@ function test_exp_log(
                 exp!(G, k2, e, X)
                 @test isapprox(G, k1, k2)
             end
-            @test is_point(G, k1)
+            @test is_point(G, k1, true)
             # exp
             k1 = exp(G, g, X)
             if test_mutating

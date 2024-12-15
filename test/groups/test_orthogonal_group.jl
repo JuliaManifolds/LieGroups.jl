@@ -5,13 +5,13 @@ s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 using LieGroupsTestSuite
 
 begin
-    G = SpecialOrthogonalGroup(2)
+    G = OrthogonalGroup(2)
     g1 = 1 / sqrt(2) * [1.0 1.0; -1.0 1.0]
     g2 = [0.0 -1.0; 1.0 0.0]
     g3 = [1.0 0.0; 0.0 1.0]
     X1, X2, X3 = [1.0 0.0; 0.0 0.0], [0.0 0.0; 0.0 1.0], [0.0 0.5; 0.5 0.0]
     properties = Dict(
-        :Name => "The special orthogonal group",
+        :Name => "The orthogonal group",
         :Points => [g1, g2, g3],
         :Vectors => [X1, X2, X3],
         :Rng => Random.MersenneTwister(),
@@ -36,6 +36,6 @@ begin
             # vee,
         ],
     )
-    expectations = Dict(:repr => "SpecialOrthogonalGroup(2)", :lie_bracket => zero(X1))
+    expectations = Dict(:repr => "OrthogonalGroup(2)")
     test_lie_group(G, properties, expectations)
 end
