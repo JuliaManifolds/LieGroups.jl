@@ -40,6 +40,8 @@ include("groups/semidirect_product_group.jl")
 # Lie groups
 include("groups/translation_group.jl")
 include("groups/general_linear_group.jl")
+include("groups/unitary_group.jl")
+include("groups/special_unitary_group.jl")
 include("groups/orthogonal_group.jl")
 include("groups/special_orthogonal_group.jl")
 
@@ -69,13 +71,15 @@ export AbstractLeftGroupActionType, AbstractRightGroupActionType
 export LeftGroupOperationAction, RightGroupOperationAction
 export GroupAction, GroupOperationAction
 export InverseLeftGroupOperationAction, InverseRightGroupOperationAction
+
 #
 #
 # Specific groups
 export GeneralLinearGroup
 export OrthogonalGroup
-export SpecialEuclideanGroup, SpecialOrthogonalGroup
+export SpecialEuclideanGroup, SpecialOrthogonalGroup, SpecialUnitaryGroup
 export TranslationGroup
+export UnitaryGroup
 
 export adjoint, adjoint!, apply, apply!
 export base_lie_group, base_manifold

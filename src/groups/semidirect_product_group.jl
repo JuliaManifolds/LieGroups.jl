@@ -232,7 +232,6 @@ function _compose!(
 ) where {𝔽}
     PM = SDPG.manifold
     G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
-    println(G, H)
     A = GroupAction(SDPG.op.action_type, H, G)
     # for the first components, just perform the group op
     # apply the first element from g to
