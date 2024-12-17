@@ -130,7 +130,9 @@ makedocs(;
             "Semidirect product group" => "groups/semidirect_product_group.md",
             "Special Euclidean group" => "groups/special_euclidean.md",
             "Special orthogonal group" => "groups/special_orthogonal.md",
+            "Special unitary group" => "groups/special_unitary.md",
             "Translation group" => "groups/translation.md",
+            "unitary group" => "groups/unitary.md",
         ],
         "Interfaces" => [
             "Lie group" => "interface/group.md",
