@@ -23,6 +23,15 @@ function UnitaryGroup(n; kwargs...)
     return UnitaryGroup{typeof(U).parameters[1]}(U, MatrixMultiplicationGroupOperation())
 end
 
+#
+#
+# A common type for all 4 groups: O, SO, SU, U, because they share quite some implementations
+# Stored in this, since this is the most generic case
+#
+const CommonUnitarySubGroups{𝔽,T} = LieGroup{
+    𝔽,MatrixMultiplicationGroupOperation,<:Manifolds.GeneralUnitaryMatrices{T,𝔽}
+}
+
 function Base.show(io::IO, G::UnitaryGroup)
     size = Manifolds.get_parameter(G.manifold.size)[1]
     return print(io, "UnitaryGroup($(size))")

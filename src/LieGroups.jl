@@ -38,11 +38,14 @@ include("groups/product_group.jl")
 include("groups/semidirect_product_group.jl")
 
 # Lie groups
+
 include("groups/translation_group.jl")
 include("groups/general_linear_group.jl")
+
+# includes generic implementations for O(n), U(n), SO(n), SO(n), so we load this first
 include("groups/unitary_group.jl")
-include("groups/special_unitary_group.jl")
 include("groups/orthogonal_group.jl")
+include("groups/special_unitary_group.jl")
 include("groups/special_orthogonal_group.jl")
 
 # Products of Groups
