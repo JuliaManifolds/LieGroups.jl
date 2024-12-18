@@ -155,11 +155,6 @@ Test  `conjugate`.
 """
 function test_conjugate(G::LieGroup, g, h; expected=missing, test_mutating::Bool=true)
     @testset "conjugate" begin
-        v = if ismissing(expected)
-            compose(G, g, compose(G, h, inv(G, g)))
-        else
-            expected
-        end
         k1 = conjugate(G, g, h)
         @test is_point(G, k1)
         if test_mutating
@@ -167,7 +162,9 @@ function test_conjugate(G::LieGroup, g, h; expected=missing, test_mutating::Bool
             conjugate!(G, k2, g, h)
             @test isapprox(G, k1, k2)
         end
-        @test isapprox(G, k1, v)
+        if !ismissing(expected)
+            @test isapprox(G, k1, expected)
+        end
     end
     return nothing
 end
@@ -398,7 +395,7 @@ function test_exp_log(
                 exp!(G, k2, e, X)
                 @test isapprox(G, k1, k2)
             end
-            @test is_point(G, k1)
+            @test is_point(G, k1, true)
             # exp
             k1 = exp(G, g, X)
             if test_mutating
@@ -620,9 +617,7 @@ function test_inv(G::LieGroup, g; test_mutating::Bool=true, test_identity::Bool=
                 inv!(G, e2, e)
                 @test is_identity(G, e2)
                 e3 = copy(G, g)
-                println(e3)
                 inv!(G, e3, e) # materialize identity
-                println(e3)
                 @test is_identity(G, e3)
             end
         end
@@ -932,7 +927,7 @@ Possible properties are
   it is assumed that both are defined.
 * `:GroupPoints` is a vector of at least three points on `G`, the first is not allowed to be the identity numerically
 * `:ManifoldPoints` is a vector of at least three points on `M`
-* `:TangentVectors` is a vector of at least three tangent vectors on `M`, each in the tangent space of the corresponting `:ManifoldPoint`
+* `:TangentVectors` is a vector of at least three tangent vectors on `M`, each in the tangent space of the corresponding `:ManifoldPoint`
 * `:Mutating` is a boolean (`true` by default) whether to test the mutating variants of functions or not.
 * `:Name` is a name of the test. If not provided, defaults to `"\$G"`
 

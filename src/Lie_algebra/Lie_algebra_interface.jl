@@ -115,9 +115,9 @@ function Base.show(io::IO, 𝔤::LieAlgebra)
 end
 
 function ManifoldsBase.zero_vector(𝔤::LieAlgebra)
-    return ManifoldsBase.zero_vector(𝔤.manifold, identity_element(𝔤.manifold))
+    return ManifoldsBase.zero_vector(𝔤.manifold.manifold, identity_element(𝔤.manifold))
 end
 
 function ManifoldsBase.zero_vector!(𝔤::LieAlgebra, X)
-    return ManifoldsBase.zero_vector!(𝔤.manifold, X, identity_element(𝔤.manifold))
+    return ManifoldsBase.zero_vector!(𝔤.manifold.manifold, X, identity_element(𝔤.manifold))
 end
