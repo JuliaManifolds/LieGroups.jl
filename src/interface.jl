@@ -346,7 +346,9 @@ _doc_exp = """
     exp(G::LieGroup, g, X, t::Number=1)
     exp!(G::LieGroup, h, g, X, t::Number=1)
 
-Compute the Lie group exponential map given by
+Compute the Lie group exponential map for ``g∈$(_math(:G))`` and ``X∈$(_math(:𝔤))``,
+where ``$(_math(:𝔤))`` denotes the [`LieAlgebra`](@ref) of ``$(_math(:G))``.
+It is given by
 
 ```math
 $(_tex(:exp))_g X = g$(_math(:∘))$(_tex(:exp))_{$(_math(:G))}(X)
@@ -355,9 +357,8 @@ $(_tex(:exp))_g X = g$(_math(:∘))$(_tex(:exp))_{$(_math(:G))}(X)
 where `X` can be scaled by `t`, the computation can be performed in-place of `h`,
 and ``$(_tex(:exp))_{$(_math(:G))}`` denotes the  [Lie group exponential function](@ref exp(::LieGroup, ::Identity, :Any)).
 
-!!! note
-    If `g` is the [`Identity`](@ref) the [Lie group exponential function](@ref exp(::LieGroup, ::Identity, :Any)) is computed directly.
-    Implementing the Lie group exponential function introduces a default implementation for this function.
+If `g` is the [`Identity`](@ref) the [Lie group exponential function](@ref exp(::LieGroup, ::Identity, :Any)) ``$(_tex(:exp))_{$(_math(:G))}`` is computed directly.
+Implementing the Lie group exponential function introduces a default implementation with the formula above.
 
 !!! note
     The Lie group exponential map is usually different from the exponential map with respect
@@ -666,7 +667,7 @@ _doc_is_vector = """
 
 Check whether `X` is a tangent vector, that is an element of the [`LieAlgebra`](@ref)
 of `G`.
-The first variant calls [`is_point`](@extref ManifoldsBase.is_point) on the [`LieAlgebra`](@ref) `𝔤` of `G`.
+The first variant calls [`is_point`](@extref `ManifoldsBase.is_point-Tuple{AbstractManifold, Any, Bool}`) on the [`LieAlgebra`](@ref) `𝔤` of `G`.
 The second variant calls [`is_vector`](@extref ManifoldsBase.is_vector) on the $(_link(:AbstractManifold)) at the [`identity_element`](@ref).
 
 All keyword arguments are passed on to the corresponding call
@@ -717,7 +718,9 @@ _doc_log = """
     log(G::LieGroup, g, h)
     log!(G::LieGroup, X, g, h)
 
-Compute the Lie group logarithmic map
+Compute the Lie group logarithmic map ``$(_tex(:log))_g: $(_math(:G)) → $(_math(:𝔤))``,
+where ``$(_math(:𝔤))`` denotes the [`LieAlgebra`](@ref) of ``$(_math(:G))``.
+It is given by
 
 ```math
 $(_tex(:log))_g h = $(_tex(:log))_{$(_math(:G))}(g^{-1}$(_math(:∘))h)
@@ -726,9 +729,8 @@ $(_tex(:log))_g h = $(_tex(:log))_{$(_math(:G))}(g^{-1}$(_math(:∘))h)
 where ``$(_tex(:log))_{$(_math(:G))}`` denotes the [Lie group logarithmic function](@ref log(::LieGroup, ::Identity, :Any))
 The computation can be performed in-place of `X`.
 
-!!! note
-    If `g` is the [`Identity`](@ref) the [Lie group logarithmic function](@ref log(::LieGroup, ::Identity, :Any)) is computed directly.
-    Implementing the Lie group logarithmic function introduces a default implementation for this function.
+If `g` is the [`Identity`](@ref) the [Lie group logarithmic function](@ref log(::LieGroup, ::Identity, :Any)) ``$(_tex(:log))_{$(_math(:G))}`` is computed directly.
+Implementing the Lie group logarithmic function introduces a default implementation for this function with the formula above.
 
 !!! note
     The Lie group logarithmic map is usually different from the logarithmic map with respect
