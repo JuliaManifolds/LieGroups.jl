@@ -22,6 +22,7 @@ import Manifolds:
 # Both define the following structs, so these for now lead to asking for explicit prefixes
 # Manifolds: Identity, TranslationGroup
 include("documentation_glossary.jl")
+include("utils.jl")
 include("interface.jl")
 include("Lie_algebra/Lie_algebra_interface.jl")
 # Generic Operations
@@ -105,6 +106,7 @@ export isapprox, is_point, is_vector
 export conjugate, conjugate!, diff_conjugate, diff_conjugate!
 export exp, exp!
 export identity_element, identity_element!, is_identity, inv, inv!, diff_inv, diff_inv!
+export jacobian_conjugate, jacobian_conjugate!
 export lie_bracket, lie_bracket!, log, log!
 export manifold_dimension
 export norm

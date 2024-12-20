@@ -713,6 +713,36 @@ function ManifoldsBase.isapprox(
     return false
 end
 
+_doc_jacobian_conjugate = """
+    jacobian_conjugate(G::LieGroup, g, h, B::ManifoldsBase.AbstractBasis=LieAlgebraOrthogonalBasis())
+    jacobian_conjugate!(G::LieGroup, J, g, h, B::ManifoldsBase.AbstractBasis=LieAlgebraOrthogonalBasis())
+
+Compute the Jacobian of the [`conjugate`](@ref) ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1}``,
+with respect to an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`).
+
+This can be seen as a matrix representation of the [`diff_conjugate`](@ref) ``D(c_g(h))[X]``
+with respect to the given basis.
+
+!!! note
+    For the case that `h` is the [`Identity`](@ref) and the relation of ``D(c_g(h))[X]``
+    to the [`adjoint`](@ref) ``$(_math(:Ad))(g)``, the Jacobian then sometimes called “adjoint matrix”,
+    e.g. in [SolaDerayAtchuthan:2021](@cite), when choosing as a basis the
+    [`LieAlgebraOrthogonalBasis`](@ref)`()` that is used for [`hat`](@ref) and [`vee`](@ref).
+"""
+@doc "$(_doc_jacobian_conjugate)"
+function jacobian_conjugate(
+    G::LieGroup, g, h, B::ManifoldsBase.AbstractBasis=LieAlgebraOrthogonalBasis()
+)
+    J = ManifoldsBase.allocate_result(G, jacobian_conjugate, g, h, B)
+    return jacobian_conjugate!(G, J, g, h, B)
+end
+
+function jacobian_conjugate! end
+@doc "$(_doc_jacobian_conjugate)"
+jacobian_conjugate!(
+    ::LieGroup, J, g, h; B::ManifoldsBase.AbstractBasis=LieAlgebraOrthogonalBasis()
+)
+
 _doc_log = """
     log(G::LieGroup, g, h)
     log!(G::LieGroup, X, g, h)

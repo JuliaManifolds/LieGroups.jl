@@ -59,6 +59,7 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
 * `inv_left_compose`, `inv_left_compose!` and `inv_right_compose`, `inv_right_compose!` (these functions correspond to `inverse_translate` with corresponding direction and side)
 * `is_identity`
 * `lie_bracket` and `lie_bracket!`
+* `jacobian_conjugate` (formerly `adjoint_matrix`)
 * `log(G::LieGroup, g, h)` and `log!(G::LieGroup, X, g, h)` (formerly `log_inv` and `log_inv!`)
 * `log(G::LieGroup, ::Identity, g)` and `log!(G::LieGroup, X, ::Identity, g)` (formerly `log_lie` and `log_lie!`)
 * `switch` (formerly `switch_side`)
