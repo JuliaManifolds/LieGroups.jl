@@ -11,3 +11,9 @@ Modules = [LieGroups]
 Pages = ["groups/unitary.jl"]
 Order = [:function]
 ```
+
+# Utility functions and constants
+
+```@docs
+LieGroups.CommonUnitarySubGroups
+```

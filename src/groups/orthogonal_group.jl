@@ -23,23 +23,71 @@ end
 #
 # Generic special cases for O(n) and SO(n)
 
+_doc_exp_O2_id = """
+    exp(G::OrthogonalGroup{TypeParameter{Tuple{2}}}, ::Identity{MatrixMultiplicationGroupOperation}, X)
+    exp(G::SpecialOrthogonalGroup{TypeParameter{Tuple{2}}}, ::Identity{MatrixMultiplicationGroupOperation}, X)
+    exp!(G::OrthogonalGroup{TypeParameter{Tuple{2}}}, ::Identity{MatrixMultiplicationGroupOperation}, g, X)
+    exp!(G::SpecialOrthogonalGroup{TypeParameter{Tuple{2}}}, ::Identity{MatrixMultiplicationGroupOperation}, g, X)
+
+Compute the Lie group exponential function on the [`OrthogonalGroup`](@ref)` ``$(_math(:O))(2)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(2)``.
+
+Since the Lie algebra of both groups agrees and consist of the set of skew symmetric matrices,
+these simplify for the case of ``2×2`` matrices to ``X=$(_tex(:pmatrix, "0 & -α", "α & 0")){pmatrix}``, for some ``α∈ℝ``.
+
+Their exponential is
+
+```math
+$(_tex(:exp))_{$(_math(:G))}(X) =  $(_tex(:pmatrix, "$(_tex(:cos))(α) & -$(_tex(:sin))(α)", "$(_tex(:sin))(α) & $(_tex(:cos))(α)")).
+```
+
+This result can be computed in-place of `g`.
+
+Note that since ``$(_math(:SO))(2)`` consists of two disjoint connected components and the exponential map is smooth,
+the result ``g`` always lies in the connected component of the identity.
+"""
+
+@doc "$(_doc_exp_O2_id)"
+ManifoldsBase.exp(
+    ::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
+    ::Identity{MatrixMultiplicationGroupOperation},
+    X,
+)
+@doc "$(_doc_exp_O2_id)"
+ManifoldsBase.exp!(
+    ::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
+    g,
+    ::Identity{MatrixMultiplicationGroupOperation},
+    X,
+)
+function ManifoldsBase.exp(
+    G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
+    e::Identity{MatrixMultiplicationGroupOperation},
+    X,
+)
+    g = ManifoldsBase.allocate_result(G, exp, X)
+    exp!(G, g, e, X)
+    return g
+end
+
 function ManifoldsBase.exp!(
     ::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
-    q,
+    g,
     ::Identity{MatrixMultiplicationGroupOperation},
     X,
 )
     @assert size(X) == (2, 2)
-    @inbounds θ = (X[2, 1] - X[1, 2]) / 2
-    sinθ, cosθ = sincos(θ)
+    @assert size(g) == (2, 2)
+    @inbounds α = (X[2, 1] - X[1, 2]) / 2
+    sinα, cosα = sincos(α)
     @inbounds begin
-        q[1, 1] = cosθ
-        q[2, 1] = sinθ
-        q[1, 2] = -sinθ
-        q[2, 2] = cosθ
+        g[1, 1] = cosα
+        g[2, 1] = sinα
+        g[1, 2] = -sinα
+        g[2, 2] = cosα
     end
-    return q
+    return g
 end
+
 function ManifoldsBase.exp!(
     ::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
     q,
@@ -105,39 +153,80 @@ function ManifoldsBase.exp!(
     return q
 end
 
-function ManifoldsBase.log!(
-    G::CommonUnitarySubGroups{ℝ,<:Any},
-    X::AbstractMatrix,
+_doc_log_O2_id = """
+    log(G::OrthogonalGroup{TypeParameter{Tuple{2}}}, ::Identity{MatrixMultiplicationGroupOperation}, g)
+    log(G::SpecialOrthogonalGroup{TypeParameter{Tuple{2}}}, ::Identity{MatrixMultiplicationGroupOperation}, g)
+    log!(G::OrthogonalGroup{TypeParameter{Tuple{2}}}, X, ::Identity{MatrixMultiplicationGroupOperation}, g)
+    log!(G::SpecialOrthogonalGroup{TypeParameter{Tuple{2}}}, X, ::Identity{MatrixMultiplicationGroupOperation}, g)
+
+Compute the Lie group logarithm function on the [`OrthogonalGroup`](@ref)` ``$(_math(:O))(2)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(2)``.
+
+For the two-dimensional case, any rotation matrix ``g`` can be represented as ``$(_tex(:pmatrix, "$(_tex(:cos))(α) & -$(_tex(:sin))(α)", "$(_tex(:sin))(α) & $(_tex(:cos))(α)"))``.
+For the orthogonal group, ``g`` might also include one further reflection.
+
+The logarithm is then
+```math
+$(_tex(:log))_{$(_math(:G))}(g) =  $(_tex(:pmatrix, "0 & -α &", "α & 0")).
+```
+
+This result can be computed in-place of `X`
+
+Note the logarithmic map is only locally around the identity uniquely determined.
+Especially, since ``$(_math(:SO))(2)`` consists of two disjoint connected components and the exponential map is smooth,
+for any ``g`` in the other component, the logarithmic map is defined, but not the inverse of the exponential map.
+"""
+
+@doc "$(_doc_log_O2_id)"
+ManifoldsBase.log(
+    ::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
     ::Identity{MatrixMultiplicationGroupOperation},
-    q::AbstractMatrix,
+    g,
 )
-    log_safe!(X, q)
-    return project!(G, X, Identity(G), X)
-end
-function ManifoldsBase.log!(
-    ::CommonUnitarySubGroups{ℝ,<:Any},
+
+@doc "$(_doc_log_O2_id)"
+ManifoldsBase.log!(
+    ::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
     X,
     ::Identity{MatrixMultiplicationGroupOperation},
+    g,
+)
+
+function ManifoldsBase.log(
+    G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
+    e::Identity{MatrixMultiplicationGroupOperation},
+    g,
+)
+    Y = ManifoldsBase.allocate_result(G, log, g)
+    log!(G, Y, e, g)
+    return Y
+end
+# Resolve an ambiguity compared to the general matrix multiplication definitions
+function Base.log(
+    G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
+    e::Identity{MatrixMultiplicationGroupOperation},
     ::Identity{MatrixMultiplicationGroupOperation},
 )
-    fill!(X, 0)
+    return zero_vector(G, e)
+end
+
+function ManifoldsBase.log!(
+    ::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
+    X,
+    ::Identity{MatrixMultiplicationGroupOperation},
+    g,
+)
+    @assert size(X) == (2, 2)
+    @assert size(g) == (2, 2)
+    @inbounds α = atan(g[2, 1], g[1, 1])
+    @inbounds begin
+        X[1, 1] = 0
+        X[2, 1] = α
+        X[1, 2] = -α
+        X[2, 2] = 0
+    end
     return X
 end
-function ManifoldsBase.log!(
-    G::CommonUnitarySubGroups{
-        ℝ,
-        ManifoldsBase.ManifoldsBase.ManifoldsBase.ManifoldsBase.ManifoldsBase.ManifoldsBase.ManifoldsBase.ManifoldsBase.ManifoldsBase.ManifoldsBase.ManifoldsBase.ManifoldsBase.ManifoldsBase.ManifoldsBase.ManifoldsBase.ManifoldsBase.ManifoldsBase.ManifoldsBase.ManifoldsBase.ManifoldsBase.TypeParameter{
-            Tuple{2}
-        },
-    },
-    X::AbstractMatrix,
-    ::Identity{MatrixMultiplicationGroupOperation},
-    q::AbstractMatrix,
-)
-    @assert size(q) == (2, 2)
-    @inbounds θ = atan(q[2, 1], q[1, 1])
-    return get_vector!(G, X, Identity(G), θ, DefaultOrthogonalBasis())
-end
+
 function ManifoldsBase.log!(
     G::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
     X::AbstractMatrix,

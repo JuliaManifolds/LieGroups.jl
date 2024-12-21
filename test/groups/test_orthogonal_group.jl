@@ -9,9 +9,9 @@ begin
     g1 = 1 / sqrt(2) * [1.0 1.0; -1.0 1.0]
     g2 = [0.0 -1.0; 1.0 0.0]
     g3 = [1.0 0.0; 0.0 1.0]
-    X1, X2, X3 = [1.0 0.0; 0.0 0.0], [0.0 0.0; 0.0 1.0], [0.0 0.5; 0.5 0.0]
+    X1, X2, X3 = [0.0 0.1; -0.1 0.0], [0.0 -0.2; 2.0 0.0], [0.0 0.0; 0.0 0.0]
     properties = Dict(
-        :Name => "The orthogonal group",
+        :Name => "The orthogonal group 𝒪(2)",
         :Points => [g1, g2, g3],
         :Vectors => [X1, X2, X3],
         :Rng => Random.MersenneTwister(),
@@ -22,7 +22,7 @@ begin
             diff_inv,
             diff_left_compose,
             diff_right_compose,
-            # exp,
+            exp,
             # hat,
             identity_element,
             inv,
@@ -30,7 +30,7 @@ begin
             inv_right_compose,
             is_identity,
             lie_bracket,
-            # log,
+            log,
             rand,
             show,
             # vee,

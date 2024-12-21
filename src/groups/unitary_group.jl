@@ -28,6 +28,14 @@ end
 # A common type for all 4 groups: O, SO, SU, U, because they share quite some implementations
 # Stored in this, since this is the most generic case
 #
+"""
+    CommonUnitarySubGroups{𝔽,T}
+
+A constant that allows to refer to several subgroups of ``$(_math(:U))(n)`` for
+implementations where
+* certain subgroups real/complex share a common implementation, e.g. for the same sizes `T` usually via [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)
+* certain functions are the same for all sizes `T` as long as the field `𝔽` is the same
+"""
 const CommonUnitarySubGroups{𝔽,T} = LieGroup{
     𝔽,MatrixMultiplicationGroupOperation,<:Manifolds.GeneralUnitaryMatrices{T,𝔽}
 }

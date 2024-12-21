@@ -21,12 +21,41 @@ function SpecialOrthogonalGroup(n; kwargs...)
     )
 end
 
+@doc "$(_doc_exp_O2_id)"
+ManifoldsBase.exp(
+    ::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
+    ::Identity{MatrixMultiplicationGroupOperation},
+    X,
+)
+@doc "$(_doc_exp_O2_id)"
+ManifoldsBase.exp!(
+    ::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
+    g,
+    ::Identity{MatrixMultiplicationGroupOperation},
+    X,
+)
+
 inv!(G::SpecialOrthogonalGroup, k, g) = copyto!(G, k, transpose(g))
 function inv!(
     G::SpecialOrthogonalGroup, q, ::Identity{O}
 ) where {O<:AbstractMultiplicationGroupOperation}
     return identity_element!(G, q)
 end
+
+@doc "$(_doc_log_O2_id)"
+ManifoldsBase.log(
+    ::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
+    ::Identity{MatrixMultiplicationGroupOperation},
+    g,
+)
+
+@doc "$(_doc_log_O2_id)"
+ManifoldsBase.log!(
+    ::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
+    X,
+    ::Identity{MatrixMultiplicationGroupOperation},
+    g,
+)
 
 function Base.show(io::IO, G::SpecialOrthogonalGroup)
     size = Manifolds.get_parameter(G.manifold.size)[1]

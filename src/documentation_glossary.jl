@@ -57,6 +57,7 @@ define!(:LaTeX, :bigr, raw"\bigr")
 define!(:LaTeX, :Big, raw"\Big")
 define!(:LaTeX, :Bigl, raw"\Bigl")
 define!(:LaTeX, :Bigr, raw"\Bigr")
+define!(:LaTeX, :cos, raw"\cos")
 define!(:LaTeX, :def, raw"\coloneqq")
 define!(:LaTeX, :Cal, (letter) -> raw"\mathcal " * "$letter")
 define!(:LaTeX, :exp, raw"\exp")
@@ -65,9 +66,17 @@ define!(:LaTeX, :Frak, (letter) -> raw"\mathfrak " * "$letter")
 define!(:LaTeX, :l, "") # lazy fallback for sets
 define!(:LaTeX, :r, "") # lazy fallback for sets
 define!(:LaTeX, :log, raw"\log")
+define!(
+    :LaTeX,
+    :pmatrix,
+    (lines...) ->
+        raw"\begin{pmatrix}\n    " * join(lines, raw"\\\n    ") * raw"\n\end{pmatrix}",
+)
 define!(:LaTeX, :qquad, raw"\qquad")
 define!(:LaTeX, :quad, raw"\quad")
 define!(:LaTeX, :rm, (letter) -> raw"\mathrm" * "{$letter}")
+define!(:LaTeX, :sin, raw"\sin")
+define!(:LaTeX, :sum, raw"\sum")
 define!(
     :LaTeX,
     :Set,
@@ -84,7 +93,6 @@ define!(
     (elem, cond, size="") ->
         _tex(:Set, elem * raw"\ " * _tex(Symbol("$(size)")) * raw"|\ " * "$(cond)", size),
 )
-define!(:LaTeX, :sum, raw"\sum")
 define!(:LaTeX, :transp, raw"\mathrm{T}")
 #
 # ---
