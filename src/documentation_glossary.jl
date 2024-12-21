@@ -69,8 +69,7 @@ define!(:LaTeX, :log, raw"\log")
 define!(
     :LaTeX,
     :pmatrix,
-    (lines...) ->
-        raw"\begin{pmatrix} " * join(lines, raw"\\ ") * raw"\end{pmatrix}",
+    (lines...) -> raw"\begin{pmatrix} " * join(lines, raw"\\ ") * raw"\end{pmatrix}",
 )
 define!(:LaTeX, :qquad, raw"\qquad")
 define!(:LaTeX, :quad, raw"\quad")
