@@ -70,7 +70,7 @@ define!(
     :LaTeX,
     :pmatrix,
     (lines...) ->
-        raw"\begin{pmatrix}\n    " * join(lines, raw"\\\n    ") * raw"\n\end{pmatrix}",
+        raw"\begin{pmatrix} " * join(lines, raw"\\ ") * raw"\end{pmatrix}",
 )
 define!(:LaTeX, :qquad, raw"\qquad")
 define!(:LaTeX, :quad, raw"\quad")

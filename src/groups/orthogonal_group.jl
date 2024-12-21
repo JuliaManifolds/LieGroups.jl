@@ -29,10 +29,10 @@ _doc_exp_O2_id = """
     exp!(G::OrthogonalGroup{TypeParameter{Tuple{2}}}, ::Identity{MatrixMultiplicationGroupOperation}, g, X)
     exp!(G::SpecialOrthogonalGroup{TypeParameter{Tuple{2}}}, ::Identity{MatrixMultiplicationGroupOperation}, g, X)
 
-Compute the Lie group exponential function on the [`OrthogonalGroup`](@ref)` ``$(_math(:O))(2)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(2)``.
+Compute the Lie group exponential function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(2)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(2)``.
 
 Since the Lie algebra of both groups agrees and consist of the set of skew symmetric matrices,
-these simplify for the case of ``2×2`` matrices to ``X=$(_tex(:pmatrix, "0 & -α", "α & 0")){pmatrix}``, for some ``α∈ℝ``.
+these simplify for the case of ``2×2`` matrices to ``X=$(_tex(:pmatrix, "0 & -α", "α & 0"))``, for some ``α∈ℝ``.
 
 Their exponential is
 
@@ -159,14 +159,15 @@ _doc_log_O2_id = """
     log!(G::OrthogonalGroup{TypeParameter{Tuple{2}}}, X, ::Identity{MatrixMultiplicationGroupOperation}, g)
     log!(G::SpecialOrthogonalGroup{TypeParameter{Tuple{2}}}, X, ::Identity{MatrixMultiplicationGroupOperation}, g)
 
-Compute the Lie group logarithm function on the [`OrthogonalGroup`](@ref)` ``$(_math(:O))(2)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(2)``.
+Compute the Lie group logarithm function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(2)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(2)``.
 
 For the two-dimensional case, any rotation matrix ``g`` can be represented as ``$(_tex(:pmatrix, "$(_tex(:cos))(α) & -$(_tex(:sin))(α)", "$(_tex(:sin))(α) & $(_tex(:cos))(α)"))``.
-For the orthogonal group, ``g`` might also include one further reflection.
+For the [`SpecialOrthogonalGroup`](@ref), ``g`` might also include reflections.
 
 The logarithm is then
+
 ```math
-$(_tex(:log))_{$(_math(:G))}(g) =  $(_tex(:pmatrix, "0 & -α &", "α & 0")).
+$(_tex(:log))_{$(_math(:G))}(g) =  $(_tex(:pmatrix, "0 & α &", "-α & 0")).
 ```
 
 This result can be computed in-place of `X`
