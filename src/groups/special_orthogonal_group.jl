@@ -49,6 +49,20 @@ ManifoldsBase.exp!(
     X,
 )
 
+@doc "$(_doc_exp_O4_id)"
+ManifoldsBase.exp(
+    ::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}},
+    ::Identity{MatrixMultiplicationGroupOperation},
+    X,
+)
+@doc "$(_doc_exp_O4_id)"
+ManifoldsBase.exp!(
+    ::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}},
+    g,
+    ::Identity{MatrixMultiplicationGroupOperation},
+    X,
+)
+
 inv!(G::SpecialOrthogonalGroup, k, g) = copyto!(G, k, transpose(g))
 function inv!(
     G::SpecialOrthogonalGroup, q, ::Identity{O}
@@ -81,6 +95,21 @@ ManifoldsBase.log(
 @doc "$(_doc_log_O3_id)"
 ManifoldsBase.log!(
     ::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
+    X,
+    ::Identity{MatrixMultiplicationGroupOperation},
+    g,
+)
+
+@doc "$(_doc_log_O4_id)"
+ManifoldsBase.log(
+    ::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}},
+    ::Identity{MatrixMultiplicationGroupOperation},
+    g,
+)
+
+@doc "$(_doc_log_O4_id)"
+ManifoldsBase.log!(
+    ::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}},
     X,
     ::Identity{MatrixMultiplicationGroupOperation},
     g,

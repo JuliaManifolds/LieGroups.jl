@@ -51,6 +51,11 @@ end
 # LaTeX
 # Define LaTeX shortcuts
 _tex(args...; kwargs...) = glossary(:LaTeX, args...; kwargs...)
+define!(
+    :LaTeX,
+    :aligned,
+    (lines...) -> raw"\begin{aligned} " * join(lines, raw"\\ ") * raw"\end{aligned}",
+)
 define!(:LaTeX, :big, raw"\big")
 define!(:LaTeX, :bigl, raw"\bigl")
 define!(:LaTeX, :bigr, raw"\bigr")

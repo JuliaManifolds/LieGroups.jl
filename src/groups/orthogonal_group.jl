@@ -104,6 +104,32 @@ ManifoldsBase.exp!(
     X,
 )
 
+_doc_exp_O4_id = """
+    exp(G::OrthogonalGroup{TypeParameter{Tuple{4}}}, ::Identity{MatrixMultiplicationGroupOperation}, X)
+    exp(G::SpecialOrthogonalGroup{TypeParameter{Tuple{4}}}, ::Identity{MatrixMultiplicationGroupOperation}, X)
+    exp!(G::OrthogonalGroup{TypeParameter{Tuple{4}}}, ::Identity{MatrixMultiplicationGroupOperation}, g, X)
+    exp!(G::SpecialOrthogonalGroup{TypeParameter{Tuple{4}}}, ::Identity{MatrixMultiplicationGroupOperation}, g, X)
+
+Compute the Lie group exponential function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(4)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(4)``.
+
+Similar to the ``3×3`` case, an efficient computation is provided,
+adapted from [GallierXu:2002](@cite), [AndricaRohan:2013](@cite) with a few numerical stabilisations.
+"""
+
+@doc "$(_doc_exp_O4_id)"
+ManifoldsBase.exp(
+    ::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}},
+    ::Identity{MatrixMultiplicationGroupOperation},
+    X,
+)
+@doc "$(_doc_exp_O4_id)"
+ManifoldsBase.exp!(
+    ::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}},
+    g,
+    ::Identity{MatrixMultiplicationGroupOperation},
+    X,
+)
+
 function ManifoldsBase.exp(
     G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
     e::Identity{MatrixMultiplicationGroupOperation},
@@ -135,7 +161,7 @@ end
 
 function ManifoldsBase.exp!(
     ::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
-    q,
+    g,
     ::Identity{MatrixMultiplicationGroupOperation},
     X,
 )
@@ -147,14 +173,14 @@ function ManifoldsBase.exp!(
         a = sin(θ) / θ
         b = (1 - cos(θ)) / θ^2
     end
-    copyto!(q, I)
-    q .+= a .* X
-    mul!(q, X, X, b, true)
-    return q
+    copyto!(g, LinearAlgebra.I)
+    g .+= a .* X
+    mul!(g, X, X, b, true)
+    return g
 end
 function ManifoldsBase.exp!(
     ::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{4}}},
-    q,
+    g,
     ::Identity{MatrixMultiplicationGroupOperation},
     X,
 )
@@ -191,11 +217,10 @@ function ManifoldsBase.exp!(
         a₂ = (sincα - (1 - r) / 2 * cosα) * c
         a₃ = (e + (1 - r) * (e - sincα / 2)) * c
     end
-
     X² = X * X
     X³ = X² * X
-    q = a₀ * LinearAlgebra.I + a₁ .* X .+ a₂ .* X² .+ a₃ .* X³
-    return q
+    g .= a₀ * LinearAlgebra.I + a₁ .* X .+ a₂ .* X² .+ a₃ .* X³
+    return g
 end
 
 _doc_log_O2_id = """
@@ -289,8 +314,41 @@ ManifoldsBase.log!(
     g,
 )
 
+_doc_log_O4_id = """
+    log(G::OrthogonalGroup{TypeParameter{Tuple{4}}}, ::Identity{MatrixMultiplicationGroupOperation}, g)
+    log(G::SpecialOrthogonalGroup{TypeParameter{Tuple{4}}}, ::Identity{MatrixMultiplicationGroupOperation}, g)
+    log!(G::OrthogonalGroup{TypeParameter{Tuple{4}}}, X, ::Identity{MatrixMultiplicationGroupOperation}, g)
+    log!(G::SpecialOrthogonalGroup{TypeParameter{Tuple{4}}}, X, ::Identity{MatrixMultiplicationGroupOperation}, g)
+
+Compute the Lie group logarithm function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(4)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(4)``.
+
+The implementation is based on a generalized variant of the Rodrigues' like formula.
+For details, see [GallierXu:2002; Section 3](@cite).
+
+This result can be computed in-place of `X`
+
+Note the logarithmic map is only locally around the identity uniquely determined.
+"""
+
+@doc "$(_doc_log_O4_id)"
+ManifoldsBase.log(
+    ::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}},
+    ::Identity{MatrixMultiplicationGroupOperation},
+    g,
+)
+
+@doc "$(_doc_log_O4_id)"
+ManifoldsBase.log!(
+    ::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}},
+    X,
+    ::Identity{MatrixMultiplicationGroupOperation},
+    g,
+)
+
 function ManifoldsBase.log(
-    G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
+    G::CommonUnitarySubGroups{
+        ManifoldsBase.ℝ,<:ManifoldsBase.TypeParameter{<:Union{Tuple{2},Tuple{3},Tuple{4}}}
+    },
     e::Identity{MatrixMultiplicationGroupOperation},
     g,
 )
@@ -301,15 +359,8 @@ end
 # Resolve an ambiguity compared to the general matrix multiplication definitions
 function Base.log(
     G::CommonUnitarySubGroups{
-        ManifoldsBase.ℝ,<:ManifoldsBase.TypeParameter{<:Union{Tuple{2},Tuple{3}}}
+        ManifoldsBase.ℝ,<:ManifoldsBase.TypeParameter{<:Union{Tuple{2},Tuple{3},Tuple{4}}}
     },
-    e::Identity{MatrixMultiplicationGroupOperation},
-    ::Identity{MatrixMultiplicationGroupOperation},
-)
-    return zero_vector(G, e)
-end
-function Base.log(
-    G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
     e::Identity{MatrixMultiplicationGroupOperation},
     ::Identity{MatrixMultiplicationGroupOperation},
 )
@@ -333,7 +384,6 @@ function ManifoldsBase.log!(
     end
     return X
 end
-
 function ManifoldsBase.log!(
     G::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
     X::AbstractMatrix,
@@ -346,7 +396,7 @@ function ManifoldsBase.log!(
         ival = findfirst(λ -> isapprox(λ, 1), eig.values)
         inds = SVector{3}(1:3)
         ax = eig.vectors[inds, ival]
-        return get_vector!(G, X, e, π * ax, DefaultOrthogonalBasis())
+        return get_vector!(G, X, e, π * ax, LieAlgebraOrthogonalBasis())
     end
     X .= q ./ usinc_from_cos(cosθ)
     # project onto 𝔰𝔬(3) for numerical stability
@@ -358,7 +408,7 @@ function ManifoldsBase.log!(
     e::Identity{MatrixMultiplicationGroupOperation},
     q::AbstractMatrix,
 )
-    cosα, cosβ = Manifolds.cos_angles_4d_rotation_matrix(q)
+    cosα, cosβ = cos_angles_4d_rotation_matrix(q)
     α = acos(clamp(cosα, -1, 1))
     β = acos(clamp(cosβ, -1, 1))
     if α ≈ 0 && β ≈ π
@@ -377,9 +427,8 @@ function ManifoldsBase.log!(
                 "The Lie group logarithm is not defined for $q with a negative determinant ($(det(q)) < 0). Point `q` is in a different connected component of the manifold $G",
             ),
         )
-        log_safe!(X, q)
+        copyto!(X, log(q))
     end
-    # TODO: Is this necessary or just for numerical stability?
     return project!(G, X, e, X)
 end
 

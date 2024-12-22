@@ -3,6 +3,7 @@ using LieGroups, Random, Test
 s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 !(s in LOAD_PATH) && (push!(LOAD_PATH, s))
 using LieGroupsTestSuite
+using LieGroupsTestSuite: rotation_matrix
 
 begin
     G = SpecialOrthogonalGroup(2)
@@ -38,6 +39,8 @@ begin
     )
     expectations = Dict(:repr => "SpecialOrthogonalGroup(2)", :lie_bracket => zero(X1))
     test_lie_group(G, properties, expectations)
+    #
+    #
     # O(3)
     H = SpecialOrthogonalGroup(3)
     h1 = rotation_matrix(3, 2, 1, π / 4)
@@ -57,4 +60,25 @@ begin
         :repr => "SpecialOrthogonalGroup(3)", :atols => Dict(:exp => 1e-15)
     )
     test_lie_group(H, properties2, expectations2)
+    #
+    #
+    # O(4)
+    J = SpecialOrthogonalGroup(4)
+    j1 = rotation_matrix(4, 3, 1, π / 4)
+    j2 = rotation_matrix(4, 4, 1, π / 8) * rotation_matrix(4, 3, 2, π / 4)
+    j3 = rotation_matrix(4, 4, 1, π / 4) * rotation_matrix(4, 4, 2, π / 8)
+    Z1 = [0.0 0.1 0.0 0.0; -0.1 0.0 0.0 0.0; 0.0 0.0 0.0 0.0; 0.0 0.0 0.0 0.0]
+    Z2 = [0.0 0.0 0.2 0.0; 0.0 0.0 0.0 0.0; -0.2 0.0 0.0 0.0; 0.0 0.0 0.0 0.0]
+    Z3 = [0.0 0.1 0.0 0.3; 0.0 0.0 -0.4 0.0; 0.0 0.4 0.0 0.0; -0.3 0.0 0.0 0.0]
+    # Test only specialized functions here
+    properties2 = Dict(
+        :Name => "The orthogonal group SO(4) – specialised funcions",
+        :Points => [j1, j2, j3],
+        :Vectors => [Z1, Z2, Z3],
+        :Functions => [exp, log, show],
+    )
+    expectations2 = Dict(
+        :repr => "SpecialOrthogonalGroup(4)", :atols => Dict(:exp => 1e-15)
+    )
+    test_lie_group(J, properties2, expectations2)
 end
