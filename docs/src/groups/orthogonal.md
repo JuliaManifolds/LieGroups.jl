@@ -18,4 +18,6 @@ Order = [:function]
 
 ```@docs
 LieGroups.angles_4d_skew_sym_matrix
+LieGroups.eigen_safe
+LieGroups.usinc_from_cos
 ```

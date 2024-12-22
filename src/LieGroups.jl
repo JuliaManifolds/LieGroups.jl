@@ -10,7 +10,9 @@ The package is named after the norwegian mathematician [Sophus Lie](https://en.w
 """
 module LieGroups
 
-using LinearAlgebra, ManifoldsBase, Manifolds, Random
+using LinearAlgebra, ManifoldsBase, Manifolds, StaticArrays, Random
+
+import LinearAlgebra: adjoint, adjoint!
 
 #
 #

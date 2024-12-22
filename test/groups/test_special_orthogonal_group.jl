@@ -11,7 +11,7 @@ begin
     g3 = [1.0 0.0; 0.0 1.0]
     X1, X2, X3 = [0.0 0.1; -0.1 0.0], [0.0 -0.2; 0.2 0.0], [0.0 0.0; 0.0 0.0]
     properties = Dict(
-        :Name => "The special orthogonal group",
+        :Name => "The special orthogonal group SO(2)",
         :Points => [g1, g2, g3],
         :Vectors => [X1, X2, X3],
         :Rng => Random.MersenneTwister(),
@@ -38,4 +38,23 @@ begin
     )
     expectations = Dict(:repr => "SpecialOrthogonalGroup(2)", :lie_bracket => zero(X1))
     test_lie_group(G, properties, expectations)
+    # O(3)
+    H = SpecialOrthogonalGroup(3)
+    h1 = rotation_matrix(3, 2, 1, π / 4)
+    h2 = rotation_matrix(3, 2, 1, π / 8) * rotation_matrix(3, 3, 1, π / 4)
+    h3 = rotation_matrix(3, 3, 1, π / 4) * rotation_matrix(3, 3, 2, π / 8)
+    Y1 = [0.0 0.1 0.0; -0.1 0.0 0.0; 0.0 0.0 0.0]
+    Y2 = [0.0 0.0 -0.2; 0.0 0.0 0.0; 0.2 0.0 0.0]
+    Y3 = [0.0 0.3 0.0; -0.3 0.0 0.4; 0.0 -0.4 0.0]
+    # Test only specialized functions here
+    properties2 = Dict(
+        :Name => "The special orthogonal group SO(3) – specialised funcions",
+        :Points => [h1, h2, h3],
+        :Vectors => [Y1, Y2, Y3],
+        :Functions => [exp, log, show],
+    )
+    expectations2 = Dict(
+        :repr => "SpecialOrthogonalGroup(3)", :atols => Dict(:exp => 1e-15)
+    )
+    test_lie_group(H, properties2, expectations2)
 end

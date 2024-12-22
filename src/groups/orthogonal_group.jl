@@ -59,6 +59,51 @@ ManifoldsBase.exp!(
     ::Identity{MatrixMultiplicationGroupOperation},
     X,
 )
+
+_doc_exp_O3_id = """
+    exp(G::OrthogonalGroup{TypeParameter{Tuple{3}}}, ::Identity{MatrixMultiplicationGroupOperation}, X)
+    exp(G::SpecialOrthogonalGroup{TypeParameter{Tuple{3}}}, ::Identity{MatrixMultiplicationGroupOperation}, X)
+    exp!(G::OrthogonalGroup{TypeParameter{Tuple{3}}}, ::Identity{MatrixMultiplicationGroupOperation}, g, X)
+    exp!(G::SpecialOrthogonalGroup{TypeParameter{Tuple{3}}}, ::Identity{MatrixMultiplicationGroupOperation}, g, X)
+
+Compute the Lie group exponential function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(3)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(3)``.
+
+Since the Lie algebra of both groups agrees and consist of the set of skew symmetric matrices,
+the ``3×3`` skew symmetric matrices are of the form
+
+```math
+    X = $(_tex(:pmatrix, "0 & -c & b", "c & 0 & -a", "-b & a & 0")),
+```
+for some ``a, b, c ∈ ℝ``. To compute the exponential, the [Rodrigues' rotation formula](https://en.wikipedia.org/wiki/Olinde_Rodrigues)
+can be used. With ``α = $(_tex(:sqrt, "a^2+b^2+c^2")) = $(_tex(:frac, "1", _tex(:sqrt,"2")))$(_tex(:norm,"X"))``
+we obtain for ``α ≠ 0``
+
+```math
+$(_tex(:exp))_{$(_math(:G))}(X) = I_3 + $(_tex(:frac, _tex(:sin, "α"), "α"))X + $(_tex(:frac, "(1 - $(_tex(:cos, "α")))", "α^2"))X^2,
+```
+
+and $(_tex(:exp))_{$(_math(:G))}(X) = I_3`` otherwise.
+
+This result can be computed in-place of `g`.
+
+Note that since ``$(_math(:SO))(3)`` consists of two disjoint connected components and the exponential map is smooth,
+the result ``g`` always lies in the connected component of the identity.
+"""
+
+@doc "$(_doc_exp_O3_id)"
+ManifoldsBase.exp(
+    ::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
+    ::Identity{MatrixMultiplicationGroupOperation},
+    X,
+)
+@doc "$(_doc_exp_O3_id)"
+ManifoldsBase.exp!(
+    ::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
+    g,
+    ::Identity{MatrixMultiplicationGroupOperation},
+    X,
+)
+
 function ManifoldsBase.exp(
     G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
     e::Identity{MatrixMultiplicationGroupOperation},
@@ -192,6 +237,58 @@ ManifoldsBase.log!(
     g,
 )
 
+_doc_log_O3_id = """
+    log(G::OrthogonalGroup{TypeParameter{Tuple{3}}}, ::Identity{MatrixMultiplicationGroupOperation}, g)
+    log(G::SpecialOrthogonalGroup{TypeParameter{Tuple{3}}}, ::Identity{MatrixMultiplicationGroupOperation}, g)
+    log!(G::OrthogonalGroup{TypeParameter{Tuple{3}}}, X, ::Identity{MatrixMultiplicationGroupOperation}, g)
+    log!(G::SpecialOrthogonalGroup{TypeParameter{Tuple{3}}}, X, ::Identity{MatrixMultiplicationGroupOperation}, g)
+
+Compute the Lie group logarithm function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(3)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(3)``.
+``$(_tex(:exp))_{$(_math(:G))}(X) = g`` is to invert the [Rodrigues' rotation formula](https://en.wikipedia.org/wiki/Olinde_Rodrigues)
+
+```math
+$(_tex(:exp))_{$(_math(:G))}(X) = I_3 + $(_tex(:frac, _tex(:sin, "α"), "α"))X + $(_tex(:frac, "(1 - $(_tex(:cos, "α")))", "α^2"))X^2,
+```
+
+For ``α ∉ $(_tex(:Set, "0, π"))`` we obtain ``X`` from the observation that
+```math
+$(_tex(:rm, "tr"))(g) = 1 + 2$(_tex(:cos))(α)
+$(_tex(:qquad))$(_tex(:text, " and "))$(_tex(:qquad))
+$(_tex(:frac, "1", "2"))(g-g^$(_tex(:transp))) = $(_tex(:sin))(α)X.
+```
+
+For ``α = 0`` we have ``g = I_3`` and ``X = 0``.
+
+For ``α = π`` we have to solve ``X^2 = $(_tex(:frac, "1", "2"))(g-I_3)``,
+where ``X`` is skew-symmetric and hence we have to solve for three unknowns.
+
+```math
+$(_tex(:log))_{$(_math(:G))}(g) = X.
+```
+
+This result can be computed in-place of `X`
+
+Note the logarithmic map is only locally around the identity uniquely determined.
+Especially, since ``$(_math(:SO))(3)`` consists of two disjoint connected components and the exponential map is smooth,
+for any ``g`` in the other component, the logarithmic map is defined, but not the inverse of the exponential map.
+
+"""
+
+@doc "$(_doc_log_O3_id)"
+ManifoldsBase.log(
+    ::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
+    ::Identity{MatrixMultiplicationGroupOperation},
+    g,
+)
+
+@doc "$(_doc_log_O3_id)"
+ManifoldsBase.log!(
+    ::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
+    X,
+    ::Identity{MatrixMultiplicationGroupOperation},
+    g,
+)
+
 function ManifoldsBase.log(
     G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
     e::Identity{MatrixMultiplicationGroupOperation},
@@ -202,6 +299,15 @@ function ManifoldsBase.log(
     return Y
 end
 # Resolve an ambiguity compared to the general matrix multiplication definitions
+function Base.log(
+    G::CommonUnitarySubGroups{
+        ManifoldsBase.ℝ,<:ManifoldsBase.TypeParameter{<:Union{Tuple{2},Tuple{3}}}
+    },
+    e::Identity{MatrixMultiplicationGroupOperation},
+    ::Identity{MatrixMultiplicationGroupOperation},
+)
+    return zero_vector(G, e)
+end
 function Base.log(
     G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
     e::Identity{MatrixMultiplicationGroupOperation},
@@ -243,7 +349,7 @@ function ManifoldsBase.log!(
         return get_vector!(G, X, e, π * ax, DefaultOrthogonalBasis())
     end
     X .= q ./ usinc_from_cos(cosθ)
-    # TODO: Is this necessary or just for numerical stability?
+    # project onto 𝔰𝔬(3) for numerical stability
     return project!(G, X, e, X)
 end
 function ManifoldsBase.log!(
@@ -274,7 +380,7 @@ function ManifoldsBase.log!(
         log_safe!(X, q)
     end
     # TODO: Is this necessary or just for numerical stability?
-    return project!(G, X, Identity(G), X)
+    return project!(G, X, e, X)
 end
 
 function Base.show(io::IO, G::OrthogonalGroup)

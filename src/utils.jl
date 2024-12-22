@@ -19,3 +19,32 @@ function angles_4d_skew_sym_matrix(A)
     sqrtdisc = sqrt(halfb^2 - c)
     return sqrt(halfb + sqrtdisc), sqrt(halfb - sqrtdisc)
 end
+
+@doc raw"""
+    usinc_from_cos(x::Real)
+
+Unnormalized version of `sinc` function, i.e. ``\operatorname{usinc}(θ) = \frac{\sin(θ)}{θ}``,
+computed from ``x = cos(θ)``.
+"""
+@inline function usinc_from_cos(x::Real)
+    return if x >= 1
+        one(x)
+    elseif x <= -1
+        zero(x)
+    else
+        sqrt(1 - x^2) / acos(x)
+    end
+end
+
+"""
+    eigen_safe(x)
+
+Compute the eigendecomposition of `x`. If `x` is a `StaticMatrix`, it is
+converted to a `Matrix` before the decomposition.
+"""
+@inline eigen_safe(x; kwargs...) = eigen(x; kwargs...)
+@inline function eigen_safe(x::StaticMatrix; kwargs...)
+    s = size(x)
+    E = eigen!(Matrix(parent(x)); kwargs...)
+    return Eigen(SizedVector{s[1]}(E.values), SizedMatrix{s...}(E.vectors))
+end
