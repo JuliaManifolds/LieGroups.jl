@@ -666,7 +666,7 @@ _doc_is_vector = """
 
 Check whether `X` is a tangent vector, that is an element of the [`LieAlgebra`](@ref)
 of `G`.
-The first variant calls [`is_point`](@extref ManifoldsBase.is_point) on the [`LieAlgebra`](@ref) `𝔤` of `G`.
+The first variant calls [`is_point`](@extref `ManifoldsBase.is_point-Tuple{AbstractManifold, Any, Bool}`) on the [`LieAlgebra`](@ref) `𝔤` of `G`.
 The second variant calls [`is_vector`](@extref ManifoldsBase.is_vector) on the $(_link(:AbstractManifold)) at the [`identity_element`](@ref).
 
 All keyword arguments are passed on to the corresponding call
@@ -712,6 +712,36 @@ function ManifoldsBase.isapprox(
 ) where {𝔽,O<:AbstractGroupOperation,O2<:AbstractGroupOperation}
     return false
 end
+
+_doc_jacobian_conjugate = """
+    jacobian_conjugate(G::LieGroup, g, h, B::ManifoldsBase.AbstractBasis=LieAlgebraOrthogonalBasis())
+    jacobian_conjugate!(G::LieGroup, J, g, h, B::ManifoldsBase.AbstractBasis=LieAlgebraOrthogonalBasis())
+
+Compute the Jacobian of the [`conjugate`](@ref) ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1}``,
+with respect to an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`).
+
+This can be seen as a matrix representation of the [`diff_conjugate`](@ref) ``D(c_g(h))[X]``
+with respect to the given basis.
+
+!!! note
+    For the case that `h` is the [`Identity`](@ref) and the relation of ``D(c_g(h))[X]``
+    to the [`adjoint`](@ref) ``$(_math(:Ad))(g)``, the Jacobian then sometimes called “adjoint matrix”,
+    e.g. in [SolaDerayAtchuthan:2021](@cite), when choosing as a basis the
+    [`LieAlgebraOrthogonalBasis`](@ref)`()` that is used for [`hat`](@ref) and [`vee`](@ref).
+"""
+@doc "$(_doc_jacobian_conjugate)"
+function jacobian_conjugate(
+    G::LieGroup, g, h, B::ManifoldsBase.AbstractBasis=LieAlgebraOrthogonalBasis()
+)
+    J = ManifoldsBase.allocate_result(G, jacobian_conjugate, g, h, B)
+    return jacobian_conjugate!(G, J, g, h, B)
+end
+
+function jacobian_conjugate! end
+@doc "$(_doc_jacobian_conjugate)"
+jacobian_conjugate!(
+    ::LieGroup, J, g, h; B::ManifoldsBase.AbstractBasis=LieAlgebraOrthogonalBasis()
+)
 
 _doc_log = """
     log(G::LieGroup, g, h)
@@ -775,6 +805,12 @@ ManifoldsBase.manifold_dimension(G::LieGroup) = manifold_dimension(G.manifold)
 
 ManifoldsBase.norm(G::LieGroup, g, X) = norm(G.manifold, g, X)
 
+ManifoldsBase.project!(G::LieGroup, h, g) = project!(G.manifold, h, g)
+# Since tangent vectors are always in the Lie algebra – do project always on TeG
+function ManifoldsBase.project!(G::LieGroup, Y, g, X)
+    return project!(G.manifold, Y, identity_element(G), X)
+end
+
 _doc_rand = """
     rand(::LieGroup; vector_at=nothing, σ::Real=1.0, kwargs...)
     rand(::LieAlgebra; σ::Real=1.0, kwargs...)
@@ -833,8 +869,7 @@ The computation can be performed in-place of `c`.
 The inverse of `vee` is [`hat`](@ref).
 
 Technically, `vee` is a specific case of [`get_coordinates`](@ref) and is implemented using
-the [`LieAlgebraOrthogonalBasis`](@ref)
-
+the [`LieAlgebraOrthogonalBasis`](@ref).
 """
 
 # function vee end
@@ -851,13 +886,12 @@ function vee!(G::LieGroup{𝔽}, c, X) where {𝔽}
 end
 
 function ManifoldsBase.zero_vector(
-    G::LieGroup{𝔽,O}, ::Identity{O}
+    G::LieGroup{𝔽,<:O}, ::Identity{<:O}
 ) where {𝔽,O<:AbstractGroupOperation}
     return zero_vector(G, identity_element(G))
 end
-
 function ManifoldsBase.zero_vector!(
-    G::LieGroup{𝔽,O}, X, ::Identity{O}
+    G::LieGroup{𝔽,<:O}, X, ::Identity{<:O}
 ) where {𝔽,O<:AbstractGroupOperation}
     return zero_vector!(G.manifold, X, identity_element(G))
 end
