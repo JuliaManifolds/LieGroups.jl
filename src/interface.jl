@@ -869,8 +869,7 @@ The computation can be performed in-place of `c`.
 The inverse of `vee` is [`hat`](@ref).
 
 Technically, `vee` is a specific case of [`get_coordinates`](@ref) and is implemented using
-the [`LieAlgebraOrthogonalBasis`](@ref)
-
+the [`LieAlgebraOrthogonalBasis`](@ref).
 """
 
 # function vee end

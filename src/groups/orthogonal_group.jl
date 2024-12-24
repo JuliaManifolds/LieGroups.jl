@@ -223,6 +223,181 @@ function ManifoldsBase.exp!(
     return g
 end
 
+_doc_get_coordinates_On = """
+    get_coordinates(G::OrthogonalGroup, e, X, ::LieAlgebraOrthogonalBasis)
+    get_coordinates(G::SpecialOrthogonalGroup, e, X, ::LieAlgebraOrthogonalBasis)
+    get_coordinates!(G::OrthogonalGroup, c, e, X ::LieAlgebraOrthogonalBasis)
+    get_coordinates!(G::SpecialOrthogonalGroup, c, e, X ::LieAlgebraOrthogonalBasis)
+
+Compute the vector of coordinates ``c ∈ ℝ^d`` from the Lie algebra tangent vector ``X ∈ 𝔰𝔬(n)``
+of the [`OrthogonalGroup`](@ref) `O(n)` in the [`LieAlgebraOrthogonalBasis`](@ref),
+where ``d`` is the dimension of the Lie algebra. This is also the version used in [`vee`](@ref).
+
+For ``O(2)`` there is only one coefficient ``α`` in the basis ``$(_tex(:pmatrix, "0 & -α", "α & 0"))``,
+which is returned as ``c = (α)^$(_tex(:transp))``.
+
+A usual basis representation of ``𝔰𝔬(3) is given by
+```math
+    X = $(_tex(:pmatrix, "0 & -γ & β", "γ & 0 & -α", "-β & α & 0")),
+```
+hence the coordinate vector is ``c = (α, β, γ)^$(_tex(:transp)) ∈ ℝ^3``.
+
+For `n ≥ 4`` the lower triangular part is added to ``c`` row-wise.
+"""
+
+@doc "$(_doc_get_coordinates_On)"
+get_coordinates(G::OrthogonalGroup, e, X, ::LieAlgebraOrthogonalBasis)
+
+@doc "$(_doc_get_coordinates_On)"
+get_coordinates!(G::OrthogonalGroup, c, e, X, ::LieAlgebraOrthogonalBasis)
+
+function get_coordinates_lie!(
+    G::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
+    c,
+    e::Identity{MatrixMultiplicationGroupOperation},
+    X,
+)
+    @assert size(X) == (2, 2)
+    @assert size(c) == (1,)
+    c[1] = X[2, 1]
+    return c
+end
+function get_coordinates_lie!(
+    ::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{n}}},
+    c,
+    ::Identity{MatrixMultiplicationGroupOperation},
+    X,
+) where {n}
+    @assert size(X) == (n, n)
+    @assert length(c) == manifold_dimension(G)
+    @assert n > 2
+    _get_coordinates_lie_On!(c, X)
+    return c
+end
+function get_coordinates_lie!(
+    G::CommonUnitarySubGroups{ℝ}, c, ::Identity{MatrixMultiplicationGroupOperation}, X
+)
+    n = get_parameter(G.manifold.size)[1]
+    @assert length(c) == manifold_dimension(G)
+    @assert size(X) == (n, n)
+    if n == 2
+        c[1] = X[2, 1]
+    else
+        _get_coordinates_lie_On!(c, X)
+    end
+    return c
+end
+
+function _get_coordinates_lie_On!(c, X)
+    n = size(X, 1)
+    @inbounds begin
+        c[1] = X[3, 2]
+        c[2] = X[1, 3]
+        c[3] = X[2, 1]
+        k = 4
+        for i in 4:n, j in 1:(i - 1)
+            c[k] = X[i, j]
+            k += 1
+        end
+    end
+    return c
+end
+
+_doc_get_vector_On = """
+    get_vector(G::OrthogonalGroup, e, c, ::LieAlgebraOrthogonalBasis)
+    get_vector(G::SpecialOrthogonalGroup, e, c, ::LieAlgebraOrthogonalBasis)
+    get_vector!(G::OrthogonalGroup, X, e, c, ::LieAlgebraOrthogonalBasis)
+    get_vector!(G::SpecialOrthogonalGroup, X, e, c, ::LieAlgebraOrthogonalBasis)
+
+Compute the tangent vector ``X ∈ 𝔰𝔬(n)`` based on a vector of coordinates ``c ∈ ℝ^d``,
+where ``d`` is the dimension of the Lie algebra of the [`OrthogonalGroup`](@ref) `O(n)`
+and the coordinates are with respect to the [`LieAlgebraOrthogonalBasis`](@ref).
+This is also the version used in [`hat`](@ref).
+
+For ``O(2)`` there is only one coefficient ````c = (α)^$(_tex(:transp))`` and hence
+``X = $(_tex(:pmatrix, "0 & -α", "α & 0"))`` is returned.
+
+For ``n=3`` a usual representtion turns ``c = (α, β, γ)^$(_tex(:transp)) ∈ ℝ^3`` into
+```math
+    X = $(_tex(:pmatrix, "0 & -γ & β", "γ & 0 & -α", "-β & α & 0")),
+```
+hence the coordinate vector is .
+
+For `n ≥ 4`` all further coefficients are used to fill up the following rows of the lower
+triangular part – which determines the upper triangualr part due to skew-symmetry
+"""
+
+@doc "$(_doc_get_vector_On)"
+get_vector(G::OrthogonalGroup, e, X, ::LieAlgebraOrthogonalBasis)
+
+@doc "$(_doc_get_vector_On)"
+get_vector!(G::OrthogonalGroup, c, e, X::LieAlgebraOrthogonalBasis)
+
+function get_vector_lie!(
+    G::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
+    X,
+    e::Identity{MatrixMultiplicationGroupOperation},
+    c,
+)
+    @assert size(X) == (2, 2)
+    @assert size(c) == (1,)
+    X[1, 1] = 0.0
+    X[2, 1] = c[1]
+    X[1, 2] = -c[1]
+    X[2, 2] = 0.0
+    return X
+end
+function get_vector_lie!(
+    ::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{n}}},
+    X,
+    ::Identity{MatrixMultiplicationGroupOperation},
+    c,
+) where {n}
+    @assert size(X) == (n, n)
+    @assert length(c) == manifold_dimension(G)
+    @assert n > 2
+    _get_vector_lie_On!(X, c)
+    return X
+end
+function get_vector_lie!(
+    G::CommonUnitarySubGroups{ℝ}, X, ::Identity{MatrixMultiplicationGroupOperation}, c
+)
+    n = get_parameter(G.manifold.size)[1]
+    @assert length(c) == manifold_dimension(G)
+    @assert size(X) == (n, n)
+    if n == 2
+        X[1, 1] = 0.0
+        X[2, 1] = c[1]
+        X[1, 2] = -c[1]
+        X[2, 2] = 0.0
+    else
+        _get_vector_lie_On!(X, c)
+    end
+    return X
+end
+
+function _get_vector_lie_On!(X, c)
+    n = size(X, 1)
+    @inbounds begin
+        X[1, 2] = c[3]
+        X[2, 1] = -c[3]
+        X[1, 3] = c[2]
+        X[3, 1] = -c[2]
+        X[2, 3] = -c[1]
+        X[3, 2] = c[1]
+        k = 4
+        for i in 4:n
+            X[i, i] = 0.0
+            for j in 1:(i - 1)
+                X[i, j] = c[k]
+                X[j, i] = -c[k]
+                k += 1
+            end
+        end
+    end
+    return X
+end
+
 _doc_log_O2_id = """
     log(G::OrthogonalGroup{TypeParameter{Tuple{2}}}, ::Identity{MatrixMultiplicationGroupOperation}, g)
     log(G::SpecialOrthogonalGroup{TypeParameter{Tuple{2}}}, ::Identity{MatrixMultiplicationGroupOperation}, g)

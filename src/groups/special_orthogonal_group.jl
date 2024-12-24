@@ -63,6 +63,40 @@ ManifoldsBase.exp!(
     X,
 )
 
+@doc "$(_doc_get_coordinates_On)"
+get_coordinates(
+    G::SpecialOrthogonalGroup,
+    ::Identity{MatrixMultiplicationGroupOperation},
+    X,
+    ::LieAlgebraOrthogonalBasis,
+)
+
+@doc "$(_doc_get_coordinates_On)"
+get_coordinates!(
+    G::SpecialOrthogonalGroup,
+    c,
+    ::Identity{MatrixMultiplicationGroupOperation},
+    X,
+    ::LieAlgebraOrthogonalBasis,
+)
+
+@doc "$(_doc_get_vector_On)"
+get_vector(
+    G::SpecialOrthogonalGroup,
+    ::Identity{MatrixMultiplicationGroupOperation},
+    c,
+    ::LieAlgebraOrthogonalBasis,
+)
+
+@doc "$(_doc_get_vector_On)"
+get_vector!(
+    G::SpecialOrthogonalGroup,
+    X,
+    ::Identity{MatrixMultiplicationGroupOperation},
+    c,
+    ::LieAlgebraOrthogonalBasis,
+)
+
 inv!(G::SpecialOrthogonalGroup, k, g) = copyto!(G, k, transpose(g))
 function inv!(
     G::SpecialOrthogonalGroup, q, ::Identity{O}

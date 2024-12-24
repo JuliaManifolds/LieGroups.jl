@@ -23,7 +23,7 @@ begin
             diff_left_compose,
             diff_right_compose,
             exp,
-            # hat,
+            hat,
             identity_element,
             inv,
             inv_left_compose,
@@ -33,7 +33,7 @@ begin
             log,
             rand,
             show,
-            # vee,
+            vee,
         ],
     )
     expectations = Dict(:repr => "OrthogonalGroup(2)")
@@ -53,7 +53,7 @@ begin
         :Name => "The orthogonal group O(3) – specialised funcions",
         :Points => [h1, h2, h3],
         :Vectors => [Y1, Y2, Y3],
-        :Functions => [exp, log, show],
+        :Functions => [exp, hat, log, show, vee],
     )
     expectations2 = Dict(:repr => "OrthogonalGroup(3)", :atols => Dict(:exp => 1e-15))
     test_lie_group(H, properties2, expectations2)
@@ -68,12 +68,12 @@ begin
     Z2 = [0.0 0.0 0.2 0.0; 0.0 0.0 0.0 0.0; -0.2 0.0 0.0 0.0; 0.0 0.0 0.0 0.0]
     Z3 = [0.0 0.1 0.0 0.3; 0.0 0.0 -0.4 0.0; 0.0 0.4 0.0 0.0; -0.3 0.0 0.0 0.0]
     # Test only specialized functions here
-    properties2 = Dict(
+    properties3 = Dict(
         :Name => "The orthogonal group O(4) – specialised funcions",
         :Points => [j1, j2, j3],
         :Vectors => [Z1, Z2, Z3],
-        :Functions => [exp, log, show],
+        :Functions => [exp, hat, log, show, vee],
     )
-    expectations2 = Dict(:repr => "OrthogonalGroup(4)", :atols => Dict(:exp => 1e-15))
-    test_lie_group(J, properties2, expectations2)
+    expectations3 = Dict(:repr => "OrthogonalGroup(4)", :atols => Dict(:exp => 1e-15))
+    test_lie_group(J, properties3, expectations3)
 end
