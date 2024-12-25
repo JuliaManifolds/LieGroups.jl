@@ -130,8 +130,18 @@ ManifoldsBase.exp!(
     X,
 )
 
-function ManifoldsBase.exp(
-    G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
+# TODO: Maybe combine the following two definitions?
+function Base.exp(
+    G::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
+    e::Identity{MatrixMultiplicationGroupOperation},
+    X,
+)
+    g = ManifoldsBase.allocate_result(G, exp, X)
+    exp!(G, g, e, X)
+    return g
+end
+function Base.exp(
+    G::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
     e::Identity{MatrixMultiplicationGroupOperation},
     X,
 )
@@ -520,10 +530,27 @@ ManifoldsBase.log!(
     g,
 )
 
+# TODO: Maybe combine the following 3 dispatches?
 function ManifoldsBase.log(
-    G::CommonUnitarySubGroups{
-        ManifoldsBase.ℝ,<:ManifoldsBase.TypeParameter{<:Union{Tuple{2},Tuple{3},Tuple{4}}}
-    },
+    G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
+    e::Identity{MatrixMultiplicationGroupOperation},
+    g,
+)
+    Y = ManifoldsBase.allocate_result(G, log, g)
+    log!(G, Y, e, g)
+    return Y
+end
+function ManifoldsBase.log(
+    G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
+    e::Identity{MatrixMultiplicationGroupOperation},
+    g,
+)
+    Y = ManifoldsBase.allocate_result(G, log, g)
+    log!(G, Y, e, g)
+    return Y
+end
+function ManifoldsBase.log(
+    G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{4}}},
     e::Identity{MatrixMultiplicationGroupOperation},
     g,
 )
@@ -532,10 +559,23 @@ function ManifoldsBase.log(
     return Y
 end
 # Resolve an ambiguity compared to the general matrix multiplication definitions
+# TODO: Maybe combine the following 3 dispatches?
 function Base.log(
-    G::CommonUnitarySubGroups{
-        ManifoldsBase.ℝ,<:ManifoldsBase.TypeParameter{<:Union{Tuple{2},Tuple{3},Tuple{4}}}
-    },
+    G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
+    e::Identity{MatrixMultiplicationGroupOperation},
+    ::Identity{MatrixMultiplicationGroupOperation},
+)
+    return zero_vector(G, e)
+end
+function Base.log(
+    G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
+    e::Identity{MatrixMultiplicationGroupOperation},
+    ::Identity{MatrixMultiplicationGroupOperation},
+)
+    return zero_vector(G, e)
+end
+function Base.log(
+    G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{4}}},
     e::Identity{MatrixMultiplicationGroupOperation},
     ::Identity{MatrixMultiplicationGroupOperation},
 )
@@ -602,7 +642,7 @@ function ManifoldsBase.log!(
                 "The Lie group logarithm is not defined for $q with a negative determinant ($(det(q)) < 0). Point `q` is in a different connected component of the manifold $G",
             ),
         )
-        copyto!(X, log(q))
+        copyto!(X, real.(log(q)))
     end
     return project!(G, X, e, X)
 end

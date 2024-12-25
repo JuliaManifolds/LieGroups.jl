@@ -15,6 +15,9 @@ module LieGroupsTestSuite
 using LieGroups
 using Test, Random
 using LinearAlgebra: I
+
+include("so4_edge_cases.jl")
+
 #
 #
 # === Dummy Types ===
