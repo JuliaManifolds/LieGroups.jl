@@ -644,7 +644,8 @@ function ManifoldsBase.log!(
         )
         log_safe!(X, q)
     end
-    return project!(G, X, e, X)
+    X .= (X .- X') ./ 2
+    return X
 end
 
 function Base.show(io::IO, G::OrthogonalGroup)

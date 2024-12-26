@@ -51,7 +51,7 @@ begin
     Y3 = [0.0 0.3 0.0; -0.3 0.0 0.4; 0.0 -0.4 0.0]
     # Test only specialized functions here
     properties2 = Dict(
-        :Name => "The special orthogonal group SO(3) – specialised funcions",
+        :Name => "The special orthogonal group SO(3) – specialized functions",
         :Points => [h1, h2, h3],
         :Vectors => [Y1, Y2, Y3],
         :Functions => [exp, hat, log, show, vee],
@@ -72,7 +72,7 @@ begin
     Z3 = [0.0 0.1 0.0 0.3; 0.0 0.0 -0.4 0.0; 0.0 0.4 0.0 0.0; -0.3 0.0 0.0 0.0]
     # Test only specialized functions here
     properties3 = Dict(
-        :Name => "The orthogonal group SO(4) – specialised funcions",
+        :Name => "The orthogonal group SO(4) – specialized functions",
         :Points => [j1, j2, j3],
         :Vectors => [Z1, Z2, Z3],
         :Functions => [exp, hat, log, show, vee],
