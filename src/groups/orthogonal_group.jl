@@ -642,7 +642,7 @@ function ManifoldsBase.log!(
                 "The Lie group logarithm is not defined for $q with a negative determinant ($(det(q)) < 0). Point `q` is in a different connected component of the manifold $G",
             ),
         )
-        copyto!(X, real.(log(q)))
+        log_safe!(X, q)
     end
     return project!(G, X, e, X)
 end
