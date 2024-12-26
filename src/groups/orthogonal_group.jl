@@ -24,12 +24,11 @@ end
 # Generic special cases for O(n) and SO(n)
 
 _doc_exp_O2_id = """
-    exp(G::OrthogonalGroup{TypeParameter{Tuple{2}}}, ::Identity{MatrixMultiplicationGroupOperation}, X)
-    exp(G::SpecialOrthogonalGroup{TypeParameter{Tuple{2}}}, ::Identity{MatrixMultiplicationGroupOperation}, X)
-    exp!(G::OrthogonalGroup{TypeParameter{Tuple{2}}}, ::Identity{MatrixMultiplicationGroupOperation}, g, X)
-    exp!(G::SpecialOrthogonalGroup{TypeParameter{Tuple{2}}}, ::Identity{MatrixMultiplicationGroupOperation}, g, X)
+    exp(G, e, X)
+    exp!(G, e, g, X)
 
-Compute the Lie group exponential function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(2)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(2)``.
+Compute the Lie group exponential function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(2)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(2)``,
+where `e` is the [`Identity`](@ref)`{MatrixMultiplicationGroupOperation}` and `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`) for dispatch.
 
 Since the Lie algebra of both groups agrees and consist of the set of skew symmetric matrices,
 these simplify for the case of ``2×2`` matrices to ``X=$(_tex(:pmatrix, "0 & -α", "α & 0"))``, for some ``α∈ℝ``.
@@ -61,12 +60,11 @@ ManifoldsBase.exp!(
 )
 
 _doc_exp_O3_id = """
-    exp(G::OrthogonalGroup{TypeParameter{Tuple{3}}}, ::Identity{MatrixMultiplicationGroupOperation}, X)
-    exp(G::SpecialOrthogonalGroup{TypeParameter{Tuple{3}}}, ::Identity{MatrixMultiplicationGroupOperation}, X)
-    exp!(G::OrthogonalGroup{TypeParameter{Tuple{3}}}, ::Identity{MatrixMultiplicationGroupOperation}, g, X)
-    exp!(G::SpecialOrthogonalGroup{TypeParameter{Tuple{3}}}, ::Identity{MatrixMultiplicationGroupOperation}, g, X)
+    exp(G, e, X)
+    exp!(G, e, g, X)
 
-Compute the Lie group exponential function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(3)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(3)``.
+Compute the Lie group exponential function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(3)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(3)``,
+where `e` is the [`Identity`](@ref)`{MatrixMultiplicationGroupOperation}` and `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`) for dispatch.
 
 Since the Lie algebra of both groups agrees and consist of the set of skew symmetric matrices,
 the ``3×3`` skew symmetric matrices are of the form
@@ -105,12 +103,11 @@ ManifoldsBase.exp!(
 )
 
 _doc_exp_O4_id = """
-    exp(G::OrthogonalGroup{TypeParameter{Tuple{4}}}, ::Identity{MatrixMultiplicationGroupOperation}, X)
-    exp(G::SpecialOrthogonalGroup{TypeParameter{Tuple{4}}}, ::Identity{MatrixMultiplicationGroupOperation}, X)
-    exp!(G::OrthogonalGroup{TypeParameter{Tuple{4}}}, ::Identity{MatrixMultiplicationGroupOperation}, g, X)
-    exp!(G::SpecialOrthogonalGroup{TypeParameter{Tuple{4}}}, ::Identity{MatrixMultiplicationGroupOperation}, g, X)
+    exp(G, e, X)
+    exp!(G, e, g, X)
 
-Compute the Lie group exponential function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(4)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(4)``.
+Compute the Lie group exponential function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(4)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(4)``,
+where `e` is the [`Identity`](@ref)`{MatrixMultiplicationGroupOperation}` and `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`) for dispatch.
 
 Similar to the ``3×3`` case, an efficient computation is provided,
 adapted from [GallierXu:2002](@cite), [AndricaRohan:2013](@cite) with a few numerical stabilisations.
@@ -285,7 +282,7 @@ function get_coordinates_lie!(
     return c
 end
 function get_coordinates_lie!(
-    G::CommonUnitarySubGroups{ℝ}, c, ::Identity{MatrixMultiplicationGroupOperation}, X
+    G::CommonUnitarySubGroups{ℝ}, c, e, X
 )
     n = get_parameter(G.manifold.size)[1]
     @assert length(c) == manifold_dimension(G)
@@ -370,7 +367,7 @@ function get_vector_lie!(
     return X
 end
 function get_vector_lie!(
-    G::CommonUnitarySubGroups{ℝ}, X, ::Identity{MatrixMultiplicationGroupOperation}, c
+    G::CommonUnitarySubGroups{ℝ}, X, e, c
 )
     n = get_parameter(G.manifold.size)[1]
     @assert length(c) == manifold_dimension(G)
@@ -409,12 +406,11 @@ function _get_vector_lie_On!(X, c)
 end
 
 _doc_log_O2_id = """
-    log(G::OrthogonalGroup{TypeParameter{Tuple{2}}}, ::Identity{MatrixMultiplicationGroupOperation}, g)
-    log(G::SpecialOrthogonalGroup{TypeParameter{Tuple{2}}}, ::Identity{MatrixMultiplicationGroupOperation}, g)
-    log!(G::OrthogonalGroup{TypeParameter{Tuple{2}}}, X, ::Identity{MatrixMultiplicationGroupOperation}, g)
-    log!(G::SpecialOrthogonalGroup{TypeParameter{Tuple{2}}}, X, ::Identity{MatrixMultiplicationGroupOperation}, g)
+    log(G, e, g)
+    log!(G, X, e, g)
 
-Compute the Lie group logarithm function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(2)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(2)``.
+Compute the Lie group logarithm function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(2)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(2)``,
+where `e` is the [`Identity`](@ref)`{MatrixMultiplicationGroupOperation}` and `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`) for dispatch.
 
 For the two-dimensional case, any rotation matrix ``g`` can be represented as ``$(_tex(:pmatrix, "$(_tex(:cos))(α) & -$(_tex(:sin))(α)", "$(_tex(:sin))(α) & $(_tex(:cos))(α)"))``.
 For the [`SpecialOrthogonalGroup`](@ref), ``g`` might also include reflections.
@@ -448,13 +444,13 @@ ManifoldsBase.log!(
 )
 
 _doc_log_O3_id = """
-    log(G::OrthogonalGroup{TypeParameter{Tuple{3}}}, ::Identity{MatrixMultiplicationGroupOperation}, g)
-    log(G::SpecialOrthogonalGroup{TypeParameter{Tuple{3}}}, ::Identity{MatrixMultiplicationGroupOperation}, g)
-    log!(G::OrthogonalGroup{TypeParameter{Tuple{3}}}, X, ::Identity{MatrixMultiplicationGroupOperation}, g)
-    log!(G::SpecialOrthogonalGroup{TypeParameter{Tuple{3}}}, X, ::Identity{MatrixMultiplicationGroupOperation}, g)
+    log(G, e, g)
+    log!(G, X, e, g)
 
-Compute the Lie group logarithm function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(3)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(3)``.
-``$(_tex(:exp))_{$(_math(:G))}(X) = g`` is to invert the [Rodrigues' rotation formula](https://en.wikipedia.org/wiki/Olinde_Rodrigues)
+Compute the Lie group logarithm function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(3)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(3)``,
+where `e` is the [`Identity`](@ref)`{MatrixMultiplicationGroupOperation}` and `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`) for dispatch.
+
+Here, ``$(_tex(:exp))_{$(_math(:G))}(X) = g`` is inverted using the [Rodrigues' rotation formula](https://en.wikipedia.org/wiki/Olinde_Rodrigues)
 
 ```math
 $(_tex(:exp))_{$(_math(:G))}(X) = I_3 + $(_tex(:frac, _tex(:sin, "α"), "α"))X + $(_tex(:frac, "(1 - $(_tex(:cos, "α")))", "α^2"))X^2,
@@ -500,12 +496,11 @@ ManifoldsBase.log!(
 )
 
 _doc_log_O4_id = """
-    log(G::OrthogonalGroup{TypeParameter{Tuple{4}}}, ::Identity{MatrixMultiplicationGroupOperation}, g)
-    log(G::SpecialOrthogonalGroup{TypeParameter{Tuple{4}}}, ::Identity{MatrixMultiplicationGroupOperation}, g)
-    log!(G::OrthogonalGroup{TypeParameter{Tuple{4}}}, X, ::Identity{MatrixMultiplicationGroupOperation}, g)
-    log!(G::SpecialOrthogonalGroup{TypeParameter{Tuple{4}}}, X, ::Identity{MatrixMultiplicationGroupOperation}, g)
+    log(G, e, g)
+    log!(G, X, e, g)
 
-Compute the Lie group logarithm function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(4)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(4)``.
+Compute the Lie group logarithm function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(4)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(4)``,
+where `e` is the [`Identity`](@ref)`{MatrixMultiplicationGroupOperation}` and `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`) for dispatch.
 
 The implementation is based on a generalized variant of the Rodrigues' like formula.
 For details, see [GallierXu:2002; Section 3](@cite).
