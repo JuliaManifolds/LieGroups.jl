@@ -261,7 +261,7 @@ get_coordinates!(G::OrthogonalGroup, c, e, X, ::LieAlgebraOrthogonalBasis)
 function get_coordinates_lie!(
     G::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
     c,
-    e::Identity{MatrixMultiplicationGroupOperation},
+    ::Identity{MatrixMultiplicationGroupOperation},
     X,
 )
     @assert size(X) == (2, 2)
@@ -282,7 +282,7 @@ function get_coordinates_lie!(
     return c
 end
 function get_coordinates_lie!(
-    G::CommonUnitarySubGroups{ℝ}, c, e, X
+    G::CommonUnitarySubGroups{ℝ}, c, ::Identity{MatrixMultiplicationGroupOperation}, X
 )
     n = get_parameter(G.manifold.size)[1]
     @assert length(c) == manifold_dimension(G)
@@ -343,7 +343,7 @@ get_vector!(G::OrthogonalGroup, c, e, X::LieAlgebraOrthogonalBasis)
 function get_vector_lie!(
     G::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
     X,
-    e::Identity{MatrixMultiplicationGroupOperation},
+    ::Identity{MatrixMultiplicationGroupOperation},
     c,
 )
     @assert size(X) == (2, 2)
@@ -367,7 +367,7 @@ function get_vector_lie!(
     return X
 end
 function get_vector_lie!(
-    G::CommonUnitarySubGroups{ℝ}, X, e, c
+    G::CommonUnitarySubGroups{ℝ}, X, ::Identity{MatrixMultiplicationGroupOperation}, c
 )
     n = get_parameter(G.manifold.size)[1]
     @assert length(c) == manifold_dimension(G)
