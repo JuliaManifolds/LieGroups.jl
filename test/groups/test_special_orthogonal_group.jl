@@ -37,8 +37,12 @@ begin
             vee,
         ],
     )
-    expectations = Dict(:repr => "SpecialOrthogonalGroup(2)", :lie_bracket => zero(X1))
+    expectations = Dict(
+        :repr => "SpecialOrthogonalGroup(2)", :lie_bracket => zero(X1), :atol => 1e-10
+    )
     test_lie_group(G, properties, expectations)
+    G2 = SpecialOrthogonalGroup(2; parameter=:field)
+    test_lie_group(G2, properties, expectations)
     #
     #
     # O(3)
