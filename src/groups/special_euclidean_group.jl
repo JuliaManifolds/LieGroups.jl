@@ -47,6 +47,12 @@ const SpecialEuclideanGroup{T} = LieGroup{
     },
 }
 
+function SpecialEuclideanGroup(n; kwargs...)
+    SOn = SpecialOrthogonalGroup(n; kwargs...)
+    Tn = TranslationGroup(n; kwargs...)
+    return SOn ⋉ Tn
+end
+
 """
     default_left_action(G::SpecialOrthogonalGroup, ::TranslationGroup)
 
@@ -64,12 +70,6 @@ that is the [`GroupOperationAction`](@ref)`(`[`LeftGroupOperationAction`](@ref)`
 """
 function default_right_action(::TranslationGroup, ::SpecialOrthogonalGroup)
     return LeftGroupOperationAction()
-end
-
-function SpecialEuclideanGroup(n; kwargs...)
-    SOn = SpecialOrthogonalGroup(n; kwargs...)
-    Tn = TranslationGroup(n; kwargs...)
-    return SOn ⋉ Tn
 end
 
 function Base.show(io::IO, G::SpecialEuclideanGroup)

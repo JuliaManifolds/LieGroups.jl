@@ -257,6 +257,42 @@ function _compose!(
     return k
 end
 
+_doc_exp_semi_prod = """
+    exp(G::LieGroup{𝔽,LeftSemidirectProductGroupOperation}, e::Identity{SemiDirectProductGroupOperation}, X)
+    exp!(G::LieGroup{𝔽,LeftSemidirectProductGroupOperation}, g, e::Identity{SemiDirectProductGroupOperation}, X)
+
+Let ``h = $(_tex(:exp))_{$(_tex(:Cal, "H"))}(X_1)``, and ``n = $(_tex(:exp))_{$(_tex(:Cal, "N"))}(X_2)``
+denote the components exponential maps, then the exponential map on the semi-direct product group is given by
+
+```math
+$(_tex(:exp))_{$(_math(:G))}(X) = (h, σ_{h}(n)).
+```
+"""
+
+@doc "$(_doc_exp_semi_prod)"
+exp(
+    SDPG::LieGroup{𝔽,Op,M}, e::Identity{Op}, X
+) where {𝔽,Op<:LeftSemidirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+
+@doc "$(_doc_exp_semi_prod)"
+function exp!(
+    SDPG::LieGroup{𝔽,Op,M}, g, e::Identity{Op}, X
+) where {𝔽,Op<:LeftSemidirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PM = SDPG.manifold
+    G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
+    eG, eH = Identity(G), Identity(H)
+    A = GroupAction(SDPG.op.action_type, H, G)
+    exp!(G, submanifold_component(PM, g, 1), eG, submanifold_component(PM, X, 1))
+    exp!(H, submanifold_component(PM, g, 2), eH, submanifold_component(PM, X, 2))
+    apply!( # Apply the group action with the current g1 to to g2
+        A,
+        submanifold_component(PM, g, 2),
+        submanifold_component(PM, g, 1),
+        submanifold_component(PM, g, 2),
+    )
+    return g
+end
+
 function identity_element!(
     SDPG::LieGroup{𝔽,Op,M}, e
 ) where {𝔽,Op<:SemiDirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
@@ -305,6 +341,41 @@ function inv!(
         map(Identity, SDPG.op.operations),
     )
     return k
+end
+
+_doc_log_semi_prod = """
+    log(G::LieGroup{𝔽,LeftSemidirectProductGroupOperation}, e::Identity{SemiDirectProductGroupOperation}, g)
+    log!(G::LieGroup{𝔽,LeftSemidirectProductGroupOperation}, X, e::Identity{SemiDirectProductGroupOperation}, g)
+
+Let ``h = σ_{g_1^{-1}}(g_2)``
+Then the logarithmic map is given by
+````math
+$(_tex(:log))_{$(_math(:G))}(g) = ($(_tex(:log))_{$(_tex(:Cal, "H"))}(g_1), $(_tex(:log))_{$(_tex(:Cal, "N"))}(h))
+````
+"""
+
+@doc "$(_doc_log_semi_prod)"
+log(
+    SDPG::LieGroup{𝔽,Op,M}, e::Identity{Op}, g
+) where {𝔽,Op<:LeftSemidirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+
+@doc "$(_doc_log_semi_prod)"
+function log!(
+    SDPG::LieGroup{𝔽,Op,M}, X, e::Identity{Op}, g
+) where {𝔽,Op<:LeftSemidirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PM = SDPG.manifold
+    G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
+    eG, eH = Identity(G), Identity(H)
+    A = GroupAction(SDPG.op.action_type, H, G)
+    apply!( # Apply the group action with the current g1 to to g2
+        inv(A),
+        submanifold_component(PM, g, 2),
+        submanifold_component(PM, g, 1),
+        submanifold_component(PM, g, 2),
+    )
+    log!(G, submanifold_component(PM, X, 1), eG, submanifold_component(PM, g, 1))
+    exp!(H, submanifold_component(PM, X, 2), eH, submanifold_component(PM, g, 2))
+    return X
 end
 
 function Base.show(

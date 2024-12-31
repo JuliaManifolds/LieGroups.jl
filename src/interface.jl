@@ -799,7 +799,7 @@ _doc_log_id = """
 
 Compute the (Lie group) logarithmic function ``$(_tex(:log))_{$(_math(:G))}: $(_math(:G)) → $(_math(:𝔤))``,
 which is the inverse of the [Lie group exponential function](@ref exp(::LieGroup, ::Identity, :Any))
-The compuation can be performed in-place of `X`.
+The computation can be performed in-place of `X`.
 """
 
 @doc "$(_doc_log_id)"
