@@ -60,6 +60,15 @@ begin
         :repr => "SpecialOrthogonalGroup(3)", :atols => Dict(:exp => 1e-15)
     )
     test_lie_group(H, properties2, expectations2)
+    H2 = SpecialOrthogonalGroup(3; parameter=:field)
+    test_lie_group(H2, properties2, expectations2)
+    # One special case – maybe add to test suite?
+    # Hit cosθ = -1
+    e = Identity(H)
+    g_e = [1.0 0.0 0.0; 0.0 -1.0 0.0; 0.0 0.0 -1.0]
+    X_e = [0.0 0.0 0.0; 0.0 0.0 -π; 0.0 π 0.0]
+    @test isapprox(H, e, log(H, e, g_e), X_e)
+    @test isapprox(H, exp(H, e, X_e), g_e)
     #
     #
     # O(4)

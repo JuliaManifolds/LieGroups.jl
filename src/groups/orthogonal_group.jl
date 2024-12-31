@@ -290,7 +290,7 @@ function get_coordinates_lie!(
     X,
     ::ManifoldsBase.RealNumbers,
 )
-    n = get_parameter(G.manifold.size)[1]
+    n = ManifoldsBase.get_parameter(G.manifold.size)[1]
     @assert length(c) == manifold_dimension(G)
     @assert size(X) == (n, n)
     if n == 2
@@ -381,7 +381,7 @@ function get_vector_lie!(
     c,
     ::ManifoldsBase.RealNumbers,
 )
-    n = get_parameter(G.manifold.size)[1]
+    n = ManifoldsBase.get_parameter(G.manifold.size)[1]
     @assert length(c) == manifold_dimension(G)
     @assert size(X) == (n, n)
     if n == 2
@@ -636,7 +636,7 @@ end
 function ManifoldsBase.log!(
     G::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{4}}},
     X::AbstractMatrix,
-    e::Identity{MatrixMultiplicationGroupOperation},
+    ::Identity{MatrixMultiplicationGroupOperation},
     q::AbstractMatrix,
 )
     cosα, cosβ = cos_angles_4d_rotation_matrix(q)
