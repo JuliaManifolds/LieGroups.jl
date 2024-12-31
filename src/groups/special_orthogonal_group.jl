@@ -68,7 +68,7 @@ get_coordinates(
     G::SpecialOrthogonalGroup,
     ::Identity{MatrixMultiplicationGroupOperation},
     X,
-    ::LieAlgebraOrthogonalBasis,
+    ::DefaultLieAlgebraOrthogonalBasis,
 )
 
 @doc "$(_doc_get_coordinates_On)"
@@ -77,7 +77,7 @@ get_coordinates!(
     c,
     ::Identity{MatrixMultiplicationGroupOperation},
     X,
-    ::LieAlgebraOrthogonalBasis,
+    ::DefaultLieAlgebraOrthogonalBasis,
 )
 
 @doc "$(_doc_get_vector_On)"
@@ -85,7 +85,7 @@ get_vector(
     G::SpecialOrthogonalGroup,
     ::Identity{MatrixMultiplicationGroupOperation},
     c,
-    ::LieAlgebraOrthogonalBasis,
+    ::DefaultLieAlgebraOrthogonalBasis,
 )
 
 @doc "$(_doc_get_vector_On)"
@@ -94,7 +94,7 @@ get_vector!(
     X,
     ::Identity{MatrixMultiplicationGroupOperation},
     c,
-    ::LieAlgebraOrthogonalBasis,
+    ::DefaultLieAlgebraOrthogonalBasis,
 )
 
 inv!(G::SpecialOrthogonalGroup, k, g) = copyto!(G, k, transpose(g))

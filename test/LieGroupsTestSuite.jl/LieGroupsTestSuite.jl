@@ -458,6 +458,9 @@ function test_exp_log(
             # or equivalently
             @test is_vector(G, Identity(G), Y1; error=:error)
             Y3 = zero_vector(G, e)
+            @test isapprox(G, e, Y3, log(G, e, e); atol=atol)
+            log!(G, Y3, e, e)
+            @test isapprox(G, e, Y3, log(G, e, e); atol=atol)
             @test isapprox(𝔤, log(G, g, g), Y3; atol=atol)
             @test isapprox(𝔤, log(G, h, h), Y3; atol=atol)
         end

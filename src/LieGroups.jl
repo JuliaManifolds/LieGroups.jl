@@ -57,7 +57,7 @@ include("groups/special_euclidean_group.jl")
 export LieGroup, LieAlgebra
 export PowerLieGroup, ProductLieGroup
 export LeftSemidirectProductLieGroup, RightSemidirectProductLieGroup
-export LieAlgebraOrthogonalBasis
+export DefaultLieAlgebraOrthogonalBasis
 export ×, ^, ⋉, ⋊
 #
 #

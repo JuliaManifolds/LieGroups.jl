@@ -42,7 +42,7 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
   * `RightGroupOperationAction` (formerly `RightBackwardAction`)
   * `InverseLeftGroupOperationAction` (formerly `RightForwardAction`)
   * `InverseRightGroupOperationAction` (formerly `LeftBackwardAction`)
-* `LieAlgebraOrthogonalBasis` (replaces `VeeOrthogonalBasis`, which is still available in `ManifoldsBase.jl`)
+* `DefaultLieAlgebraOrthogonalBasis` (replaces `VeeOrthogonalBasis`, which is still available in `ManifoldsBase.jl`)
 * `Identity`
 * `apply`and `apply!`
 * `base_manifold` to access the manifold within a Lie group
