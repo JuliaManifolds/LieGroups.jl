@@ -22,6 +22,7 @@ using LieGroupsTestSuite
         :Vectors => [X1, X2, X3],
         :Rng => Random.MersenneTwister(),
         :Functions => [
+            adjoint,
             compose,
             conjugate,
             diff_conjugate,
