@@ -24,7 +24,7 @@ this is internally just a `const` of the corresponding $(_link(:TangentSpace)).
     Hence ``$(_tex(:Cal,"X"))`` is determined already when ``X ∈ $(_math(:𝔤))`` is given,
     since ``$(_tex(:Cal,"X"))(g) = Dλ_g(e)[X]``, cf [HilgertNeeb:2012; Definition 9.1.7](@cite).
 
-    Throughout `LieGroups.jl`, we use this left-invariant convention.
+    Throughout `LieGroups.jl`, we use this left-invariant convention to store tangent vectors at points on a Lie group as elements of the corresponding Lie algebra.
 
 # Constructor
 
