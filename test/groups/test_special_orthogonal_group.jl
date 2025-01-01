@@ -45,7 +45,7 @@ begin
     test_lie_group(G2, properties, expectations)
     #
     #
-    # O(3)
+    # SO(3)
     H = SpecialOrthogonalGroup(3)
     h1 = rotation_matrix(3, 2, 1, π / 4)
     h2 = rotation_matrix(3, 2, 1, π / 8) * rotation_matrix(3, 3, 1, π / 4)
@@ -75,7 +75,7 @@ begin
     @test isapprox(H, exp(H, e, X_e), g_e)
     #
     #
-    # O(4)
+    # SO(4)
     J = SpecialOrthogonalGroup(4)
     j1 = rotation_matrix(4, 3, 1, π / 4)
     j2 = rotation_matrix(4, 4, 1, π / 8) * rotation_matrix(4, 3, 2, π / 4)
