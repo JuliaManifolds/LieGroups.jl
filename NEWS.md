@@ -15,6 +15,7 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
 * `LieGroup` (formerly `GroupManifold`) as well as the concrete groups
   * `TranslationGroup`
   * `GeneralLinearGroup` (formerly `GeneralLinear`)
+  * `HeisenbergGroup`
   * `LeftSemidirectProductLieGroup` (formerly `SemidirectProductGroup`)
   * `⋉` (alias for `LeftSemidirectProductGroupOperation` when a `default_left_action(G,H)` is defined for the two groups)
   * `PowerLieGroup` (formerly `PowerGroup`)

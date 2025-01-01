@@ -12,6 +12,8 @@ module LieGroups
 
 using LinearAlgebra, ManifoldsBase, Manifolds, Random
 
+using ManifoldsBase: RealNumbers
+
 #
 #
 # = Compatibility (and a bit of type piracy for now)
@@ -39,6 +41,7 @@ include("groups/semidirect_product_group.jl")
 # Lie groups
 include("groups/translation_group.jl")
 include("groups/general_linear_group.jl")
+include("groups/heisenberg_group.jl")
 
 export LieGroup, LieAlgebra
 export PowerLieGroup, ProductLieGroup
@@ -66,7 +69,7 @@ export GroupAction, GroupOperationAction
 #
 #
 # Specific groups
-export TranslationGroup, GeneralLinearGroup
+export TranslationGroup, GeneralLinearGroup, HeisenbergGroup
 
 export adjoint, adjoint!, apply, apply!
 export base_lie_group, base_manifold
