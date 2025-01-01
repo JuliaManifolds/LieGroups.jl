@@ -10,7 +10,9 @@ The package is named after the norwegian mathematician [Sophus Lie](https://en.w
 """
 module LieGroups
 
-using LinearAlgebra, ManifoldsBase, Manifolds, Random
+using LinearAlgebra, ManifoldsBase, Manifolds, StaticArrays, Random
+
+import LinearAlgebra: adjoint, adjoint!
 
 #
 #
@@ -22,6 +24,7 @@ import Manifolds:
 # Both define the following structs, so these for now lead to asking for explicit prefixes
 # Manifolds: Identity, TranslationGroup
 include("documentation_glossary.jl")
+include("utils.jl")
 include("interface.jl")
 include("Lie_algebra/Lie_algebra_interface.jl")
 # Generic Operations
@@ -36,14 +39,25 @@ include("group_actions/group_operation_action.jl")
 include("groups/power_group.jl")
 include("groups/product_group.jl")
 include("groups/semidirect_product_group.jl")
+
 # Lie groups
+
 include("groups/translation_group.jl")
 include("groups/general_linear_group.jl")
+
+# includes generic implementations for O(n), U(n), SO(n), SO(n), so we load this first
+include("groups/unitary_group.jl")
+include("groups/orthogonal_group.jl")
+include("groups/special_unitary_group.jl")
+include("groups/special_orthogonal_group.jl")
+
+# Products of Groups
+include("groups/special_euclidean_group.jl")
 
 export LieGroup, LieAlgebra
 export PowerLieGroup, ProductLieGroup
 export LeftSemidirectProductLieGroup, RightSemidirectProductLieGroup
-export LieAlgebraOrthogonalBasis
+export DefaultLieAlgebraOrthogonalBasis
 export ×, ^, ⋉, ⋊
 #
 #
@@ -61,12 +75,17 @@ export LeftSemidirectProductGroupOperation, RightSemidirectProductGroupOperation
 export AbstractGroupActionType
 export AbstractLeftGroupActionType, AbstractRightGroupActionType
 export LeftGroupOperationAction, RightGroupOperationAction
-export InverseLeftGroupOperationAction, InverseRightGroupOperationAction
 export GroupAction, GroupOperationAction
+export InverseLeftGroupOperationAction, InverseRightGroupOperationAction
+
 #
 #
 # Specific groups
-export TranslationGroup, GeneralLinearGroup
+export GeneralLinearGroup
+export OrthogonalGroup
+export SpecialEuclideanGroup, SpecialOrthogonalGroup, SpecialUnitaryGroup
+export TranslationGroup
+export UnitaryGroup
 
 export adjoint, adjoint!, apply, apply!
 export base_lie_group, base_manifold
@@ -89,6 +108,7 @@ export isapprox, is_point, is_vector
 export conjugate, conjugate!, diff_conjugate, diff_conjugate!
 export exp, exp!
 export identity_element, identity_element!, is_identity, inv, inv!, diff_inv, diff_inv!
+export jacobian_conjugate, jacobian_conjugate!
 export lie_bracket, lie_bracket!, log, log!
 export manifold_dimension
 export norm

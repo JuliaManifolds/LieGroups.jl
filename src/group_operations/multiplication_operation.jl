@@ -323,6 +323,15 @@ function ManifoldsBase.log!(
     copyto!(X, log(g))
     return X
 end
+function ManifoldsBase.log!(
+    G::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
+    X,
+    ::Identity{MatrixMultiplicationGroupOperation},
+    ::Identity{MatrixMultiplicationGroupOperation},
+) where {𝔽}
+    zero_vector!(LieAlgebra(G), X)
+    return X
+end
 
 LinearAlgebra.mul!(q, ::Identity{<:AbstractMultiplicationGroupOperation}, p) = copyto!(q, p)
 function LinearAlgebra.mul!(

@@ -53,7 +53,7 @@ using LieGroupsTestSuite
         M = ManifoldsBase.DefaultManifold(2)
         op = AdditionGroupOperation()
         G = LieGroup(M, op)
-        B2 = LieAlgebraOrthogonalBasis()
+        B2 = DefaultLieAlgebraOrthogonalBasis()
         B = DefaultOrthonormalBasis()
         p = [1.0, 2.0]
         q = [0.0, 0.0]
