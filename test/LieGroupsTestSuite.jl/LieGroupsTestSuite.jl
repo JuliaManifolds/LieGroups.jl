@@ -398,7 +398,7 @@ function test_exp_log(
                 exp!(G, k2, e, X)
                 @test isapprox(G, k1, k2)
             end
-            @test is_point(G, k1; error=:warn)
+            @test is_point(G, k1; error=:error)
             # exp
             k1 = exp(G, g, X)
             if test_mutating
@@ -406,7 +406,7 @@ function test_exp_log(
                 exp!(G, k2, g, X)
                 @test isapprox(G, k1, k2)
             end
-            @test is_point(G, k1; error=:warn)
+            @test is_point(G, k1; error=:error)
         end
         if test_log
             # Lie group log
@@ -416,7 +416,7 @@ function test_exp_log(
                 log!(G, Y2, e, g)
                 @test isapprox(𝔤, Y1, Y2)
             end
-            @test is_point(𝔤, Y1; error=:warn)
+            @test is_point(𝔤, Y1; error=:error)
             @test norm(𝔤, log(G, g, g)) ≈ 0
             @test norm(𝔤, log(G, h, h)) ≈ 0
             # log
@@ -426,7 +426,7 @@ function test_exp_log(
                 log!(G, Y2, g, h)
                 @test isapprox(𝔤, Y1, Y2)
             end
-            @test is_point(𝔤, Y1; error=:warn)
+            @test is_point(𝔤, Y1; error=:error)
             # or equivalently
             @test is_vector(G, Y1)
             @test is_vector(G, Identity(G), Y1)

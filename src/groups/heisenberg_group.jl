@@ -49,66 +49,6 @@ embed(::HeisenbergGroup, p) = p
 embed(::HeisenbergGroup, p, X) = X
 
 @doc raw"""
-    get_coordinates(M::HeisenbergGroup, p, X, ::DefaultOrthonormalBasis{ℝ,TangentSpaceType})
-
-Get coordinates of tangent vector `X` at point `p` from the [`HeisenbergGroup`](@ref) `M`.
-Given a matrix
-```math
-\begin{bmatrix} 1 & \mathbf{a} & c \\
-\mathbf{0} & I_n & \mathbf{b} \\
-0 & \mathbf{0} & 1 \end{bmatrix}
-```
-the coordinates are concatenated vectors ``\mathbf{a}``, ``\mathbf{b}``, and number ``c``.
-"""
-get_coordinates(::HeisenbergGroup, p, X, ::DefaultOrthonormalBasis{ℝ,TangentSpaceType})
-
-function ManifoldsBase.get_coordinates_orthonormal(M::HeisenbergGroup, p, X, ::RealNumbers)
-    n = ManifoldsBase.get_parameter(M.manifold.size)[1]
-    return vcat(_heisenberg_a_view(M, X), _heisenberg_b_view(M, X), X[1, n + 2])
-end
-
-function ManifoldsBase.get_coordinates_orthonormal!(
-    M::HeisenbergGroup, Xⁱ, p, X, ::RealNumbers
-)
-    n = ManifoldsBase.get_parameter(M.manifold.size)[1]
-    Xⁱ[1:n] .= _heisenberg_a_view(M, X)
-    Xⁱ[(n + 1):(2 * n)] .= _heisenberg_b_view(M, X)
-    Xⁱ[2 * n + 1] = X[1, n + 2]
-    return Xⁱ
-end
-
-@doc raw"""
-    get_vector(M::HeisenbergGroup, p, Xⁱ, ::DefaultOrthonormalBasis{ℝ,TangentSpaceType})
-
-Get tangent vector with coordinates `Xⁱ` at point `p` from the [`HeisenbergGroup`](@ref) `M`.
-Given a vector of coordinates ``\begin{bmatrix}\mathbb{a} & \mathbb{b} & c\end{bmatrix}`` the tangent vector is equal to
-```math
-\begin{bmatrix} 1 & \mathbf{a} & c \\
-\mathbf{0} & I_n & \mathbf{b} \\
-0 & \mathbf{0} & 1 \end{bmatrix}
-```
-"""
-get_vector(M::HeisenbergGroup, p, c, ::DefaultOrthonormalBasis{ℝ,TangentSpaceType})
-
-function ManifoldsBase.get_vector_orthonormal(M::HeisenbergGroup, p, Xⁱ, ::RealNumbers)
-    n = get_parameter(M.manifold.size)[1]
-    return [
-        0 Xⁱ[1:n] Xⁱ[2 * n + 1]
-        zeros(n, n + 1) Xⁱ[(n + 1):(2 * n)]'
-        zeros(1, n + 2)
-    ]
-end
-
-function ManifoldsBase.get_vector_orthonormal!(M::HeisenbergGroup, X, p, Xⁱ, ::RealNumbers)
-    n = get_parameter(M.manifold.size)[1]
-    fill!(X, 0)
-    X[1, 2:(n + 1)] .= Xⁱ[1:n]
-    X[2:(n + 1), n + 2] .= Xⁱ[(n + 1):(2 * n)]
-    X[1, n + 2] = Xⁱ[2 * n + 1]
-    return X
-end
-
-@doc raw"""
     exp(M::HeisenbergGroup, ::Identity{MatrixMultiplicationGroupOperation}, X)
 
 Lie group exponential for the [`HeisenbergGroup`](@ref) `M` of the vector `X`.
@@ -186,17 +126,6 @@ end
 Return the injectivity radius on the [`HeisenbergGroup`](@ref) `M`, which is ``∞``.
 """
 injectivity_radius(::HeisenbergGroup) = Inf
-
-function inner(M::HeisenbergGroup, p, X, Y)
-    n = ManifoldsBase.get_parameter(M.manifold.size)[1]
-    X_a_view = _heisenberg_a_view(M, X)
-    X_b_view = _heisenberg_b_view(M, X)
-    Y_a_view = _heisenberg_a_view(M, Y)
-    Y_b_view = _heisenberg_b_view(M, Y)
-    return dot(X_a_view, Y_a_view) +
-           dot(X_b_view, Y_b_view) +
-           X[1, 2 * n + 1] * Y[1, 2 * n + 1]
-end
 
 @doc raw"""
     log(G::HeisenbergGroup, p, q)
@@ -322,40 +251,6 @@ function project!(M::HeisenbergGroup, Y, p, X)
     Y[1, 2:(n + 2)] .= X[1, 2:(n + 2)]
     Y[2:(n + 1), n + 2] .= _heisenberg_b_view(M, X)
     return Y
-end
-
-@doc raw"""
-    Random.rand(M::HeisenbergGroup; vector_at = nothing, σ::Real=1.0)
-
-If `vector_at` is `nothing`, return a random point on the [`HeisenbergGroup`](@ref) `M`
-by sampling elements of the first row and the last column from the normal distribution with
-mean 0 and standard deviation `σ`.
-
-If `vector_at` is not `nothing`, return a random tangent vector from the tangent space of
-the point `vector_at` on the [`HeisenbergGroup`](@ref) by using a normal distribution with
-mean 0 and standard deviation `σ`.
-"""
-rand(M::HeisenbergGroup; vector_at=nothing, σ::Real=1.0)
-
-function Random.rand!(
-    rng::AbstractRNG, M::HeisenbergGroup, pX; σ::Real=one(eltype(pX)), vector_at=nothing
-)
-    n = ManifoldsBase.get_parameter(M.manifold.size)[1]
-    if vector_at === nothing
-        copyto!(pX, I)
-        va = view(pX, 1, 2:(n + 2))
-        randn!(rng, va)
-        va .*= σ
-        vb = view(pX, 2:(n + 1), n + 2)
-        randn!(rng, vb)
-        vb .*= σ
-    else
-        fill!(pX, 0)
-        randn!(rng, view(pX, 1, 2:(n + 2)))
-        randn!(rng, view(pX, 2:(n + 1), n + 2))
-        pX .*= σ
-    end
-    return pX
 end
 
 function Base.show(
