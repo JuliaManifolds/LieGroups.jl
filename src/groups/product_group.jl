@@ -272,6 +272,13 @@ function ManifoldsBase.log!(
     )
     return X
 end
+function ManifoldsBase.log!(
+    PrG::LieGroup{𝔽,Op,M}, X, ::Identity{Op}, ::Identity{Op}
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PrM = PrG.manifold
+    zero_vector!(PrM, X, identity_element(PrG))
+    return X
+end
 
 function Base.show(
     io::IO, G::LieGroup{𝔽,Op,M}

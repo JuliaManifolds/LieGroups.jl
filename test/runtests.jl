@@ -18,7 +18,7 @@ end
         include_test("test_interface.jl")
     end
     @testset "Generic Group Operations" begin
-        include_test("operations/test_addidion_operation.jl")
+        include_test("operations/test_addition_operation.jl")
         include_test("operations/test_multiplication_operation.jl")
     end
     @testset "Generic Group Actions" begin

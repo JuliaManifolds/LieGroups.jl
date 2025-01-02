@@ -182,7 +182,6 @@ function ManifoldsBase.log!(
     X[1, n + 2] = p[1, n + 2] - dot(view_a_X, view_b_X) / 2
     return X
 end
-
 function ManifoldsBase.log!(
     ::HeisenbergGroup,
     X,
