@@ -27,15 +27,6 @@ function HeisenbergGroup(n::Int; parameter::Symbol=:type)
     )
 end
 
-function active_traits(f, ::HeisenbergGroup, args...)
-    return merge_traits(
-        IsGroupManifold(
-            MatrixMultiplicationGroupOperation(), LeftInvariantRepresentation()
-        ),
-        IsEmbeddedManifold(),
-    )
-end
-
 function _heisenberg_a_view(M::HeisenbergGroup, p)
     n = ManifoldsBase.get_parameter(M.manifold.size)[1]
     return view(p, 1, 2:(n + 1))

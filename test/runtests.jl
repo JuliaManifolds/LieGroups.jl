@@ -32,6 +32,7 @@ end
             include_test("groups/test_semidirect_product_group.jl")
         end
         include_test("groups/test_general_linear_group.jl")
+        include_test("groups/test_heisenberg_group.jl")
         include_test("groups/test_translation_group.jl")
     end
     include("test_aqua.jl")

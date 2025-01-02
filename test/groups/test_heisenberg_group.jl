@@ -30,7 +30,7 @@ using LieGroupsTestSuite
             diff_left_compose,
             diff_right_compose,
             exp,
-            # hat, #???
+            hat,
             inv,
             inv_left_compose,
             inv_right_compose,
@@ -39,7 +39,7 @@ using LieGroupsTestSuite
             log,
             rand,
             show,
-            #vee, #???
+            vee,
         ],
     )
     expectations = Dict(:repr => "HeisenbergGroup(1)", :lie_bracket => X1 * X2 - X2 * X1)
