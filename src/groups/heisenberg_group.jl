@@ -193,57 +193,6 @@ function ManifoldsBase.log!(
     return X
 end
 
-parallel_transport_to(::HeisenbergGroup, p, X, q) = X
-
-parallel_transport_to!(::HeisenbergGroup, Y, p, X, q) = copyto!(Y, X)
-
-"""
-    project(M::HeisenbergGroup, p)
-
-Project a matrix `p` in the Euclidean embedding onto the [`HeisenbergGroup`](@ref) `M`.
-Sets the diagonal elements to 1 and all non-diagonal elements except the first row and the
-last column to 0.
-"""
-function project(M::HeisenbergGroup, p)
-    n = ManifoldsBase.get_parameter(M.manifold.size)[1]
-    return [
-        1 p[1, 2:(n + 2)]'
-        zeros(n, 1) Matrix(I, n, n) _heisenberg_b_view(M, p)
-        zeros(1, n + 1) 1
-    ]
-end
-"""
-    project(M::HeisenbergGroup, p, X)
-
-Project a matrix `X` in the Euclidean embedding onto the Lie algebra of
-[`HeisenbergGroup`](@ref) `M`.
-Sets the diagonal elements to 0 and all non-diagonal elements except the first row and the
-last column to 0.
-"""
-function project(M::HeisenbergGroup, p, X)
-    n = ManifoldsBase.get_parameter(M.manifold.size)[1]
-    return [
-        0 X[1, 2:(n + 2)]'
-        zeros(n, n + 1) _heisenberg_b_view(M, X)
-        zeros(1, n + 1) 0
-    ]
-end
-
-function project!(M::HeisenbergGroup, q, p)
-    n = ManifoldsBase.get_parameter(M.manifold.size)[1]
-    copyto!(q, I)
-    q[1, 2:(n + 2)] .= p[1, 2:(n + 2)]
-    q[2:(n + 1), n + 2] .= _heisenberg_b_view(M, p)
-    return q
-end
-function project!(M::HeisenbergGroup, Y, p, X)
-    n = ManifoldsBase.get_parameter(M.manifold.size)[1]
-    fill!(Y, 0)
-    Y[1, 2:(n + 2)] .= X[1, 2:(n + 2)]
-    Y[2:(n + 1), n + 2] .= _heisenberg_b_view(M, X)
-    return Y
-end
-
 function Base.show(
     io::IO, ::HeisenbergGroup{ManifoldsBase.TypeParameter{Tuple{n}}}
 ) where {n}

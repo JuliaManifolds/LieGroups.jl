@@ -47,4 +47,9 @@ using LieGroupsTestSuite
 
     @test is_point(G, Identity(G); error=:error)
     @test_throws DomainError is_point(G, Identity(AdditionGroupOperation()); error=:error)
+
+    @testset "field parameter" begin
+        G = HeisenbergGroup(1; parameter=:field)
+        @test repr(G) == "HeisenbergGroup(1; parameter=:field)"
+    end
 end
