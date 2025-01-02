@@ -12,6 +12,20 @@ The Lie algebras considered here are those related to a [`LieGroup`](@ref) ``$(_
 namely the tangent space ``T_{$(_math(:e))}$(_math(:G))`` at the [`Identity`](@ref),
 this is internally just a `const` of the corresponding $(_link(:TangentSpace)).
 
+!!! note "Convention"
+    A vector field ``$(_tex(:Cal,"X")): $(_math(:G)) → T$(_math(:G))``, ``X(g) ∈ T_g$(_math(:G))``
+    is called a left-invariant vector field if it satisfies
+
+    ```math
+    $(_tex(:Cal,"X"))(λ_g(h)) = Dλ_g(h)[$(_tex(:Cal,"X"))(h)], $(_tex(:quad))$(_tex(:text, "for all"))$(_tex(:quad)) g, h ∈ $(_math(:G)),
+    ```
+
+    where ``λ_g: $(_math(:G)) → $(_math(:G))`` is the left multiplication by ``g``.
+    Hence ``$(_tex(:Cal,"X"))`` is determined already when ``X ∈ $(_math(:𝔤))`` is given,
+    since ``$(_tex(:Cal,"X"))(g) = Dλ_g(e)[X]``, cf [HilgertNeeb:2012; Definition 9.1.7](@cite).
+
+    Throughout `LieGroups.jl`, we use this left-invariant convention to store tangent vectors at points on a Lie group as elements of the corresponding Lie algebra.
+
 # Constructor
 
     LieAlgebra(G::LieGroup)
