@@ -31,6 +31,7 @@ using LieGroupsTestSuite
             diff_right_compose,
             exp,
             hat,
+            injectivity_radius,
             inv,
             inv_left_compose,
             inv_right_compose,
@@ -42,7 +43,11 @@ using LieGroupsTestSuite
             vee,
         ],
     )
-    expectations = Dict(:repr => "HeisenbergGroup(1)", :lie_bracket => X1 * X2 - X2 * X1)
+    expectations = Dict(
+        :repr => "HeisenbergGroup(1)",
+        :lie_bracket => X1 * X2 - X2 * X1,
+        :injectivity_radius => Inf,
+    )
     test_lie_group(G, properties, expectations)
 
     @test is_point(G, Identity(G); error=:error)

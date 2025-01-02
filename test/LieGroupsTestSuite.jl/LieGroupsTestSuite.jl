@@ -531,6 +531,28 @@ end
 #
 #
 # --- `I`
+
+"""
+    test_injectivity_radius(G::LieGroup; kwargs...)
+
+Test the function `injectivity_radius`.
+
+# Keyword arguments
+
+* `expected=missing`: expected value for global injectivity radius.
+"""
+function test_injectivity_radius(G::LieGroup; expected=missing)
+    @testset "injectivity radius" begin
+        if ismissing(expected)
+            @test injectivity_radius(G) isa Real
+            @test injectivity_radius(G) >= 0
+        else
+            @test injectivity_radius(G) == expected
+        end
+    end
+    return nothing
+end
+
 """
     test_inv_compose(G::LieGroup, g, h, X; kwargs...)
 
@@ -890,6 +912,10 @@ function test_lie_group(G::LieGroup, properties::Dict, expectations::Dict=Dict()
                 test_mutating=mutating,
                 test_right=(inv_right_compose in functions),
             )
+        end
+        if (injectivity_radius in functions)
+            ir = get(expectations, :injectivity_radius, missing)
+            test_injectivity_radius(G; expected=ir)
         end
         if (inv in functions)
             test_inv(G, points[1]; test_mutating=mutating)

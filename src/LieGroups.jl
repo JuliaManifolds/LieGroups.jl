@@ -108,6 +108,7 @@ export identity_element, identity_element!, is_identity, inv, inv!, diff_inv, di
 export lie_bracket, lie_bracket!, log, log!
 export manifold_dimension
 export norm
+export injectivity_radius
 export rand, rand!
 export switch
 export vee, vee!

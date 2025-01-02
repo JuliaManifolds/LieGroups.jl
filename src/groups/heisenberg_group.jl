@@ -36,9 +36,6 @@ function _heisenberg_b_view(M::HeisenbergGroup, p)
     return view(p, 2:(n + 1), n + 2)
 end
 
-embed(::HeisenbergGroup, p) = p
-embed(::HeisenbergGroup, p, X) = X
-
 @doc raw"""
     exp(M::HeisenbergGroup, ::Identity{MatrixMultiplicationGroupOperation}, X)
 
@@ -116,7 +113,7 @@ end
 
 Return the injectivity radius on the [`HeisenbergGroup`](@ref) `M`, which is ``∞``.
 """
-injectivity_radius(::HeisenbergGroup) = Inf
+ManifoldsBase.injectivity_radius(::HeisenbergGroup) = Inf
 
 @doc raw"""
     log(G::HeisenbergGroup, p, q)
