@@ -46,7 +46,6 @@ include("groups/heisenberg_group.jl")
 # explicit method error to avoid stack overflow
 for GT in [LieGroup, HeisenbergGroup]
     @eval begin
-        @doc "$(_doc_log_id)"
         function ManifoldsBase.log!(G::$GT, X, e::Identity, g)
             throw(
                 MethodError(
