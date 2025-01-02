@@ -27,19 +27,19 @@ function HeisenbergGroup(n::Int; parameter::Symbol=:type)
     )
 end
 
-function _heisenberg_a_view(M::HeisenbergGroup, p)
-    n = ManifoldsBase.get_parameter(M.manifold.size)[1]
-    return view(p, 1, 2:(n + 1))
+function _heisenberg_a_view(G::HeisenbergGroup, g)
+    n = ManifoldsBase.get_parameter(G.manifold.size)[1]
+    return view(g, 1, 2:(n + 1))
 end
-function _heisenberg_b_view(M::HeisenbergGroup, p)
-    n = ManifoldsBase.get_parameter(M.manifold.size)[1]
-    return view(p, 2:(n + 1), n + 2)
+function _heisenberg_b_view(G::HeisenbergGroup, g)
+    n = ManifoldsBase.get_parameter(G.manifold.size)[1]
+    return view(g, 2:(n + 1), n + 2)
 end
 
 @doc raw"""
-    exp(M::HeisenbergGroup, ::Identity{MatrixMultiplicationGroupOperation}, X)
+    exp(G::HeisenbergGroup, ::Identity{MatrixMultiplicationGroupOperation}, X)
 
-Lie group exponential for the [`HeisenbergGroup`](@ref) `M` of the vector `X`.
+Lie group exponential for the [`HeisenbergGroup`](@ref) `G` of the vector `X`.
 The formula reads
 ```math
 \exp\left(\begin{bmatrix} 0 & \mathbf{a} & c \\
@@ -51,29 +51,29 @@ The formula reads
 where ``I_n`` is the ``n×n`` identity matrix, ``0_n`` is the ``n×n`` zero matrix
 and ``\mathbf{a}⋅\mathbf{b}`` is dot product of vectors.
 """
-function Base.exp(M::HeisenbergGroup, e::Identity{MatrixMultiplicationGroupOperation}, X)
-    q = similar(X)
-    exp!(M, q, e, X)
-    return q
+function Base.exp(G::HeisenbergGroup, e::Identity{MatrixMultiplicationGroupOperation}, X)
+    h = similar(X)
+    exp!(G, h, e, X)
+    return h
 end
 
 function ManifoldsBase.exp!(
-    M::HeisenbergGroup, q, ::Identity{MatrixMultiplicationGroupOperation}, X
+    G::HeisenbergGroup, h, ::Identity{MatrixMultiplicationGroupOperation}, X
 )
-    n = ManifoldsBase.get_parameter(M.manifold.size)[1]
-    copyto!(q, I)
-    a_view = _heisenberg_a_view(M, X)
-    b_view = _heisenberg_b_view(M, X)
-    q[1, 2:(n + 1)] .= a_view
-    q[2:(n + 1), n + 2] .= b_view
-    q[1, n + 2] = X[1, n + 2] + dot(a_view, b_view) / 2
-    return q
+    n = ManifoldsBase.get_parameter(G.manifold.size)[1]
+    copyto!(h, I)
+    a_view = _heisenberg_a_view(G, X)
+    b_view = _heisenberg_b_view(G, X)
+    h[1, 2:(n + 1)] .= a_view
+    h[2:(n + 1), n + 2] .= b_view
+    h[1, n + 2] = X[1, n + 2] + dot(a_view, b_view) / 2
+    return h
 end
 
 @doc raw"""
-    exp(M::HeisenbergGroup, p, X)
+    exp(G::HeisenbergGroup, g, X)
 
-Exponential map on the [`HeisenbergGroup`](@ref) `M` with the left-invariant metric.
+Exponential map on the [`HeisenbergGroup`](@ref) `G` with the left-invariant metric.
 The expression reads
 ```math
 \exp_{\begin{bmatrix} 1 & \mathbf{a}_p & c_p \\
@@ -88,35 +88,35 @@ The expression reads
 where ``I_n`` is the ``n×n`` identity matrix, ``0_n`` is the ``n×n`` zero matrix
 and ``\mathbf{a}⋅\mathbf{b}`` is dot product of vectors.
 """
-function Base.exp(M::HeisenbergGroup, p, X)
-    q = similar(X)
-    exp!(M, q, p, X)
-    return q
+function Base.exp(G::HeisenbergGroup, g, X)
+    h = similar(X)
+    exp!(G, h, g, X)
+    return h
 end
 
-function ManifoldsBase.exp!(M::HeisenbergGroup, q, p, X)
-    n = ManifoldsBase.get_parameter(M.manifold.size)[1]
-    copyto!(q, I)
-    a_p_view = _heisenberg_a_view(M, p)
-    b_p_view = _heisenberg_b_view(M, p)
-    a_X_view = _heisenberg_a_view(M, X)
-    b_X_view = _heisenberg_b_view(M, X)
-    q[1, 2:(n + 1)] .= a_p_view .+ a_X_view
-    q[2:(n + 1), n + 2] .= b_p_view .+ b_X_view
-    q[1, n + 2] =
-        p[1, n + 2] + X[1, n + 2] + dot(a_X_view, b_X_view) / 2 + dot(a_p_view, b_X_view)
-    return q
+function ManifoldsBase.exp!(G::HeisenbergGroup, h, g, X)
+    n = ManifoldsBase.get_parameter(G.manifold.size)[1]
+    copyto!(h, I)
+    a_p_view = _heisenberg_a_view(G, g)
+    b_p_view = _heisenberg_b_view(G, g)
+    a_X_view = _heisenberg_a_view(G, X)
+    b_X_view = _heisenberg_b_view(G, X)
+    h[1, 2:(n + 1)] .= a_p_view .+ a_X_view
+    h[2:(n + 1), n + 2] .= b_p_view .+ b_X_view
+    h[1, n + 2] =
+        g[1, n + 2] + X[1, n + 2] + dot(a_X_view, b_X_view) / 2 + dot(a_p_view, b_X_view)
+    return h
 end
 
 @doc raw"""
-    injectivity_radius(M::HeisenbergGroup)
+    injectivity_radius(G::HeisenbergGroup)
 
-Return the injectivity radius on the [`HeisenbergGroup`](@ref) `M`, which is ``∞``.
+Return the injectivity radius on the [`HeisenbergGroup`](@ref) `G`, which is ``∞``.
 """
 ManifoldsBase.injectivity_radius(::HeisenbergGroup) = Inf
 
 @doc raw"""
-    log(G::HeisenbergGroup, p, q)
+    log(G::HeisenbergGroup, g, h)
 
 Compute the logarithmic map on the [`HeisenbergGroup`](@ref) group.
 The formula reads
@@ -133,26 +133,26 @@ The formula reads
 where ``I_n`` is the ``n×n`` identity matrix, ``0_n`` is the ``n×n`` zero matrix
 and ``\mathbf{a}⋅\mathbf{b}`` is dot product of vectors.
 """
-Base.log(::HeisenbergGroup, p, q)
+Base.log(::HeisenbergGroup, g, h)
 
-function ManifoldsBase.log!(M::HeisenbergGroup, X, p, q)
-    n = ManifoldsBase.get_parameter(M.manifold.size)[1]
+function ManifoldsBase.log!(G::HeisenbergGroup, X, g, h)
+    n = ManifoldsBase.get_parameter(G.manifold.size)[1]
     fill!(X, 0)
-    a_p_view = _heisenberg_a_view(M, p)
-    b_p_view = _heisenberg_b_view(M, p)
-    a_q_view = _heisenberg_a_view(M, q)
-    b_q_view = _heisenberg_b_view(M, q)
+    a_p_view = _heisenberg_a_view(G, g)
+    b_p_view = _heisenberg_b_view(G, g)
+    a_q_view = _heisenberg_a_view(G, h)
+    b_q_view = _heisenberg_b_view(G, h)
     X[1, 2:(n + 1)] .= a_q_view .- a_p_view
     X[2:(n + 1), n + 2] .= b_q_view .- b_p_view
-    pinvq_c = dot(a_p_view, b_p_view) - p[1, n + 2] + q[1, n + 2] - dot(a_p_view, b_q_view)
+    pinvq_c = dot(a_p_view, b_p_view) - g[1, n + 2] + h[1, n + 2] - dot(a_p_view, b_q_view)
     X[1, n + 2] = pinvq_c - dot(a_q_view - a_p_view, b_q_view - b_p_view) / 2
     return X
 end
 
 @doc raw"""
-    log(M::HeisenbergGroup, ::Identity{MatrixMultiplicationGroupOperation}, p)
+    log(G::HeisenbergGroup, ::Identity{MatrixMultiplicationGroupOperation}, g)
 
-Lie group logarithm for the [`HeisenbergGroup`](@ref) `M` of the point `p`.
+Lie group logarithm for the [`HeisenbergGroup`](@ref) `G` of the point `g`.
 The formula reads
 ```math
 \log\left(\begin{bmatrix} 1 & \mathbf{a} & c \\
@@ -165,18 +165,18 @@ The formula reads
 where ``I_n`` is the ``n×n`` identity matrix, ``0_n`` is the ``n×n`` zero matrix
 and ``\mathbf{a}⋅\mathbf{b}`` is dot product of vectors.
 """
-log(M::HeisenbergGroup, ::Identity{MatrixMultiplicationGroupOperation}, p)
+log(G::HeisenbergGroup, ::Identity{MatrixMultiplicationGroupOperation}, g)
 
 function ManifoldsBase.log!(
-    M::HeisenbergGroup, X, ::Identity{MatrixMultiplicationGroupOperation}, p
+    G::HeisenbergGroup, X, ::Identity{MatrixMultiplicationGroupOperation}, g
 )
-    n = ManifoldsBase.get_parameter(M.manifold.size)[1]
+    n = ManifoldsBase.get_parameter(G.manifold.size)[1]
     fill!(X, 0)
-    view_a_X = _heisenberg_a_view(M, X)
-    view_b_X = _heisenberg_b_view(M, X)
-    view_a_X .= _heisenberg_a_view(M, p)
-    view_b_X .= _heisenberg_b_view(M, p)
-    X[1, n + 2] = p[1, n + 2] - dot(view_a_X, view_b_X) / 2
+    view_a_X = _heisenberg_a_view(G, X)
+    view_b_X = _heisenberg_b_view(G, X)
+    view_a_X .= _heisenberg_a_view(G, g)
+    view_b_X .= _heisenberg_b_view(G, g)
+    X[1, n + 2] = g[1, n + 2] - dot(view_a_X, view_b_X) / 2
     return X
 end
 function ManifoldsBase.log!(
@@ -194,7 +194,7 @@ function Base.show(
 ) where {n}
     return print(io, "HeisenbergGroup($(n))")
 end
-function Base.show(io::IO, M::HeisenbergGroup{Tuple{Int}})
-    n = ManifoldsBase.get_parameter(M.manifold.size)[1]
+function Base.show(io::IO, G::HeisenbergGroup{Tuple{Int}})
+    n = ManifoldsBase.get_parameter(G.manifold.size)[1]
     return print(io, "HeisenbergGroup($(n); parameter=:field)")
 end
