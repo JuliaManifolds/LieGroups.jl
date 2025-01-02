@@ -401,7 +401,9 @@ See also [HilgertNeeb:2012; Definition 9.2.2](@cite).
 """
 
 @doc "$(_doc_exp_id)"
-function ManifoldsBase.exp(G::LieGroup, e::Identity, X, t::Number=1)
+function ManifoldsBase.exp(
+    G::LieGroup{𝔽,O}, e::Identity{O}, X, t::Number=1
+) where {𝔽,O<:AbstractGroupOperation}
     h = identity_element(G)
     exp!(G, h, e, X, t)
     return h
@@ -763,12 +765,6 @@ function ManifoldsBase.log(G::LieGroup, e::Identity, g)
     X = allocate_result(G, log, g)
     log!(G, X, e, g)
     return X
-end
-
-# explicit method error to avoid stack overflow
-@doc "$(_doc_log_id)"
-function ManifoldsBase.log!(G::LieGroup, X, e::Identity, g)
-    throw(MethodError(ManifoldsBase.log!, (typeof(G), typeof(X), typeof(e), typeof(g))))
 end
 
 ManifoldsBase.manifold_dimension(G::LieGroup) = manifold_dimension(G.manifold)

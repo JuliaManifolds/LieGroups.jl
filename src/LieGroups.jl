@@ -43,6 +43,20 @@ include("groups/translation_group.jl")
 include("groups/general_linear_group.jl")
 include("groups/heisenberg_group.jl")
 
+# explicit method error to avoid stack overflow
+for GT in [LieGroup, HeisenbergGroup]
+    @eval begin
+        @doc "$(_doc_log_id)"
+        function ManifoldsBase.log!(G::$GT, X, e::Identity, g)
+            throw(
+                MethodError(
+                    ManifoldsBase.log!, (typeof(G), typeof(X), typeof(e), typeof(g))
+                ),
+            )
+        end
+    end
+end
+
 export LieGroup, LieAlgebra
 export PowerLieGroup, ProductLieGroup
 export LeftSemidirectProductLieGroup, RightSemidirectProductLieGroup
