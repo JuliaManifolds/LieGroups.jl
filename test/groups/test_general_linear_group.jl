@@ -30,7 +30,7 @@ using LieGroupsTestSuite
             is_identity,
             lie_bracket,
             log,
-            #rand, # requires a fix in Manifolds.jl to have rand on invertible matrices
+            rand,
             show,
             #vee, # requires a fix in Manifolds.jl to have an ONB on invertible matrices
         ],

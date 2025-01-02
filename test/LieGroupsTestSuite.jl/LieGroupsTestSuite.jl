@@ -398,7 +398,7 @@ function test_exp_log(
                 exp!(G, k2, e, X)
                 @test isapprox(G, k1, k2)
             end
-            @test is_point(G, k1)
+            @test is_point(G, k1; error=:error)
             # exp
             k1 = exp(G, g, X)
             if test_mutating
@@ -406,7 +406,7 @@ function test_exp_log(
                 exp!(G, k2, g, X)
                 @test isapprox(G, k1, k2)
             end
-            @test is_point(G, k1)
+            @test is_point(G, k1; error=:error)
         end
         if test_log
             # Lie group log
@@ -415,8 +415,11 @@ function test_exp_log(
                 Y2 = zero_vector(G, e)
                 log!(G, Y2, e, g)
                 @test isapprox(𝔤, Y1, Y2)
+
+                log!(G, Y2, e, e)
+                @test isapprox(𝔤, Y2, 0 * Y2)
             end
-            @test is_point(𝔤, Y1)
+            @test is_point(𝔤, Y1; error=:error)
             @test norm(𝔤, log(G, g, g)) ≈ 0
             @test norm(𝔤, log(G, h, h)) ≈ 0
             # log
@@ -426,7 +429,7 @@ function test_exp_log(
                 log!(G, Y2, g, h)
                 @test isapprox(𝔤, Y1, Y2)
             end
-            @test is_point(𝔤, Y1)
+            @test is_point(𝔤, Y1; error=:error)
             # or equivalently
             @test is_vector(G, Y1)
             @test is_vector(G, Identity(G), Y1)
@@ -528,6 +531,28 @@ end
 #
 #
 # --- `I`
+
+"""
+    test_injectivity_radius(G::LieGroup; kwargs...)
+
+Test the function `injectivity_radius`.
+
+# Keyword arguments
+
+* `expected=missing`: expected value for global injectivity radius.
+"""
+function test_injectivity_radius(G::LieGroup; expected=missing)
+    @testset "injectivity radius" begin
+        if ismissing(expected)
+            @test injectivity_radius(G) isa Real
+            @test injectivity_radius(G) >= 0
+        else
+            @test injectivity_radius(G) == expected
+        end
+    end
+    return nothing
+end
+
 """
     test_inv_compose(G::LieGroup, g, h, X; kwargs...)
 
@@ -887,6 +912,10 @@ function test_lie_group(G::LieGroup, properties::Dict, expectations::Dict=Dict()
                 test_mutating=mutating,
                 test_right=(inv_right_compose in functions),
             )
+        end
+        if (injectivity_radius in functions)
+            ir = get(expectations, :injectivity_radius, missing)
+            test_injectivity_radius(G; expected=ir)
         end
         if (inv in functions)
             test_inv(G, points[1]; test_mutating=mutating)

@@ -12,6 +12,8 @@ module LieGroups
 
 using LinearAlgebra, ManifoldsBase, Manifolds, Random
 
+using ManifoldsBase: RealNumbers
+
 #
 #
 # = Compatibility (and a bit of type piracy for now)
@@ -39,6 +41,20 @@ include("groups/semidirect_product_group.jl")
 # Lie groups
 include("groups/translation_group.jl")
 include("groups/general_linear_group.jl")
+include("groups/heisenberg_group.jl")
+
+# explicit method error to avoid stack overflow
+for GT in [LieGroup, HeisenbergGroup]
+    @eval begin
+        function ManifoldsBase.log!(G::$GT, X, e::Identity, g)
+            throw(
+                MethodError(
+                    ManifoldsBase.log!, (typeof(G), typeof(X), typeof(e), typeof(g))
+                ),
+            )
+        end
+    end
+end
 
 export LieGroup, LieAlgebra
 export PowerLieGroup, ProductLieGroup
@@ -66,7 +82,7 @@ export GroupAction, GroupOperationAction
 #
 #
 # Specific groups
-export TranslationGroup, GeneralLinearGroup
+export TranslationGroup, GeneralLinearGroup, HeisenbergGroup
 
 export adjoint, adjoint!, apply, apply!
 export base_lie_group, base_manifold
@@ -92,6 +108,7 @@ export identity_element, identity_element!, is_identity, inv, inv!, diff_inv, di
 export lie_bracket, lie_bracket!, log, log!
 export manifold_dimension
 export norm
+export injectivity_radius
 export rand, rand!
 export switch
 export vee, vee!
