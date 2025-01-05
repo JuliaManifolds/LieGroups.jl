@@ -12,8 +12,8 @@ StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]
 Aqua = "0.8"
-LinearAlgebra = "1.6"
-Manifolds = "0.10.5"
+LinearAlgebra = "1.10"
+Manifolds = "0.10.11"
 ManifoldsBase = "0.15.20"
 Random = "1.10"
 RecursiveArrayTools = "2, 3"

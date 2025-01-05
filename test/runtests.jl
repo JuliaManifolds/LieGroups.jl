@@ -18,7 +18,7 @@ end
         include_test("test_interface.jl")
     end
     @testset "Generic Group Operations" begin
-        include_test("operations/test_addidion_operation.jl")
+        include_test("operations/test_addition_operation.jl")
         include_test("operations/test_multiplication_operation.jl")
     end
     @testset "Generic Group Actions" begin
@@ -32,6 +32,7 @@ end
             include_test("groups/test_semidirect_product_group.jl")
         end
         include_test("groups/test_general_linear_group.jl")
+        include_test("groups/test_heisenberg_group.jl")
         include_test("groups/test_orthogonal_group.jl")
         include_test("groups/test_unitary_group.jl")
         include_test("groups/test_special_orthogonal_group.jl")

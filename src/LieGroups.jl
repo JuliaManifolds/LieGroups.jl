@@ -14,6 +14,8 @@ using LinearAlgebra, ManifoldsBase, Manifolds, StaticArrays, Random
 
 import LinearAlgebra: adjoint, adjoint!
 
+using ManifoldsBase: RealNumbers
+
 #
 #
 # = Compatibility (and a bit of type piracy for now)
@@ -44,6 +46,20 @@ include("groups/semidirect_product_group.jl")
 
 include("groups/translation_group.jl")
 include("groups/general_linear_group.jl")
+include("groups/heisenberg_group.jl")
+
+# explicit method error to avoid stack overflow
+for GT in [LieGroup, HeisenbergGroup]
+    @eval begin
+        function ManifoldsBase.log!(G::$GT, X, e::Identity, g)
+            throw(
+                MethodError(
+                    ManifoldsBase.log!, (typeof(G), typeof(X), typeof(e), typeof(g))
+                ),
+            )
+        end
+    end
+end
 
 # includes generic implementations for O(n), U(n), SO(n), SO(n), so we load this first
 include("groups/unitary_group.jl")
@@ -82,6 +98,7 @@ export InverseLeftGroupOperationAction, InverseRightGroupOperationAction
 #
 # Specific groups
 export GeneralLinearGroup
+export HeisenbergGroup
 export OrthogonalGroup
 export SpecialEuclideanGroup, SpecialOrthogonalGroup, SpecialUnitaryGroup
 export TranslationGroup
@@ -112,6 +129,7 @@ export jacobian_conjugate, jacobian_conjugate!
 export lie_bracket, lie_bracket!, log, log!
 export manifold_dimension
 export norm
+export injectivity_radius
 export rand, rand!
 export switch
 export vee, vee!
