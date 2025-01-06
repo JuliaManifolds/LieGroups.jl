@@ -9,9 +9,9 @@ begin
     g1 = ArrayPartition(1 / sqrt(2) * [1.0 1.0; -1.0 1.0], [1.0, 0.0])
     g2 = ArrayPartition([0.0 -1.0; 1.0 0.0], [0.0, 1.0])
     g3 = ArrayPartition([1.0 0.0; 0.0 1.0], [1.0, 1.0])
-    X1 = ArrayPartition([1.0 0.0; 0.0 0.0], [0.0, 1.0])
-    X2 = ArrayPartition([0.0 0.0; 0.0 1.0], [1.0, 1.0])
-    X3 = ArrayPartition([9.0 0.5; 0.5 0.0], [1.0, 0.0])
+    X1 = ArrayPartition([0.0 -0.23; 0.23 0.0], [0.0, 1.0])
+    X2 = ArrayPartition([0.0 0.30; -0.20 0.0], [1.0, 1.0])
+    X3 = ArrayPartition([9.0 0.1; -0.1 0.0], [1.0, 0.0])
     properties = Dict(
         :Name => "The special Euclidean group",
         :Points => [g1, g2, g3],
@@ -24,18 +24,18 @@ begin
             # diff_inv,
             # diff_left_compose,
             # diff_right_compose,
-            exp,
-            # hat,
+            # exp,
+            hat,
             identity_element,
             inv,
             # inv_left_compose,
             # inv_right_compose,
             # is_identity,
             # lie_bracket,
-            log,
+            # log,
             rand,
             show,
-            # vee,
+            vee,
         ],
     )
     expectations = Dict(
@@ -53,9 +53,9 @@ begin
     h1 = ArrayPartition([1.0, 0.0], 1 / sqrt(2) * [1.0 1.0; -1.0 1.0])
     h2 = ArrayPartition([0.0, 1.0], [0.0 -1.0; 1.0 0.0])
     h3 = ArrayPartition([1.0, 1.0], [1.0 0.0; 0.0 1.0])
-    Y1 = ArrayPartition([0.0, 1.0], [1.0 0.0; 0.0 0.0])
-    Y2 = ArrayPartition([1.0, 1.0], [0.0 0.0; 0.0 1.0])
-    Y3 = ArrayPartition([1.0, 0.0], [9.0 0.5; 0.5 0.0])
+    Y1 = ArrayPartition([0.0, 1.0], [0.0 0.23; -0.23 0.0])
+    Y2 = ArrayPartition([1.0, 1.0], [0.0 0.3; -0.3 1.0])
+    Y3 = ArrayPartition([1.0, 0.0], [9.0 -0.1; 0.1 0.0])
     properties2 = Dict(
         :Name => "The special Euclidean group (right variant)",
         :Points => [h1, h2, h3],
@@ -69,7 +69,7 @@ begin
             # diff_left_compose,
             # diff_right_compose,
             # exp,
-            # hat,
+            hat,
             identity_element,
             # inv,
             # inv_left_compose,
@@ -79,7 +79,7 @@ begin
             # log,
             rand,
             show,
-            # vee,
+            vee,
         ],
     )
     expectations2 = Dict(

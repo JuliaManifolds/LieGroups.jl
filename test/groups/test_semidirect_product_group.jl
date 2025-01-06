@@ -10,26 +10,8 @@ using LieGroupsTestSuite
     G1 = LieGroup(M, op1)
     op2 = LieGroupsTestSuite.DummySecondOperation()
     G2 = LieGroup(M, op2)
-
-    fcts = [
-        # compose,
-        # conjugate,
-        # diff_conjugate,
-        # diff_inv,
-        # diff_left_compose,
-        # diff_right_compose,
-        # exp,
-        # hat,
-        # inv,
-        # inv_left_compose,
-        # inv_right_compose,
-        # is_identity,
-        # lie_bracket,
-        # log,
-        # rand,
-        show,
-        #vee,
-    ]
+    # The rest has to be checked with a concrete semidirect one
+    fcts = [show]
 
     Gl = LeftSemidirectProductLieGroup(G1, G2, LeftGroupOperationAction())
     properties = Dict(

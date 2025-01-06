@@ -450,8 +450,8 @@ function test_exp_log(
                 @test isapprox(𝔤, Y2, 0 * Y2)
             end
             @test is_point(𝔤, Y1; error=:error)
-            @test norm(𝔤, log(G, g, g)) ≈ 0
-            @test norm(𝔤, log(G, h, h)) ≈ 0
+            @test norm(𝔤, log(G, g, g)) ≈ 0 atol = atol
+            @test norm(𝔤, log(G, h, h)) ≈ 0 atol = atol
             # log
             Y1 = log(G, g, h)
             if test_mutating
