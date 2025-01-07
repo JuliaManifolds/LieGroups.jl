@@ -14,6 +14,13 @@ A group operation that is realised by a matrix multiplication.
 """
 struct MatrixMultiplicationGroupOperation <: AbstractMultiplicationGroupOperation end
 
+"""
+    ScalarMultiplicationGroupOperation <: AbstractMultiplicationGroupOperation
+
+A group operation that is realised by the multiplication of scalars. (Usefull for the complex CircleGroup)
+"""
+struct ScalarMultiplicationGroupOperation <: AbstractMultiplicationGroupOperation end
+
 Base.:*(::Identity{MatrixMultiplicationGroupOperation}, p::Union{AbstractMatrix,Number}) = p
 function Base.:*(
     p::Union{AbstractMatrix,Number}, ::Identity{MatrixMultiplicationGroupOperation}
@@ -210,24 +217,47 @@ function ManifoldsBase.exp!(
     return g
 end
 
-_doc_identity_element_mult = """
-    identity_element(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation})
-    identity_element!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, e)
+_doc_identity_element_mat_mult = """
+    identity_element(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation})
+    identity_element!(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, e)
 
 Return the a point representation of the [`Identity`](@ref),
-which for an [`AbstractMultiplicationGroupOperation`](@ref) is the one-element or identity array.
+which for an [`MatrixMultiplicationGroupOperation`](@ref) is the one-element or identity array.
 """
 
-@doc "$(_doc_identity_element_mult)"
-identity_element(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}) where {𝔽}
+@doc "$(_doc_identity_element_mat_mult)"
+identity_element(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}) where {𝔽}
 
-@doc "$(_doc_identity_element_mult)"
-identity_element!(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, e) where {𝔽}
+@doc "$(_doc_identity_element_mat_mult)"
+identity_element!(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, e) where {𝔽}
 function identity_element!(
-    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, e::AbstractMatrix
+    ::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, e::AbstractMatrix
 ) where {𝔽}
+################buggy -> can create identity_elements of wrong dimensions
     return copyto!(e, LinearAlgebra.I)
 end
+
+
+_doc_identity_element_scalar_mult = """
+    identity_element(G::LieGroup{𝔽,ScalarMultiplicationGroupOperation})
+    identity_element!(G::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, e)
+
+Return the a point representation of the [`Identity`](@ref),
+which for an [`ScalarMultiplicationGroupOperation`](@ref) is the one-element.
+"""
+
+@doc "$(_doc_identity_element_scalar_mult)"
+identity_element(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}) where {𝔽}
+
+@doc "$(_doc_identity_element_scalar_mult)"
+identity_element!(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, e) where {𝔽}
+function identity_element!(
+    ::LieGroup{𝔽, ScalarMultiplicationGroupOperation}, e
+) where {𝔽}
+    return copyto!(e , Complex(0,1))
+end
+
+
 
 _doc_inv_mult = """
     inv(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperationroupOperation}, g)
