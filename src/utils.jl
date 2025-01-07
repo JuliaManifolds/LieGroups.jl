@@ -49,31 +49,6 @@ function cos_angles_4d_rotation_matrix(R)
 end
 
 """
-    eigen_safe(x)
-
-Compute the eigendecomposition of `x`. If `x` is a `StaticMatrix`, it is
-converted to a `Matrix` before the decomposition.
-"""
-@inline eigen_safe(x; kwargs...) = eigen(x; kwargs...)
-@inline function eigen_safe(x::StaticMatrix; kwargs...)
-    s = size(x)
-    E = eigen!(Matrix(parent(x)); kwargs...)
-    return Eigen(SizedVector{s[1]}(E.values), SizedMatrix{s...}(E.vectors))
-end
-
-"""
-    log_safe(x)
-
-Compute the matrix logarithm of `x`. If `x` is a `StaticMatrix`, it is
-converted to a `Matrix` before computing the log.
-"""
-@inline log_safe(x) = log(x)
-@inline function log_safe(x::StaticMatrix)
-    s = Size(x)
-    return SizedMatrix{s[1],s[2]}(log(Matrix(parent(x))))
-end
-
-"""
     log_safe!(y, x)
 
 Compute the matrix logarithm of `x`. If the eltype of `y` is real, then the imaginary part
@@ -124,7 +99,7 @@ function log_safe!(Y, A)
             end
         end
     else
-        copyto!(Y, log_safe(A))
+        copyto!(Y, log(A))
     end
     return Y
 end

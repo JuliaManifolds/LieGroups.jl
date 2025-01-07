@@ -623,7 +623,7 @@ function ManifoldsBase.log!(
 )
     cosθ = (tr(q) - 1) / 2
     if cosθ ≈ -1
-        eig = eigen_safe(q)
+        eig = eigen(q)
         ival = findfirst(λ -> isapprox(λ, 1), eig.values)
         inds = SVector{3}(1:3)
         ax = eig.vectors[inds, ival]
