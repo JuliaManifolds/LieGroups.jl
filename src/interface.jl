@@ -576,8 +576,8 @@ function Base.inv(::LieGroup{𝔽,O}, e::Identity{O}) where {𝔽,O<:AbstractGro
     return e
 end
 
-function inv!(G::LieGroup{𝔽,O}, q, ::Identity{O}) where {𝔽,O<:AbstractGroupOperation}
-    return identity_element!(G, q)
+function inv!(G::LieGroup{𝔽,O}, g, ::Identity{O}) where {𝔽,O<:AbstractGroupOperation}
+    return identity_element!(G, g)
 end
 
 _doc_inv_left_compose = """
@@ -678,7 +678,9 @@ All keyword arguments are passed on to the corresponding call
 """
 
 @doc "$(_doc_is_vector)"
-ManifoldsBase.is_vector(G::LieGroup, X; kwargs...) = is_point(LieAlgebra(G), X; kwargs...)
+function ManifoldsBase.is_vector(G::LieGroup, X; kwargs...)
+    return is_point(LieAlgebra(G), X; kwargs...)
+end
 
 @doc "$(_doc_is_vector)"
 function ManifoldsBase.is_vector(
@@ -789,7 +791,7 @@ function ManifoldsBase.log!(G::LieGroup, X, g, h)
     return h
 end
 function ManifoldsBase.log!(
-    ::LieGroup{𝔽,O}, X, ::Identity{O}, ::Identity{O}
+    G::LieGroup{𝔽,O}, X, ::Identity{O}, ::Identity{O}
 ) where {𝔽,O<:AbstractGroupOperation}
     zero_vector!(LieAlgebra(G), X)
     return X
