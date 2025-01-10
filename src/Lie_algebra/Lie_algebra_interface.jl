@@ -12,7 +12,9 @@ The Lie algebras considered here are those related to a [`LieGroup`](@ref) ``$(_
 namely the tangent space ``T_{$(_math(:e))}$(_math(:G))`` at the [`Identity`](@ref),
 this is internally just a `const` of the corresponding $(_link(:TangentSpace)).
 
-!!! note "Convention"
+
+
+!!! note "Convention for representing vectors in the Lie algebra"
     A vector field ``$(_tex(:Cal,"X")): $(_math(:G)) → T$(_math(:G))``, ``X(g) ∈ T_g$(_math(:G))``
     is called a left-invariant vector field if it satisfies
 
