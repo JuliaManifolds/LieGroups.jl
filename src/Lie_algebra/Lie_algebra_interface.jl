@@ -14,7 +14,7 @@ this is internally just a `const` of the corresponding $(_link(:TangentSpace)).
 
 
 
-!!! note "Convention for representing vectors in the Lie algebra"
+!!! note "Convention for representing tangent vectors in the Lie algebra"
     A vector field ``$(_tex(:Cal,"X")): $(_math(:G)) → T$(_math(:G))``, ``X(g) ∈ T_g$(_math(:G))``
     is called a left-invariant vector field if it satisfies
 
