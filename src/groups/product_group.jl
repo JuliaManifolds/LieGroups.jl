@@ -16,6 +16,8 @@ abstract type AbstractProductGroupOperation <: AbstractGroupOperation end
 A struct do model a tuple of group operations, one for each factor of a product group,
 that together forms a new group operation.
 
+Access to the single operations can be done by `pgo[i]`.
+
 # Constructor
 
     ProductGroupOperation(o::AbstractGroupOperation...)
@@ -28,6 +30,7 @@ end
 function ProductGroupOperation(operations::AbstractGroupOperation...)
     return ProductGroupOperation(operations)
 end
+@inline Base.getindex(pgo::ProductGroupOperation, i::Integer) = pgo.ooperations[i]
 
 @doc raw"""
     cross(O1::AbstractGroupOperation, O2::AbstractGroupOperation)

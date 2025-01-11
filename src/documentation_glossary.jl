@@ -104,6 +104,7 @@ define!(
 define!(:LaTeX, :text, (text) -> raw"\text" * "{$(text)}")
 define!(:LaTeX, :transp, raw"\mathrm{T}")
 define!(:LaTeX, :text, (text) -> raw"\text" * "{$text}")
+define!(:LaTeX, :vec, (v) -> raw"\mathbf" * "{$v}")
 
 #
 # ---

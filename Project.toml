@@ -14,7 +14,7 @@ StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 RecursiveArrayTools = "731186ca-8d62-57ce-b412-fbd966d074cd"
 
 [extensions]
-LiegroupsRecursiveArrayToolsExt = "RecursiveArrayTools"
+LieGroupsRecursiveArrayToolsExt = "RecursiveArrayTools"
 
 [compat]
 Aqua = "0.8"

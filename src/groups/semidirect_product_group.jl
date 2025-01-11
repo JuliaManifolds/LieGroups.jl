@@ -7,6 +7,8 @@
     } <: AbstractProductGroupOperation
 
 An abstract type for all semdirect product group operations
+
+Access to the two containing operations can be done with `spgo[1]` and `spgo[2]`.
 """
 abstract type SemiDirectProductGroupOperation{
     O1<:AbstractGroupOperation,O2<:AbstractGroupOperation,A<:AbstractGroupActionType
@@ -60,6 +62,8 @@ struct LeftSemidirectProductGroupOperation{
         return new{O1,O2,A}((op1, op2), action)
     end
 end
+@inline Base.getindex(spgo::SemiDirectProductGroupOperation, i::Integer) =
+    spgo.operations[i]
 
 """
     RightSemidirectProductGroupOperation{O1,O2,A} <: SemiDirectProductGroupOperation{O1,O2,A}

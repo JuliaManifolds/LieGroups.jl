@@ -172,6 +172,10 @@ end
 
 ManifoldsBase.check_size(G::LieGroup, ::Identity) = nothing
 
+function ManifoldsBase.check_vector(G::LieGroup, X; kwargs...)
+    return ManifoldsBase.check_vector(G.manifold, identity_element(G), X; kwargs...)
+end
+
 # compose g ∘ h
 _doc_compose = """
     compose(G::LieGroup, g, h)
