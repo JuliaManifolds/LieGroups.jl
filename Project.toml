@@ -10,6 +10,12 @@ ManifoldsBase = "3362f125-f0bb-47a3-aa74-596ffd7ef2fb"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
+[weakdeps]
+RecursiveArrayTools = "731186ca-8d62-57ce-b412-fbd966d074cd"
+
+[extensions]
+LiegroupsRecursiveArrayToolsExt = "RecursiveArrayTools"
+
 [compat]
 Aqua = "0.8"
 LinearAlgebra = "1.10"
