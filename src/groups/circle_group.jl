@@ -25,16 +25,21 @@ Compute the Lie group exponential on the [`CircleGroup`](@ref), which coincides 
 
 
 ```math
-$(_tex(:exp)) it = $(_tex(:exp)) (it) = 
+$(_tex(:exp)) it = 
 ```
 
 """
+
+
+
+
 
 @doc "$(_doc_exp_circ)"
 exp(::CircleGroup, ::Identity{ScalarMultiplicationGroupOperation}, X)
 
 @doc "$(_doc_exp_circ)"
-exp!(::CircleGroup, g, ::Identity{ScalarMultiplicationGroupOperation}, X)
+exp!(M::CircleGroup, g, Id::Identity{ScalarMultiplicationGroupOperation}, X)
+
 
 
 function Base.show(io::IO, G::CircleGroup)

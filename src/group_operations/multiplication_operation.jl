@@ -187,7 +187,7 @@ function diff_right_compose!(
     return copyto!(LieAlgebra(G), Y, X * g)
 end
 
-_doc_exp_mult = """
+_doc_exp_matrix_mult = """
     exp(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, e::Identity{MatrixMultiplicationGroupOperation}, X, t::Number=1)
     exp!(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, g, e::Identity{MatrixMultiplicationGroupOperation}, X, t::Number=1)
 
@@ -197,7 +197,7 @@ which simplifies to the [matrix exponential](https://en.wikipedia.org/wiki/Matri
 This can be computed in-place of `g`.
 """
 
-@doc "$(_doc_exp_mult)"
+@doc "$(_doc_exp_matrix_mult)"
 Base.exp(
     ::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
     ::Identity{MatrixMultiplicationGroupOperation},
@@ -205,7 +205,7 @@ Base.exp(
     t::Number=1,
 ) where {𝔽} = exp(t * X)
 
-@doc "$(_doc_exp_mult)"
+@doc "$(_doc_exp_matrix_mult)"
 function ManifoldsBase.exp!(
     ::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
     g,
@@ -233,7 +233,6 @@ identity_element!(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, e) where 
 function identity_element!(
     ::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, e::AbstractMatrix
 ) where {𝔽}
-################buggy -> can create identity_elements of wrong dimensions
     return copyto!(e, LinearAlgebra.I)
 end
 
@@ -247,15 +246,48 @@ which for an [`ScalarMultiplicationGroupOperation`](@ref) is the one-element.
 """
 
 @doc "$(_doc_identity_element_scalar_mult)"
-identity_element(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}) where {𝔽}
+identity_element(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}) where {𝔽} = 1.
 
 @doc "$(_doc_identity_element_scalar_mult)"
 identity_element!(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, e) where {𝔽}
 function identity_element!(
     ::LieGroup{𝔽, ScalarMultiplicationGroupOperation}, e
 ) where {𝔽}
-    return copyto!(e , Complex(0,1))
+    return e[] = 1.
 end
+
+_doc_exp_scalar_mult = """
+    exp(G::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, e::Identity{ScalarMultiplicationGroupOperation}, X, t::Number=1)
+    exp!(G::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, g, e::Identity{ScalarMultiplicationGroupOperation}, X, t::Number=1)
+
+Compute the Lie group exponential on a [`LieGroup`](@ref) with a [`ScalarMultiplicationGroupOperation`](@ref),
+which simplifies to the [ordinary exponential](https://en.wikipedia.org/wiki/Matrix_exponential).
+
+This can be computed in-place of `g`.
+"""
+
+@doc "$(_doc_exp_scalar_mult)"
+Base.exp(
+    ::LieGroup{𝔽,ScalarMultiplicationGroupOperation},
+    ::Identity{ScalarMultiplicationGroupOperation},
+    X,
+    t::Number=1,
+) where {𝔽} = exp(t * X)
+
+@doc "$(_doc_exp_scalar_mult)"
+function ManifoldsBase.exp!(
+    ::LieGroup{𝔽,ScalarMultiplicationGroupOperation},
+    g,
+    ::Identity{ScalarMultiplicationGroupOperation},
+    X,
+    t::Number=1,
+) where {𝔽}
+    g[] = exp(t .* X)
+    return g
+end
+
+
+
 
 
 
