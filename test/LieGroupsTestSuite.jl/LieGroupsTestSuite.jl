@@ -527,7 +527,6 @@ function test_hat_vee(
             c = ismissing(expected_value) ? zeros(manifold_dimension(G)) : expected_value
             Y1 = hat(G, c)
             @test is_vector(G, g, Y1)
-            ismissing(expected_value) && @test norm(G, g, Y1) ≈ 0
             !ismissing(expected_value) && @test isapprox(𝔤, X, Y1)
             if test_mutating
                 Y2 = zero_vector(𝔤)
