@@ -83,6 +83,38 @@ Identity(::LieGroup{𝔽,O}) where {𝔽,O<:AbstractGroupOperation} = Identity{O
 Identity(::O) where {O<:AbstractGroupOperation} = Identity(O)
 Identity(::Type{O}) where {O<:AbstractGroupOperation} = Identity{O}()
 
+"""
+    AbstractLieGroupPoint <: ManifoldsBase.AbstractManifoldPoint end
+
+An abstract type for a point on a [`LieGroup`](@ref).
+While an points and tangent vectors are usually kept untyped for flexibility,
+it might be necessary to distinguish different types of points, for example
+
+* for complicated representations that require a struct
+@ semantic verification
+* when there exist different representations
+
+By sub-typing the [`AbstractManifoldPoint`](@extref `ManifoldsBase.AbstractManifoldPoint`), this follows the same idea as in $(_link(:ManifoldsBase)).
+"""
+abstract type AbstractLieGroupPoint <: ManifoldsBase.AbstractManifoldPoint end
+
+"""
+    AbstractLieAlgebraTangentVector <: ManifoldsBase.TVector
+
+An abstract type for a tangent vector represented in a [`LieAlgebra`](@ref).
+
+While an tangent vectors are usually kept untyped for flexibility,
+it might be necessary to distinguish different types of points, for example
+
+* for complicated representations that require a struct
+@ semantic verification
+* when there exist different representations
+
+By sub-typing the [`AbstractManifoldPoint`](@extref `ManifoldsBase.AbstractManifoldPoint`),
+this follows the same idea as in $(_link(:ManifoldsBase)).
+"""
+abstract type AbstractLieAlgebraTangentVector <: ManifoldsBase.TVector end
+
 #
 #
 # --- Functions ---

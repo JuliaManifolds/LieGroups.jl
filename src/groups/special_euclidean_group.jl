@@ -88,6 +88,65 @@ const SpecialEuclideanOperation = Union{
     },
 }
 
+
+"""
+    AffineMatrixPoint <: AbstractLieGroupPoint
+
+represent a point on some [`LieGroup`](@ref) by an [affine matrix](https://en.wikipedia.org/wiki/Affine_group#Matrix_representation).
+
+```math
+$(_tex(:pmatrix, "M & v", "$(_tex(:vec, "0"))_n^{$(_tex(:transp))} & 1")) ∈ ℝ^{(n+1)×(n+1)},
+$(_tex(:qquad)) M ∈ ℝ^{n×n}, v ∈ $(_math(:T))(n),
+```
+where ``$(_tex(:vec, "0"))_n ∈ ℝ^n`` denotes the vector containing zeros.
+"""
+struct AffineMatrixPoint{T} <: AbstractLieGroupPoint
+    value::T
+end
+
+"""
+    AffineMatrixTVector <: AbstractLieGroupPoint
+
+represent a tangent vector on some [`LieGroup`](@ref) by a matrix of the form
+
+```math
+$(_tex(:pmatrix, "M & v", "$(_tex(:vec, "0"))_n^{$(_tex(:transp))} & 0")) ∈ ℝ^{(n+1)×(n+1)},
+$(_tex(:qquad)) M ∈ ℝ^{n×n}, v ∈ $(_math(:T))(n),
+```
+where ``$(_tex(:vec, "0"))_n ∈ ℝ^n`` denotes the vector containing zeros.
+
+While this tangent vector itself is not an affine matrix itself, it can be used for the Lie algebra of the affine group
+"""
+struct AffineMatrixTVector{T} <: AbstractLieAlgebraTangentVector
+    value::T
+end
+
+ManifoldsBase.@manifold_element_forwards AffineMatrixPoint value
+ManifoldsBase.@manifold_vector_forwards AffineMatrixTVector value
+ManifoldsBase.@default_manifold_fallbacks SpecialEuclideanGroup AffineMatrixPoint AffineMatrixTVector value value
+
+"""
+    ComponentsLieGroupPoint <: AbstractLieGroupPoint
+
+represent a point on a Lie group (explicitly) as a point that consists of components
+"""
+struct ComponentsLieGroupPoint{T} <: AbstractLieGroupPoint
+    value::T
+end
+
+"""
+    ComponentsLieAlgebraTangentVector <: AbstractLieGroupPoint
+
+represent a point on a Lie algebra (explicitly) as a point that consists of components
+"""
+struct ComponentsLieAlgebraTangentVector{T} <: AbstractLieAlgebraTangentVector
+    value::T
+end
+
+ManifoldsBase.@manifold_element_forwards ComponentsLieGroupPoint value
+ManifoldsBase.@manifold_vector_forwards ComponentsLieAlgebraTangentVector value
+
+
 # This union we can also use for the matrix case where we do not care
 
 function SpecialEuclideanGroup(n; variant=:left, kwargs...)
@@ -296,7 +355,7 @@ function ManifoldsBase.isapprox(
     h::AbstractMatrix;
     kwargs...,
 )
-    return isapprox(h, identity_element(G), h; kwargs...)
+    return isapprox(h, identity_element(G); kwargs...)
 end
 function ManifoldsBase.isapprox(
     G::SpecialEuclideanGroup,
@@ -304,6 +363,10 @@ function ManifoldsBase.isapprox(
     h::Identity{SpecialEuclideanOperation};
     kwargs...,
 )
+    return isapprox(g, identity_element(G); kwargs...)
+end
+
+function is_identity(G::SpecialEuclideanGroup, g::AbstractMatrix; kwargs...)
     return isapprox(g, identity_element(G), h; kwargs...)
 end
 

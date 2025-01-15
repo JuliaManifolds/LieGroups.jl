@@ -23,12 +23,14 @@ _manopt_glossary = _LIEGROUPS_DOC_TYPE()
     glossary(g::Dict, s::Symbol, args...; kwargs...)
 
 Access an entry in the glossary at `Symbol` s
-if that entrs is
+
+if that entry is
 * a string, this is returned
 * a function, it is called with `args...` and `kwargs...` passed
 * a dictionary, then the arguments and keyword arguments are passed to this dictionary, assuming `args[1]` is a symbol
 """
 #Do not attach the doc string here for now, since there is no internals section in the documentation yet
+# maybe TODO: provide better error messages if an entry is not found.
 glossary(s::Symbol, args...; kwargs...) = glossary(_manopt_glossary, s, args...; kwargs...)
 function glossary(g::_LIEGROUPS_DOC_TYPE, s::Symbol, args...; kwargs...)
     return glossary(g[s], args...; kwargs...)
@@ -108,6 +110,34 @@ define!(:LaTeX, :vec, (v) -> raw"\mathbf" * "{$v}")
 
 #
 # ---
+# Links that might be nice to be kept generic
+# Collect short forms for links, especially Interdocs ones.
+_link(args...; kwargs...) = glossary(:Link, args...; kwargs...)
+
+define!(
+    :Link,
+    :AbstractManifold,
+    "[`AbstractManifold`](@extref `ManifoldsBase.AbstractManifold`)",
+)
+define!(
+    :Link,
+    :isapprox,
+    "[`isapprox`](@extref `Base.isapprox-Tuple{AbstractManifold, Any, Any, Any}`)",
+)
+define!(
+    :Link,
+    :ManifoldsBase,
+    "[`ManifoldsBase.jl`](https://juliamanifolds.github.io/ManifoldsBase.jl/)",
+)
+define!(:Link, :TangentSpace, "[`TangentSpace`](@extref `ManifoldsBase.TangentSpace`)")
+define!(
+    :Link,
+    :zero_vector,
+    "[`zero_vector`](@extref `ManifoldsBase.zero_vector-Tuple{AbstractManifold, Any}`)",
+)
+
+#
+# ---
 # Mathematics and semantic symbols
 # :symbol the symbol,
 # :description the description
@@ -156,31 +186,7 @@ define!(:Math, :T, _math(:T, :symbol))
 
 #
 # ---
-# Links
-# Collect short forms for links, especially `DocumenterInterlinks` ones.
-_link(args...; kwargs...) = glossary(:Link, args...; kwargs...)
-
-define!(
-    :Link,
-    :AbstractManifold,
-    "[`AbstractManifold`](@extref `ManifoldsBase.AbstractManifold`)",
-)
-define!(
-    :Link,
-    :isapprox,
-    "[`isapprox`](@extref `Base.isapprox-Tuple{AbstractManifold, Any, Any, Any}`)",
-)
-define!(:Link, :TangentSpace, "[`TangentSpace`](@extref `ManifoldsBase.TangentSpace`)")
-define!(
-    :Link,
-    :zero_vector,
-    "[`zero_vector`](@extref `ManifoldsBase.zero_vector-Tuple{AbstractManifold, Any}`)",
-)
-
-#
-# ---
-# Links
-# Collect certain formulae, short texts or even admonitions
+# Notes
 _note(args...; kwargs...) = glossary(:Note, args...; kwargs...)
 
 define!(
