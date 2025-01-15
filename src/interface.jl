@@ -99,7 +99,7 @@ By sub-typing the [`AbstractManifoldPoint`](@extref `ManifoldsBase.AbstractManif
 abstract type AbstractLieGroupPoint <: ManifoldsBase.AbstractManifoldPoint end
 
 """
-    AbstractLieAlgebraTangentVector <: ManifoldsBase.TVector
+    AbstractLieAlgebraTVector <: ManifoldsBase.TVector
 
 An abstract type for a tangent vector represented in a [`LieAlgebra`](@ref).
 
@@ -113,7 +113,7 @@ it might be necessary to distinguish different types of points, for example
 By sub-typing the [`AbstractManifoldPoint`](@extref `ManifoldsBase.AbstractManifoldPoint`),
 this follows the same idea as in $(_link(:ManifoldsBase)).
 """
-abstract type AbstractLieAlgebraTangentVector <: ManifoldsBase.TVector end
+abstract type AbstractLieAlgebraTVector <: ManifoldsBase.TVector end
 
 #
 #
@@ -941,6 +941,24 @@ function vee!(G::LieGroup{𝔽}, c, X) where {𝔽}
     return c
 end
 
+"""
+    zero_vector(G::LieGroup, e::Identity, T::Type)
+
+Generate a $(_link(:zero_vector)) of type `T` in the [`LieAlgebra`](@ref) ``𝔤`` of
+the [`LieGroup`](@ref) `G` of type `T`.
+By default this calls `zero_vector(G, e)`
+
+Note that for the in-place variant `zero_vector!(G, X::T, e)` the type can be inferred by `X`.
+"""
+ManifoldsBase.zero_vector(
+    G::LieGroup{𝔽,<:O}, ::Identity{<:O}, T::Type
+) where {𝔽,O<:AbstractGroupOperation}
+
+function ManifoldsBase.zero_vector(
+    G::LieGroup{𝔽,<:O}, e::Identity{<:O}, T::Type
+) where {𝔽,O<:AbstractGroupOperation}
+    return zero_vector(G, e)
+end
 function ManifoldsBase.zero_vector(
     G::LieGroup{𝔽,<:O}, ::Identity{<:O}
 ) where {𝔽,O<:AbstractGroupOperation}

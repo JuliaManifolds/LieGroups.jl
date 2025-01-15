@@ -130,10 +130,15 @@ function Base.show(io::IO, 𝔤::LieAlgebra)
     return print(io, "LieAlgebra( $(𝔤.manifold) )")
 end
 
+function ManifoldsBase.zero_vector(𝔤::LieAlgebra, T::Type)
+    # pass to Lie group
+    return ManifoldsBase.zero_vector(𝔤.manifold, Idenitity(𝔤.manifold), T)
+end
 function ManifoldsBase.zero_vector(𝔤::LieAlgebra)
+    # pass to manifold directly
     return ManifoldsBase.zero_vector(𝔤.manifold.manifold, identity_element(𝔤.manifold))
 end
-
 function ManifoldsBase.zero_vector!(𝔤::LieAlgebra, X)
+    # pass to manifold directly
     return ManifoldsBase.zero_vector!(𝔤.manifold.manifold, X, identity_element(𝔤.manifold))
 end

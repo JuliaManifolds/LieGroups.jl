@@ -88,7 +88,6 @@ const SpecialEuclideanOperation = Union{
     },
 }
 
-
 """
     AffineMatrixPoint <: AbstractLieGroupPoint
 
@@ -117,7 +116,7 @@ where ``$(_tex(:vec, "0"))_n ∈ ℝ^n`` denotes the vector containing zeros.
 
 While this tangent vector itself is not an affine matrix itself, it can be used for the Lie algebra of the affine group
 """
-struct AffineMatrixTVector{T} <: AbstractLieAlgebraTangentVector
+struct AffineMatrixTVector{T} <: AbstractLieAlgebraTVector
     value::T
 end
 
@@ -135,17 +134,16 @@ struct ComponentsLieGroupPoint{T} <: AbstractLieGroupPoint
 end
 
 """
-    ComponentsLieAlgebraTangentVector <: AbstractLieGroupPoint
+    ComponentsLieAlgebraTVector <: AbstractLieGroupPoint
 
 represent a point on a Lie algebra (explicitly) as a point that consists of components
 """
-struct ComponentsLieAlgebraTangentVector{T} <: AbstractLieAlgebraTangentVector
+struct ComponentsLieAlgebraTVector{T} <: AbstractLieAlgebraTVector
     value::T
 end
 
 ManifoldsBase.@manifold_element_forwards ComponentsLieGroupPoint value
-ManifoldsBase.@manifold_vector_forwards ComponentsLieAlgebraTangentVector value
-
+ManifoldsBase.@manifold_vector_forwards ComponentsLieAlgebraTVector value
 
 # This union we can also use for the matrix case where we do not care
 
@@ -303,8 +301,17 @@ function identity_element(G::SpecialEuclideanGroup, ::Type{<:AbstractMatrix})
     q = zeros(ManifoldsBase.representation_size(G)...)
     return identity_element!(G, q)
 end
+function identity_element(G::SpecialEuclideanGroup, ::Type{AffineMatrixPoint})
+    q = zeros(ManifoldsBase.representation_size(G)...)
+    identity_element!(G, q)
+    return AffineMatrixPoint(q)
+end
 function identity_element!(::SpecialEuclideanGroup, q::AbstractMatrix)
     copyto!(q, I)
+    return q
+end
+function identity_element!(G::SpecialEuclideanGroup, q::AffineMatrixPoint)
+    identity_element!(G, q.value)
     return q
 end
 
@@ -423,6 +430,13 @@ end
 function _SOn_and_Tn(G::RightSpecialEuclideanGroup)
     A = map(LieGroup, G.manifold.manifolds, G.op.operations)
     return A[2], A[1]
+end
+
+function ManifoldsBase.zero_vector(
+    G::SpecialEuclidean, e::Identity{SpecialEuclideanOperation}
+)
+    n = Manifolds.get_parameter(G.manifold[1].size)[1]
+    return zeros(n + 1, n + 1)
 end
 
 function Base.show(io::IO, G::SpecialEuclideanGroup)

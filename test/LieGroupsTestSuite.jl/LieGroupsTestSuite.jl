@@ -144,7 +144,7 @@ function test_compose(
         end
         if test_identity && test_mutating
             for g_ in [g, h]
-                for e in [Identity(G), identity_element(G)]
+                for e in [Identity(G), identity_element(G, typeof(g))]
                     k1 = compose(G, g_, e)
                     compose!(G, k2, g_, e)
                     @test isapprox(G, k1, k2)
@@ -266,7 +266,7 @@ function test_diff_inv(G::LieGroup, g, X; expected=missing, test_mutating::Bool=
         Y1 = diff_inv(G, g, X)
         @test is_vector(G, identity_element(G), Y1)
         if test_mutating
-            Y2 = zero_vector(𝔤)
+            Y2 = zero_vector(𝔤, typeof(X))
             Y2 = diff_inv!(G, Y2, g, X)
             @test isapprox(𝔤, Y1, Y2)
         end
@@ -294,7 +294,7 @@ function test_diff_left_compose(
         Y1 = diff_left_compose(G, g, h, X)
         @test is_vector(G, identity_element(G), Y1)
         if test_mutating
-            Y2 = zero_vector(𝔤)
+            Y2 = zero_vector(𝔤, typeof(X))
             diff_left_compose!(G, Y2, g, h, X)
             @test isapprox(LieAlgebra(G), Y1, Y2)
         end
@@ -322,7 +322,7 @@ function test_diff_right_compose(
         Y1 = diff_right_compose(G, g, h, X)
         @test is_vector(G, identity_element(G), Y1)
         if test_mutating
-            Y2 = zero_vector(𝔤)
+            Y2 = zero_vector(𝔤, typeof(X))
             diff_right_compose!(G, Y2, g, h, X)
             @test isapprox(𝔤, Y1, Y2)
         end
@@ -378,7 +378,7 @@ function test_diff_conjugate(
         Y1 = diff_conjugate(G, g, h, X)
         @test is_point(𝔤, Y1; error=:error)
         if test_mutating
-            Y2 = zero_vector(𝔤)
+            Y2 = zero_vector(𝔤, typeof(X))
             diff_conjugate!(G, Y2, g, h, X)
             @test isapprox(𝔤, Y1, Y2)
         end
@@ -442,7 +442,7 @@ function test_exp_log(
             # Lie group log
             Y1 = log(G, e, g)
             if test_mutating
-                Y2 = zero_vector(G, e)
+                Y2 = zero_vector(G, e, typeof(X))
                 log!(G, Y2, e, g)
                 @test isapprox(𝔤, Y1, Y2)
                 log!(G, Y2, e, e)
@@ -462,7 +462,7 @@ function test_exp_log(
             # or equivalently
             @test is_vector(G, Identity(G), Y1; error=:error)
             @test is_vector(G, Y1; error=:error)
-            Y3 = zero_vector(G, e)
+            Y3 = zero_vector(G, e, typeof(X))
             @test isapprox(G, e, Y3, log(G, e, e); atol=atol)
             log!(G, Y3, e, e)
             @test isapprox(G, e, Y3, log(G, e, e); atol=atol)
@@ -775,7 +775,7 @@ function test_rand(
             X1 = rand(rng, G; vector_at=g1)
             @test is_vector(G, g1, X1; error=:error)
             if test_mutating
-                X2 = zero_vector(LieAlgebra(G), g1)
+                X2 = zero_vector(LieAlgebra(G), typeof(X1))
                 rand!(rng, G, X2; vector_at=g1)
                 @test is_vector(G, g1, X2; error=:error)
             end

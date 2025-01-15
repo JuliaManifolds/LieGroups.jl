@@ -104,6 +104,10 @@ export SpecialEuclideanGroup, SpecialOrthogonalGroup, SpecialUnitaryGroup
 export TranslationGroup
 export UnitaryGroup
 
+# Points and Tangent representations
+export AffineMatrixPoint, AffineMatrixTVector
+export ComponentsLieGroupPoint, ComponentsLieAlgebraTVector
+# Functions
 export adjoint, adjoint!, apply, apply!
 export base_lie_group, base_manifold
 export compose, compose!
