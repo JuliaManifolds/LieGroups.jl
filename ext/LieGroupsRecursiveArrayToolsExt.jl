@@ -6,6 +6,11 @@ using LinearAlgebra
 using ManifoldsBase
 # Implement SE(n) also on an Array Partition
 
+function identity_element(G::SpecialEuclideanGroup, T::Type{ArrayPartition})
+    # Allocate for the inner manifold (back to default)
+    e = ManifoldsBase.allocate_result(G, identity_element)
+    return identity_element!(G, e)
+end
 # disable affine check
 LieGroups._check_matrix_affine(::ArrayPartition, ::Int; v=1) = nothing
 

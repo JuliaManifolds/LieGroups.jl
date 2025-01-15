@@ -187,6 +187,28 @@ function _check_vector(
     return length(errs) == 0 ? nothing : first(errs)
 end
 
+function ManifoldsBase.check_size(G::SpecialEuclideanGroup, p::AbstractMatrix)
+    n = size(p)
+    m = ManifoldsBase.representation_size(G)
+    if n != m
+        return DomainError(
+            n,
+            "The point $(p) can not belong to the Lie Group $(M), since its size $(n) is not equal to the manifolds representation size ($(m)).",
+        )
+    end
+end
+
+function ManifoldsBase.check_size(G::SpecialEuclideanGroup, p, X::AbstractMatrix)
+    n = size(X)
+    m = ManifoldsBase.representation_size(G)
+    if n != m
+        return DomainError(
+            n,
+            "The vector $(X) can not belong to the Lie Algebra of $(M), since its size $(n) is not equal to the manifolds representation size ($(m)).",
+        )
+    end
+end
+
 function _compose!(
     ::SpecialEuclideanGroup, k::AbstractMatrix, g::AbstractMatrix, h::AbstractMatrix
 )
@@ -206,13 +228,25 @@ Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     G::SpecialEuclideanGroup, p, ::Val{:Rotation}
 )
     n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
-    return view(p, 1:n, n + 1)
+    return view(p, 1:n, 1:n)
 end
 Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     G::SpecialEuclideanGroup, p, ::Val{:Translation}
 )
     n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
-    return view(p, 1:n, 1:n)
+    return view(p, 1:n, n + 1)
+end
+
+function identity_element(G::SpecialEuclideanGroup)
+    return identity_element(G, AbstractMatrix)
+end
+function identity_element(G::SpecialEuclideanGroup, ::Type{<:AbstractMatrix})
+    q = zeros(ManifoldsBase.representation_size(G)...)
+    return identity_element!(G, q)
+end
+function identity_element!(::SpecialEuclideanGroup, q::AbstractMatrix)
+    copyto!(q, I)
+    return q
 end
 
 _doc_inv_SEn = """
@@ -243,6 +277,7 @@ function inv!(G::SpecialEuclideanGroup, h, g)
     rh = submanifold_component(G, h, :Rotation)
     th = submanifold_component(G, h, :Translation)
     copyto!(rh, transpose(rg))
+    println(th, " ", rh, " ", tg)
     copyto!(th, -rh * tg)
     return h
 end
@@ -254,6 +289,27 @@ function ManifoldsBase.isapprox(
     G::SpecialEuclideanGroup, g::AbstractMatrix, h::AbstractMatrix; kwargs...
 )
     return isapprox(g, h; kwargs...)
+end
+function ManifoldsBase.isapprox(
+    G::SpecialEuclideanGroup,
+    g::Identity{SpecialEuclideanOperation},
+    h::AbstractMatrix;
+    kwargs...,
+)
+    return isapprox(h, identity_element(G), h; kwargs...)
+end
+function ManifoldsBase.isapprox(
+    G::SpecialEuclideanGroup,
+    g::AbstractMatrix,
+    h::Identity{SpecialEuclideanOperation};
+    kwargs...,
+)
+    return isapprox(g, identity_element(G), h; kwargs...)
+end
+
+function ManifoldsBase.representation_size(G::SpecialEuclideanGroup)
+    s = Manifolds.get_parameter(G.manifold[1].size)[1]
+    return (s + 1, s + 1)
 end
 
 function Random.rand!(
@@ -307,10 +363,10 @@ function _SOn_and_Tn(G::RightSpecialEuclideanGroup)
 end
 
 function Base.show(io::IO, G::SpecialEuclideanGroup)
-    size = Manifolds.get_parameter(G.manifold[2].size)[1]
+    size = Manifolds.get_parameter(G.manifold[1].size)[1]
     return print(io, "SpecialEuclideanGroup($(size))")
 end
 function Base.show(io::IO, G::RightSpecialEuclideanGroup)
-    size = Manifolds.get_parameter(G.manifold[2].size)[1]
+    size = Manifolds.get_parameter(G.manifold[1].size)[1]
     return print(io, "SpecialEuclideanGroup($(size); variant=:right)")
 end

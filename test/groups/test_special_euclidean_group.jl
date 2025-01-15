@@ -12,7 +12,7 @@ using LieGroupsTestSuite
     X1 = [0.0 -0.23 0.0; 0.23 0.0 1.0; 0.0 0.0 0.0]
     X2 = [0.0 0.30 1.0; -0.20 0.0 1.0; 0.0 0.0 0.0]
     X3 = [0.0 0.1 1.0; -0.1 0.0 0.0; 0.0 0.0 0.0]
-    propertiesL = Dict(
+    properties = Dict(
         :Name => "The special Euclidean group (affine matrices)",
         :Points => [g1, g2, g3],
         :Vectors => [X1, X2, X3],
@@ -38,14 +38,14 @@ using LieGroupsTestSuite
             vee,
         ],
     )
-    expectationsL = Dict(
+    expectations = Dict(
         :repr => "SpecialEuclideanGroup(2)",
         #:diff_inv => -X1,
         #:diff_left_compose => X1,
         #:diff_right_compose => X1,
         #:lie_bracket => zero(X1),
     )
-    test_lie_group(G, propertiesL, expectationsL)
+    test_lie_group(G, properties, expectations)
 
     GL = SpecialEuclideanGroup(2)
     gL1 = ArrayPartition(1 / sqrt(2) * [1.0 1.0; -1.0 1.0], [1.0, 0.0])
@@ -75,7 +75,7 @@ using LieGroupsTestSuite
             # is_identity,
             # lie_bracket,
             # log,
-            rand,
+            # rand, TODO: introduce rand(G, T)
             show,
             vee,
         ],
@@ -119,7 +119,7 @@ using LieGroupsTestSuite
             # is_identity,
             # lie_bracket,
             # log,
-            rand,
+            # rand, TODO: introduce rand(G, T)
             show,
             vee,
         ],

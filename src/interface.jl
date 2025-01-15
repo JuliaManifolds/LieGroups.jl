@@ -537,17 +537,23 @@ end
 
 _doc_identity_element = """
     identity_element(G::LieGroup)
-    identity_element!(G::LieGroup, e)
+    identity_element(G::LieGroup, T)
+    identity_element!(G::LieGroup, e::T)
 
 Return a point representation of the [`Identity`](@ref) on the [`LieGroup`](@ref) `G`.
 By default this representation is the default array or number representation.
-It should return the corresponding default representation of ``e`` as a point on `G` if
-points are not represented by arrays.
+If there exist several representations, the type `T` can be used to distinguis between them,
+
+It returns the corresponding default representation of ``e`` as a point on `G`.
 This can be performed in-place of `e`.
 """
 # `function identity_element end`
 @doc "$(_doc_identity_element)"
 function identity_element(G::LieGroup)
+    e = ManifoldsBase.allocate_result(G, identity_element)
+    return identity_element!(G, e)
+end
+function identity_element(G::LieGroup, ::Type)
     e = ManifoldsBase.allocate_result(G, identity_element)
     return identity_element!(G, e)
 end
@@ -707,12 +713,12 @@ ManifoldsBase.isapprox(G::LieGroup, g, h; kwargs...) = isapprox(G.manifold, g, h
 function ManifoldsBase.isapprox(
     G::LieGroup{𝔽,O}, g::Identity{O}, h; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
-    return ManifoldsBase.isapprox(G.manifold, identity_element(G), h; kwargs...)
+    return ManifoldsBase.isapprox(G.manifold, identity_element(G, typeof(h)), h; kwargs...)
 end
 function ManifoldsBase.isapprox(
     G::LieGroup{𝔽,O}, g, h::Identity{O}; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
-    return ManifoldsBase.isapprox(G.manifold, g, identity_element(G); kwargs...)
+    return ManifoldsBase.isapprox(G.manifold, g, identity_element(G, typeof(h)); kwargs...)
 end
 function ManifoldsBase.isapprox(
     G::LieGroup{𝔽,O}, g::Identity{O}, h::Identity{O}; kwargs...
