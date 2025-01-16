@@ -1,24 +1,23 @@
 # for (g, t)
+const LeftSpecialEuclideanOperation = LeftSemidirectProductGroupOperation{
+    <:MatrixMultiplicationGroupOperation,<:AdditionGroupOperation,LeftGroupOperationAction
+}
+
 const LeftSpecialEuclideanGroup{T} = LieGroup{
     ℝ,
-    <:LeftSemidirectProductGroupOperation{
-        <:MatrixMultiplicationGroupOperation,
-        <:AdditionGroupOperation,
-        LeftGroupOperationAction,
-    },
+    <:LeftSpecialEuclideanOperation,
     <:Manifolds.ProductManifold{
         ℝ,Tuple{<:Manifolds.Rotations{T},<:Manifolds.Euclidean{T,ℝ}}
     },
 }
 
 # for (t, g)
+const RightSpecialEuclideanOperation = RightSemidirectProductGroupOperation{
+    <:AdditionGroupOperation,<:MatrixMultiplicationGroupOperation,LeftGroupOperationAction
+}
 const RightSpecialEuclideanGroup{T} = LieGroup{
     ℝ,
-    <:RightSemidirectProductGroupOperation{
-        <:AdditionGroupOperation,
-        <:MatrixMultiplicationGroupOperation,
-        LeftGroupOperationAction,
-    },
+    <:RightSpecialEuclideanOperation,
     <:Manifolds.ProductManifold{
         ℝ,Tuple{<:Manifolds.Euclidean{T,ℝ},<:Manifolds.Rotations{T}}
     },
@@ -89,7 +88,7 @@ const SpecialEuclideanOperation = Union{
 }
 
 """
-    AffineMatrixPoint <: AbstractLieGroupPoint
+    SpecialEuclideanMatrixPoint <: AbstractLieGroupPoint
 
 represent a point on some [`LieGroup`](@ref) by an [affine matrix](https://en.wikipedia.org/wiki/Affine_group#Matrix_representation).
 
@@ -99,12 +98,12 @@ $(_tex(:qquad)) M ∈ ℝ^{n×n}, v ∈ $(_math(:T))(n),
 ```
 where ``$(_tex(:vec, "0"))_n ∈ ℝ^n`` denotes the vector containing zeros.
 """
-struct AffineMatrixPoint{T} <: AbstractLieGroupPoint
+struct SpecialEuclideanMatrixPoint{T} <: AbstractLieGroupPoint
     value::T
 end
 
 """
-    AffineMatrixTVector <: AbstractLieGroupPoint
+    SpecialEuclideanMatrixTVector <: AbstractLieGroupPoint
 
 represent a tangent vector on some [`LieGroup`](@ref) by a matrix of the form
 
@@ -116,34 +115,34 @@ where ``$(_tex(:vec, "0"))_n ∈ ℝ^n`` denotes the vector containing zeros.
 
 While this tangent vector itself is not an affine matrix itself, it can be used for the Lie algebra of the affine group
 """
-struct AffineMatrixTVector{T} <: AbstractLieAlgebraTVector
+struct SpecialEuclideanMatrixTVector{T} <: AbstractLieAlgebraTVector
     value::T
 end
 
-ManifoldsBase.@manifold_element_forwards AffineMatrixPoint value
-ManifoldsBase.@manifold_vector_forwards AffineMatrixTVector value
-ManifoldsBase.@default_manifold_fallbacks SpecialEuclideanGroup AffineMatrixPoint AffineMatrixTVector value value
+ManifoldsBase.@manifold_element_forwards SpecialEuclideanMatrixPoint value
+ManifoldsBase.@manifold_vector_forwards SpecialEuclideanMatrixTVector value
+ManifoldsBase.@default_manifold_fallbacks SpecialEuclideanGroup SpecialEuclideanMatrixPoint SpecialEuclideanMatrixTVector value value
 
 """
-    ComponentsLieGroupPoint <: AbstractLieGroupPoint
+    SpecialEuclideanProductPoint <: AbstractLieGroupPoint
 
 represent a point on a Lie group (explicitly) as a point that consists of components
 """
-struct ComponentsLieGroupPoint{T} <: AbstractLieGroupPoint
+struct SpecialEuclideanProductPoint{T} <: AbstractLieGroupPoint
     value::T
 end
 
 """
-    ComponentsLieAlgebraTVector <: AbstractLieGroupPoint
+    SpecialEuclideanProductTVector <: AbstractLieGroupPoint
 
 represent a point on a Lie algebra (explicitly) as a point that consists of components
 """
-struct ComponentsLieAlgebraTVector{T} <: AbstractLieAlgebraTVector
+struct SpecialEuclideanProductTVector{T} <: AbstractLieAlgebraTVector
     value::T
 end
 
-ManifoldsBase.@manifold_element_forwards ComponentsLieGroupPoint value
-ManifoldsBase.@manifold_vector_forwards ComponentsLieAlgebraTVector value
+ManifoldsBase.@manifold_element_forwards SpecialEuclideanProductPoint value
+ManifoldsBase.@manifold_vector_forwards SpecialEuclideanProductTVector value
 
 # This union we can also use for the matrix case where we do not care
 
@@ -269,7 +268,7 @@ end
 function _compose!(
     ::SpecialEuclideanGroup, k::AbstractMatrix, g::AbstractMatrix, h::AbstractMatrix
 )
-    mul!(k, g, h)
+    copyto!(k, g * h)
     return k
 end
 
@@ -288,12 +287,27 @@ Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     return view(p, 1:n, 1:n)
 end
 Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
+    G::SpecialEuclideanGroup,
+    p::Union{SpecialEuclideanMatrixPoint,SpecialEuclideanMatrixTVector},
+    ::Val{:Translation},
+)
+    n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
+    return view(p.value, 1:n, n + 1)
+end
+Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
+    G::SpecialEuclideanGroup,
+    p::Union{SpecialEuclideanMatrixPoint,SpecialEuclideanMatrixTVector},
+    ::Val{:Rotation},
+)
+    n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
+    return view(p.value, 1:n, 1:n)
+end
+Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     G::SpecialEuclideanGroup, p, ::Val{:Translation}
 )
     n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
     return view(p, 1:n, n + 1)
 end
-
 function identity_element(G::SpecialEuclideanGroup)
     return identity_element(G, AbstractMatrix)
 end
@@ -301,16 +315,16 @@ function identity_element(G::SpecialEuclideanGroup, ::Type{<:AbstractMatrix})
     q = zeros(ManifoldsBase.representation_size(G)...)
     return identity_element!(G, q)
 end
-function identity_element(G::SpecialEuclideanGroup, ::Type{AffineMatrixPoint})
+function identity_element(G::SpecialEuclideanGroup, ::Type{SpecialEuclideanMatrixPoint})
     q = zeros(ManifoldsBase.representation_size(G)...)
     identity_element!(G, q)
-    return AffineMatrixPoint(q)
+    return SpecialEuclideanMatrixPoint(q)
 end
 function identity_element!(::SpecialEuclideanGroup, q::AbstractMatrix)
     copyto!(q, I)
     return q
 end
-function identity_element!(G::SpecialEuclideanGroup, q::AffineMatrixPoint)
+function identity_element!(G::SpecialEuclideanGroup, q::SpecialEuclideanMatrixPoint)
     identity_element!(G, q.value)
     return q
 end
@@ -343,7 +357,6 @@ function inv!(G::SpecialEuclideanGroup, h, g)
     rh = submanifold_component(G, h, :Rotation)
     th = submanifold_component(G, h, :Translation)
     copyto!(rh, transpose(rg))
-    println(th, " ", rh, " ", tg)
     copyto!(th, -rh * tg)
     return h
 end
@@ -374,7 +387,7 @@ function ManifoldsBase.isapprox(
 end
 
 function is_identity(G::SpecialEuclideanGroup, g::AbstractMatrix; kwargs...)
-    return isapprox(g, identity_element(G), h; kwargs...)
+    return isapprox(g, identity_element(G); kwargs...)
 end
 
 function ManifoldsBase.representation_size(G::SpecialEuclideanGroup)

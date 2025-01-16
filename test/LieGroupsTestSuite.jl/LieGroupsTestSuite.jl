@@ -178,7 +178,7 @@ function test_conjugate(
 )
     @testset "conjugate" begin
         k1 = conjugate(G, g, h)
-        @test is_point(G, k1)
+        @test is_point(G, k1, true)
         if test_mutating
             k2 = copy(G, g)
             conjugate!(G, k2, g, h)

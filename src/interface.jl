@@ -505,7 +505,7 @@ _doc_get_vector = """
 Return the vector corresponding to a set of coefficients in an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`)
 of the [`LieAlgebra`](@ref) `𝔤`.
 Since all tangent vectors are assumed to be represented in the Lie algebra,
-both signatures are equivalend.
+both signatures are equivalent.
 The operation can be performed in-place of a tangent vector `X`.
 
 By default this function requires [`identity_element`](@ref)`(G)` and calls
@@ -527,15 +527,28 @@ ManifoldsBase.get_vector!(G::LieGroup, X, g, c, B::ManifoldsBase.AbstractBasis)
     X = zero_vector(G, Identity(G))
     return get_vector_lie!(G, X, g, c, N)
 end
+@inline function get_vector_lie(G::LieGroup, g, c, N)
+    X = zero_vector(G, Identity(G))
+    return get_vector_lie!(G, X, g, c, N)
+end
+@inline function get_vector_lie(G::LieGroup, g, c, N, T::Type)
+    X = zero_vector(G, Identity(G), T)
+    return get_vector_lie!(G, X, g, c, N)
+end
 @inline function get_vector_lie!(G::LieGroup, Y, g, c, N)
     return get_vector!(
-        base_manifold(G), Y, identity_element(G), c, ManifoldsBase.DefaultOrthogonalBasis(N)
+        base_manifold(G),
+        Y,
+        identity_element(G, typeof(Y)),
+        c,
+        ManifoldsBase.DefaultOrthogonalBasis(N),
     )
 end
 
 _doc_hat = """
     hat(G::LieGroup, c)
-    hat!(G::LieGroup, X, c)
+    hat(G::LieGroup, c, T::Type)
+    hat!(G::LieGroup, X::T, c)
 
 Compute the hat map ``(⋅)^̂ `` that maps a vector of coordinates ``c_i``
 with respect to a certain basis to a tangent vector in the Lie algebra
@@ -546,6 +559,9 @@ X = $(_tex(:sum))_{i∈$(_tex(:Cal,"I"))} c_iB_i,
 
 where ``$(_tex(:Set, "B_i"))_{i∈$(_tex(:Cal,"I"))}`` is a basis of the Lie algebra
 and ``$(_tex(:Cal,"I"))`` a corresponding index set, which is usually ``$(_tex(:Cal,"I"))=$(_tex(:Set,raw"1,\ldots,n"))``.
+
+For the allocating variant, you can specify the type `T` of the tangent vector to obtain,
+in case there are different representations. The first signature produces the default representation.
 
 The computation can be performed in-place of `X`.
 The inverse of `hat` is [`vee`](@ref).
