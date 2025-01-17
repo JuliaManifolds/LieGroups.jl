@@ -904,8 +904,31 @@ Random.rand(::LieGroup; kwargs...)
 
 # New in LIeGroups – maybe move to ManifoldsBase at some point
 @doc "$(_doc_rand)"
-function Random.rand(G::LieGroup, T::Type; vector_at=nothing, kwargs...)
-    # TODO conitnue here and allocate the right thing.
+Random.rand(G::LieGroup, T::Type; vector_at=nothing, kwargs...)
+
+function Random.rand(M::AbstractManifold, T::Type, d::Integer; kwargs...)
+    return [rand(M, T; kwargs...) for _ in 1:d]
+end
+function Random.rand(rng::AbstractRNG, M::AbstractManifold, T::Type, d::Integer; kwargs...)
+    return [rand(rng, M, T; kwargs...) for _ in 1:d]
+end
+function Random.rand(M::AbstractManifold, T; vector_at=nothing, kwargs...)
+    if vector_at === nothing
+        pX = allocate_on(M, T)
+    else
+        pX = allocate_on(M, TangentSpaceType(), T)
+    end
+    rand!(M, pX; vector_at=vector_at, kwargs...)
+    return pX
+end
+function Random.rand(rng::AbstractRNG, M::AbstractManifold, T; vector_at=nothing, kwargs...)
+    if vector_at === nothing
+        pX = allocate_on(M, T)
+    else
+        pX = allocate_on(M, TangentSpaceType(), T)
+    end
+    rand!(rng, M, pX; vector_at=vector_at, kwargs...)
+    return pX
 end
 
 @doc "$(_doc_rand)"
@@ -997,6 +1020,12 @@ end
 
 #
 # Allocation hints - mainly pass-through, especially for power manifolds
+
+ManifoldsBase.allocate_on(G::LieGroup, T::Type) = ManifoldsBase.allocate_on(G.manifold, T)
+function ManifoldsBase.allocate_on(M::LieGroup, T::Type{<:AbstractArray})
+    return ManifoldsBase.allocate_on(M.manifold, T)
+end
+
 function ManifoldsBase.allocate_result(
     G::LieGroup,
     f::Union{typeof(compose),typeof(inv),typeof(conjugate),typeof(exp)},

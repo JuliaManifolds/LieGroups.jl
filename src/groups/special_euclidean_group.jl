@@ -102,6 +102,12 @@ struct SpecialEuclideanMatrixPoint{T} <: AbstractLieGroupPoint
     value::T
 end
 
+function ManifoldsBase.allocate_on(
+    M::SpecialEuclideanGroup, ::Type{SpecialEuclideanMatrixPoint}
+)
+    return SpecialEuclideanMatrixPoint(Matrix(undef, representation_size(M)...))
+end
+
 """
     SpecialEuclideanMatrixTVector <: AbstractLieGroupPoint
 
