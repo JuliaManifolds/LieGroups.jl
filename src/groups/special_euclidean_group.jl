@@ -323,10 +323,10 @@ function ManifoldsBase.exp!(
     X,
 )
     init_constants!(G, g)
-    Y = submanifold_component(M, X, :Rotation)
-    v = submanifold_component(M, X, :Translation)
-    R = submanifold_component(M, g, :Rotation)
-    t = submanifold_component(M, g, :Translation)
+    Y = submanifold_component(G, X, :Rotation)
+    v = submanifold_component(G, X, :Translation)
+    R = submanifold_component(G, g, :Rotation)
+    t = submanifold_component(G, g, :Translation)
     α = norm(Y) / sqrt(2) # skew symmetric, so the norm counts everything “twice” in the sqrt.
     SO2, T2 = _SOn_and_Tn(G)
     # (1) use the space of R to compute the U(α)
@@ -387,10 +387,10 @@ function ManifoldsBase.exp!(
     X,
 )
     init_constants!(G, g)
-    Y = submanifold_component(M, X, :Rotation)
-    v = submanifold_component(M, X, :Translation)
-    R = submanifold_component(M, g, :Rotation)
-    t = submanifold_component(M, g, :Translation)
+    Y = submanifold_component(G, X, :Rotation)
+    v = submanifold_component(G, X, :Translation)
+    R = submanifold_component(G, g, :Rotation)
+    t = submanifold_component(G, g, :Translation)
     α = norm(Y) / sqrt(2) # skew symmetric, so the norm counts everything “twice” in the sqrt.
     SO3, T3 = _SOn_and_Tn(G)
     # (1) use the space of R to compute the U(α)
@@ -594,10 +594,10 @@ function ManifoldsBase.log!(
     g,
 )
     init_constants!(LieAlgebra(G), X)
-    R = submanifold_component(M, g, :Rotation)
-    t = submanifold_component(M, g, :Translation)
-    Y = submanifold_component(M, X, :Rotation)
-    v = submanifold_component(M, X, :Translation)
+    R = submanifold_component(G, g, :Rotation)
+    t = submanifold_component(G, g, :Translation)
+    Y = submanifold_component(G, X, :Rotation)
+    v = submanifold_component(G, X, :Translation)
     SO2, T2 = _SOn_and_Tn(G)
     log!(SO2, Y, Identity(SO2), R)
     α = norm(Y) / sqrt(2) # skew symmetric, so the norm counts everything “twice” in the sqrt.
@@ -649,10 +649,10 @@ function ManifoldsBase.log!(
     g,
 )
     init_constants!(LieAlgebra(G), X)
-    R = submanifold_component(M, g, :Rotation)
-    t = submanifold_component(M, g, :Translation)
-    Y = submanifold_component(M, X, :Rotation)
-    v = submanifold_component(M, X, :Translation)
+    R = submanifold_component(G, g, :Rotation)
+    t = submanifold_component(G, g, :Translation)
+    Y = submanifold_component(G, X, :Rotation)
+    v = submanifold_component(G, X, :Translation)
     SO3, T3 = _SOn_and_Tn(G)
     log!(SO3, Y, Identity(SO3), R)
     α = norm(Y) / sqrt(2) # skew symmetric, so the norm counts everything “twice” in the sqrt.
