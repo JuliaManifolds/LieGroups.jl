@@ -4,6 +4,15 @@
 SpecialEuclideanGroup
 ```
 
+# Representation of points and tangent vectors
+
+```@docs
+SpecialEuclideanMatrixPoint
+SpecialEuclideanMatrixTVector
+SpecialEuclideanProductPoint
+SpecialEuclideanProductTVector
+```
+
 # Specific functions
 
 ```@autodocs

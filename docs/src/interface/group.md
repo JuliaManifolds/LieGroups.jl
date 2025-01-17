@@ -2,6 +2,8 @@
 
 ```@docs
 LieGroup
+AbstractLieAlgebraTVector
+AbstractLieGroupPoint
 ```
 
 ## Functions on Lie groups
@@ -10,6 +12,12 @@ LieGroup
 Modules = [LieGroups]
 Pages = ["src/interface.jl"]
 Order = [:function]
+```
+
+## Internal functions and macros
+
+```@docs
+LieGroups.@default_lie_group_fallbacks
 ```
 
 ## Literature

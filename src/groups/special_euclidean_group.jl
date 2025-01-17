@@ -284,7 +284,7 @@ _doc_exp_SE2_id = """
     exp(G::SpecialEuclidean, e, X)
     exp!(G::SpecialEuclideanG, e, g, X)
 
-Compute the Lie group exponential function on the [`SpecialEuclidean`](@ref) `G```=$(_math(:SE))(2)``,
+Compute the Lie group exponential function on the [`SpecialEuclideanGroup`](@ref) `G```=$(_math(:SE))(2)``,
 where `e` is the [`Identity`](@ref) on ``$(_math(:SE))(2)`` `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{2}}` for dispatch.
 
 Since ``X = (Ω, v) ∈ $(_math(:se))(2)`` consists of a rotation component ``Ω ∈ $(_math(:se))(2)`` and a translation component ``v ∈ $(_math(:t))(2)``,
@@ -347,7 +347,7 @@ _doc_exp_SE3_id = """
     exp(G::SpecialEuclidean, e, X)
     exp!(G::SpecialEuclideanG, e, g, X)
 
-Compute the Lie group exponential function on the [`SpecialEuclidean`](@ref) `G```=$(_math(:SE))(3)``,
+Compute the Lie group exponential function on the [`SpecialEuclideanGroup`](@ref) `G```=$(_math(:SE))(3)``,
 where `e` is the [`Identity`](@ref) on ``$(_math(:SE))(3)`` `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{3}}` for dispatch.
 
 Since ``X = (Ω, v) ∈ $(_math(:se))(3)`` consists of a rotation component ``Ω ∈ $(_math(:se))(3)`` and a translation component ``v ∈ $(_math(:t))(3)``,
@@ -452,8 +452,7 @@ The matrix representation of ``X∈$(_math(:se))(n)`` has a last row that contai
 
 this function sets these entries accordingly.
 
-Other representations like the [`CompoSpecialEuclideanProductPoint`](@ref) stay unchanged,
-which is also the default.
+Per default for other representations, this function does not change entries for them.
 """
 
 @doc "$(_doc_init_constants)"

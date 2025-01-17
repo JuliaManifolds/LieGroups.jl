@@ -105,6 +105,7 @@ export TranslationGroup
 export UnitaryGroup
 
 # Points and Tangent representations
+export AbstractLieGroupPoint, AbstractLieAlgebraTVector
 export SpecialEuclideanMatrixPoint, SpecialEuclideanMatrixTVector
 export SpecialEuclideanProductPoint, SpecialEuclideanProductTVector
 # Functions
