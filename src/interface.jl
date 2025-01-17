@@ -527,10 +527,6 @@ ManifoldsBase.get_vector!(G::LieGroup, X, g, c, B::ManifoldsBase.AbstractBasis)
     X = zero_vector(G, Identity(G))
     return get_vector_lie!(G, X, g, c, N)
 end
-@inline function get_vector_lie(G::LieGroup, g, c, N)
-    X = zero_vector(G, Identity(G))
-    return get_vector_lie!(G, X, g, c, N)
-end
 @inline function get_vector_lie(G::LieGroup, g, c, N, T::Type)
     X = zero_vector(G, Identity(G), T)
     return get_vector_lie!(G, X, g, c, N)
@@ -908,7 +904,7 @@ Random.rand(::LieGroup; kwargs...)
 
 # New in LIeGroups – maybe move to ManifoldsBase at some point
 @doc "$(_doc_rand)"
-function rand(G::LieGroup, T::Type; vector_at=nothing, kwargs...)
+function Random.rand(G::LieGroup, T::Type; vector_at=nothing, kwargs...)
     # TODO conitnue here and allocate the right thing.
 end
 

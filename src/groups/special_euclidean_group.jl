@@ -272,42 +272,142 @@ function _compose!(
     return k
 end
 
-#
-#
-# We overwrite the `submanifold_component` a bit different, since they are not ordered
-# as (1) and (2) but more semantically as :Rotation and :Translation, we also use that here
+_doc_exp_SE2_id = """
+    exp(G::SpecialEuclidean, e, X)
+    exp!(G::SpecialEuclideanG, e, g, X)
 
-@inline function ManifoldsBase.submanifold_component(G::SpecialEuclideanGroup, g, s::Symbol)
-    return ManifoldsBase.submanifold_component(G, g, Val(s))
-end
-Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
-    G::SpecialEuclideanGroup, p, ::Val{:Rotation}
+Compute the Lie group exponential function on the [`SpecialEuclidean`](@ref) `G```=$(_math(:SE))(2)``,
+where `e` is the [`Identity`](@ref) on ``$(_math(:SE))(2)`` `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{2}}` for dispatch.
+
+Since ``X = (Ω, v) ∈ $(_math(:se))(2)`` consists of a rotation component ``Ω ∈ $(_math(:se))(2)`` and a translation component ``v ∈ $(_math(:t))(2)``,
+we can use [`vee`](@ref) on ``$(_math(:SO))(2)`` to obtain the angle of rotation ``α`` (or alternatively that ``$(_tex(:sqrt,2))α = $(_tex(:norm, "Ω"))``
+
+For ``α ≠ 0`` define
+```math
+U_α = $(_tex(:frac, _tex(:sin)*"α", "α"))I_2 + $(_tex(:frac, "1-$(_tex(:cos))α", "α^2"))Ω,
+```
+and ``U_0 = I_2``, where ``I_2`` is the identity matrix.
+
+Then the result ``g=(R,t)`` is given by
+```math
+R = $(_tex(:exp))_{$(_math(:SO))(2)}Ω ∈ $(_math(:SO))(2),
+$(_tex(:quad))
+$(_tex(:text, " and "))
+$(_tex(:quad))
+t = U_αv ∈ $(_math(:T))(2).
+```
+
+This result can be computed in-place of `g`.
+"""
+
+@doc "$(_doc_exp_SE2_id)"
+ManifoldsBase.exp(
+    ::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
+    ::Identity{SpecialEuclideanOperation},
+    ::Any,
 )
-    n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
-    return view(p, 1:n, 1:n)
+
+@doc "$(_doc_exp_SE2_id)"
+function ManifoldsBase.exp!(
+    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
+    g,
+    ::Identity{SpecialEuclideanOperation},
+    X,
+)
+    Ω = submanifold_component(M, X, :Rotation)
+    v = submanifold_component(M, X, :Translation)
+    R = submanifold_component(M, g, :Rotation)
+    t = submanifold_component(M, g, :Translation)
+    α = norm(Ω) / sqrt(2) # skew symmetric, so the norm counts everything “twice” in the sqrt.
+    SO2, T2 = _SOn_and_Tn(G)
+    # (1) use the space of R to compute the U(α)
+    if α ≈ 0
+        copyto!(T2, t, v) # U(α) is the identity
+    else
+        copyto!(R, LinearAlgebra.I)
+        R .*= (sin(α) / α)
+        R .+= (1 - cos(α)) / α^2 .* Ω
+        copyto!(T2, t, R * v)
+    end
+    # compute exp(Ω) in-place of R
+    exp!(SO2, R, Identity(SO2), Ω)
+    return g
 end
-Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
+
+_doc_exp_SE3_id = """
+    exp(G::SpecialEuclidean, e, X)
+    exp!(G::SpecialEuclideanG, e, g, X)
+
+Compute the Lie group exponential function on the [`SpecialEuclidean`](@ref) `G```=$(_math(:SE))(3)``,
+where `e` is the [`Identity`](@ref) on ``$(_math(:SE))(3)`` `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{3}}` for dispatch.
+
+Since ``X = (Ω, v) ∈ $(_math(:se))(3)`` consists of a rotation component ``Ω ∈ $(_math(:se))(3)`` and a translation component ``v ∈ $(_math(:t))(3)``,
+we can use [`vee`](@ref) on ``$(_math(:SO))(3)`` computing the coefficients norm to obtain the angle of rotation ``α``
+(or alternatively that ``$(_tex(:sqrt,2))α = $(_tex(:norm, "Ω"))``.
+
+For ``α ≠ 0`` define
+```math
+U_α = I_3 + $(_tex(:frac, "1-$(_tex(:cos))α", "α^2"))Ω + $(_tex(:frac, "α-$(_tex(:sin))α", "α^3"))Ω^2,
+```
+and ``U_0 = I_3``, where ``I_2`` is the identity matrix.
+
+Then the result ``g=(R,t)`` is given by
+```math
+R = $(_tex(:exp))_{$(_math(:SO))(3)}Ω ∈ $(_math(:SO))(3),
+$(_tex(:quad))
+$(_tex(:text, " and "))
+$(_tex(:quad))
+t = U_αv ∈ $(_math(:T))(3).
+```
+
+This result can be computed in-place of `g`.
+"""
+
+@doc "$(_doc_exp_SE3_id)"
+ManifoldsBase.exp(
+    ::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
+    ::Identity{SpecialEuclideanOperation},
+    ::Any,
+)
+
+@doc "$(_doc_exp_SE3_id)"
+function ManifoldsBase.exp!(
+    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
+    g,
+    ::Identity{SpecialEuclideanOperation},
+    X,
+)
+    Ω = submanifold_component(M, X, :Rotation)
+    v = submanifold_component(M, X, :Translation)
+    R = submanifold_component(M, g, :Rotation)
+    t = submanifold_component(M, g, :Translation)
+    α = norm(Ω) / sqrt(2) # skew symmetric, so the norm counts everything “twice” in the sqrt.
+    SO3, T3 = _SOn_and_Tn(G)
+    # (1) use the space of R to compute the U(α)
+    if α ≈ 0
+        copyto!(T3, t, v) # U(α) is the identity
+    else
+        copyto!(R, LinearAlgebra.I)
+        R .+= ((1 - cos(α)) / α^2) .* Ω
+        R .+= ((α - sin(α)) / α^3) .* Ω^2
+        copyto!(T3, t, R * v)
+    end
+    # compute exp(Ω) in-place of R
+    exp!(SO3, R, Identity(SO3), Ω)
+    return g
+end
+
+function ManifoldsBase.exp!(
     G::SpecialEuclideanGroup,
-    p::Union{SpecialEuclideanMatrixPoint,SpecialEuclideanMatrixTVector},
-    ::Val{:Translation},
+    g::AbstractMatrix,
+    ::Identity{SpecialEuclideanOperation},
+    X::AbstractMatrix,
 )
-    n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
-    return view(p.value, 1:n, n + 1)
+    copyto!(g, exp(X))
+    return g
 end
-Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
-    G::SpecialEuclideanGroup,
-    p::Union{SpecialEuclideanMatrixPoint,SpecialEuclideanMatrixTVector},
-    ::Val{:Rotation},
-)
-    n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
-    return view(p.value, 1:n, 1:n)
-end
-Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
-    G::SpecialEuclideanGroup, p, ::Val{:Translation}
-)
-    n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
-    return view(p, 1:n, n + 1)
-end
+# Do something similar for the component case?
+
 function identity_element(G::SpecialEuclideanGroup)
     return identity_element(G, AbstractMatrix)
 end
@@ -459,4 +559,41 @@ end
 function Base.show(io::IO, G::RightSpecialEuclideanGroup)
     size = Manifolds.get_parameter(G.manifold[1].size)[1]
     return print(io, "SpecialEuclideanGroup($(size); variant=:right)")
+end
+
+#
+#
+# We overwrite the `submanifold_component` a bit different, since they are not ordered
+# as (1) and (2) but more semantically as :Rotation and :Translation, we also use that here
+
+@inline function ManifoldsBase.submanifold_component(G::SpecialEuclideanGroup, g, s::Symbol)
+    return ManifoldsBase.submanifold_component(G, g, Val(s))
+end
+Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
+    G::SpecialEuclideanGroup, p, ::Val{:Rotation}
+)
+    n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
+    return view(p, 1:n, 1:n)
+end
+Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
+    G::SpecialEuclideanGroup,
+    p::Union{SpecialEuclideanMatrixPoint,SpecialEuclideanMatrixTVector},
+    ::Val{:Translation},
+)
+    n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
+    return view(p.value, 1:n, n + 1)
+end
+Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
+    G::SpecialEuclideanGroup,
+    p::Union{SpecialEuclideanMatrixPoint,SpecialEuclideanMatrixTVector},
+    ::Val{:Rotation},
+)
+    n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
+    return view(p.value, 1:n, 1:n)
+end
+Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
+    G::SpecialEuclideanGroup, p, ::Val{:Translation}
+)
+    n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
+    return view(p, 1:n, n + 1)
 end
