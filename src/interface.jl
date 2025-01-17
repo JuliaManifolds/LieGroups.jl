@@ -405,14 +405,25 @@ Implementing the Lie group exponential function introduces a default implementat
 """
 
 @doc "$_doc_exp"
-function ManifoldsBase.exp(G::LieGroup, g, X, t::Number=1)
+function ManifoldsBase.exp(G::LieGroup, g, X, t::Number)
     h = allocate_result(G, exp, g)
     exp!(G, h, g, X, t)
+    return h
+end
+function ManifoldsBase.exp(G::LieGroup, g, X)
+    h = allocate_result(G, exp, g)
+    exp!(G, h, g, X)
     return h
 end
 
 @doc "$_doc_exp"
 function ManifoldsBase.exp!(G::LieGroup, h, g, X)
+    exp!(G, h, Identity(G), X)
+    compose!(G, h, g, h)
+    return h
+end
+
+function ManifoldsBase.exp!(G::LieGroup, h, g, X, t::Number)
     exp!(G, h, Identity(G), X, t)
     compose!(G, h, g, h)
     return h
@@ -918,8 +929,8 @@ Random.rand(G::LieGroup, T::Type; vector_at=nothing, kwargs...)
 function Random.rand(M::LieGroup, T::Type, d::Integer; kwargs...)
     return [rand(M, T; kwargs...) for _ in 1:d]
 end
-function Random.rand(rng::AbstractRNG, M::LieGroup, T::Type, d::Integer; kwargs...)
-    return [rand(rng, M, T; kwargs...) for _ in 1:d]
+function Random.rand(rng::AbstractRNG, G::LieGroup, T::Type, d::Integer; kwargs...)
+    return [rand(rng, G, T; kwargs...) for _ in 1:d]
 end
 function Random.rand(G::LieGroup, d::Integer; kwargs...)
     return [rand(M; kwargs...) for _ in 1:d]
@@ -948,12 +959,14 @@ function Random.rand!(G::LieGroup, pX; kwargs...)
     return rand!(Random.default_rng(), G, pX; kwargs...)
 end
 
-function Random.rand!(rng::AbstractRNG, G::LieGroup, pX; vector_at=nothing, kwargs...)
+function Random.rand!(
+    rng::AbstractRNG, G::LieGroup, pX::T; vector_at=nothing, kwargs...
+) where {T}
     M = base_manifold(G)
     if vector_at === nothing # for points -> pass to manifold
         rand!(rng, M, pX, kwargs...)
     else # for tangent vectors -> materialize identity, pass to tangent space there.
-        rand!(rng, M, pX; vector_at=identity_element(G), kwargs...)
+        rand!(rng, M, pX; vector_at=identity_element(G, T), kwargs...)
     end
 end
 

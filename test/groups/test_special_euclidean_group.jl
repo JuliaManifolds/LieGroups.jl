@@ -7,7 +7,7 @@ using LieGroupsTestSuite
 @testset "Special Euclidean" begin
     G = SpecialEuclideanGroup(2)
     g1 = 1 / sqrt(2) .* [1.0 1.0 sqrt(2); -1.0 1.0 0.0; 0.0 0.0 sqrt(2)]
-    g2 = 1 / sqrt(2) .* [0.0 -1.0 0.0; 1.0 0.0 1.0; 0.0 0.0 1.0]
+    g2 = [0.0 -1.0 0.0; 1.0 0.0 1.0; 0.0 0.0 1.0]
     g3 = [1.0 0.0 1.0; 0.0 1.0 1.0; 0.0 0.0 1.0]
     X1 = [0.0 -0.23 0.0; 0.23 0.0 1.0; 0.0 0.0 0.0]
     X2 = [0.0 0.30 1.0; -0.20 0.0 1.0; 0.0 0.0 0.0]
@@ -30,9 +30,9 @@ using LieGroupsTestSuite
             inv,
             # inv_left_compose,
             # inv_right_compose,
-            # is_identity,
+            is_identity,
             # lie_bracket,
-            # log,
+            log,
             rand,
             show,
             vee,
@@ -72,10 +72,10 @@ using LieGroupsTestSuite
             inv,
             # inv_left_compose,
             # inv_right_compose,
-            # is_identity,
+            is_identity,
             # lie_bracket,
-            # log,
-            # rand, TODO: introduce rand(G, T)
+            log,
+            rand,
             show,
             vee,
         ],
@@ -106,7 +106,7 @@ using LieGroupsTestSuite
         :Functions => [
             # adjoint,
             compose,
-            # conjugate,
+            conjugate,
             # diff_inv,
             # diff_left_compose,
             # diff_right_compose,
@@ -116,10 +116,10 @@ using LieGroupsTestSuite
             inv,
             # inv_left_compose,
             # inv_right_compose,
-            # is_identity,
+            is_identity,
             # lie_bracket,
-            # log,
-            # rand, TODO: introduce rand(G, T)
+            log,
+            rand,
             show,
             vee,
         ],

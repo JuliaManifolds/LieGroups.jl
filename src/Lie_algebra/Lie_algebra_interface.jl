@@ -152,7 +152,13 @@ function ManifoldsBase.zero_vector(𝔤::LieAlgebra)
     # pass to manifold directly
     return ManifoldsBase.zero_vector(𝔤.manifold.manifold, identity_element(𝔤.manifold))
 end
-function ManifoldsBase.zero_vector!(𝔤::LieAlgebra, X)
+function ManifoldsBase.zero_vector(𝔤::LieAlgebra, ::T) where {T}
+    # pass to Lie group
+    return ManifoldsBase.zero_vector(𝔤.manifold, identity_element(𝔤.manifold, T))
+end
+function ManifoldsBase.zero_vector!(𝔤::LieAlgebra, X::T) where {T}
     # pass to manifold directly
-    return ManifoldsBase.zero_vector!(𝔤.manifold.manifold, X, identity_element(𝔤.manifold))
+    return ManifoldsBase.zero_vector!(
+        𝔤.manifold.manifold, X, identity_element(𝔤.manifold, T)
+    )
 end

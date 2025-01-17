@@ -317,7 +317,7 @@ ManifoldsBase.exp(
 
 @doc "$(_doc_exp_SE2_id)"
 function ManifoldsBase.exp!(
-    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
+    G::SpecialEuclideanGroup{<:ManifoldsBase.TypeParameter{Tuple{2}}},
     g,
     ::Identity{<:SpecialEuclideanOperation},
     X,
@@ -375,7 +375,7 @@ This result can be computed in-place of `g`.
 @doc "$(_doc_exp_SE3_id)"
 ManifoldsBase.exp(
     ::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
-    ::Identity{SpecialEuclideanOperation},
+    ::Identity{<:SpecialEuclideanOperation},
     ::Any,
 )
 
@@ -383,7 +383,7 @@ ManifoldsBase.exp(
 function ManifoldsBase.exp!(
     G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
     g,
-    ::Identity{SpecialEuclideanOperation},
+    ::Identity{<:SpecialEuclideanOperation},
     X,
 )
     init_constants!(G, g)
@@ -408,11 +408,12 @@ function ManifoldsBase.exp!(
 end
 
 function ManifoldsBase.exp!(
-    G::SpecialEuclideanGroup,
+    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{n}}},
     g::AbstractMatrix,
-    ::Identity{SpecialEuclideanOperation},
-    X::AbstractMatrix,
-)
+    ::Identity{<:SpecialEuclideanOperation},
+    X;
+    AbstractMatrix,
+) where {n}
     copyto!(g, exp(X))
     return g
 end
@@ -582,7 +583,7 @@ This result can be computed in-place of `g`.
 @doc "$(_doc_log_SE2_id)"
 ManifoldsBase.log(
     ::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
-    ::Identity{SpecialEuclideanOperation},
+    ::Identity{<:SpecialEuclideanOperation},
     ::Any,
 )
 
@@ -590,7 +591,7 @@ ManifoldsBase.log(
 function ManifoldsBase.log!(
     G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
     X,
-    ::Identity{SpecialEuclideanOperation},
+    ::Identity{<:SpecialEuclideanOperation},
     g,
 )
     init_constants!(LieAlgebra(G), X)
@@ -637,7 +638,7 @@ This result can be computed in-place of `g`.
 @doc "$(_doc_log_SE3_id)"
 ManifoldsBase.log(
     ::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
-    ::Identity{SpecialEuclideanOperation},
+    ::Identity{<:SpecialEuclideanOperation},
     ::Any,
 )
 
@@ -645,7 +646,7 @@ ManifoldsBase.log(
 function ManifoldsBase.log!(
     G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
     X,
-    ::Identity{SpecialEuclideanOperation},
+    ::Identity{<:SpecialEuclideanOperation},
     g,
 )
     init_constants!(LieAlgebra(G), X)
@@ -669,7 +670,7 @@ end
 function ManifoldsBase.log!(
     ::SpecialEuclideanGroup,
     X::AbstractMatrix,
-    ::Identity{SpecialEuclideanOperation},
+    ::Identity{<:SpecialEuclideanOperation},
     g::AbstractMatrix,
 )
     copyto!(X, log(g))
