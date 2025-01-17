@@ -143,7 +143,7 @@ end
 end
 
 _doc_adjoint = """
-    adjoint(G::LieGroup, g X)
+    adjoint(G::LieGroup, g, X)
     adjoint!(G::LieGroup, Y, g, X)
 
 Compute the adjoint ``$(_math(:Ad))(g): $(_math(:𝔤)) → $(_math(:𝔤))``, which is defined as
@@ -1015,4 +1015,27 @@ function ManifoldsBase.allocate_result(
 )
     # both get a type allocated like rand
     return ManifoldsBase.allocate_result(G.manifold, rand)
+end
+
+# fallback macro
+
+"""
+    default_lie_group_fallbacks(TG, TP, TV, pfield::Symbol, vfield::Symbol)
+
+Introduce default fallbacks for all basic functions on Lie groups, for Lie group of type `TG`,
+points of type `TP`, tangent vectors of type `TV`, with forwarding to fields `pfield` and
+`vfield` for point and tangent vector functions, respectively.
+"""
+macro default_lie_group_fallbacks(TG, TP, TV, pfield::Symbol, vfield::Symbol)
+    block = quote
+        function LieGroups.adjoint(M::$TG, g::$TP, X::$TV)
+            return LieGroups.adjoint(M, g.$pfield, X.$vfield)
+        end
+
+        function LieGroups.adjoint!(M::$TM, Y::$TV, g::$TP, X::$TV)
+            LieGroups.adjoint!(M, Y.$vfield, g.$pfield, X.$vfield)
+            return Y
+        end
+    end
+    return esc(block)
 end

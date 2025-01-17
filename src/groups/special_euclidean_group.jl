@@ -123,6 +123,8 @@ ManifoldsBase.@manifold_element_forwards SpecialEuclideanMatrixPoint value
 ManifoldsBase.@manifold_vector_forwards SpecialEuclideanMatrixTVector value
 ManifoldsBase.@default_manifold_fallbacks SpecialEuclideanGroup SpecialEuclideanMatrixPoint SpecialEuclideanMatrixTVector value value
 
+@default_lie_group_fallbacks SpecialEuclideanGroup SpecialEuclideanMatrixPoint SpecialEuclideanMatrixTVector value value
+
 """
     SpecialEuclideanProductPoint <: AbstractLieGroupPoint
 
