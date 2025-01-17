@@ -412,7 +412,7 @@ function ManifoldsBase.exp(G::LieGroup, g, X, t::Number=1)
 end
 
 @doc "$_doc_exp"
-function ManifoldsBase.exp!(G::LieGroup, h, g, X, t::Number=1)
+function ManifoldsBase.exp!(G::LieGroup, h, g, X)
     exp!(G, h, Identity(G), X, t)
     compose!(G, h, g, h)
     return h
