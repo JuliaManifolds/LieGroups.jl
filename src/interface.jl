@@ -885,9 +885,10 @@ end
 
 _doc_rand = """
     rand(::LieGroup; vector_at=nothing, σ::Real=1.0, kwargs...)
-    rand(::LieAlgebra; σ::Real=1.0, kwargs...)
-    rand!(::LieGroup, gX; vector_at=nothing, σ::Real=1.0, kwargs...)
-    rand!(::LieAlgebra, X; σ::Real=1.0, kwargs...)
+    rand(::LieGroup, PT::Type; vector_at=nothing, σ::Real=1.0, kwargs...)
+    rand!(::LieAlgebra, T::Type; σ::Real=1.0, kwargs...)
+    rand!(::LieGroup, gX::PT; vector_at=nothing, σ::Real=1.0, kwargs...)
+    rand!(::LieAlgebra, X::T; σ::Real=1.0, kwargs...)
 
 Compute a random point or tangent vector on a Lie group.
 
@@ -896,10 +897,20 @@ underlying manifold itself.
 
 For tangent vectors, an element in the Lie Algebra is generated,
 see also [`rand(::LieAlgebra; kwargs...)`](@ref)
+
+For both cases, you can provide the type ``T`` for the tangent vector and/or point ``PT``,
+if you want to generate a random point in a certain representation.
+For the in-place variants the type is inferred from `pX´ and `X`, respectively.
 """
 
 @doc "$(_doc_rand)"
 Random.rand(::LieGroup; kwargs...)
+
+# New in LIeGroups – maybe move to ManifoldsBase at some point
+@doc "$(_doc_rand)"
+function rand(G::LieGroup, T::Type; vector_at=nothing, kwargs...)
+    # TODO conitnue here and allocate the right thing.
+end
 
 @doc "$(_doc_rand)"
 function Random.rand!(G::LieGroup, pX; kwargs...)
@@ -958,11 +969,13 @@ function vee!(G::LieGroup{𝔽}, c, X) where {𝔽}
 end
 
 """
+    zero_vector(G::LieGroup, e::Identity)
     zero_vector(G::LieGroup, e::Identity, T::Type)
 
 Generate a $(_link(:zero_vector)) of type `T` in the [`LieAlgebra`](@ref) ``𝔤`` of
 the [`LieGroup`](@ref) `G` of type `T`.
-By default this calls `zero_vector(G, e)`
+By default this calls `zero_vector(G, e)` which should implement a generic variant suitable for
+the usually expected types
 
 Note that for the in-place variant `zero_vector!(G, X::T, e)` the type can be inferred by `X`.
 """
