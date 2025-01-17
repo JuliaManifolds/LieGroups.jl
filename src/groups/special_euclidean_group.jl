@@ -408,11 +408,7 @@ function ManifoldsBase.exp!(
 end
 
 function ManifoldsBase.exp!(
-    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{n}}},
-    g::AbstractMatrix,
-    ::Identity{<:SpecialEuclideanOperation},
-    X;
-    AbstractMatrix,
+    G::SpecialEuclideanGroup, g, ::Identity{<:SpecialEuclideanOperation}, X; AbstractMatrix
 ) where {n}
     copyto!(g, exp(X))
     return g
@@ -668,10 +664,7 @@ function ManifoldsBase.log!(
 end
 
 function ManifoldsBase.log!(
-    ::SpecialEuclideanGroup,
-    X::AbstractMatrix,
-    ::Identity{<:SpecialEuclideanOperation},
-    g::AbstractMatrix,
+    ::SpecialEuclideanGroup, X, ::Identity{<:SpecialEuclideanOperation}, g
 )
     copyto!(X, log(g))
     return X
@@ -781,7 +774,7 @@ Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
 end
 
 function ManifoldsBase.zero_vector(
-    G::SpecialEuclidean, ::Identity{<:SpecialEuclideanOperation}
+    G::SpecialEuclideanGroup, ::Identity{<:SpecialEuclideanOperation}
 )
     n = Manifolds.get_parameter(G.manifold[1].size)[1]
     return zeros(n + 1, n + 1)
