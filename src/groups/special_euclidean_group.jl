@@ -287,18 +287,18 @@ _doc_exp_SE2_id = """
 Compute the Lie group exponential function on the [`SpecialEuclideanGroup`](@ref) `G```=$(_math(:SE))(2)``,
 where `e` is the [`Identity`](@ref) on ``$(_math(:SE))(2)`` `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{2}}` for dispatch.
 
-Since ``X = (Ω, v) ∈ $(_math(:se))(2)`` consists of a rotation component ``Ω ∈ $(_math(:se))(2)`` and a translation component ``v ∈ $(_math(:t))(2)``,
-we can use [`vee`](@ref) on ``$(_math(:SO))(2)`` to obtain the angle of rotation ``α`` (or alternatively that ``$(_tex(:sqrt,2))α = $(_tex(:norm, "Ω"))``
+Since ``X = (Y, v) ∈ $(_math(:se))(2)`` consists of a rotation component ``Y ∈ $(_math(:so))(2)`` and a translation component ``v ∈ $(_math(:t))(2)``,
+we can use [`vee`](@ref) on ``$(_math(:SO))(2)`` to obtain the angle of rotation ``α`` (or alternatively that ``$(_tex(:sqrt,2))α = $(_tex(:norm, "Y"))``
 
 For ``α ≠ 0`` define
 ```math
-U_α = $(_tex(:frac, _tex(:sin)*"α", "α"))I_2 + $(_tex(:frac, "1-$(_tex(:cos))α", "α^2"))Ω,
+U_α = $(_tex(:frac, _tex(:sin)*"α", "α"))I_2 + $(_tex(:frac, "1-$(_tex(:cos))α", "α^2"))Y,
 ```
 and ``U_0 = I_2``, where ``I_2`` is the identity matrix.
 
 Then the result ``g=(R,t)`` is given by
 ```math
-R = $(_tex(:exp))_{$(_math(:SO))(2)}Ω ∈ $(_math(:SO))(2),
+R = $(_tex(:exp))_{$(_math(:SO))(2)}Y ∈ $(_math(:SO))(2),
 $(_tex(:quad))
 $(_tex(:text, " and "))
 $(_tex(:quad))
@@ -311,7 +311,7 @@ This result can be computed in-place of `g`.
 @doc "$(_doc_exp_SE2_id)"
 ManifoldsBase.exp(
     ::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
-    ::Identity{SpecialEuclideanOperation},
+    ::Identity{<:SpecialEuclideanOperation},
     ::Any,
 )
 
@@ -319,15 +319,15 @@ ManifoldsBase.exp(
 function ManifoldsBase.exp!(
     G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
     g,
-    ::Identity{SpecialEuclideanOperation},
+    ::Identity{<:SpecialEuclideanOperation},
     X,
 )
     init_constants!(G, g)
-    Ω = submanifold_component(M, X, :Rotation)
+    Y = submanifold_component(M, X, :Rotation)
     v = submanifold_component(M, X, :Translation)
     R = submanifold_component(M, g, :Rotation)
     t = submanifold_component(M, g, :Translation)
-    α = norm(Ω) / sqrt(2) # skew symmetric, so the norm counts everything “twice” in the sqrt.
+    α = norm(Y) / sqrt(2) # skew symmetric, so the norm counts everything “twice” in the sqrt.
     SO2, T2 = _SOn_and_Tn(G)
     # (1) use the space of R to compute the U(α)
     if α ≈ 0
@@ -335,11 +335,11 @@ function ManifoldsBase.exp!(
     else
         copyto!(R, LinearAlgebra.I)
         R .*= (sin(α) / α)
-        R .+= (1 - cos(α)) / α^2 .* Ω
+        R .+= (1 - cos(α)) / α^2 .* Y
         copyto!(T2, t, R * v)
     end
-    # compute exp(Ω) in-place of R
-    exp!(SO2, R, Identity(SO2), Ω)
+    # compute exp(Y) in-place of R
+    exp!(SO2, R, Identity(SO2), Y)
     return g
 end
 
@@ -350,19 +350,19 @@ _doc_exp_SE3_id = """
 Compute the Lie group exponential function on the [`SpecialEuclideanGroup`](@ref) `G```=$(_math(:SE))(3)``,
 where `e` is the [`Identity`](@ref) on ``$(_math(:SE))(3)`` `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{3}}` for dispatch.
 
-Since ``X = (Ω, v) ∈ $(_math(:se))(3)`` consists of a rotation component ``Ω ∈ $(_math(:se))(3)`` and a translation component ``v ∈ $(_math(:t))(3)``,
+Since ``X = (Y, v) ∈ $(_math(:se))(3)`` consists of a rotation component ``Y ∈ $(_math(:se))(3)`` and a translation component ``v ∈ $(_math(:t))(3)``,
 we can use [`vee`](@ref) on ``$(_math(:SO))(3)`` computing the coefficients norm to obtain the angle of rotation ``α``
-(or alternatively that ``$(_tex(:sqrt,2))α = $(_tex(:norm, "Ω"))``.
+(or alternatively that ``$(_tex(:sqrt,2))α = $(_tex(:norm, "Y"))``.
 
 For ``α ≠ 0`` define
 ```math
-U_α = I_3 + $(_tex(:frac, "1-$(_tex(:cos))α", "α^2"))Ω + $(_tex(:frac, "α-$(_tex(:sin))α", "α^3"))Ω^2,
+U_α = I_3 + $(_tex(:frac, "1-$(_tex(:cos))α", "α^2"))Y + $(_tex(:frac, "α-$(_tex(:sin))α", "α^3"))Y^2,
 ```
 and ``U_0 = I_3``, where ``I_2`` is the identity matrix.
 
 Then the result ``g=(R,t)`` is given by
 ```math
-R = $(_tex(:exp))_{$(_math(:SO))(3)}Ω ∈ $(_math(:SO))(3),
+R = $(_tex(:exp))_{$(_math(:SO))(3)}Y ∈ $(_math(:SO))(3),
 $(_tex(:quad))
 $(_tex(:text, " and "))
 $(_tex(:quad))
@@ -387,23 +387,23 @@ function ManifoldsBase.exp!(
     X,
 )
     init_constants!(G, g)
-    Ω = submanifold_component(M, X, :Rotation)
+    Y = submanifold_component(M, X, :Rotation)
     v = submanifold_component(M, X, :Translation)
     R = submanifold_component(M, g, :Rotation)
     t = submanifold_component(M, g, :Translation)
-    α = norm(Ω) / sqrt(2) # skew symmetric, so the norm counts everything “twice” in the sqrt.
+    α = norm(Y) / sqrt(2) # skew symmetric, so the norm counts everything “twice” in the sqrt.
     SO3, T3 = _SOn_and_Tn(G)
     # (1) use the space of R to compute the U(α)
     if α ≈ 0
         copyto!(T3, t, v) # U(α) is the identity
     else
         copyto!(R, LinearAlgebra.I)
-        R .+= ((1 - cos(α)) / α^2) .* Ω
-        R .+= ((α - sin(α)) / α^3) .* Ω^2
+        R .+= ((1 - cos(α)) / α^2) .* Y
+        R .+= ((α - sin(α)) / α^3) .* Y^2
         copyto!(T3, t, R * v)
     end
-    # compute exp(Ω) in-place of R
-    exp!(SO3, R, Identity(SO3), Ω)
+    # compute exp(Y) in-place of R
+    exp!(SO3, R, Identity(SO3), Y)
     return g
 end
 
@@ -443,7 +443,7 @@ _doc_init_constants = """
     init_constants!(G::SpecialEuclidean, g)
     init_Constants!(𝔰𝔢::LieAlgebra{𝔽, SpecialEuclideanOperation, SpecialEuclidean}, X)
 
-Initliase the constant elements of `g` or `X`.
+Initalize the constant elements of `g` or `X`.
 
 The matrix representation of ``g∈$(_math(:SE))(n)`` has a last row,
 that contains zeros, besides the diagonal element, which is ``g_{n+1,n+1} = 1``.
@@ -552,6 +552,128 @@ end
 
 function is_identity(G::SpecialEuclideanGroup, g::AbstractMatrix; kwargs...)
     return isapprox(g, identity_element(G); kwargs...)
+end
+
+_doc_log_SE2_id = """
+    log(G::SpecialEuclidean, e, g)
+    log!(G::SpecialEuclidean, X, e, g)
+
+Compute the Lie group logarithm function on the [`SpecialEuclideanGroup`](@ref) `G```=$(_math(:SE))(2)``,
+where `e` is the [`Identity`](@ref) on ``$(_math(:SE))(2)`` `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{2}}` for dispatch.
+
+Since ``g=(R,t) ∈ $(_math(:SE))(2)`` consists of a rotation component ``R ∈ $(_math(:SO))(2)`` and a translation component ``t ∈ $(_math(:T))(2)``,
+we first compute ``Y = $(_tex(:log))_{$(_math(:SO))(2)}R``.
+Then we can use [`vee`](@ref) on ``$(_math(:SO))(2)`` to obtain the angle of rotation ``α`` (or alternatively that ``$(_tex(:sqrt,2))α = $(_tex(:norm, "Y"))``
+
+For ``α ≠ 0`` define
+```math
+V_α = $(_tex(:frac, "α", "2")) $(_tex(:pmatrix, "$(_tex(:frac, _tex(:sin)*"α", "1-$(_tex(:cos))α")) & 1", "-1 & $(_tex(:frac, _tex(:sin)*"α", "1-$(_tex(:cos))α"))"))
+```
+and ``V_0 = I_2``, where ``I_2`` is the identity matrix. Note that this is the inverse of ``U_α`` as given in the group exponential
+
+Then the result ``X = (Y, v) ∈ $(_math(:se))(2)`` is given by ``Y ∈ $(_math(:so))(2)`` as computed above and
+v = V_αr ∈ $(_math(:T))(2),
+```
+where ``v`` is computed in-place without setting up ``V_α``
+
+This result can be computed in-place of `g`.
+"""
+
+@doc "$(_doc_log_SE2_id)"
+ManifoldsBase.log(
+    ::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
+    ::Identity{SpecialEuclideanOperation},
+    ::Any,
+)
+
+@doc "$(_doc_log_SE2_id)"
+function ManifoldsBase.log!(
+    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
+    X,
+    ::Identity{SpecialEuclideanOperation},
+    g,
+)
+    init_constants!(LieAlgebra(G), X)
+    R = submanifold_component(M, g, :Rotation)
+    t = submanifold_component(M, g, :Translation)
+    Y = submanifold_component(M, X, :Rotation)
+    v = submanifold_component(M, X, :Translation)
+    SO2, T2 = _SOn_and_Tn(G)
+    log!(SO2, Y, Identity(SO2), R)
+    α = norm(Y) / sqrt(2) # skew symmetric, so the norm counts everything “twice” in the sqrt.
+    if α ≈ 0
+        copyto!(T2, t, v) # U(α) is the identity
+    else
+        β = α / 2 * sin(α) / (1 - cos(α))
+        v[1] = β * t[1] + α / 2 * t[2]
+        v[2] = -α / 2 * t[1] + β * t[2]
+    end
+    return X
+end
+
+_doc_log_SE3_id = """
+    log(G::SpecialEuclidean, e, g)
+    log!(G::SpecialEuclidean, X, e, g)
+
+Compute the Lie group logarithm function on the [`SpecialEuclideanGroup`](@ref) `G```=$(_math(:SE))(3)``,
+where `e` is the [`Identity`](@ref) on ``$(_math(:SE))(3)`` `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{3}}` for dispatch.
+
+Since ``g=(R,t) ∈ $(_math(:SE))(3)`` consists of a rotation component ``R ∈ $(_math(:SO))(3)`` and a translation component ``t ∈ $(_math(:T))(2)``,
+we first compute ``Y = $(_tex(:log))_{$(_math(:SO))(3)}R``.
+Then we can use [`vee`](@ref) on ``$(_math(:SO))(3)`` to obtain the angle of rotation ``α`` (or alternatively that ``$(_tex(:sqrt,2))α = $(_tex(:norm, "Y"))``
+
+For ``α ≠ 0`` define
+```math
+V_α = I_3 - $(_tex(:frac, "1", "2"))Y + β Y^2, $(_tex(:quad))$(_tex(:text," where")) β = $(_tex(:frac, "1","α^2")) - $(_tex(:frac, "1 + $(_tex(:cos))(α)", "2α$(_tex(:sin))(α)"))
+```
+and ``V_0 = I_3``, where ``I_3`` is the identity matrix. Note that this is the inverse of ``U_α`` as given in the group exponential
+
+Then the result ``X = (Y, v) ∈ $(_math(:se))(3)`` is given by ``Y ∈ $(_math(:so))(3)`` as computed above and
+``v = V_α t ∈ $(_math(:t))(3)``.
+
+This result can be computed in-place of `g`.
+"""
+
+@doc "$(_doc_log_SE3_id)"
+ManifoldsBase.log(
+    ::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
+    ::Identity{SpecialEuclideanOperation},
+    ::Any,
+)
+
+@doc "$(_doc_log_SE3_id)"
+function ManifoldsBase.log!(
+    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
+    X,
+    ::Identity{SpecialEuclideanOperation},
+    g,
+)
+    init_constants!(LieAlgebra(G), X)
+    R = submanifold_component(M, g, :Rotation)
+    t = submanifold_component(M, g, :Translation)
+    Y = submanifold_component(M, X, :Rotation)
+    v = submanifold_component(M, X, :Translation)
+    SO3, T3 = _SOn_and_Tn(G)
+    log!(SO3, Y, Identity(SO3), R)
+    α = norm(Y) / sqrt(2) # skew symmetric, so the norm counts everything “twice” in the sqrt.
+    if α ≈ 0
+        copyto!(T2, v, t) # U(α) is the identity
+    else
+        β = 1 / α^2 - (1 + cos(α)) / (2 * α * sin(α))
+        Vα = LinearAlgebra.I .- Y ./ 2 .+ β .* Y^2
+        mul!(v, Vα, t)
+    end
+    return X
+end
+
+function ManifoldsBase.log!(
+    ::SpecialEuclideanGroup,
+    X::AbstractMatrix,
+    ::Identity{SpecialEuclideanOperation},
+    g::AbstractMatrix,
+)
+    copyto!(X, log(g))
+    return X
 end
 
 function ManifoldsBase.representation_size(G::SpecialEuclideanGroup)

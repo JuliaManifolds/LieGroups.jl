@@ -9,10 +9,17 @@ using ManifoldsBase
 _value(v::Union{SpecialEuclideanProductPoint,SpecialEuclideanProductTVector}) = v.value
 _value(v::ArrayPartition) = v
 
-function identity_element(G::SpecialEuclideanGroup, T::Type{ArrayPartition})
-    # Allocate for the inner manifold (back to default)
-    e = ManifoldsBase.allocate_result(G, identity_element)
-    return identity_element!(G, e)
+function LieGroups.identity_element(
+    G::LieGroups.LeftSpecialEuclideanGroup, ::Type{<:ArrayPartition}
+)
+    SOn, Tn = LieGroups._SOn_and_Tn(G)
+    return ArrayPartition(identity_element(SOn), identity_element(Tn))
+end
+function LieGroups.identity_element(
+    G::LieGroups.RightSpecialEuclideanGroup, ::Type{<:ArrayPartition}
+)
+    SOn, Tn = LieGroups._SOn_and_Tn(G)
+    return ArrayPartition(identity_element(Tn), identity_element(SOn))
 end
 # disable affine check
 LieGroups._check_matrix_affine(::ArrayPartition, ::Int; v=1) = nothing

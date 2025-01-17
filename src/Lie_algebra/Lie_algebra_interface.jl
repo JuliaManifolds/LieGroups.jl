@@ -123,6 +123,20 @@ see also [`rand(::LieAlgebra; kwargs...)`](@ref)
 @doc "$(_doc_rand_algebra)"
 Random.rand(::LieAlgebra; kwargs...)
 
+function Random.rand(𝔤::LieAlgebra, T; vector_at=nothing, kwargs...)
+    X = allocate_on(𝔤, TangentSpaceType(), T)
+    rand!(𝔤, X; vector_at=vector_at, kwargs...)
+    return X
+end
+function Random.rand(G::LieAlgebra, d::Integer; kwargs...)
+    return [rand(M; kwargs...) for _ in 1:d]
+end
+function Random.rand(rng::AbstractRNG, 𝔤::LieAlgebra, T::Type; vector_at=nothing, kwargs...)
+    X = allocate_on(M, TangentSpaceType(), T)
+    rand!(rng, 𝔤, X; vector_at=vector_at, kwargs...)
+    return X
+end
+
 @doc "$(_doc_rand_algebra)"
 Random.rand!(::LieAlgebra, X; kwargs...)
 

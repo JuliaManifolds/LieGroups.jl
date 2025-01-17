@@ -31,7 +31,8 @@ using LieGroupsTestSuite
         X = :nonetoo
         begin # locally define identity element
             LieGroups.identity_element(::typeof(G)) = :id
-            LieGroups.identity_element!(::typeof(G), g) = g[] = :id
+            LieGroups.identity_element(::typeof(G), T::Type) = :id
+            LieGroups.identity_element!(::typeof(G), g) = (g[] = :id)
             ManifoldsBase.exp!(::typeof(G), h, ::typeof(e), X, t::Number=1) = :id
             @test exp(G, e, X) === :id
             #
@@ -44,6 +45,7 @@ using LieGroupsTestSuite
             @test g2[] == :id
             # delete methods again
             Base.delete_method(which(identity_element, (typeof(G),)))
+            Base.delete_method(which(identity_element, (typeof(G), Type)))
             Base.delete_method(which(identity_element!, typeof.([G, g2])))
             Base.delete_method(which(ManifoldsBase.exp!, typeof.([G, h, e, X, 1])))
             Base.delete_method(which(ManifoldsBase.allocate_result, typeof.([G, log, g])))

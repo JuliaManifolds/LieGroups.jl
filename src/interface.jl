@@ -286,7 +286,7 @@ ManifoldsBase.copyto!(G::LieGroup, h, g) = copyto!(G.manifold, h, g)
 function ManifoldsBase.copyto!(
     G::LieGroup{𝔽,O}, h, g::Identity{O}
 ) where {𝔽,O<:AbstractGroupOperation}
-    return ManifoldsBase.copyto!(G.manifold, h, identity_element(G))
+    return ManifoldsBase.copyto!(G.manifold, h, identity_element(G, typeof(h)))
 end
 function ManifoldsBase.copyto!(
     ::LieGroup{𝔽,O}, h::Identity{O}, ::Identity{O}
@@ -441,9 +441,18 @@ See also [HilgertNeeb:2012; Definition 9.2.2](@cite).
 
 @doc "$(_doc_exp_id)"
 function ManifoldsBase.exp(
-    G::LieGroup{𝔽,O}, e::Identity{O}, X, t::Number=1
-) where {𝔽,O<:AbstractGroupOperation}
-    h = identity_element(G)
+    G::LieGroup{𝔽,O}, e::Identity{O}, X::T
+) where {𝔽,O<:AbstractGroupOperation,T}
+    h = identity_element(G, T)
+    exp!(G, h, e, X)
+    return h
+end
+
+@doc "$(_doc_exp_id)"
+function ManifoldsBase.exp(
+    G::LieGroup{𝔽,O}, e::Identity{O}, X::T, t::Number
+) where {𝔽,O<:AbstractGroupOperation,T}
+    h = identity_element(G, T)
     exp!(G, h, e, X, t)
     return h
 end
@@ -598,8 +607,8 @@ function identity_element(G::LieGroup)
     return identity_element!(G, e)
 end
 function identity_element(G::LieGroup, ::Type)
-    e = ManifoldsBase.allocate_result(G, identity_element)
-    return identity_element!(G, e)
+    # default, call the other one as well
+    return identity_element(G)
 end
 
 function identity_element! end
@@ -757,12 +766,12 @@ ManifoldsBase.isapprox(G::LieGroup, g, h; kwargs...) = isapprox(G.manifold, g, h
 function ManifoldsBase.isapprox(
     G::LieGroup{𝔽,O}, g::Identity{O}, h; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
-    return ManifoldsBase.isapprox(G.manifold, identity_element(G, typeof(h)), h; kwargs...)
+    return ManifoldsBase.isapprox(G, identity_element(G, typeof(h)), h; kwargs...)
 end
 function ManifoldsBase.isapprox(
     G::LieGroup{𝔽,O}, g, h::Identity{O}; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
-    return ManifoldsBase.isapprox(G.manifold, g, identity_element(G, typeof(h)); kwargs...)
+    return ManifoldsBase.isapprox(G, g, identity_element(G, typeof(g)); kwargs...)
 end
 function ManifoldsBase.isapprox(
     G::LieGroup{𝔽,O}, g::Identity{O}, h::Identity{O}; kwargs...
@@ -906,29 +915,32 @@ Random.rand(::LieGroup; kwargs...)
 @doc "$(_doc_rand)"
 Random.rand(G::LieGroup, T::Type; vector_at=nothing, kwargs...)
 
-function Random.rand(M::AbstractManifold, T::Type, d::Integer; kwargs...)
+function Random.rand(M::LieGroup, T::Type, d::Integer; kwargs...)
     return [rand(M, T; kwargs...) for _ in 1:d]
 end
-function Random.rand(rng::AbstractRNG, M::AbstractManifold, T::Type, d::Integer; kwargs...)
+function Random.rand(rng::AbstractRNG, M::LieGroup, T::Type, d::Integer; kwargs...)
     return [rand(rng, M, T; kwargs...) for _ in 1:d]
 end
-function Random.rand(M::AbstractManifold, T; vector_at=nothing, kwargs...)
-    if vector_at === nothing
-        pX = allocate_on(M, T)
-    else
-        pX = allocate_on(M, TangentSpaceType(), T)
-    end
-    rand!(M, pX; vector_at=vector_at, kwargs...)
-    return pX
+function Random.rand(G::LieGroup, d::Integer; kwargs...)
+    return [rand(M; kwargs...) for _ in 1:d]
 end
-function Random.rand(rng::AbstractRNG, M::AbstractManifold, T; vector_at=nothing, kwargs...)
+function Random.rand(G::LieGroup, T; vector_at=nothing, kwargs...)
     if vector_at === nothing
-        pX = allocate_on(M, T)
+        gX = allocate_on(G, T)
     else
-        pX = allocate_on(M, TangentSpaceType(), T)
+        gX = allocate_on(G, TangentSpaceType(), T)
     end
-    rand!(rng, M, pX; vector_at=vector_at, kwargs...)
-    return pX
+    rand!(G, gX; vector_at=vector_at, kwargs...)
+    return gX
+end
+function Random.rand(rng::AbstractRNG, M::LieGroup, T::Type; vector_at=nothing, kwargs...)
+    if vector_at === nothing
+        gX = allocate_on(M, T)
+    else
+        gX = allocate_on(M, TangentSpaceType(), T)
+    end
+    rand!(rng, M, gX; vector_at=vector_at, kwargs...)
+    return gX
 end
 
 @doc "$(_doc_rand)"
