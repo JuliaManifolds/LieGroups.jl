@@ -912,7 +912,7 @@ end
 function Random.rand(rng::AbstractRNG, M::AbstractManifold, T::Type, d::Integer; kwargs...)
     return [rand(rng, M, T; kwargs...) for _ in 1:d]
 end
-function Random.rand(M::AbstractManifold, T; vector_at=nothing, kwargs...)
+function Random.rand(M::AbstractManifold, T::Type; vector_at=nothing, kwargs...)
     if vector_at === nothing
         pX = allocate_on(M, T)
     else
@@ -921,7 +921,9 @@ function Random.rand(M::AbstractManifold, T; vector_at=nothing, kwargs...)
     rand!(M, pX; vector_at=vector_at, kwargs...)
     return pX
 end
-function Random.rand(rng::AbstractRNG, M::AbstractManifold, T; vector_at=nothing, kwargs...)
+function Random.rand(
+    rng::AbstractRNG, M::AbstractManifold, T::Type; vector_at=nothing, kwargs...
+)
     if vector_at === nothing
         pX = allocate_on(M, T)
     else
