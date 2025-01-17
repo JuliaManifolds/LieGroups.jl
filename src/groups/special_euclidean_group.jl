@@ -316,6 +316,7 @@ function ManifoldsBase.exp!(
     ::Identity{SpecialEuclideanOperation},
     X,
 )
+    init_constants!(G, g)
     Ω = submanifold_component(M, X, :Rotation)
     v = submanifold_component(M, X, :Translation)
     R = submanifold_component(M, g, :Rotation)
@@ -379,6 +380,7 @@ function ManifoldsBase.exp!(
     ::Identity{SpecialEuclideanOperation},
     X,
 )
+    init_constants!(G, g)
     Ω = submanifold_component(M, X, :Rotation)
     v = submanifold_component(M, X, :Translation)
     R = submanifold_component(M, g, :Rotation)
@@ -431,6 +433,60 @@ function identity_element!(G::SpecialEuclideanGroup, q::SpecialEuclideanMatrixPo
     return q
 end
 
+_doc_init_constants = """
+    init_constants!(G::SpecialEuclidean, g)
+    init_Constants!(𝔰𝔢::LieAlgebra{𝔽, SpecialEuclideanOperation, SpecialEuclidean}, X)
+
+Initliase the constant elements of `g` or `X`.
+
+The matrix representation of ``g∈$(_math(:SE))(n)`` has a last row,
+that contains zeros, besides the diagonal element, which is ``g_{n+1,n+1} = 1``.
+
+The matrix representation of ``X∈$(_math(:se))(n)`` has a last row that contains zeros.
+
+this function sets these entries accordingly.
+
+Other representations like the [`CompoSpecialEuclideanProductPoint`](@ref) stay unchanged,
+which is also the default.
+"""
+
+@doc "$(_doc_init_constants)"
+function init_constants!(G::SpecialEuclideanGroup, g::AbstractMatrix)
+    n = Manifolds.get_parameter(G.manifold[1].size)[1]
+    g[(n + 1), 1:n] .= 0
+    g[n + 1, n + 1] = 1
+    return g
+end
+
+@doc "$(_doc_init_constants)"
+function init_constants!(
+    G::LieAlgebra{
+        ManifoldsBase.RealNumbers,<:SpecialEuclideanOperation,<:SpecialEuclideanGroup
+    },
+    X::AbstractMatrix,
+)
+    n = Manifolds.get_parameter(G.manifold.manifold[1].size)[1]
+    X[(n + 1), :] .= 0
+    return X
+end
+
+function init_constants!(G::SpecialEuclideanGroup, g::SpecialEuclideanMatrixPoint)
+    init_constants!(G, g.value)
+    return g
+end
+function init_constants!(
+    G::LieAlgebra{
+        ManifoldsBase.RealNumbers,<:SpecialEuclideanOperation,<:SpecialEuclideanGroup
+    },
+    X::SpecialEuclideanMatrixTVector,
+)
+    init_constants!(G, X.value)
+    return X
+end
+
+# default: Do nothing
+init_constants!(::AbstractManifold, gX) = gX
+
 _doc_inv_SEn = """
     inv(G::SpecialEuclideanGroup, g)
     inv(G::SpecialEuclideanGroup, h, g)
@@ -454,6 +510,7 @@ Base.inv(G::SpecialEuclideanGroup, g)
 
 @doc "$(_doc_inv_SEn)"
 function inv!(G::SpecialEuclideanGroup, h, g)
+    init_constants!(G, h)
     rg = submanifold_component(G, g, :Rotation)
     tg = submanifold_component(G, g, :Translation)
     rh = submanifold_component(G, h, :Rotation)
@@ -500,43 +557,45 @@ end
 function Random.rand!(
     rng::AbstractRNG,
     G::SpecialEuclideanGroup,
-    pX::AbstractMatrix;
+    gX::AbstractMatrix;
     vector_at=nothing,
     kwargs...,
 )
     SOn, Tn = _SOn_and_Tn(G)
     if vector_at === nothing # for points -> pass to manifold
+        init_constants!(G, gX)
         rand!(
             rng,
             SOn,
-            submanifold_component(G, pX, :Rotation);
+            submanifold_component(G, gX, :Rotation);
             vector_at=vector_at,
             kwargs...,
         )
         rand!(
             rng,
             Tn,
-            submanifold_component(G, pX, :Translation);
+            submanifold_component(G, gX, :Translation);
             vector_at=vector_at,
             kwargs...,
         )
     else # for tangent vectors -> subset the vector_at as well.
+        init_constants!(LieAlgebra(G), gX)
         rand!(
             rng,
             SOn,
-            submanifold_component(G, pX, :Rotation);
+            submanifold_component(G, gX, :Rotation);
             vector_at=submanifold_component(G, vector_at, :Rotation),
             kwargs...,
         )
         rand!(
             rng,
             Tn,
-            submanifold_component(G, pX, :Translation);
+            submanifold_component(G, gX, :Translation);
             vector_at=submanifold_component(G, vector_at, :Translation),
             kwargs...,
         )
     end
-    return pX
+    return gX
 end
 
 function _SOn_and_Tn(G::LeftSpecialEuclideanGroup)
@@ -545,13 +604,6 @@ end
 function _SOn_and_Tn(G::RightSpecialEuclideanGroup)
     A = map(LieGroup, G.manifold.manifolds, G.op.operations)
     return A[2], A[1]
-end
-
-function ManifoldsBase.zero_vector(
-    G::SpecialEuclidean, e::Identity{SpecialEuclideanOperation}
-)
-    n = Manifolds.get_parameter(G.manifold[1].size)[1]
-    return zeros(n + 1, n + 1)
 end
 
 function Base.show(io::IO, G::SpecialEuclideanGroup)
@@ -598,4 +650,11 @@ Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
 )
     n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
     return view(p, 1:n, n + 1)
+end
+
+function ManifoldsBase.zero_vector(
+    G::SpecialEuclidean, ::Identity{<:SpecialEuclideanOperation}
+)
+    n = Manifolds.get_parameter(G.manifold[1].size)[1]
+    return zeros(n + 1, n + 1)
 end

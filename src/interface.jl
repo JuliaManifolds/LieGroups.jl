@@ -1032,7 +1032,7 @@ macro default_lie_group_fallbacks(TG, TP, TV, pfield::Symbol, vfield::Symbol)
             return LieGroups.adjoint(M, g.$pfield, X.$vfield)
         end
 
-        function LieGroups.adjoint!(M::$TM, Y::$TV, g::$TP, X::$TV)
+        function LieGroups.adjoint!(M::$TG, Y::$TV, g::$TP, X::$TV)
             LieGroups.adjoint!(M, Y.$vfield, g.$pfield, X.$vfield)
             return Y
         end
