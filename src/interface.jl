@@ -517,16 +517,16 @@ function get_coordinates_lie!(G::LieGroup, c, g, X, N)
 end
 
 _doc_get_vector = """
-    get_vector(G::LieGroup, g, c, B::AbstractBasis)
-    get_vector(𝔤::LieAlgebra, c, B::AbstractBasis)
-    get_vector!(G::LieGroup, X, g, c, B::AbstractBasis)
-    get_vector!(𝔤::LieAlgebra, X, c, B::AbstractBasis)
+    get_vector(G::LieGroup, g, c, B::AbstractBasis; kwargs...)
+    get_vector(𝔤::LieAlgebra, c, B::AbstractBasis; kwargs...)
+    get_vector!(G::LieGroup, X::T, g, c, B::AbstractBasis; kwargs...)
+    get_vector!(𝔤::LieAlgebra, X::T, c, B::AbstractBasis; kwargs...)
 
 Return the vector corresponding to a set of coefficients in an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`)
 of the [`LieAlgebra`](@ref) `𝔤`.
 Since all tangent vectors are assumed to be represented in the Lie algebra,
 both signatures are equivalent.
-The operation can be performed in-place of a tangent vector `X`.
+The operation can be performed in-place of a tangent vector `X` of type `::T`.
 
 By default this function requires [`identity_element`](@ref)`(G)` and calls
 the corresponding [`get_vector`](@extref ManifoldsBase :jl:function:`ManifoldsBase.get_vectors`) function
@@ -534,11 +534,35 @@ of the Riemannian manifold the Lie group is build on.
 
 The inverse operation is [`get_coordinates`](@ref).
 
+# Keyword arguments
+
+* `tangent_vector_type` specify the tangent vector type to use for the allocating variants.
+
 See also [`hat`](@ref)
 """
 
 @doc "$(_doc_get_vector)"
-ManifoldsBase.get_vector(G::LieGroup, g, c, B::ManifoldsBase.AbstractBasis)
+function ManifoldsBase.get_vector(
+    G::LieGroup,
+    g,
+    c,
+    B::ManifoldsBase.AbstractBasis;
+    tangent_vector_type=nothing,
+    kwargs...,
+)
+    return ManifoldsBase._get_vector(M, p, c, B, tangent_vector_type)
+end
+# Overwrite layer 2 as well if a basis is provided and if we get nothing
+@inline function ManifoldsBase._get_vector(
+    M::AbstractManifold, p, c, B::DefaultOrthogonalBasis, ::Nothing
+)
+    return get_vector_lie(M, p, c, number_system(B))
+end
+@inline function ManifoldsBase._get_vector(
+    M::AbstractManifold, p, c, B::DefaultOrthogonalBasis, T::Type
+)
+    return get_vector_lie(M, p, c, number_system(B), T)
+end
 
 @doc "$(_doc_exp_id)"
 ManifoldsBase.get_vector!(G::LieGroup, X, g, c, B::ManifoldsBase.AbstractBasis)
@@ -590,6 +614,9 @@ Technically, `hat` is a specific case of [`get_vector`](@ref) and is implemented
 @doc "$(_doc_hat)"
 function hat(G::LieGroup{𝔽}, c) where {𝔽}
     return get_vector_lie(G, Identity(G), c, 𝔽)
+end
+function hat(G::LieGroup{𝔽}, c, T::Type) where {𝔽}
+    return get_vector_lie(G, Identity(G), c, 𝔽, T)
 end
 
 # function hat! end

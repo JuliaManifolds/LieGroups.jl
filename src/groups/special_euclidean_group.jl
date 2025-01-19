@@ -196,6 +196,13 @@ end
 function ManifoldsBase.check_point(G::RightSpecialEuclideanGroup, p; kwargs...)
     return _check_point(G, G.manifold[2], G.manifold[1], G.op[2], G.op[1], p; kwargs...)
 end
+# Resolve ambiguities with identity
+function ManifoldsBase.check_point(G::LeftSpecialEuclideanGroup, ::Identity{LeftSemidirectProductGroupOperation}; kwargs...)
+    return nothing
+end
+function ManifoldsBase.check_point(G::RightSpecialEuclideanGroup, ::Identity{RightSemidirectProductGroupOperation}; kwargs...)
+    return nothing
+end
 
 function _check_point(
     G::SpecialEuclideanGroup{T}, Rotn, Rn, op1, op2, p; kwargs...
@@ -664,9 +671,33 @@ function ManifoldsBase.log!(
 end
 
 function ManifoldsBase.log!(
-    ::SpecialEuclideanGroup, X, ::Identity{<:SpecialEuclideanOperation}, g
+    ::LeftSpecialEuclideanGroup, X, ::Identity{LeftSpecialEuclideanOperation}, g
 )
     copyto!(X, log(g))
+    return X
+end
+function ManifoldsBase.log!(
+    ::RightSpecialEuclideanGroup,
+    X,
+    ::Identity{RightSpecialEuclideanOperation},
+    g,
+)
+    copyto!(X, log(g))
+    return X
+end
+function ManifoldsBase.log!(
+    G::LeftSpecialEuclideanGroup,
+    X,
+    e::O,
+    ::O,
+) where {O<:Identity{LeftSpecialEuclideanOperation}}
+    zero_vector!(G, e, X)
+    return X
+end
+function ManifoldsBase.log!(
+    G::RightSpecialEuclideanGroup, X, e::O, ::O
+) where {O<:Identity{RightSpecialEuclideanOperation}}
+    zero_vector!(G, e, X)
     return X
 end
 

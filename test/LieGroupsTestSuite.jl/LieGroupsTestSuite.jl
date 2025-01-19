@@ -525,7 +525,7 @@ function test_hat_vee(
         𝔤 = LieAlgebra(G)
         if test_hat
             c = ismissing(expected_value) ? zeros(manifold_dimension(G)) : expected_value
-            Y1 = hat(G, c)
+            Y1 = hat(G, c, typeof(X))
             @test is_vector(G, g, Y1)
             !ismissing(expected_value) && @test isapprox(𝔤, X, Y1)
             if test_mutating
