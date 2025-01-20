@@ -51,15 +51,13 @@ The formula reads
 where ``I_n`` is the ``n×n`` identity matrix, ``0_n`` is the ``n×n`` zero matrix
 and ``\mathbf{a}⋅\mathbf{b}`` is dot product of vectors.
 """
-function Base.exp(G::HeisenbergGroup, e::Identity{MatrixMultiplicationGroupOperation}, X)
+function Base.exp(G::HeisenbergGroup, X)
     h = similar(X)
-    exp!(G, h, e, X)
+    exp!(G, h, X)
     return h
 end
 
-function ManifoldsBase.exp!(
-    G::HeisenbergGroup, h, ::Identity{MatrixMultiplicationGroupOperation}, X
-)
+function ManifoldsBase.exp!(G::HeisenbergGroup, h, X)
     n = ManifoldsBase.get_parameter(G.manifold.size)[1]
     copyto!(h, I)
     a_view = _heisenberg_a_view(G, X)
@@ -165,11 +163,9 @@ The formula reads
 where ``I_n`` is the ``n×n`` identity matrix, ``0_n`` is the ``n×n`` zero matrix
 and ``\mathbf{a}⋅\mathbf{b}`` is dot product of vectors.
 """
-log(G::HeisenbergGroup, ::Identity{MatrixMultiplicationGroupOperation}, g)
+log(G::HeisenbergGroup, g)
 
-function ManifoldsBase.log!(
-    G::HeisenbergGroup, X, ::Identity{MatrixMultiplicationGroupOperation}, g
-)
+function ManifoldsBase.log!(G::HeisenbergGroup, X, g)
     n = ManifoldsBase.get_parameter(G.manifold.size)[1]
     fill!(X, 0)
     view_a_X = _heisenberg_a_view(G, X)
@@ -180,10 +176,7 @@ function ManifoldsBase.log!(
     return X
 end
 function ManifoldsBase.log!(
-    ::HeisenbergGroup,
-    X,
-    ::Identity{MatrixMultiplicationGroupOperation},
-    ::Identity{MatrixMultiplicationGroupOperation},
+    ::HeisenbergGroup, X, ::Identity{MatrixMultiplicationGroupOperation}
 )
     fill!(X, 0)
     return X

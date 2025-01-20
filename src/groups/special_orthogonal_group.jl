@@ -22,46 +22,19 @@ function SpecialOrthogonalGroup(n; kwargs...)
 end
 
 @doc "$(_doc_exp_O2_id)"
-ManifoldsBase.exp(
-    ::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
-    ::Identity{MatrixMultiplicationGroupOperation},
-    X,
-)
+ManifoldsBase.exp(::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, X)
 @doc "$(_doc_exp_O2_id)"
-ManifoldsBase.exp!(
-    ::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
-    g,
-    ::Identity{MatrixMultiplicationGroupOperation},
-    X,
-)
+ManifoldsBase.exp!(::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, g, X)
 
 @doc "$(_doc_exp_O3_id)"
-ManifoldsBase.exp(
-    ::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
-    ::Identity{MatrixMultiplicationGroupOperation},
-    X,
-)
+ManifoldsBase.exp(::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, X)
 @doc "$(_doc_exp_O3_id)"
-ManifoldsBase.exp!(
-    ::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
-    g,
-    ::Identity{MatrixMultiplicationGroupOperation},
-    X,
-)
+ManifoldsBase.exp!(::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, g, X)
 
 @doc "$(_doc_exp_O4_id)"
-ManifoldsBase.exp(
-    ::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}},
-    ::Identity{MatrixMultiplicationGroupOperation},
-    X,
-)
+ManifoldsBase.exp(::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, X)
 @doc "$(_doc_exp_O4_id)"
-ManifoldsBase.exp!(
-    ::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}},
-    g,
-    ::Identity{MatrixMultiplicationGroupOperation},
-    X,
-)
+ManifoldsBase.exp!(::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, g, X)
 
 @doc "$(_doc_get_coordinates_On)"
 get_coordinates(
@@ -105,49 +78,22 @@ function inv!(
 end
 
 @doc "$(_doc_log_O2_id)"
-ManifoldsBase.log(
-    ::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
-    ::Identity{MatrixMultiplicationGroupOperation},
-    g,
-)
+ManifoldsBase.log(::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, g)
 
 @doc "$(_doc_log_O2_id)"
-ManifoldsBase.log!(
-    ::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
-    X,
-    ::Identity{MatrixMultiplicationGroupOperation},
-    g,
-)
+ManifoldsBase.log!(::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, X, g)
 
 @doc "$(_doc_log_O3_id)"
-ManifoldsBase.log(
-    ::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
-    ::Identity{MatrixMultiplicationGroupOperation},
-    g,
-)
+ManifoldsBase.log(::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, g)
 
 @doc "$(_doc_log_O3_id)"
-ManifoldsBase.log!(
-    ::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
-    X,
-    ::Identity{MatrixMultiplicationGroupOperation},
-    g,
-)
+ManifoldsBase.log!(::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, X, g)
 
 @doc "$(_doc_log_O4_id)"
-ManifoldsBase.log(
-    ::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}},
-    ::Identity{MatrixMultiplicationGroupOperation},
-    g,
-)
+ManifoldsBase.log(::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, g)
 
 @doc "$(_doc_log_O4_id)"
-ManifoldsBase.log!(
-    ::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}},
-    X,
-    ::Identity{MatrixMultiplicationGroupOperation},
-    g,
-)
+ManifoldsBase.log!(::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, X, g)
 
 function Base.show(io::IO, G::SpecialOrthogonalGroup)
     size = Manifolds.get_parameter(G.manifold.size)[1]

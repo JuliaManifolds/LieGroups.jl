@@ -109,8 +109,8 @@ function diff_right_compose!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, 
 end
 
 _doc_exp_add = """
-    exp(G::LieGroup{𝔽,AdditionGroupOperation}, e::Identity{AdditionGroupOperation}, X, t::Number=1)
-    exp!(G::LieGroup{𝔽,AdditionGroupOperation}, g, e::Identity{AdditionGroupOperation}, X, t::Number=1)
+    exp(G::LieGroup{𝔽,AdditionGroupOperation}, X)
+    exp!(G::LieGroup{𝔽,AdditionGroupOperation}, g, X)
 
 Compute the Lie group exponential on a [`LieGroup`](@ref) with an [`AdditionGroupOperation`](@ref).
 This can be computed in-place of `g`.
@@ -119,19 +119,11 @@ Since `e` is just the zero-element with respect to the corresponding `+`, the fo
 """
 
 @doc "$(_doc_exp_add)"
-Base.exp(
-    ::LieGroup{𝔽,AdditionGroupOperation}, ::Identity{AdditionGroupOperation}, X, t::Number=1
-) where {𝔽} = t * X
+Base.exp(::LieGroup{𝔽,AdditionGroupOperation}, X) where {𝔽} = X
 
 @doc "$(_doc_exp_add)"
-function ManifoldsBase.exp!(
-    ::LieGroup{𝔽,AdditionGroupOperation},
-    g,
-    ::Identity{AdditionGroupOperation},
-    X,
-    t::Number=1,
-) where {𝔽}
-    g .= t .* X
+function ManifoldsBase.exp!(::LieGroup{𝔽,AdditionGroupOperation}, g, X) where {𝔽}
+    g .= X
     return g
 end
 
@@ -193,8 +185,8 @@ function lie_bracket!(𝔤::LieAlgebra{𝔽,AdditionGroupOperation}, Z, X, Y) wh
 end
 
 _doc_log_add = """
-    log(G::LieGroup{𝔽,AdditionGroupOperation}, e::Identity{AdditionGroupOperation}, g)
-    log!(G::LieGroup{𝔽,AdditionGroupOperation}, X, e::Identity{AdditionGroupOperation}, g)
+    log(G::LieGroup{𝔽,AdditionGroupOperation}, g)
+    log!(G::LieGroup{𝔽,AdditionGroupOperation}, X, g)
 
 Compute the Lie group logarithm on a [`LieGroup`](@ref) with an [`AdditionGroupOperation`](@ref).
 This can be computed in-place of `X`.
@@ -203,29 +195,17 @@ Since `e` is just the zero-element with respect to the corresponding `+`, the fo
 """
 
 @doc "$(_doc_log_add)"
-ManifoldsBase.log(
-    G::LieGroup{𝔽,AdditionGroupOperation}, ::Identity{AdditionGroupOperation}, q
-) where {𝔽} = q
-
-function ManifoldsBase.log(
-    G::LieGroup{𝔽,AdditionGroupOperation},
-    ::Identity{AdditionGroupOperation},
-    ::Identity{AdditionGroupOperation},
-) where {𝔽}
-    return zero_vector(LieAlgebra(G))
-end
+ManifoldsBase.log(::LieGroup{𝔽,AdditionGroupOperation}, q) where {𝔽} = q
 
 @doc "$(_doc_log_add)"
-function ManifoldsBase.log!(
-    G::LieGroup{𝔽,AdditionGroupOperation}, X, ::Identity{AdditionGroupOperation}, g
-) where {𝔽}
+function ManifoldsBase.log!(G::LieGroup{𝔽,AdditionGroupOperation}, X, g) where {𝔽}
     return copyto!(G, X, g)
 end
-function ManifoldsBase.log!(
-    G::LieGroup{𝔽,AdditionGroupOperation},
-    X,
-    ::Identity{AdditionGroupOperation},
-    ::Identity{AdditionGroupOperation},
+function ManifoldsBase.log!(G::LieGroup{𝔽,AdditionGroupOperation}, X) where {𝔽}
+    return fill!(X, 0)
+end
+function ManifoldsBase.log(
+    G::LieGroup{𝔽,AdditionGroupOperation}, e::Identity{AdditionGroupOperation}, t::Type
 ) where {𝔽}
-    return zero_vector!(LieAlgebra(G), X)
+    return zero_vector(G, e, T)
 end

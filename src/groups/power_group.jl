@@ -202,19 +202,16 @@ function ManifoldsBase.exp!(
 end
 
 function ManifoldsBase.exp!(
-    PoG::LieGroup{𝔽,Op,M}, h, ::Identity{Op}, X, t::Number=1
+    PoG::LieGroup{𝔽,Op,M}, h, X
 ) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
     PM = PoG.manifold
     rep_size = representation_size(PM)
     G = LieGroup(PM.manifold, PoG.op.op)
-    e_g = Identity(G)
     for i in ManifoldsBase.get_iterator(PM)
         exp!(
             G,
             ManifoldsBase._write(PM, rep_size, h, i),
-            e_g,
             ManifoldsBase._read(PM, rep_size, X, i),
-            t,
         )
     end
     return h
@@ -293,7 +290,7 @@ function lie_bracket!(
 end
 
 function ManifoldsBase.log!(
-    PoG::LieGroup{𝔽,Op,M}, X, ::Identity{Op}, g
+    PoG::LieGroup{𝔽,Op,M}, X, g
 ) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
     PM = PoG.manifold
     rep_size = representation_size(PM)
@@ -310,9 +307,9 @@ function ManifoldsBase.log!(
     return X
 end
 function ManifoldsBase.log!(
-    PoG::LieGroup{𝔽,Op,M}, X, ::Identity{Op}, ::Identity{Op}
+    PoG::LieGroup{𝔽,Op,M}, X, ::Identity{Op}
 ) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
-    return zero_vector!(LieAlgebra(PoG), X)
+    return zero_vector!(PoG, X)
 end
 
 function Base.show(

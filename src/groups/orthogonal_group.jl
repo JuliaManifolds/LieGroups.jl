@@ -46,18 +46,9 @@ the result ``g`` always lies in the connected component of the identity.
 """
 
 @doc "$(_doc_exp_O2_id)"
-ManifoldsBase.exp(
-    ::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
-    ::Identity{MatrixMultiplicationGroupOperation},
-    X,
-)
+ManifoldsBase.exp(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, X)
 @doc "$(_doc_exp_O2_id)"
-ManifoldsBase.exp!(
-    ::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
-    g,
-    ::Identity{MatrixMultiplicationGroupOperation},
-    X,
-)
+ManifoldsBase.exp!(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, g, X)
 
 _doc_exp_O3_id = """
     exp(G, e, X)
@@ -89,18 +80,9 @@ the result ``g`` always lies in the connected component of the identity.
 """
 
 @doc "$(_doc_exp_O3_id)"
-ManifoldsBase.exp(
-    ::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
-    ::Identity{MatrixMultiplicationGroupOperation},
-    X,
-)
+ManifoldsBase.exp(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, X)
 @doc "$(_doc_exp_O3_id)"
-ManifoldsBase.exp!(
-    ::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
-    g,
-    ::Identity{MatrixMultiplicationGroupOperation},
-    X,
-)
+ManifoldsBase.exp!(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, g, X)
 
 _doc_exp_O4_id = """
     exp(G, e, X)
@@ -114,44 +96,24 @@ adapted from [GallierXu:2002](@cite), [AndricaRohan:2013](@cite) with a few nume
 """
 
 @doc "$(_doc_exp_O4_id)"
-ManifoldsBase.exp(
-    ::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}},
-    ::Identity{MatrixMultiplicationGroupOperation},
-    X,
-)
+ManifoldsBase.exp(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, X)
 @doc "$(_doc_exp_O4_id)"
-ManifoldsBase.exp!(
-    ::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}},
-    g,
-    ::Identity{MatrixMultiplicationGroupOperation},
-    X,
-)
+ManifoldsBase.exp!(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, g, X)
 
 # TODO: Maybe combine the following two definitions?
-function Base.exp(
-    G::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
-    e::Identity{MatrixMultiplicationGroupOperation},
-    X,
-)
+function Base.exp(G::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{2}}}, X)
     g = ManifoldsBase.allocate_result(G, exp, X)
-    exp!(G, g, e, X)
+    exp!(G, g, X)
     return g
 end
-function Base.exp(
-    G::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
-    e::Identity{MatrixMultiplicationGroupOperation},
-    X,
-)
+function Base.exp(G::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{3}}}, X)
     g = ManifoldsBase.allocate_result(G, exp, X)
-    exp!(G, g, e, X)
+    exp!(G, g, X)
     return g
 end
 
 function ManifoldsBase.exp!(
-    ::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
-    g,
-    ::Identity{MatrixMultiplicationGroupOperation},
-    X,
+    ::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{2}}}, g, X
 )
     @assert size(X) == (2, 2)
     @assert size(g) == (2, 2)
@@ -167,10 +129,7 @@ function ManifoldsBase.exp!(
 end
 
 function ManifoldsBase.exp!(
-    ::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
-    g,
-    ::Identity{MatrixMultiplicationGroupOperation},
-    X,
+    ::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{3}}}, g, X
 )
     θ = norm(X) / sqrt(2)
     if θ ≈ 0
@@ -186,10 +145,7 @@ function ManifoldsBase.exp!(
     return g
 end
 function ManifoldsBase.exp!(
-    ::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{4}}},
-    g,
-    ::Identity{MatrixMultiplicationGroupOperation},
-    X,
+    ::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{4}}}, g, X
 )
     T = eltype(X)
     α, β = angles_4d_skew_sym_matrix(X)
@@ -418,8 +374,8 @@ function _get_vector_lie_On!(X, c)
 end
 
 _doc_log_O2_id = """
-    log(G, e, g)
-    log!(G, X, e, g)
+    log(G, g)
+    log!(G, X, g)
 
 Compute the Lie group logarithm function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(2)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(2)``,
 where `e` is the [`Identity`](@ref)`{MatrixMultiplicationGroupOperation}` and `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`) for dispatch.
@@ -441,23 +397,14 @@ for any ``g`` in the other component, the logarithmic map is defined, but not th
 """
 
 @doc "$(_doc_log_O2_id)"
-ManifoldsBase.log(
-    ::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
-    ::Identity{MatrixMultiplicationGroupOperation},
-    g,
-)
+ManifoldsBase.log(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, g)
 
 @doc "$(_doc_log_O2_id)"
-ManifoldsBase.log!(
-    ::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
-    X,
-    ::Identity{MatrixMultiplicationGroupOperation},
-    g,
-)
+ManifoldsBase.log!(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, X, g)
 
 _doc_log_O3_id = """
-    log(G, e, g)
-    log!(G, X, e, g)
+    log(G, g)
+    log!(G, X, g)
 
 Compute the Lie group logarithm function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(3)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(3)``,
 where `e` is the [`Identity`](@ref)`{MatrixMultiplicationGroupOperation}` and `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`) for dispatch.
@@ -493,19 +440,10 @@ for any ``g`` in the other component, the logarithmic map is defined, but not th
 """
 
 @doc "$(_doc_log_O3_id)"
-ManifoldsBase.log(
-    ::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
-    ::Identity{MatrixMultiplicationGroupOperation},
-    g,
-)
+ManifoldsBase.log(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, g)
 
 @doc "$(_doc_log_O3_id)"
-ManifoldsBase.log!(
-    ::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
-    X,
-    ::Identity{MatrixMultiplicationGroupOperation},
-    g,
-)
+ManifoldsBase.log!(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, X, g)
 
 _doc_log_O4_id = """
     log(G, e, g)
@@ -523,37 +461,24 @@ Note the logarithmic map is only locally around the identity uniquely determined
 """
 
 @doc "$(_doc_log_O4_id)"
-ManifoldsBase.log(
-    ::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}},
-    ::Identity{MatrixMultiplicationGroupOperation},
-    g,
-)
+ManifoldsBase.log(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, g)
 
 @doc "$(_doc_log_O4_id)"
-ManifoldsBase.log!(
-    ::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}},
-    X,
-    ::Identity{MatrixMultiplicationGroupOperation},
-    g,
-)
+ManifoldsBase.log!(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, X, g)
 
 # TODO: Maybe combine the following 3 dispatches?
 function ManifoldsBase.log(
-    G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
-    e::Identity{MatrixMultiplicationGroupOperation},
-    g,
+    G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}}, g
 )
     Y = ManifoldsBase.allocate_result(G, log, g)
-    log!(G, Y, e, g)
+    log!(G, Y, g)
     return Y
 end
 function ManifoldsBase.log(
-    G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
-    e::Identity{MatrixMultiplicationGroupOperation},
-    g,
+    G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{3}}}, g
 )
     Y = ManifoldsBase.allocate_result(G, log, g)
-    log!(G, Y, e, g)
+    log!(G, Y, g)
     return Y
 end
 function ManifoldsBase.log(
@@ -562,7 +487,7 @@ function ManifoldsBase.log(
     g,
 )
     Y = ManifoldsBase.allocate_result(G, log, g)
-    log!(G, Y, e, g)
+    log!(G, Y, g)
     return Y
 end
 # Resolve an ambiguity compared to the general matrix multiplication definitions
@@ -570,30 +495,24 @@ end
 function Base.log(
     G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
     e::Identity{MatrixMultiplicationGroupOperation},
-    ::Identity{MatrixMultiplicationGroupOperation},
 )
     return zero_vector(G, e)
 end
 function Base.log(
     G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
     e::Identity{MatrixMultiplicationGroupOperation},
-    ::Identity{MatrixMultiplicationGroupOperation},
 )
     return zero_vector(G, e)
 end
 function Base.log(
     G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{4}}},
     e::Identity{MatrixMultiplicationGroupOperation},
-    ::Identity{MatrixMultiplicationGroupOperation},
 )
     return zero_vector(G, e)
 end
 
 function ManifoldsBase.log!(
-    ::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
-    X,
-    ::Identity{MatrixMultiplicationGroupOperation},
-    g,
+    ::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}}, X, g
 )
     @assert size(X) == (2, 2)
     @assert size(g) == (2, 2)
@@ -610,15 +529,13 @@ function ManifoldsBase.log!(
     G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
     X,
     ::Identity{MatrixMultiplicationGroupOperation},
-    ::Identity{MatrixMultiplicationGroupOperation},
 )
-    return zero_vector!(LieAlgebra(G), X)
+    return zero_vector!(G, X)
 end
 
 function ManifoldsBase.log!(
     G::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
     X::AbstractMatrix,
-    e::Identity{MatrixMultiplicationGroupOperation},
     q::AbstractMatrix,
 )
     cosθ = (tr(q) - 1) / 2
@@ -636,7 +553,6 @@ end
 function ManifoldsBase.log!(
     G::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{4}}},
     X::AbstractMatrix,
-    ::Identity{MatrixMultiplicationGroupOperation},
     q::AbstractMatrix,
 )
     cosα, cosβ = cos_angles_4d_rotation_matrix(q)

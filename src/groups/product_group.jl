@@ -189,14 +189,13 @@ function diff_right_compose!(
 end
 
 function ManifoldsBase.exp!(
-    PrG::LieGroup{𝔽,Op,M}, h, ::Identity{Op}, X, t::Number=1
+    PrG::LieGroup{𝔽,Op,M}, h, X
 ) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     PrM = PrG.manifold
     map(
-        (M, h, e, X) -> exp!(M, h, e, X, t), # introduce a function with “hard coded” t
+        (M, h, X) -> exp!(M, h, X), # introduce a function with “hard coded” t
         map(LieGroup, PrM.manifolds, PrG.op.operations),
         submanifold_components(PrM, h),
-        map(Identity, PrG.op.operations),
         submanifold_components(PrM, X),
     )
     return h
@@ -270,22 +269,16 @@ function lie_bracket!(
 end
 
 function ManifoldsBase.log!(
-    PrG::LieGroup{𝔽,Op,M}, X, ::Identity{Op}, g
+    PrG::LieGroup{𝔽,Op,M}, X, g
 ) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     PrM = PrG.manifold
     map(
         log!,
         map(LieGroup, PrM.manifolds, PrG.op.operations),
         submanifold_components(PrM, X),
-        map(Identity, PrG.op.operations),
         submanifold_components(PrM, g),
     )
     return X
-end
-function ManifoldsBase.log!(
-    PrG::LieGroup{𝔽,Op,M}, X, ::Identity{Op}, ::Identity{Op}
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
-    return zero_vector!(LieAlgebra(PrG), X)
 end
 
 function Base.show(

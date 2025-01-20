@@ -38,7 +38,7 @@ The list is alphabetical, but first lists types, then functions
 | `differential_exp_argument_lie_approx` | | this is discontinued, see the `differential_exp_argument` in `ManifoldDiff.jl` instead, since `exp_lie` is now just `exp`. |
 | `exp(G, g, X)` | `exp(`[`base_manifold`](@ref base_manifold(G::LieGroup))`(G), g, X)` | the previous defaults whenever not agreeing with the invariant one can now be accessed on the internal manifold |
 | `exp_inv(G, g, X)` | [`exp`](@ref exp(G::LieGroup, g, X, t::Number))`(G, g, X)`  | the exponential map invariant to the group operation is the default on Lie groups here |
-| `exp_lie(G, X)` | [`exp`](@ref exp(G::LieGroup, e::Identity, X, t::Number))`(G, `[`Identity`](@ref)`(G), X)` | the (matrix) exponential is now the one at the [`Identity`](@ref)`(G)`, since there it agrees with the invariant one |
+| `exp_lie(G, X)` | [`exp`](@ref exp(G::LieGroup, X))`(G, X)` | the (matrix/Lie group) exponential is now the without a point, since it is implicitly at the [`Identity`](@ref)`(G)` which is stored in `G` |
 | `inverse_translate(G, g, h, c)` | [`inv_left_compose`](@ref)`(G, g, h)`, [`inv_right_compose`](@ref)`(G, g, h)` | compute ``g^{-1}∘h`` and ``g∘h^{-1}``, resp. |
 | `inverse_tranlsate_diff(G, g, h, X, LeftForwardAction())` | - | discontinued, use `diff_left_compose(G, inv(G,g), h)` |
 | `inverse_tranlsate_diff(G, g, h, X, RightBackwardAction())` | - | discontinued, use `diff_left_compose(G, h, inv(G,g))` |

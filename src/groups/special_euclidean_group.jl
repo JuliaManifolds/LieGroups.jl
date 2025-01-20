@@ -294,11 +294,11 @@ function _compose!(
 end
 
 _doc_exp_SE2_id = """
-    exp(G::SpecialEuclidean, e, X)
-    exp!(G::SpecialEuclideanG, e, g, X)
+    exp(G::SpecialEuclidean, X)
+    exp!(G::SpecialEuclideanG, g, X)
 
-Compute the Lie group exponential function on the [`SpecialEuclideanGroup`](@ref) `G```=$(_math(:SE))(2)``,
-where `e` is the [`Identity`](@ref) on ``$(_math(:SE))(2)`` `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{2}}` for dispatch.
+Compute the Lie group exponential function on the [`SpecialEuclideanGroup`](@ref) `G```=$(_math(:SE))(2)``
+using a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{2}}` for dispatch.
 
 Since ``X = (Y, v) ∈ $(_math(:se))(2)`` consists of a rotation component ``Y ∈ $(_math(:so))(2)`` and a translation component ``v ∈ $(_math(:t))(2)``,
 we can use [`vee`](@ref) on ``$(_math(:SO))(2)`` to obtain the angle of rotation ``α`` (or alternatively that ``$(_tex(:sqrt,2))α = $(_tex(:norm, "Y"))``
@@ -322,18 +322,11 @@ This result can be computed in-place of `g`.
 """
 
 @doc "$(_doc_exp_SE2_id)"
-ManifoldsBase.exp(
-    ::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
-    ::Identity{<:SpecialEuclideanOperation},
-    ::Any,
-)
+ManifoldsBase.exp(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, ::Any)
 
 @doc "$(_doc_exp_SE2_id)"
 function ManifoldsBase.exp!(
-    G::SpecialEuclideanGroup{<:ManifoldsBase.TypeParameter{Tuple{2}}},
-    g,
-    ::Identity{<:SpecialEuclideanOperation},
-    X,
+    G::SpecialEuclideanGroup{<:ManifoldsBase.TypeParameter{Tuple{2}}}, g, X
 )
     init_constants!(G, g)
     Y = submanifold_component(G, X, :Rotation)
@@ -352,16 +345,16 @@ function ManifoldsBase.exp!(
         copyto!(T2, t, R * v)
     end
     # compute exp(Y) in-place of R
-    exp!(SO2, R, Identity(SO2), Y)
+    exp!(SO2, R, Y)
     return g
 end
 
 _doc_exp_SE3_id = """
-    exp(G::SpecialEuclidean, e, X)
-    exp!(G::SpecialEuclideanG, e, g, X)
+    exp(G::SpecialEuclidean, X)
+    exp!(G::SpecialEuclideanG, g, X)
 
-Compute the Lie group exponential function on the [`SpecialEuclideanGroup`](@ref) `G```=$(_math(:SE))(3)``,
-where `e` is the [`Identity`](@ref) on ``$(_math(:SE))(3)`` `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{3}}` for dispatch.
+Compute the Lie group exponential function on the [`SpecialEuclideanGroup`](@ref) `G```=$(_math(:SE))(3)``
+using a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{3}}` for dispatch.
 
 Since ``X = (Y, v) ∈ $(_math(:se))(3)`` consists of a rotation component ``Y ∈ $(_math(:se))(3)`` and a translation component ``v ∈ $(_math(:t))(3)``,
 we can use [`vee`](@ref) on ``$(_math(:SO))(3)`` computing the coefficients norm to obtain the angle of rotation ``α``
@@ -394,10 +387,7 @@ ManifoldsBase.exp(
 
 @doc "$(_doc_exp_SE3_id)"
 function ManifoldsBase.exp!(
-    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
-    g,
-    ::Identity{<:SpecialEuclideanOperation},
-    X,
+    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, g, X
 )
     init_constants!(G, g)
     Y = submanifold_component(G, X, :Rotation)
@@ -416,13 +406,11 @@ function ManifoldsBase.exp!(
         copyto!(T3, t, R * v)
     end
     # compute exp(Y) in-place of R
-    exp!(SO3, R, Identity(SO3), Y)
+    exp!(SO3, R, Y)
     return g
 end
 
-function ManifoldsBase.exp!(
-    G::SpecialEuclideanGroup, g, ::Identity{<:SpecialEuclideanOperation}, X; AbstractMatrix
-) where {n}
+function ManifoldsBase.exp!(::SpecialEuclideanGroup, g, X)
     copyto!(g, exp(X))
     return g
 end
@@ -598,10 +586,7 @@ ManifoldsBase.log(
 
 @doc "$(_doc_log_SE2_id)"
 function ManifoldsBase.log!(
-    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
-    X,
-    ::Identity{<:SpecialEuclideanOperation},
-    g,
+    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, X, g
 )
     init_constants!(LieAlgebra(G), X)
     R = submanifold_component(G, g, :Rotation)
@@ -645,18 +630,11 @@ This result can be computed in-place of `g`.
 """
 
 @doc "$(_doc_log_SE3_id)"
-ManifoldsBase.log(
-    ::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
-    ::Identity{<:SpecialEuclideanOperation},
-    ::Any,
-)
+ManifoldsBase.log(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, ::Any)
 
 @doc "$(_doc_log_SE3_id)"
 function ManifoldsBase.log!(
-    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
-    X,
-    ::Identity{<:SpecialEuclideanOperation},
-    g,
+    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, X, g
 )
     init_constants!(LieAlgebra(G), X)
     R = submanifold_component(G, g, :Rotation)
@@ -676,28 +654,12 @@ function ManifoldsBase.log!(
     return X
 end
 
-function ManifoldsBase.log!(
-    ::LeftSpecialEuclideanGroup, X, ::Identity{LeftSpecialEuclideanOperation}, g
-)
+function ManifoldsBase.log!(::LeftSpecialEuclideanGroup, X, g)
     copyto!(X, log(g))
     return X
 end
-function ManifoldsBase.log!(
-    ::RightSpecialEuclideanGroup, X, ::Identity{RightSpecialEuclideanOperation}, g
-)
+function ManifoldsBase.log!(::RightSpecialEuclideanGroup, X, g)
     copyto!(X, log(g))
-    return X
-end
-function ManifoldsBase.log!(
-    G::LeftSpecialEuclideanGroup, X, e::O, ::O
-) where {O<:Identity{LeftSpecialEuclideanOperation}}
-    zero_vector!(G, e, X)
-    return X
-end
-function ManifoldsBase.log!(
-    G::RightSpecialEuclideanGroup, X, e::O, ::O
-) where {O<:Identity{RightSpecialEuclideanOperation}}
-    zero_vector!(G, e, X)
     return X
 end
 

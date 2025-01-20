@@ -33,13 +33,13 @@ using LieGroupsTestSuite
             LieGroups.identity_element(::typeof(G)) = :id
             LieGroups.identity_element(::typeof(G), T::Type) = :id
             LieGroups.identity_element!(::typeof(G), g) = (g[] = :id)
-            ManifoldsBase.exp!(::typeof(G), h, ::typeof(e), X, t::Number=1) = :id
-            @test exp(G, e, X) === :id
+            ManifoldsBase.exp!(::typeof(G), h, X) = :id
+            @test exp(G, X) === :id
             #
             # same for log
             ManifoldsBase.allocate_result(::typeof(G), ::typeof(log), g) = :g
-            ManifoldsBase.log!(::typeof(G), X, ::Identity, g) = :g
-            @test log(G, e, g) === :g
+            ManifoldsBase.log!(::typeof(G), X, g) = :g
+            @test log(G, g) === :g
             g2 = Ref(:g)
             inv!(G, g2, e)
             @test g2[] == :id
@@ -47,13 +47,13 @@ using LieGroupsTestSuite
             Base.delete_method(which(identity_element, (typeof(G),)))
             Base.delete_method(which(identity_element, (typeof(G), Type)))
             Base.delete_method(which(identity_element!, typeof.([G, g2])))
-            Base.delete_method(which(ManifoldsBase.exp!, typeof.([G, h, e, X, 1])))
+            Base.delete_method(which(ManifoldsBase.exp!, typeof.([G, h, X, 1])))
             Base.delete_method(which(ManifoldsBase.allocate_result, typeof.([G, log, g])))
-            Base.delete_method(which(ManifoldsBase.log!, typeof.([G, X, e, g])))
+            Base.delete_method(which(ManifoldsBase.log!, typeof.([G, X, g])))
         end
         # so they are undefined here again but we checked the exp fallback
-        @test_throws MethodError exp!(G, g, e, X)
-        @test_throws MethodError log!(G, X, e, g)
+        @test_throws MethodError exp!(G, g, X)
+        @test_throws MethodError log!(G, X, g)
     end
     @testset "Generic get_coordinates/get_vector passthrough on 𝔤" begin
         M = ManifoldsBase.DefaultManifold(2)

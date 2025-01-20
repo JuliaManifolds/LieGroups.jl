@@ -422,10 +422,10 @@ function test_exp_log(
         e = Identity(G)
         if test_exp
             # Lie group exp
-            k1 = exp(G, e, X)
+            k1 = exp(G, X)
             if test_mutating
                 k2 = copy(G, g)
-                exp!(G, k2, e, X)
+                exp!(G, k2, X)
                 @test isapprox(G, k1, k2)
             end
             @test is_point(G, k1; error=:error)
@@ -440,12 +440,12 @@ function test_exp_log(
         end
         if test_log
             # Lie group log
-            Y1 = log(G, e, g)
+            Y1 = log(G, g)
             if test_mutating
-                Y2 = zero_vector(G, e, typeof(X))
-                log!(G, Y2, e, g)
+                Y2 = zero_vector(G, typeof(X))
+                log!(G, Y2, g)
                 @test isapprox(𝔤, Y1, Y2)
-                log!(G, Y2, e, e)
+                log!(G, Y2, e)
                 @test isapprox(𝔤, Y2, 0 * Y2)
             end
             @test is_point(𝔤, Y1; error=:error)
@@ -462,23 +462,23 @@ function test_exp_log(
             # or equivalently
             @test is_vector(G, Identity(G), Y1; error=:error)
             @test is_vector(G, Y1; error=:error)
-            Y3 = zero_vector(G, e, typeof(X))
+            Y3 = zero_vector(G, typeof(X))
             @test isapprox(G, e, Y3, log(G, e, e); atol=atol)
-            log!(G, Y3, e, e)
+            log!(G, Y3, e)
             @test isapprox(G, e, Y3, log(G, e, e); atol=atol)
             @test isapprox(𝔤, log(G, g, g), Y3; atol=atol)
             @test isapprox(𝔤, log(G, h, h), Y3; atol=atol)
         end
         if test_exp && test_log
             # Lie group exp / log
-            k1 = exp(G, e, X)
-            Y1 = log(G, e, k1)
+            k1 = exp(G, X)
+            Y1 = log(G, k1)
             @test isapprox(𝔤, X, Y1)
             if test_mutating
                 k2 = copy(G, g)
-                exp!(G, k2, e, X)
+                exp!(G, k2, X)
                 Y2 = copy(G, g)
-                log!(G, Y2, e, k2)
+                log!(G, Y2, k2)
                 @test isapprox(𝔤, Y1, Y2)
             end
             # exp & log
@@ -529,7 +529,7 @@ function test_hat_vee(
             @test is_vector(G, g, Y1)
             !ismissing(expected_value) && @test isapprox(𝔤, X, Y1)
             if test_mutating
-                Y2 = zero_vector(𝔤)
+                Y2 = zero_vector(𝔤, typeof(Y1))
                 hat!(G, Y2, c)
                 @test isapprox(𝔤, Y1, Y2)
             end
@@ -546,10 +546,10 @@ function test_hat_vee(
             end
         end
         if test_hat && test_vee
-            Y1 = hat(G, vee(G, X))
+            Y1 = hat(G, vee(G, X), typeof(X))
             @test isapprox(𝔤, X, Y1)
             if test_mutating
-                Y2 = zero_vector(𝔤)
+                Y2 = zero_vector(𝔤, typeof(Y1))
                 c = zeros(manifold_dimension(G))
                 vee!(G, c, X)
                 hat!(G, Y2, c)
@@ -760,7 +760,7 @@ function test_rand(
         X1 = rand(G; vector_at=g1)
         @test is_vector(G, g1, X1; error=:error)
         if test_mutating
-            X2 = zero_vector(LieAlgebra(G), g1)
+            X2 = zero_vector(LieAlgebra(G), typeof(g1))
             rand!(G, X2; vector_at=g1)
             @test is_vector(G, g1, X2; error=:error)
         end

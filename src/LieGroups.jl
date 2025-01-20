@@ -48,19 +48,6 @@ include("groups/translation_group.jl")
 include("groups/general_linear_group.jl")
 include("groups/heisenberg_group.jl")
 
-# explicit method error to avoid stack overflow
-for GT in [LieGroup, HeisenbergGroup]
-    @eval begin
-        function ManifoldsBase.log!(G::$GT, X, e::Identity, g)
-            throw(
-                MethodError(
-                    ManifoldsBase.log!, (typeof(G), typeof(X), typeof(e), typeof(g))
-                ),
-            )
-        end
-    end
-end
-
 # includes generic implementations for O(n), U(n), SO(n), SO(n), so we load this first
 include("groups/unitary_group.jl")
 include("groups/orthogonal_group.jl")
