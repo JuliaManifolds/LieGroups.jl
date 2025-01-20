@@ -60,34 +60,24 @@ Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     return ManifoldsBase.submanifold_component(G.manifold, _value(g), 1)
 end
 
-function ManifoldsBase.zero_vector(
-    G::LieGroups.LeftSpecialEuclideanGroup,
-    e::Identity{LieGroups.SpecialEuclideanOperation},
-    ::ArrayPartition,
-)
+function ManifoldsBase.zero_vector(G::LieGroups.LeftSpecialEuclideanGroup, ::ArrayPartition)
     n = Manifolds.get_parameter(G.manifold[1].size)[1]
     return ArrayPartition(zeros(n, n), zeros(n))
 end
 function ManifoldsBase.zero_vector(
-    G::LieGroups.LeftSpecialEuclideanGroup,
-    e::Identity{LieGroups.SpecialEuclideanOperation},
-    ::SpecialEuclideanProductTVector,
+    G::LieGroups.LeftSpecialEuclideanGroup, ::SpecialEuclideanProductTVector
 )
     n = Manifolds.get_parameter(G.manifold[1].size)[1]
     return SpecialEuclideanProductTVector(ArrayPartition(zeros(n, n), zeros(n)))
 end
 function ManifoldsBase.zero_vector(
-    G::LieGroups.RightSpecialEuclideanGroup,
-    e::Identity{LieGroups.SpecialEuclideanOperation},
-    ::ArrayPartition,
+    G::LieGroups.RightSpecialEuclideanGroup, ::ArrayPartition
 )
     n = Manifolds.get_parameter(G.manifold[1].size)[1]
     return ArrayPartition(zeros(n), zeros(n, n))
 end
 function ManifoldsBase.zero_vector(
-    G::LieGroups.RightSpecialEuclideanGroup,
-    e::Identity{LieGroups.SpecialEuclideanOperation},
-    ::SpecialEuclideanProductTVector,
+    G::LieGroups.RightSpecialEuclideanGroup, ::SpecialEuclideanProductTVector
 )
     n = Manifolds.get_parameter(G.manifold[1].size)[1]
     return SpecialEuclideanProductTVector(ArrayPartition(zeros(n), zeros(n, n)))

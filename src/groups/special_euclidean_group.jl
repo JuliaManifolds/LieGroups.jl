@@ -196,6 +196,7 @@ end
 function ManifoldsBase.check_point(G::RightSpecialEuclideanGroup, p; kwargs...)
     return _check_point(G, G.manifold[2], G.manifold[1], G.op[2], G.op[1], p; kwargs...)
 end
+
 # Resolve ambiguities with identity
 function ManifoldsBase.check_point(
     G::LeftSpecialEuclideanGroup, ::Identity{LeftSemidirectProductGroupOperation}; kwargs...
@@ -209,7 +210,18 @@ function ManifoldsBase.check_point(
 )
     return nothing
 end
-
+function ManifoldsBase.check_point(
+    G::SpecialEuclideanGroup,
+    e::Identity;
+    kwargs...,)
+    return DomainError(
+        e,
+        """
+        The provided point $e is not the Identity on $G.
+        Expected an Identity corresponding to $(G.op).
+        """,
+    )
+end
 function _check_point(
     G::SpecialEuclideanGroup{T}, Rotn, Rn, op1, op2, p; kwargs...
 ) where {T}
@@ -351,7 +363,7 @@ end
 
 _doc_exp_SE3_id = """
     exp(G::SpecialEuclidean, X)
-    exp!(G::SpecialEuclideanG, g, X)
+    exp!(G::SpecialEuclidean, g, X)
 
 Compute the Lie group exponential function on the [`SpecialEuclideanGroup`](@ref) `G```=$(_math(:SE))(3)``
 using a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{3}}` for dispatch.
@@ -379,11 +391,7 @@ This result can be computed in-place of `g`.
 """
 
 @doc "$(_doc_exp_SE3_id)"
-ManifoldsBase.exp(
-    ::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
-    ::Identity{<:SpecialEuclideanOperation},
-    ::Any,
-)
+ManifoldsBase.exp(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, ::Any)
 
 @doc "$(_doc_exp_SE3_id)"
 function ManifoldsBase.exp!(
@@ -580,7 +588,6 @@ This result can be computed in-place of `g`.
 @doc "$(_doc_log_SE2_id)"
 ManifoldsBase.log(
     ::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
-    ::Identity{<:SpecialEuclideanOperation},
     ::Any,
 )
 

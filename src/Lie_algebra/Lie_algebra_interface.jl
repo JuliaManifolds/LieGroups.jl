@@ -100,9 +100,22 @@ function lie_bracket! end
 lie_bracket!(𝔤::LieAlgebra, Z, X, Y)
 
 function LinearAlgebra.norm(
-    G::LieGroup{𝔽,O}, ::Identity{O}, X
+    G::LieGroup{𝔽,O}, X
 ) where {𝔽,O<:AbstractGroupOperation}
     return LinearAlgebra.norm(G, identity_element(G), X)
+end
+# Avoid an ambiguity
+function LinearAlgebra.norm(
+    G::LieGroup{𝔽,O}, X::Real
+) where {𝔽,O<:AbstractGroupOperation}
+    return LinearAlgebra.norm(G, identity_element(G), X)
+end
+
+function ManifoldsBase.project!(𝔤::LieAlgebra, Y, X)
+    ManifoldsBase.project!(𝔤.manifold.manifold, Y, identity_element(𝔤.manifold), X)
+end
+function ManifoldsBase.project!(𝔤::LieAlgebra, W, X, V)
+    return ManifoldsBase.project!(𝔤.manifold.manifold, W, identity_element(𝔤.manifold), V)
 end
 
 _doc_rand_algebra = """

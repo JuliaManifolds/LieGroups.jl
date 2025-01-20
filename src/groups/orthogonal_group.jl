@@ -305,7 +305,6 @@ get_vector!(G::OrthogonalGroup, c, e, X::DefaultLieAlgebraOrthogonalBasis)
 function get_vector_lie!(
     G::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
     X,
-    ::Identity{MatrixMultiplicationGroupOperation},
     c,
     ::ManifoldsBase.RealNumbers,
 )
@@ -320,7 +319,6 @@ end
 function get_vector_lie!(
     G::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{n}}},
     X,
-    ::Identity{MatrixMultiplicationGroupOperation},
     c,
     ::ManifoldsBase.RealNumbers,
 ) where {n}
@@ -333,7 +331,6 @@ end
 function get_vector_lie!(
     G::CommonUnitarySubGroups{ManifoldsBase.ℝ},
     X,
-    ::Identity{MatrixMultiplicationGroupOperation},
     c,
     ::ManifoldsBase.RealNumbers,
 )
@@ -494,21 +491,21 @@ end
 # TODO: Maybe combine the following 3 dispatches?
 function Base.log(
     G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
-    e::Identity{MatrixMultiplicationGroupOperation},
+    ::Identity{MatrixMultiplicationGroupOperation},
 )
-    return zero_vector(G, e)
+    return zero_vector(G)
 end
 function Base.log(
     G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
-    e::Identity{MatrixMultiplicationGroupOperation},
+    ::Identity{MatrixMultiplicationGroupOperation},
 )
-    return zero_vector(G, e)
+    return zero_vector(G)
 end
 function Base.log(
     G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{4}}},
-    e::Identity{MatrixMultiplicationGroupOperation},
+    ::Identity{MatrixMultiplicationGroupOperation},
 )
-    return zero_vector(G, e)
+    return zero_vector(G)
 end
 
 function ManifoldsBase.log!(
@@ -544,11 +541,11 @@ function ManifoldsBase.log!(
         ival = findfirst(λ -> isapprox(λ, 1), eig.values)
         inds = SVector{3}(1:3)
         ax = eig.vectors[inds, ival]
-        return get_vector!(G, X, e, π * ax, DefaultLieAlgebraOrthogonalBasis())
+        return get_vector!(G, X, π * ax, DefaultLieAlgebraOrthogonalBasis())
     end
     X .= q ./ usinc_from_cos(cosθ)
     # project onto 𝔰𝔬(3) for numerical stability
-    return project!(G, X, e, X)
+    return project!(LieAlgebra(G), X, X)
 end
 function ManifoldsBase.log!(
     G::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{4}}},

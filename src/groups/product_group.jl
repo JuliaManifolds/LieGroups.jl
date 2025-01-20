@@ -201,6 +201,20 @@ function ManifoldsBase.exp!(
     return h
 end
 
+function ManifoldsBase.exp!(
+    PrG::LieGroup{𝔽,Op,M}, h, g, X
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PrM = PrG.manifold
+    map(
+        (M, h, g, X) -> exp!(M, h, g, X), # introduce a function with “hard coded” t
+        map(LieGroup, PrM.manifolds, PrG.op.operations),
+        submanifold_components(PrM, h),
+        submanifold_components(PrM, g),
+        submanifold_components(PrM, X),
+    )
+    return h
+end
+
 function hat!(
     PrG::LieGroup{𝔽,Op,M}, X, c
 ) where {𝔽,Op<:AbstractProductGroupOperation,M<:ManifoldsBase.ProductManifold}
@@ -277,6 +291,27 @@ function ManifoldsBase.log!(
         map(LieGroup, PrM.manifolds, PrG.op.operations),
         submanifold_components(PrM, X),
         submanifold_components(PrM, g),
+    )
+    return X
+end
+
+function ManifoldsBase.log!(
+    PrG::LieGroup{𝔽,Op,M}, X, ::Identity
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    zero_vector!(PrG, X)
+    return X
+end
+
+function ManifoldsBase.log!(
+    PrG::LieGroup{𝔽,Op,M}, X, g, h,
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PrM = PrG.manifold
+    map(
+        log!,
+        map(LieGroup, PrM.manifolds, PrG.op.operations),
+        submanifold_components(PrM, X),
+        submanifold_components(PrM, g),
+        submanifold_components(PrM, h),
     )
     return X
 end

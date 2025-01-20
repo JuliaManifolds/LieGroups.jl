@@ -201,7 +201,7 @@ ManifoldsBase.log(::LieGroup{𝔽,AdditionGroupOperation}, q) where {𝔽} = q
 function ManifoldsBase.log!(G::LieGroup{𝔽,AdditionGroupOperation}, X, g) where {𝔽}
     return copyto!(G, X, g)
 end
-function ManifoldsBase.log!(G::LieGroup{𝔽,AdditionGroupOperation}, X) where {𝔽}
+function ManifoldsBase.log!(G::LieGroup{𝔽,AdditionGroupOperation}, X, ::Identity{AdditionGroupOperation}) where {𝔽}
     return fill!(X, 0)
 end
 function ManifoldsBase.log(

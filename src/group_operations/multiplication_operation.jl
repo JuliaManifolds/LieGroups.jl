@@ -293,12 +293,26 @@ This can be computed in-place of `X`.
 @doc "$(_doc_log_mult)"
 Base.log(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, g) where {𝔽} = log(g)
 
+function ManifoldsBase.log(
+    G::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
+    ::Identity{MatrixMultiplicationGroupOperation},
+) where {𝔽}
+    return zero_vector(G)
+end
+
+
 @doc "$(_doc_log_mult)"
 function ManifoldsBase.log!(
     ::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, X, g
 ) where {𝔽}
     copyto!(X, log(g))
     return X
+end
+
+function ManifoldsBase.log!(
+    G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, X, e::Identity{MatrixMultiplicationGroupOperation}
+) where {𝔽}
+    return zero_vector!(G, X)
 end
 
 LinearAlgebra.mul!(q, ::Identity{<:AbstractMultiplicationGroupOperation}, p) = copyto!(q, p)

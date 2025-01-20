@@ -146,9 +146,18 @@ function ManifoldsBase.log!(G::HeisenbergGroup, X, g, h)
     X[1, n + 2] = pinvq_c - dot(a_q_view - a_p_view, b_q_view - b_p_view) / 2
     return X
 end
+function ManifoldsBase.log!(
+    ::HeisenbergGroup,
+    X,
+    ::Identity{MatrixMultiplicationGroupOperation},
+    ::Identity{MatrixMultiplicationGroupOperation},
+)
+    fill!(X,0)
+    return X
+end
 
 @doc raw"""
-    log(G::HeisenbergGroup, ::Identity{MatrixMultiplicationGroupOperation}, g)
+    log(G::HeisenbergGroup, g)
 
 Lie group logarithm for the [`HeisenbergGroup`](@ref) `G` of the point `g`.
 The formula reads

@@ -47,7 +47,7 @@ using LieGroupsTestSuite
             Base.delete_method(which(identity_element, (typeof(G),)))
             Base.delete_method(which(identity_element, (typeof(G), Type)))
             Base.delete_method(which(identity_element!, typeof.([G, g2])))
-            Base.delete_method(which(ManifoldsBase.exp!, typeof.([G, h, X, 1])))
+            Base.delete_method(which(ManifoldsBase.exp!, typeof.([G, h, X])))
             Base.delete_method(which(ManifoldsBase.allocate_result, typeof.([G, log, g])))
             Base.delete_method(which(ManifoldsBase.log!, typeof.([G, X, g])))
         end
@@ -65,14 +65,14 @@ using LieGroupsTestSuite
         q = [0.0, 0.0]
         # coordinates and vector on 𝔤 are here the same as the ones on M at 0
         X = [1.0, 0.0]
-        @test get_coordinates(G, q, X, B2) == get_coordinates(M, q, X, B)
+        @test get_coordinates(G, X, B2) == get_coordinates(M, q, X, B)
         Y = copy(X)
-        @test get_coordinates!(G, q, Y, X, B2) == get_coordinates!(M, Y, q, X, B)
+        @test get_coordinates!(G, Y, X, B2) == get_coordinates!(M, Y, q, X, B)
         @test X == Y
         c = [0.0, 1.0]
-        @test get_vector(G, q, c, B2) == get_vector(M, q, c, B)
+        @test get_vector(G, c, B2) == get_vector(M, q, c, B)
         d = copy(c)
-        @test get_vector!(G, q, d, c, B2) == get_vector!(M, d, q, c, B)
+        @test get_vector!(G, d, c, B2) == get_vector!(M, d, q, c, B)
         @test c == d
     end
 end

@@ -460,12 +460,12 @@ function test_exp_log(
             end
             @test is_point(𝔤, Y1; error=:error)
             # or equivalently
-            @test is_vector(G, Identity(G), Y1; error=:error)
+            @test is_vector(G, Y1; error=:error)
             @test is_vector(G, Y1; error=:error)
             Y3 = zero_vector(G, typeof(X))
-            @test isapprox(G, e, Y3, log(G, e, e); atol=atol)
+            @test isapprox(LieAlgebra(G), Y3, log(G, e); atol=atol)
             log!(G, Y3, e)
-            @test isapprox(G, e, Y3, log(G, e, e); atol=atol)
+            @test isapprox(G, e, Y3, log(G, e); atol=atol)
             @test isapprox(𝔤, log(G, g, g), Y3; atol=atol)
             @test isapprox(𝔤, log(G, h, h), Y3; atol=atol)
         end
@@ -526,7 +526,7 @@ function test_hat_vee(
         if test_hat
             c = ismissing(expected_value) ? zeros(manifold_dimension(G)) : expected_value
             Y1 = hat(G, c, typeof(X))
-            @test is_vector(G, g, Y1)
+            @test is_vector(G, Y1)
             !ismissing(expected_value) && @test isapprox(𝔤, X, Y1)
             if test_mutating
                 Y2 = zero_vector(𝔤, typeof(Y1))
