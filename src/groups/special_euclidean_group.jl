@@ -609,7 +609,7 @@ end
 function ManifoldsBase.log!(
     G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
     X,
-    ::Identity{<:LeftSpecialEuclideanOperation}
+    ::Identity{<:LeftSpecialEuclideanOperation},
 )
     return ManifoldsBase.zero_vector!(G, X)
 end

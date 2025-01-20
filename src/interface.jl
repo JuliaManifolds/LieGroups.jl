@@ -505,7 +505,9 @@ function ManifoldsBase.get_coordinates!(
     return ManifoldsBase._get_coordinates!(G, c, X, B)
 end
 function ManifoldsBase._get_coordinates!(G::LieGroup, c, X, B::ManifoldsBase.AbstractBasis)
-    return ManifoldsBase.get_coordinates!(G.manifold, c, identity_element(G, typeof(X)), X, B)
+    return ManifoldsBase.get_coordinates!(
+        G.manifold, c, identity_element(G, typeof(X)), X, B
+    )
 end
 
 function get_coordinates_lie(G::LieGroup, X, N)
@@ -514,7 +516,11 @@ function get_coordinates_lie(G::LieGroup, X, N)
 end
 function get_coordinates_lie!(G::LieGroup, c, X, N)
     return get_coordinates!(
-        base_manifold(G), c, identity_element(G, typeof(X)), X, ManifoldsBase.DefaultOrthogonalBasis(N)
+        base_manifold(G),
+        c,
+        identity_element(G, typeof(X)),
+        X,
+        ManifoldsBase.DefaultOrthogonalBasis(N),
     )
 end
 
