@@ -939,6 +939,8 @@ end
 
 ManifoldsBase.manifold_dimension(G::LieGroup) = manifold_dimension(G.manifold)
 
+ManifoldsBase.norm(G::LieGroup, g, X) = norm(G.manifold, identity_element(G, typeof(g)), X)
+
 ManifoldsBase.project!(G::LieGroup, h, g) = project!(G.manifold, h, g)
 # Since tangent vectors are always in the Lie algebra – do project always on TeG
 function ManifoldsBase.project!(G::LieGroup, Y, g, X)
