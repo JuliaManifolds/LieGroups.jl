@@ -329,10 +329,7 @@ function get_vector_lie!(
     return X
 end
 function get_vector_lie!(
-    G::CommonUnitarySubGroups{ManifoldsBase.ℝ},
-    X,
-    c,
-    ::ManifoldsBase.RealNumbers,
+    G::CommonUnitarySubGroups{ManifoldsBase.ℝ}, X, c, ::ManifoldsBase.RealNumbers
 )
     n = ManifoldsBase.get_parameter(G.manifold.size)[1]
     @assert length(c) == manifold_dimension(G)

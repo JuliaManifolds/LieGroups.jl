@@ -300,7 +300,6 @@ function ManifoldsBase.log(
     return zero_vector(G)
 end
 
-
 @doc "$(_doc_log_mult)"
 function ManifoldsBase.log!(
     ::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, X, g
@@ -310,7 +309,9 @@ function ManifoldsBase.log!(
 end
 
 function ManifoldsBase.log!(
-    G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, X, e::Identity{MatrixMultiplicationGroupOperation}
+    G::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
+    X,
+    e::Identity{MatrixMultiplicationGroupOperation},
 ) where {𝔽}
     return zero_vector!(G, X)
 end

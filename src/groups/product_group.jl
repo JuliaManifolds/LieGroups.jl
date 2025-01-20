@@ -303,7 +303,7 @@ function ManifoldsBase.log!(
 end
 
 function ManifoldsBase.log!(
-    PrG::LieGroup{𝔽,Op,M}, X, g, h,
+    PrG::LieGroup{𝔽,Op,M}, X, g, h
 ) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     PrM = PrG.manifold
     map(

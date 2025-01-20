@@ -210,10 +210,7 @@ function ManifoldsBase.check_point(
 )
     return nothing
 end
-function ManifoldsBase.check_point(
-    G::SpecialEuclideanGroup,
-    e::Identity;
-    kwargs...,)
+function ManifoldsBase.check_point(G::SpecialEuclideanGroup, e::Identity; kwargs...)
     return DomainError(
         e,
         """
@@ -586,10 +583,7 @@ This result can be computed in-place of `g`.
 """
 
 @doc "$(_doc_log_SE2_id)"
-ManifoldsBase.log(
-    ::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
-    ::Any,
-)
+ManifoldsBase.log(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, ::Any)
 
 @doc "$(_doc_log_SE2_id)"
 function ManifoldsBase.log!(

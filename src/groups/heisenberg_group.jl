@@ -152,7 +152,7 @@ function ManifoldsBase.log!(
     ::Identity{MatrixMultiplicationGroupOperation},
     ::Identity{MatrixMultiplicationGroupOperation},
 )
-    fill!(X,0)
+    fill!(X, 0)
     return X
 end
 

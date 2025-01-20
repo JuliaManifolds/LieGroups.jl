@@ -493,9 +493,7 @@ ManifoldsBase.get_coordinates(G::LieGroup, X, B::ManifoldsBase.AbstractBasis)
 ManifoldsBase.get_coordinates!(G::LieGroup, c, X, B::ManifoldsBase.AbstractBasis)
 
 function get_coordinates_lie(G::LieGroup, X, N)
-    c = allocate_result(
-        G, get_coordinates, X
-    )
+    c = allocate_result(G, get_coordinates, X)
 
     return get_coordinates_lie!(G, c, X, N)
 end
@@ -532,11 +530,7 @@ See also [`hat`](@ref)
 
 @doc "$(_doc_get_vector)"
 function ManifoldsBase.get_vector(
-    G::LieGroup,
-    c,
-    B::ManifoldsBase.AbstractBasis;
-    tangent_vector_type=nothing,
-    kwargs...,
+    G::LieGroup, c, B::ManifoldsBase.AbstractBasis; tangent_vector_type=nothing, kwargs...
 )
     return ManifoldsBase._get_vector(G, c, B, tangent_vector_type)
 end
