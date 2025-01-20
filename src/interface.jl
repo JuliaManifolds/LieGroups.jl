@@ -127,9 +127,9 @@ abstract type AbstractLieAlgebraTVector <: ManifoldsBase.TVector end
     return get_coordinates_lie(G, X, number_system(B))
 end
 @inline function ManifoldsBase._get_coordinates!(
-    G::LieGroup, Y, X, B::DefaultLieAlgebraOrthogonalBasis
+    G::LieGroup, c, X, B::DefaultLieAlgebraOrthogonalBasis
 )
-    return get_coordinates_lie!(G, Y, X, number_system(B))
+    return get_coordinates_lie!(G, c, X, number_system(B))
 end
 @inline function ManifoldsBase._get_vector(
     G::LieGroup, c, B::DefaultLieAlgebraOrthogonalBasis
@@ -487,19 +487,34 @@ See also [`vee`](@ref).
 """
 
 @doc "$(_doc_get_coordinates)"
-ManifoldsBase.get_coordinates(G::LieGroup, X, B::ManifoldsBase.AbstractBasis)
+function ManifoldsBase.get_coordinates(
+    G::LieGroup, X, B::ManifoldsBase.AbstractBasis=DefaultLieAlgebraOrthogonalBasis()
+)
+    return ManifoldsBase._get_coordinates(G, X, B)
+end
+@inline function ManifoldsBase._get_coordinates(
+    G::LieGroup, X, B::ManifoldsBase.AbstractBasis
+)
+    return get_coordinates(G.manifold, identity_element(G), X, B)
+end
 
-@doc "$(_doc_exp_id)"
-ManifoldsBase.get_coordinates!(G::LieGroup, c, X, B::ManifoldsBase.AbstractBasis)
+@doc "$(_doc_get_coordinates)"
+function ManifoldsBase.get_coordinates!(
+    G::LieGroup, c, X, B::ManifoldsBase.AbstractBasis=DefaultLieAlgebraOrthogonalBasis()
+)
+    return ManifoldsBase._get_coordinates!(G, c, X, B)
+end
+function ManifoldsBase._get_coordinates!(G::LieGroup, c, X, B::ManifoldsBase.AbstractBasis)
+    return ManifoldsBase.get_coordinates!(G.manifold, c, identity_element(G, typeof(X)), X, B)
+end
 
 function get_coordinates_lie(G::LieGroup, X, N)
-    c = allocate_result(G, get_coordinates, X)
-
+    c = allocate_result(G, get_coordinates, X, DefaultLieAlgebraOrthogonalBasis(N))
     return get_coordinates_lie!(G, c, X, N)
 end
 function get_coordinates_lie!(G::LieGroup, c, X, N)
     return get_coordinates!(
-        base_manifold(G), c, identity_element(G), X, ManifoldsBase.DefaultOrthogonalBasis(N)
+        base_manifold(G), c, identity_element(G, typeof(X)), X, ManifoldsBase.DefaultOrthogonalBasis(N)
     )
 end
 
@@ -530,19 +545,33 @@ See also [`hat`](@ref)
 
 @doc "$(_doc_get_vector)"
 function ManifoldsBase.get_vector(
-    G::LieGroup, c, B::ManifoldsBase.AbstractBasis; tangent_vector_type=nothing, kwargs...
+    G::LieGroup,
+    c,
+    B::ManifoldsBase.AbstractBasis=DefaultLieAlgebraOrthogonalBasis();
+    tangent_vector_type=nothing,
+    kwargs...,
 )
     return ManifoldsBase._get_vector(G, c, B, tangent_vector_type)
+end
+
+@doc "$(_doc_get_vector)"
+function ManifoldsBase.get_vector!(
+    G::LieGroup, X, c, B::ManifoldsBase.AbstractBasis=DefaultLieAlgebraOrthogonalBasis()
+)
+    return ManifoldsBase._get_vector!(G, X, c, B)
+end
+function ManifoldsBase._get_vector!(G::LieGroup, X, c, B::ManifoldsBase.AbstractBasis)
+    return ManifoldsBase.get_vector!(G.manifold, X, identity_element(G), c, B)
 end
 # Overwrite layer 2 since we do not have a base point and as well if a basis is provided and if we get nothing
 # (define for all basis when moving this to Base)
 @inline function ManifoldsBase._get_vector(
-    M::AbstractManifold, c, B::DefaultLieAlgebraOrthogonalBasis, ::Nothing
+    M::LieGroup, c, B::DefaultLieAlgebraOrthogonalBasis, ::Nothing
 )
     return get_vector_lie(M, c, number_system(B))
 end
 @inline function ManifoldsBase._get_vector(
-    M::AbstractManifold, c, B::DefaultLieAlgebraOrthogonalBasis, T::Type
+    M::LieGroup, c, B::DefaultLieAlgebraOrthogonalBasis, T::Type
 )
     return get_vector_lie(M, c, number_system(B), T)
 end
@@ -904,8 +933,6 @@ end
 
 ManifoldsBase.manifold_dimension(G::LieGroup) = manifold_dimension(G.manifold)
 
-ManifoldsBase.norm(G::LieGroup, g, X) = norm(G.manifold, identity_element(G, typeof(g)), X)
-
 ManifoldsBase.project!(G::LieGroup, h, g) = project!(G.manifold, h, g)
 # Since tangent vectors are always in the Lie algebra – do project always on TeG
 function ManifoldsBase.project!(G::LieGroup, Y, g, X)
@@ -1041,15 +1068,15 @@ ManifoldsBase.zero_vector(G::LieGroup{𝔽,<:O}, T::Type) where {𝔽,O<:Abstrac
 function ManifoldsBase.zero_vector(
     G::LieGroup{𝔽,<:O}, T::Type
 ) where {𝔽,O<:AbstractGroupOperation}
-    return zero_vector(G.manifold, identity_element(G, T))
+    return ManifoldsBase.zero_vector(G.manifold, identity_element(G, T))
 end
 function ManifoldsBase.zero_vector(G::LieGroup{𝔽,<:O}) where {𝔽,O<:AbstractGroupOperation}
-    return zero_vector(G.manifold, identity_element(G))
+    return ManifoldsBase.zero_vector(G.manifold, identity_element(G))
 end
 function ManifoldsBase.zero_vector!(
     G::LieGroup{𝔽,<:O}, X
 ) where {𝔽,O<:AbstractGroupOperation}
-    return zero_vector!(G.manifold, X, identity_element(G))
+    return ManifoldsBase.zero_vector!(G.manifold, X, identity_element(G))
 end
 
 #
@@ -1079,7 +1106,12 @@ function ManifoldsBase.allocate_result(
     # both get a type allocated like rand
     return ManifoldsBase.allocate_result(G.manifold, rand)
 end
-
+function ManifoldsBase.allocate_result(
+    M::LieGroup, f::typeof(ManifoldsBase.get_coordinates), X, basis::AbstractBasis{𝔽}
+) where {𝔽}
+    T = ManifoldsBase.coordinate_eltype(M, X, 𝔽)
+    return ManifoldsBase.allocate_coordinates(M, X, T, number_of_coordinates(M, basis))
+end
 # fallback macro
 
 """

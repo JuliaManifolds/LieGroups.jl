@@ -163,25 +163,6 @@ function SpecialEuclideanGroup(n; variant=:left, kwargs...)
     return variant === :left ? SOn ⋉ Tn : Tn ⋊ SOn
 end
 
-"""
-    default_left_action(G::SpecialOrthogonalGroup, ::TranslationGroup)
-
-Return the default left action for the special Euclidean group ``$(_math(:SO))(n) ⋊ $(_math(:T))(n)``,
-that is the [`GroupOperationAction`](@ref)`(`[`LeftGroupOperationAction`](@ref)`(G.op))`.
-"""
-default_left_action(::SpecialOrthogonalGroup, ::TranslationGroup) =
-    LeftGroupOperationAction()
-
-"""
-    default_right_action(::TranslationGroup, G::SpecialOrthogonalGroup)
-
-Return the default right action for the special Euclidean group,
-that is the [`GroupOperationAction`](@ref)`(`[`LeftGroupOperationAction`](@ref)`(G.op))`.
-"""
-function default_right_action(::TranslationGroup, ::SpecialOrthogonalGroup)
-    return LeftGroupOperationAction()
-end
-
 function _check_matrix_affine(p, n; v=1, kwargs...)
     if !isapprox(p[end, :], [zeros(size(p, 2) - 1)..., v]; kwargs...)
         return nothing
@@ -300,6 +281,25 @@ function _compose!(
 )
     copyto!(k, g * h)
     return k
+end
+
+"""
+    default_left_action(G::SpecialOrthogonalGroup, ::TranslationGroup)
+
+Return the default left action for the special Euclidean group ``$(_math(:SO))(n) ⋊ $(_math(:T))(n)``,
+that is the [`GroupOperationAction`](@ref)`(`[`LeftGroupOperationAction`](@ref)`(G.op))`.
+"""
+default_left_action(::SpecialOrthogonalGroup, ::TranslationGroup) =
+    LeftGroupOperationAction()
+
+"""
+    default_right_action(::TranslationGroup, G::SpecialOrthogonalGroup)
+
+Return the default right action for the special Euclidean group,
+that is the [`GroupOperationAction`](@ref)`(`[`LeftGroupOperationAction`](@ref)`(G.op))`.
+"""
+function default_right_action(::TranslationGroup, ::SpecialOrthogonalGroup)
+    return LeftGroupOperationAction()
 end
 
 _doc_exp_SE2_id = """
@@ -606,6 +606,13 @@ function ManifoldsBase.log!(
     end
     return X
 end
+function ManifoldsBase.log!(
+    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
+    X,
+    ::Identity{<:LeftSpecialEuclideanOperation}
+)
+    return ManifoldsBase.zero_vector!(G, X)
+end
 
 _doc_log_SE3_id = """
     log(G::SpecialEuclidean, e, g)
@@ -653,6 +660,13 @@ function ManifoldsBase.log!(
         mul!(v, Vα, t)
     end
     return X
+end
+function ManifoldsBase.log!(
+    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
+    X,
+    ::Identity{<:LeftSpecialEuclideanOperation},
+)
+    return ManifoldsBase.zero_vector!(G, X)
 end
 
 function ManifoldsBase.log!(::LeftSpecialEuclideanGroup, X, g)
@@ -768,8 +782,13 @@ Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
 end
 
 function ManifoldsBase.zero_vector(
-    G::SpecialEuclideanGroup, ::Identity{<:SpecialEuclideanOperation}
+    G::SpecialEuclideanGroup, ::Type{<:AbstractMatrix}=AbstractMatrix
 )
     n = Manifolds.get_parameter(G.manifold[1].size)[1]
     return zeros(n + 1, n + 1)
+end
+
+function ManifoldsBase.zero_vector!(G::SpecialEuclideanGroup, X::AbstractMatrix)
+    fill!(X, 0)
+    return X
 end
