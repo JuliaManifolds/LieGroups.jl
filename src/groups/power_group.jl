@@ -201,17 +201,33 @@ function ManifoldsBase.exp!(
     return h
 end
 
-function ManifoldsBase.exp!(
+function exponential!(
     PoG::LieGroup{𝔽,Op,M}, h, X
 ) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
     PM = PoG.manifold
     rep_size = representation_size(PM)
     G = LieGroup(PM.manifold, PoG.op.op)
     for i in ManifoldsBase.get_iterator(PM)
-        exp!(
+        exponential!(
             G,
             ManifoldsBase._write(PM, rep_size, h, i),
             ManifoldsBase._read(PM, rep_size, X, i),
+        )
+    end
+    return h
+end
+function exponential!(
+    PoG::LieGroup{𝔽,Op,M}, h, X, t::Number
+) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
+    PM = PoG.manifold
+    rep_size = representation_size(PM)
+    G = LieGroup(PM.manifold, PoG.op.op)
+    for i in ManifoldsBase.get_iterator(PM)
+        exponential!(
+            G,
+            ManifoldsBase._write(PM, rep_size, h, i),
+            ManifoldsBase._read(PM, rep_size, X, i),
+            t,
         )
     end
     return h
@@ -289,7 +305,7 @@ function lie_bracket!(
     return Z
 end
 
-function ManifoldsBase.log!(
+function logarithm!(
     PoG::LieGroup{𝔽,Op,M}, X, g
 ) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
     PM = PoG.manifold
@@ -297,14 +313,19 @@ function ManifoldsBase.log!(
     G = LieGroup(PM.manifold, PoG.op.op)
     e_g = Identity(G.op)
     for i in ManifoldsBase.get_iterator(PM)
-        log!(
+        logarithm!(
             G,
             ManifoldsBase._write(PM, rep_size, X, i),
-            e_g,
             ManifoldsBase._read(PM, rep_size, g, i),
         )
     end
     return X
+end
+
+function logarithm!(
+    G::LieGroup{𝔽,Op,M}, X, ::Identity{Op}
+) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
+    return zero_vector!(G, X)
 end
 
 function ManifoldsBase.log!(

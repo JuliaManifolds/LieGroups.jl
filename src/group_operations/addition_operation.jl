@@ -109,8 +109,8 @@ function diff_right_compose!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, 
 end
 
 _doc_exp_add = """
-    exp(G::LieGroup{𝔽,AdditionGroupOperation}, X)
-    exp!(G::LieGroup{𝔽,AdditionGroupOperation}, g, X)
+    exponential(G::LieGroup{𝔽,AdditionGroupOperation}, X)
+    exponential!(G::LieGroup{𝔽,AdditionGroupOperation}, g, X)
 
 Compute the Lie group exponential on a [`LieGroup`](@ref) with an [`AdditionGroupOperation`](@ref).
 This can be computed in-place of `g`.
@@ -119,10 +119,10 @@ Since `e` is just the zero-element with respect to the corresponding `+`, the fo
 """
 
 @doc "$(_doc_exp_add)"
-Base.exp(::LieGroup{𝔽,AdditionGroupOperation}, X) where {𝔽} = X
+exponential(::LieGroup{𝔽,AdditionGroupOperation}, X) where {𝔽} = X
 
 @doc "$(_doc_exp_add)"
-function ManifoldsBase.exp!(::LieGroup{𝔽,AdditionGroupOperation}, g, X) where {𝔽}
+function exponential!(::LieGroup{𝔽,AdditionGroupOperation}, g, X) where {𝔽}
     g .= X
     return g
 end
@@ -205,7 +205,7 @@ end
 function logarithm(
     G::LieGroup{𝔽,AdditionGroupOperation}, ::Identity{AdditionGroupOperation}, T::Type
 ) where {𝔽}
-    return zero_vector(G, e, T)
+    return zero_vector(LieAlgebra(G), T)
 end
 
 @doc "$(_doc_logarithm_add)"

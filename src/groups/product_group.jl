@@ -193,12 +193,12 @@ function diff_right_compose!(
     return Y
 end
 
-function ManifoldsBase.exp!(
+function exponential!(
     PrG::LieGroup{𝔽,Op,M}, h, X
 ) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     PrM = PrG.manifold
     map(
-        (M, h, X) -> exp!(M, h, X), # introduce a function with “hard coded” t
+        (M, h, X) -> exponential!(M, h, X), # introduce a function with “hard coded” t
         map(LieGroup, PrM.manifolds, PrG.op.operations),
         submanifold_components(PrM, h),
         submanifold_components(PrM, X),
@@ -287,12 +287,12 @@ function lie_bracket!(
     return Z
 end
 
-function ManifoldsBase.log!(
+function logarithm!(
     PrG::LieGroup{𝔽,Op,M}, X, g
 ) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     PrM = PrG.manifold
     map(
-        log!,
+        logarithm!,
         map(LieGroup, PrM.manifolds, PrG.op.operations),
         submanifold_components(PrM, X),
         submanifold_components(PrM, g),
@@ -300,8 +300,8 @@ function ManifoldsBase.log!(
     return X
 end
 
-function ManifoldsBase.log!(
-    PrG::LieGroup{𝔽,Op,M}, X, ::Identity
+function logarithm!(
+    PrG::LieGroup{𝔽,Op,M}, X, ::Identity{Op}
 ) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     zero_vector!(PrG, X)
     return X
@@ -312,7 +312,7 @@ function ManifoldsBase.log!(
 ) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     PrM = PrG.manifold
     map(
-        log!,
+        ManifoldsBase.log!,
         map(LieGroup, PrM.manifolds, PrG.op.operations),
         submanifold_components(PrM, X),
         submanifold_components(PrM, g),

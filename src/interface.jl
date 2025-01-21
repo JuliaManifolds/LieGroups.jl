@@ -949,7 +949,9 @@ function logarithm! end
 @doc "$(_doc_logarithm)"
 logarithm!(G::LieGroup, ::Any, ::Any)
 
-function logarithm!(G::LieGroup, X, e::Identity)
+function logarithm!(
+    G::LieGroup{𝔽,Op}, X, e::Identity{Op}
+) where {𝔽,Op<:AbstractGroupOperation}
     return zero_vector!(G, X)
 end
 

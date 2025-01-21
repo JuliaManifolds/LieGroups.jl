@@ -70,9 +70,11 @@ This falls back to checking whether `X` is a valid point on the tangent space
 at the [`identity_element`](@ref)`(G)` on `G.manifold` on the [`LieGroup`](@ref)
 of `G`
 """
-function ManifoldsBase.is_point(𝔤::LieAlgebra, X; kwargs...)
+function ManifoldsBase.is_point(𝔤::LieAlgebra, X::T; kwargs...) where {T}
     # the manifold stored in the Fiber / Lie algebra is the Lie group G
-    return ManifoldsBase.is_vector(𝔤.manifold, Identity(𝔤.manifold), X; kwargs...)
+    return ManifoldsBase.is_vector(
+        𝔤.manifold, identity_element(𝔤.manifold, T), X; kwargs...
+    )
 end
 
 _doc_lie_bracket = """

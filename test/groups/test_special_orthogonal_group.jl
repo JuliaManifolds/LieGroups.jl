@@ -98,7 +98,7 @@ begin
         e = Identity(J)
         X = zero_vector(J)
         d = vee(J, X)
-        p = exp(J, X)
+        p = exponential(J, X)
         for c in LieGroupsTestSuite.𝔰𝔬4_edges_cases_explog
             @testset "$c on $J" begin
                 hat!(J, X, c)

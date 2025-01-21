@@ -54,9 +54,9 @@ end
         q = exp(G, p, X)
         Y = log(G, p, q)
         @test Y ≈ X
-        @test exp(G, X) ≈ exp(X)
-        @test log(G, exp(X)) ≈ X
-        log(G, Identity(G)) == zeros(1, 1) # Matrix to matrix
+        @test exponential(G, X) ≈ exp(X)
+        @test logarithm(G, exp(X)) ≈ X
+        logarithm(G, Identity(G)) == zeros(1, 1) # Matrix to matrix
     end
     @testset "complex" begin
         G = GeneralLinearGroup(1; field=ℂ)
@@ -67,7 +67,7 @@ end
         q = exp(G, p, X)
         Y = log(G, p, q)
         @test Y ≈ X
-        @test exp(G, X) ≈ exp(X)
-        @test log(G, exp(X)) ≈ X
+        @test exponential(G, X) ≈ exp(X)
+        @test logarithm(G, exp(X)) ≈ X
     end
 end

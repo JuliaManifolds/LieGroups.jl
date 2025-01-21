@@ -51,13 +51,9 @@ The formula reads
 where ``I_n`` is the ``n×n`` identity matrix, ``0_n`` is the ``n×n`` zero matrix
 and ``\mathbf{a}⋅\mathbf{b}`` is dot product of vectors.
 """
-function Base.exp(G::HeisenbergGroup, X)
-    h = similar(X)
-    exp!(G, h, X)
-    return h
-end
+exponential(G::HeisenbergGroup, X)
 
-function ManifoldsBase.exp!(G::HeisenbergGroup, h, X)
+function exponential!(G::HeisenbergGroup, h, X)
     n = ManifoldsBase.get_parameter(G.manifold.size)[1]
     copyto!(h, I)
     a_view = _heisenberg_a_view(G, X)

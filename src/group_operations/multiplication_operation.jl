@@ -180,9 +180,9 @@ function diff_right_compose!(
     return copyto!(LieAlgebra(G), Y, X * g)
 end
 
-_doc_exp_mult = """
-    exp(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, e::Identity{MatrixMultiplicationGroupOperation}, X, t::Number=1)
-    exp!(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, g, e::Identity{MatrixMultiplicationGroupOperation}, X, t::Number=1)
+_doc_exponential_mult = """
+    exponential(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, X)
+    exponential!(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, g, X)
 
 Compute the Lie group exponential on a [`LieGroup`](@ref) with a [`MatrixMultiplicationGroupOperation`](@ref),
 which simplifies to the [matrix exponential](https://en.wikipedia.org/wiki/Matrix_exponential).
@@ -190,13 +190,11 @@ which simplifies to the [matrix exponential](https://en.wikipedia.org/wiki/Matri
 This can be computed in-place of `g`.
 """
 
-@doc "$(_doc_exp_mult)"
-Base.exp(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, X) where {𝔽} = exp(X)
+@doc "$(_doc_exponential_mult)"
+exponential(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, X) where {𝔽} = exp(X)
 
-@doc "$(_doc_exp_mult)"
-function ManifoldsBase.exp!(
-    ::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, g, X
-) where {𝔽}
+@doc "$(_doc_exponential_mult)"
+function exponential!(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, g, X) where {𝔽}
     copyto!(g, exp(X))
     return g
 end
@@ -281,8 +279,8 @@ function lie_bracket!(::LieAlgebra{𝔽,MatrixMultiplicationGroupOperation}, Z, 
 end
 
 _doc_logarithm_mult = """
-    log(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, g)
-    log!(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, X, g)
+    logarithm(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, g)
+    logarithm!(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, X, g)
 
 Compute the Lie group logarithm on a [`LieGroup`](@ref) with a [`MatrixMultiplicationGroupOperation`](@ref),
 which simplifies to the [matrix logarithm](https://en.wikipedia.org/wiki/Logarithm_of_a_matrix).
@@ -291,20 +289,20 @@ This can be computed in-place of `X`.
 """
 
 @doc "$(_doc_logarithm_mult)"
-Base.log(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, g) where {𝔽} = log(g)
+logarithm(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, g) where {𝔽} = log(g)
 
 function logarithm(
     G::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
     e::Identity{MatrixMultiplicationGroupOperation},
 ) where {𝔽}
-    return zero_vector(G, e)
+    return zero_vector(G)
 end
 function logarithm(
     G::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
-    e::Identity{MatrixMultiplicationGroupOperation},
-    T,
+    ::Identity{MatrixMultiplicationGroupOperation},
+    T::Type,
 ) where {𝔽}
-    return zero_vector(G, e, T)
+    return zero_vector(G, T)
 end
 
 @doc "$(_doc_logarithm_mult)"
@@ -316,7 +314,7 @@ end
 function logarithm!(
     G::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
     X,
-    e::Identity{MatrixMultiplicationGroupOperation},
+    ::Identity{MatrixMultiplicationGroupOperation},
 ) where {𝔽}
     return zero_vector!(G, X)
 end

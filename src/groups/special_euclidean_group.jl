@@ -191,15 +191,7 @@ function ManifoldsBase.check_point(
 )
     return nothing
 end
-function ManifoldsBase.check_point(G::SpecialEuclideanGroup, e::Identity; kwargs...)
-    return DomainError(
-        e,
-        """
-        The provided point $e is not the Identity on $G.
-        Expected an Identity corresponding to $(G.op).
-        """,
-    )
-end
+
 function _check_point(
     G::SpecialEuclideanGroup{T}, Rotn, Rn, op1, op2, p; kwargs...
 ) where {T}
@@ -303,8 +295,8 @@ function default_right_action(::TranslationGroup, ::SpecialOrthogonalGroup)
 end
 
 _doc_exp_SE2_id = """
-    exp(G::SpecialEuclidean, X)
-    exp!(G::SpecialEuclideanG, g, X)
+    exponential(G::SpecialEuclidean, X)
+    exponential!(G::SpecialEuclideanG, g, X)
 
 Compute the Lie group exponential function on the [`SpecialEuclideanGroup`](@ref) `G```=$(_math(:SE))(2)``
 using a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{2}}` for dispatch.
@@ -331,10 +323,10 @@ This result can be computed in-place of `g`.
 """
 
 @doc "$(_doc_exp_SE2_id)"
-ManifoldsBase.exp(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, ::Any)
+exponential(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, ::Any)
 
 @doc "$(_doc_exp_SE2_id)"
-function ManifoldsBase.exp!(
+function exponential!(
     G::SpecialEuclideanGroup{<:ManifoldsBase.TypeParameter{Tuple{2}}}, g, X
 )
     init_constants!(G, g)
@@ -354,13 +346,13 @@ function ManifoldsBase.exp!(
         copyto!(T2, t, R * v)
     end
     # compute exp(Y) in-place of R
-    exp!(SO2, R, Y)
+    exponential!(SO2, R, Y)
     return g
 end
 
 _doc_exp_SE3_id = """
-    exp(G::SpecialEuclidean, X)
-    exp!(G::SpecialEuclidean, g, X)
+    exponential(G::SpecialEuclidean, X)
+    exponential!(G::SpecialEuclidean, g, X)
 
 Compute the Lie group exponential function on the [`SpecialEuclideanGroup`](@ref) `G```=$(_math(:SE))(3)``
 using a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{3}}` for dispatch.
@@ -388,12 +380,10 @@ This result can be computed in-place of `g`.
 """
 
 @doc "$(_doc_exp_SE3_id)"
-ManifoldsBase.exp(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, ::Any)
+exponential(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, ::Any)
 
 @doc "$(_doc_exp_SE3_id)"
-function ManifoldsBase.exp!(
-    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, g, X
-)
+function exponential!(G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, g, X)
     init_constants!(G, g)
     Y = submanifold_component(G, X, :Rotation)
     v = submanifold_component(G, X, :Translation)
@@ -411,15 +401,9 @@ function ManifoldsBase.exp!(
         copyto!(T3, t, R * v)
     end
     # compute exp(Y) in-place of R
-    exp!(SO3, R, Y)
+    exponential!(SO3, R, Y)
     return g
 end
-
-function ManifoldsBase.exp!(::SpecialEuclideanGroup, g, X)
-    copyto!(g, exp(X))
-    return g
-end
-# Do something similar for the component case?
 
 function identity_element(G::SpecialEuclideanGroup)
     return identity_element(G, AbstractMatrix)
@@ -558,8 +542,8 @@ function is_identity(G::SpecialEuclideanGroup, g::AbstractMatrix; kwargs...)
 end
 
 _doc_log_SE2_id = """
-    log(G::SpecialEuclidean, e, g)
-    log!(G::SpecialEuclidean, X, e, g)
+    logarithm(G::SpecialEuclidean, e, g)
+    logarithm!(G::SpecialEuclidean, X, e, g)
 
 Compute the Lie group logarithm function on the [`SpecialEuclideanGroup`](@ref) `G```=$(_math(:SE))(2)``,
 where `e` is the [`Identity`](@ref) on ``$(_math(:SE))(2)`` `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{2}}` for dispatch.
@@ -583,19 +567,17 @@ This result can be computed in-place of `g`.
 """
 
 @doc "$(_doc_log_SE2_id)"
-ManifoldsBase.log(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, ::Any)
+logarithm(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, ::Any)
 
 @doc "$(_doc_log_SE2_id)"
-function ManifoldsBase.log!(
-    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, X, g
-)
+function logarithm!(G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, X, g)
     init_constants!(LieAlgebra(G), X)
     R = submanifold_component(G, g, :Rotation)
     t = submanifold_component(G, g, :Translation)
     Y = submanifold_component(G, X, :Rotation)
     v = submanifold_component(G, X, :Translation)
     SO2, T2 = _SOn_and_Tn(G)
-    log!(SO2, Y, Identity(SO2), R)
+    logarithm!(SO2, Y, R)
     α = norm(Y) / sqrt(2) # skew symmetric, so the norm counts everything “twice” in the sqrt.
     if α ≈ 0
         copyto!(T2, t, v) # U(α) is the identity
@@ -606,7 +588,7 @@ function ManifoldsBase.log!(
     end
     return X
 end
-function ManifoldsBase.log!(
+function logarithm!(
     G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
     X,
     ::Identity{<:LeftSpecialEuclideanGroupOperation},
@@ -615,8 +597,8 @@ function ManifoldsBase.log!(
 end
 
 _doc_log_SE3_id = """
-    log(G::SpecialEuclidean, e, g)
-    log!(G::SpecialEuclidean, X, e, g)
+    logarithm(G::SpecialEuclidean, e, g)
+    logarithm!(G::SpecialEuclidean, X, e, g)
 
 Compute the Lie group logarithm function on the [`SpecialEuclideanGroup`](@ref) `G```=$(_math(:SE))(3)``,
 where `e` is the [`Identity`](@ref) on ``$(_math(:SE))(3)`` `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{3}}` for dispatch.
@@ -638,19 +620,17 @@ This result can be computed in-place of `g`.
 """
 
 @doc "$(_doc_log_SE3_id)"
-ManifoldsBase.log(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, ::Any)
+logarithm(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, ::Any)
 
 @doc "$(_doc_log_SE3_id)"
-function ManifoldsBase.log!(
-    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, X, g
-)
+function logarithm!(G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, X, g)
     init_constants!(LieAlgebra(G), X)
     R = submanifold_component(G, g, :Rotation)
     t = submanifold_component(G, g, :Translation)
     Y = submanifold_component(G, X, :Rotation)
     v = submanifold_component(G, X, :Translation)
     SO3, T3 = _SOn_and_Tn(G)
-    log!(SO3, Y, Identity(SO3), R)
+    logarithm!(SO3, Y, Identity(SO3), R)
     α = norm(Y) / sqrt(2) # skew symmetric, so the norm counts everything “twice” in the sqrt.
     if α ≈ 0
         copyto!(T2, v, t) # U(α) is the identity
@@ -661,7 +641,7 @@ function ManifoldsBase.log!(
     end
     return X
 end
-function ManifoldsBase.log!(
+function logarithm!(
     G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
     X,
     ::Identity{<:LeftSpecialEuclideanGroupOperation},
@@ -688,11 +668,11 @@ function ManifoldsBase.norm(G::SpecialEuclideanGroup, ::Identity, X)
     return norm([n1, n2])
 end
 
-function ManifoldsBase.log!(::LeftSpecialEuclideanGroup, X, g)
+function logarithm!(::LeftSpecialEuclideanGroup, X, g)
     copyto!(X, log(g))
     return X
 end
-function ManifoldsBase.log!(::RightSpecialEuclideanGroup, X, g)
+function logarithm!(::RightSpecialEuclideanGroup, X, g)
     copyto!(X, log(g))
     return X
 end
