@@ -172,9 +172,9 @@ The formula reads
 where ``I_n`` is the ``n×n`` identity matrix, ``0_n`` is the ``n×n`` zero matrix
 and ``\mathbf{a}⋅\mathbf{b}`` is dot product of vectors.
 """
-log(G::HeisenbergGroup, g)
+logarithm(G::HeisenbergGroup, g)
 
-function ManifoldsBase.log!(G::HeisenbergGroup, X, g)
+function logarithm!(G::HeisenbergGroup, X, g)
     n = ManifoldsBase.get_parameter(G.manifold.size)[1]
     fill!(X, 0)
     view_a_X = _heisenberg_a_view(G, X)
@@ -184,9 +184,7 @@ function ManifoldsBase.log!(G::HeisenbergGroup, X, g)
     X[1, n + 2] = g[1, n + 2] - dot(view_a_X, view_b_X) / 2
     return X
 end
-function ManifoldsBase.log!(
-    ::HeisenbergGroup, X, ::Identity{MatrixMultiplicationGroupOperation}
-)
+function logarithm!(::HeisenbergGroup, X, ::Identity{MatrixMultiplicationGroupOperation})
     fill!(X, 0)
     return X
 end

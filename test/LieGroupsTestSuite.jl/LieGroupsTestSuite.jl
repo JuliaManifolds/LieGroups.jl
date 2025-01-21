@@ -422,10 +422,10 @@ function test_exp_log(
         e = Identity(G)
         if test_exp
             # Lie group exp
-            k1 = exp(G, X)
+            k1 = exponential(G, X)
             if test_mutating
                 k2 = copy(G, g)
-                exp!(G, k2, X)
+                exponential!(G, k2, X)
                 @test isapprox(G, k1, k2)
             end
             @test is_point(G, k1; error=:error)
@@ -440,13 +440,13 @@ function test_exp_log(
         end
         if test_log
             # Lie group log
-            Y1 = log(G, g)
+            Y1 = logarithm(G, g)
             if test_mutating
                 Y2 = zero_vector(G, typeof(X))
-                log!(G, Y2, g)
-                @test isapprox(𝔤, Y1, Y2)
-                log!(G, Y2, e)
-                @test isapprox(𝔤, Y2, 0 * Y2)
+                logarithm!(G, Y2, g)
+                @test isapprox(𝔤, Y1, Y2; atol=atol)
+                logarithm!(G, Y2, e)
+                @test isapprox(𝔤, Y2, 0 * Y2; atol=atol)
             end
             @test is_point(𝔤, Y1; error=:error)
             @test norm(𝔤, log(G, g, g)) ≈ 0 atol = atol

@@ -72,7 +72,7 @@ of `G`
 """
 function ManifoldsBase.is_point(𝔤::LieAlgebra, X; kwargs...)
     # the manifold stored in the Fiber / Lie algebra is the Lie group G
-    return ManifoldsBase.is_vector(𝔤.manifold, X; kwargs...)
+    return ManifoldsBase.is_vector(𝔤.manifold, Identity(𝔤.manifold), X; kwargs...)
 end
 
 _doc_lie_bracket = """

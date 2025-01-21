@@ -280,7 +280,7 @@ function lie_bracket!(::LieAlgebra{𝔽,MatrixMultiplicationGroupOperation}, Z, 
     return Z
 end
 
-_doc_log_mult = """
+_doc_logarithm_mult = """
     log(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, g)
     log!(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, X, g)
 
@@ -290,25 +290,30 @@ which simplifies to the [matrix logarithm](https://en.wikipedia.org/wiki/Logarit
 This can be computed in-place of `X`.
 """
 
-@doc "$(_doc_log_mult)"
+@doc "$(_doc_logarithm_mult)"
 Base.log(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, g) where {𝔽} = log(g)
 
-function ManifoldsBase.log(
+function logarithm(
     G::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
-    ::Identity{MatrixMultiplicationGroupOperation},
+    e::Identity{MatrixMultiplicationGroupOperation},
 ) where {𝔽}
-    return zero_vector(G)
+    return zero_vector(G, e)
+end
+function logarithm(
+    G::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
+    e::Identity{MatrixMultiplicationGroupOperation},
+    T,
+) where {𝔽}
+    return zero_vector(G, e, T)
 end
 
-@doc "$(_doc_log_mult)"
-function ManifoldsBase.log!(
-    ::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, X, g
-) where {𝔽}
+@doc "$(_doc_logarithm_mult)"
+function logarithm!(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, X, g) where {𝔽}
     copyto!(X, log(g))
     return X
 end
 
-function ManifoldsBase.log!(
+function logarithm!(
     G::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
     X,
     e::Identity{MatrixMultiplicationGroupOperation},

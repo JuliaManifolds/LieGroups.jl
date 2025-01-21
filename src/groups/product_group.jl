@@ -97,6 +97,11 @@ function ManifoldsBase.check_size(
 ) where {𝔽,Op<:AbstractProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     return ManifoldsBase.check_size(PrG.manifold, g, X)
 end
+function ManifoldsBase.check_size(
+    PrG::LieGroup{𝔽,Op,M}, ::Identity, X
+) where {𝔽,Op<:AbstractProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    return ManifoldsBase.check_size(PrG.manifold, identity_element(PrG, typeof(X)), X)
+end
 
 function conjugate!(
     PrG::LieGroup{𝔽,Op,M}, k, g, h

@@ -251,7 +251,9 @@ function _check_vector(
     (length(errs) > 1) && (return ManifoldsBase.CompositeManifoldError(errs))
     return length(errs) == 0 ? nothing : first(errs)
 end
-function ManifoldsBase.check_size(G::SpecialEuclideanGroup, g::AbstractMatrix)
+function ManifoldsBase.check_size(
+    G::LG, g::AbstractMatrix; kwargs...
+) where {LG<:SpecialEuclideanGroup}
     n = size(g)
     m = ManifoldsBase.representation_size(G)
     if n != m
@@ -262,9 +264,8 @@ function ManifoldsBase.check_size(G::SpecialEuclideanGroup, g::AbstractMatrix)
     end
 end
 function ManifoldsBase.check_size(
-    𝔤::LieAlgebra{𝔽,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup},
-    X::AbstractMatrix,
-) where {𝔽}
+    𝔤::LA, X::AbstractMatrix; kwargs...
+) where {𝔽,LA<:LieAlgebra{𝔽,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup}}
     n = size(X)
     m = ManifoldsBase.representation_size(𝔤.manifold)
     if n != m
@@ -682,7 +683,7 @@ function ManifoldsBase.norm(G::SpecialEuclideanGroup, g, X)
 end
 function ManifoldsBase.norm(G::SpecialEuclideanGroup, ::Identity, X)
     SOn, Tn = _SOn_and_Tn(G)
-    n1 = norm(SOn, Idenitty(SOn), submanifold_component(G, X, :Rotation))
+    n1 = norm(SOn, Identity(SOn), submanifold_component(G, X, :Rotation))
     n2 = norm(Tn, Identity(Tn), submanifold_component(G, X, :Translation))
     return norm([n1, n2])
 end
