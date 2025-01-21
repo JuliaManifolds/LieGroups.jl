@@ -180,29 +180,14 @@ Return the manifold stored within the [`LieGroup`](@ref) `G`.
 """
 Manifolds.base_manifold(G::LieGroup) = G.manifold
 
+# Since we dispatch per point here, identity is already checked on the `is_point` level.
 function ManifoldsBase.check_point(
     G::LieGroup{𝔽,O}, g; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
     return ManifoldsBase.check_point(G.manifold, g; kwargs...)
 end
-function ManifoldsBase.check_point(
-    G::LieGroup{𝔽,O}, e::Identity{O}; kwargs...
-) where {𝔽,O<:AbstractGroupOperation}
-    return nothing
-end
-function ManifoldsBase.check_point(
-    G::LieGroup{𝔽,O}, e::Identity{O2}; kwargs...
-) where {𝔽,O<:AbstractGroupOperation,O2<:AbstractGroupOperation}
-    return DomainError(
-        e,
-        """
-        The provided point $e is not the Identity on $G.
-        Expected an Identity corresponding to $(G.op).
-        """,
-    )
-end
 
-ManifoldsBase.check_size(G::LieGroup, ::Identity) = nothing
+ManifoldsBase.check_size(::LieGroup, ::Identity) = nothing
 
 function ManifoldsBase.check_vector(G::LieGroup, X; kwargs...)
     return ManifoldsBase.check_vector(G.manifold, identity_element(G), X; kwargs...)
@@ -785,18 +770,65 @@ identity element corresponding to `G`.
 """
 ManifoldsBase.is_point(G::LieGroup, g; kwargs...)
 
+# resolve identity already here
+
+function ManifoldsBase.is_point(
+    G::LieGroup{𝔽,O}, g::Identity{O}; kwargs...
+) where {𝔽,O<:AbstractGroupOperation}
+    return true
+end
+function ManifoldsBase.is_point(G::LieGroup, e::Identity; error::Symbol=:none, kwargs...)
+    s = """
+        The provided point $e is not the Identity on $G.
+        Expected an Identity corresponding to $(G.op).
+        """
+    (error === :error) && throw(DomainError(s))
+    (error === :info) && @info s
+    (error === :warn) && @warn s
+    return false
+end
+
 _doc_is_vector = """
     is_vector(G::LieGroup, X; kwargs...)
 
-Check whether `X` is a tangent vector, that is an element of the [`LieAlgebra`](@ref)
-of `G`. A default is implemented by calling [`is_point`](@extref `ManifoldsBase.is_point-Tuple{AbstractManifold, Any, Bool}`) on the [`LieAlgebra`](@ref) `𝔤` of `G`.
+Check whether `X` is a tangent vector, that is an element of the [`LieAlgebra`](@ref) of `G`.
+Similarly, [`is_point`](@extref `ManifoldsBase.is_point-Tuple{AbstractManifold, Any, Bool}`) on the [`LieAlgebra`](@ref) `𝔤` of `G`
+falls back to calling this function.
 
 All keyword arguments are passed on to the corresponding call.
 """
 
 @doc "$(_doc_is_vector)"
-function ManifoldsBase.is_vector(G::LieGroup, X; kwargs...)
-    return is_point(LieAlgebra(G), X; kwargs...)
+function ManifoldsBase.is_vector(G::LieGroup, X; error::Symbol=:none, kwargs...)
+    # This is nearly the same as in ManifoldsBase, just without the base point p
+    # and hence check_size in the Lie algebra
+    mXs = ManifoldsBase.check_size(LieAlgebra(G), X)
+    if mXs !== nothing
+        (error === :error) && throw(mXs)
+        if (error === :info) || (error === :warn)
+            # else: collect and info showerror
+            io = IOBuffer()
+            showerror(io, mXs)
+            s = String(take!(io))
+            (error === :info) && @info s
+            (error === :warn) && @warn s
+        end
+        return false
+    end
+    mXe = ManifoldsBase.check_vector(G, X; kwargs...)
+    if mXe !== nothing
+        (error === :error) && throw(mXe)
+        if (error === :info) || (error === :warn)
+            # else: collect and info showerror
+            io = IOBuffer()
+            showerror(io, mXe)
+            s = String(take!(io))
+            (error === :info) && @info s
+            (error === :warn) && @warn s
+        end
+        return false
+    end
+    return true
 end
 
 """

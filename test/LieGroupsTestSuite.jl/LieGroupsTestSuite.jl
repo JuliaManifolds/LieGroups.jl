@@ -465,7 +465,7 @@ function test_exp_log(
             Y3 = zero_vector(G, typeof(X))
             @test isapprox(LieAlgebra(G), Y3, log(G, e); atol=atol)
             log!(G, Y3, e)
-            @test isapprox(G, e, Y3, log(G, e); atol=atol)
+            @test isapprox(G, e, Y3, log(G, e, typeof(Y3)); atol=atol)
             @test isapprox(𝔤, log(G, g, g), Y3; atol=atol)
             @test isapprox(𝔤, log(G, h, h), Y3; atol=atol)
         end

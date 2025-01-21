@@ -40,6 +40,7 @@ using LieGroupsTestSuite
     )
     expectations = Dict(
         :repr => "SpecialEuclideanGroup(2)",
+        :atol => 1e-14,
         #:diff_inv => -X1,
         #:diff_left_compose => X1,
         #:diff_right_compose => X1,
