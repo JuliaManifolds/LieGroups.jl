@@ -12,6 +12,9 @@ The following sections collect these.
 
 
 * an [`AdditionGroupOperation`](@ref)
+* a [`ScalarMultiplicationGroupOperation`](@ref) and
+* a [`MatrixMultiplicationGroupOperation`](@ref)
+
 
 ## [Additive group operation](@id addition-operation-sec)
 
@@ -21,6 +24,7 @@ Pages = ["addition_operation.jl"]
 Order = [:type, :function]
 ```
 
+  
 ## [Multiplication group operation](@id multiplication-operation-sec)
 
 ```@autodocs

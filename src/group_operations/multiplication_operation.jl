@@ -17,7 +17,7 @@ struct MatrixMultiplicationGroupOperation <: AbstractMultiplicationGroupOperatio
 """
     ScalarMultiplicationGroupOperation <: AbstractMultiplicationGroupOperation
 
-A group operation that is realised by the multiplication of scalars. (Usefull for the complex CircleGroup)
+A group operation that is realised by a scalar multiplication.
 """
 struct ScalarMultiplicationGroupOperation <: AbstractMultiplicationGroupOperation end
 

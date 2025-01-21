@@ -124,6 +124,7 @@ makedocs(;
         (tutorials_in_menu ? [tutorials_menu] : [])...,
         "Lie groups" => [
             "List of Lie groups" => "groups/index.md",
+            "CircleGroup" => "groups/circle_group.md",
             "General Linear" => "groups/general_linear.md",
             "Power group" => "groups/power_group.md",
             "Product group" => "groups/product_group.md",

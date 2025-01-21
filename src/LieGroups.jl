@@ -53,11 +53,12 @@ export AbstractGroupOperation, Identity
 export AdditionGroupOperation
 export AbstractMultiplicationGroupOperation
 export MatrixMultiplicationGroupOperation
+export ScalarMultiplicationGroupOperation
 export ProductGroupOperation
 export LeftSemidirectProductGroupOperation, RightSemidirectProductGroupOperation
 
 #
-#
+#1,
 # Group Actions
 export AbstractGroupActionType
 export AbstractLeftGroupActionType, AbstractRightGroupActionType
@@ -67,7 +68,7 @@ export GroupAction, GroupOperationAction
 #
 #
 # Specific groups
-export TranslationGroup, GeneralLinearGroup, CircleGroup
+export TranslationGroup, GeneralLinearGroup, CircleGroup, RealCircleGroup
 
 export adjoint, adjoint!, apply, apply!
 export base_lie_group, base_manifold
