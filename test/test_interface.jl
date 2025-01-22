@@ -55,26 +55,6 @@ using LieGroupsTestSuite
         @test_throws MethodError exponential!(G, g, X)
         @test_throws MethodError logarithm!(G, X, g)
     end
-    @testset "Generic get_coordinates/get_vector passthrough on 𝔤" begin
-        M = ManifoldsBase.DefaultManifold(2)
-        op = AdditionGroupOperation()
-        G = LieGroup(M, op)
-        B2 = DefaultLieAlgebraOrthogonalBasis()
-        B = DefaultOrthonormalBasis()
-        p = [1.0, 2.0]
-        q = [0.0, 0.0]
-        # coordinates and vector on 𝔤 are here the same as the ones on M at 0
-        X = [1.0, 0.0]
-        @test get_coordinates(G, X, B2) == get_coordinates(M, q, X, B)
-        Y = copy(X)
-        @test get_coordinates!(G, Y, X, B2) == get_coordinates!(M, Y, q, X, B)
-        @test X == Y
-        c = [0.0, 1.0]
-        @test get_vector(G, c, B2) == get_vector(M, q, c, B)
-        d = copy(c)
-        @test get_vector!(G, d, c, B2) == get_vector!(M, d, q, c, B)
-        @test c == d
-    end
 end
 @testset "Generic Lie Algebra Interface functions" begin
     @testset "Generic get_coordinates/get_vector passthrough on 𝔤" begin

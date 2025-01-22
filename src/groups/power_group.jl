@@ -234,15 +234,16 @@ function exponential!(
 end
 
 function hat!(
-    PoG::LieGroup{𝔽,Op,M}, X, c
+    Po𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, X, c
 ) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
+    PoG = Po𝔤.manifold
     PM = PoG.manifold
     rep_size = representation_size(PM.manifold)
     dim = manifold_dimension(PM.manifold)
     v_iter = 1
-    G = LieGroup(PM.manifold, PoG.op.op)
+    𝔤 = LieAlgebra(LieGroup(PM.manifold, PoG.op.op))
     for i in ManifoldsBase.get_iterator(PM)
-        hat!(G, ManifoldsBase._write(PM, rep_size, X, i), c[v_iter:(v_iter + dim - 1)])
+        hat!(𝔤, ManifoldsBase._write(PM, rep_size, X, i), c[v_iter:(v_iter + dim - 1)])
         v_iter += dim
     end
     return X
@@ -362,15 +363,16 @@ function Base.show(
 end
 
 function vee!(
-    PoG::LieGroup{𝔽,Op,M}, c, X
+    Po𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, c, X
 ) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
+    PoG = Po𝔤.manifold
     PM = PoG.manifold
     rep_size = representation_size(PM.manifold)
     dim = manifold_dimension(PM.manifold)
-    G = LieGroup(PM.manifold, PoG.op.op)
+    𝔤 = LieAlgebra(LieGroup(PM.manifold, PoG.op.op))
     v_iter = 1
     for i in ManifoldsBase.get_iterator(PM)
-        vee!(G, view(c, v_iter:(v_iter + dim - 1)), ManifoldsBase._read(PM, rep_size, X, i))
+        vee!(𝔤, view(c, v_iter:(v_iter + dim - 1)), ManifoldsBase._read(PM, rep_size, X, i))
         v_iter += dim
     end
     return c

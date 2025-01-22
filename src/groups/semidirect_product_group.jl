@@ -270,14 +270,15 @@ function identity_element!(
 end
 
 function hat!(
-    PrG::LieGroup{𝔽,Op,M}, X, c
+    Pr𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, X, c
 ) where {𝔽,Op<:SemiDirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PrG = Pr𝔤.manifold
     PrM = PrG.manifold
     dims = map(manifold_dimension, PrM.manifolds)
     @assert length(c) == sum(dims)
     dim_ranges = ManifoldsBase._get_dim_ranges(dims)
     Prc = map(dr -> (@inbounds view(c, dr)), dim_ranges)
-    PrL = LieGroup.(PrM.manifolds, PrG.op.operations)
+    PrL = LieAlgebra.(LieGroup.(PrM.manifolds, PrG.op.operations))
     ts = ManifoldsBase.ziptuples(PrL, submanifold_components(PrM, X), Prc)
     map(ts) do t
         return hat!(t...)
@@ -347,14 +348,15 @@ function Base.show(
 end
 
 function vee!(
-    PrG::LieGroup{𝔽,Op,M}, c, X
+    Pr𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, c, X
 ) where {𝔽,Op<:SemiDirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PrG = Pr𝔤.manifold
     PrM = PrG.manifold
     dims = map(manifold_dimension, PrM.manifolds)
     @assert length(c) == sum(dims)
     dim_ranges = ManifoldsBase._get_dim_ranges(dims)
     Prc = map(dr -> (@inbounds view(c, dr)), dim_ranges)
-    PrL = LieGroup.(PrM.manifolds, PrG.op.operations)
+    PrL = LieAlgebra.(LieGroup.(PrM.manifolds, PrG.op.operations))
     ts = ManifoldsBase.ziptuples(PrL, Prc, submanifold_components(PrM, X))
     map(ts) do t
         return vee!(t...)

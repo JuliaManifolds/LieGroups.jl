@@ -148,19 +148,6 @@ function ManifoldsBase.get_vector(
 )
     return ManifoldsBase._get_vector(𝔤, c, B, tangent_vector_type)
 end
-
-@doc "$(_doc_get_vector)"
-function ManifoldsBase.get_vector!(
-    𝔤::LieAlgebra, X, c, B::ManifoldsBase.AbstractBasis=DefaultLieAlgebraOrthogonalBasis()
-)
-    return ManifoldsBase._get_vector!(𝔤, X, c, B)
-end
-function ManifoldsBase._get_vector!(
-    𝔤::LieAlgebra, X::T, c, B::ManifoldsBase.AbstractBasis
-) where {T}
-    G = 𝔤.manifold
-    return ManifoldsBase.get_vector!(G.manifold, X, identity_element(G, T), c, B)
-end
 # Overwrite layer 2 since we do not have a base point and as well if a basis is provided and if we get nothing
 # (define for all basis when moving this to Base)
 @inline function ManifoldsBase._get_vector(
@@ -172,6 +159,37 @@ end
     𝔤::LieAlgebra, c, B::DefaultLieAlgebraOrthogonalBasis, T::Type
 )
     return get_vector_lie(𝔤, c, number_system(B), T)
+end
+@inline function ManifoldsBase._get_vector(
+    𝔤::LieAlgebra, c, B::ManifoldsBase.AbstractBasis, ::Nothing
+)
+    G = 𝔤.manifold
+    return get_vector(G.manifold, identity_element(G), c, B)
+end
+@inline function ManifoldsBase._get_vector(
+    𝔤::LieAlgebra, c, B::ManifoldsBase.AbstractBasis, T::Type
+)
+    G = 𝔤.manifold
+    return get_vector(G.manifold, identity_element(G, T), c, B)
+end
+
+@doc "$(_doc_get_vector)"
+function ManifoldsBase.get_vector!(
+    𝔤::LieAlgebra, X, c, B::ManifoldsBase.AbstractBasis=DefaultLieAlgebraOrthogonalBasis()
+)
+    return ManifoldsBase._get_vector!(𝔤, X, c, B)
+end
+
+function ManifoldsBase._get_vector!(
+    𝔤::LieAlgebra, X::T, c, B::DefaultLieAlgebraOrthogonalBasis
+) where {T}
+    return get_vector_lie!(𝔤, X, c, number_system(B))
+end
+function ManifoldsBase._get_vector!(
+    𝔤::LieAlgebra, X::T, c, B::ManifoldsBase.AbstractBasis
+) where {T}
+    G = 𝔤.manifold
+    return ManifoldsBase.get_vector!(G.manifold, X, identity_element(G, T), c, B)
 end
 
 @inline function get_vector_lie(𝔤::LieAlgebra, c, N)
@@ -223,14 +241,14 @@ Technically, `hat` is a specific case of [`get_vector`](@ref) and is implemented
 function hat(𝔤::LieAlgebra{𝔽}, c) where {𝔽}
     return get_vector(𝔤, c, DefaultLieAlgebraOrthogonalBasis(𝔽))
 end
-function hat(G::LieGroup{𝔽}, c, T::Type) where {𝔽}
-    return get_vector(G, c, DefaultLieAlgebraOrthogonalBasis(𝔽), T)
+function hat(𝔤::LieAlgebra{𝔽}, c, T::Type) where {𝔽}
+    return get_vector(𝔤, c, DefaultLieAlgebraOrthogonalBasis(𝔽); tangent_vector_type=T)
 end
 
 # function hat! end
 @doc "$(_doc_hat)"
-function hat!(G::LieAlgebra{𝔽}, X, c) where {𝔽}
-    get_vector!(G, X, c, DefaultLieAlgebraOrthogonalBasis(𝔽))
+function hat!(𝔤::LieAlgebra{𝔽}, X, c) where {𝔽}
+    get_vector!(𝔤, X, c, DefaultLieAlgebraOrthogonalBasis(𝔽))
     return X
 end
 
@@ -353,7 +371,7 @@ end
 
 # function vee! end
 @doc "$(_doc_vee)"
-function vee!(𝔤::LieGroup{𝔽}, c, X) where {𝔽}
+function vee!(𝔤::LieAlgebra{𝔽}, c, X) where {𝔽}
     get_coordinates!(𝔤, c, X, DefaultLieAlgebraOrthogonalBasis(𝔽))
     return c
 end
@@ -371,4 +389,15 @@ function ManifoldsBase.zero_vector!(𝔤::LieAlgebra, X::T) where {T}
     return ManifoldsBase.zero_vector!(
         𝔤.manifold.manifold, X, identity_element(𝔤.manifold, T)
     )
+end
+
+#
+#
+# allocation helpers
+
+function ManifoldsBase.allocate_result(
+    𝔤::LieAlgebra, f::typeof(ManifoldsBase.get_coordinates), X, basis::AbstractBasis{𝔽}
+) where {𝔽}
+    T = ManifoldsBase.coordinate_eltype(𝔤, X, 𝔽)
+    return ManifoldsBase.allocate_coordinates(𝔤, X, T, number_of_coordinates(𝔤, basis))
 end
