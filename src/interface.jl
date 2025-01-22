@@ -466,187 +466,6 @@ function exponential!(G::LieGroup, g, X, t::Number)
     return exponential!(G, g, t * X)
 end
 
-_doc_get_coordinates = """
-    get_coordinates(G::LieGroup, X, B::AbstractBasis)
-    get_coordinates(𝔤::LieAlgebra, X, B::AbstractBasis)
-    get_coordinates!(G::LieGroup, c, X, B::AbstractBasis)
-    get_coordinates!(𝔤::LieAlgebra, c, X, B::AbstractBasis)
-
-Return the vector of coordinates to the decomposition of `X` with respect to an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`)
-of the [`LieAlgebra`](@ref) `𝔤`.
-Since all tangent vectors are assumed to be represented in the Lie algebra,
-both signatures are equivalent.
-The operation can be performed in-place of `c`.
-
-By default this function requires [`identity_element`](@ref)`(G)` and calls
-the corresponding [`get_coordinates`](@extref ManifoldsBase :jl:function:`ManifoldsBase.get_coordinates`) function
-of the Riemannian manifold the Lie group is build on.
-
-The inverse operation is [`get_vector`](@ref).
-
-See also [`vee`](@ref).
-"""
-
-@doc "$(_doc_get_coordinates)"
-function ManifoldsBase.get_coordinates(
-    G::LieGroup, X, B::ManifoldsBase.AbstractBasis=DefaultLieAlgebraOrthogonalBasis()
-)
-    return ManifoldsBase._get_coordinates(G, X, B)
-end
-@inline function ManifoldsBase._get_coordinates(
-    G::LieGroup, X::T, B::ManifoldsBase.AbstractBasis
-) where {T}
-    return get_coordinates(G.manifold, identity_element(G, T), X, B)
-end
-
-@doc "$(_doc_get_coordinates)"
-function ManifoldsBase.get_coordinates!(
-    G::LieGroup, c, X, B::ManifoldsBase.AbstractBasis=DefaultLieAlgebraOrthogonalBasis()
-)
-    return ManifoldsBase._get_coordinates!(G, c, X, B)
-end
-function ManifoldsBase._get_coordinates!(
-    G::LieGroup, c, X::T, B::ManifoldsBase.AbstractBasis
-) where {T}
-    return ManifoldsBase.get_coordinates!(G.manifold, c, identity_element(G, T), X, B)
-end
-
-function get_coordinates_lie(G::LieGroup, X, N)
-    c = allocate_result(G, get_coordinates, X, DefaultLieAlgebraOrthogonalBasis(N))
-    return get_coordinates_lie!(G, c, X, N)
-end
-function get_coordinates_lie!(G::LieGroup, c, X::T, N) where {T}
-    return get_coordinates!(
-        base_manifold(G),
-        c,
-        identity_element(G, T),
-        X,
-        ManifoldsBase.DefaultOrthogonalBasis(N),
-    )
-end
-
-_doc_get_vector = """
-    get_vector(G::LieGroup, c, B::AbstractBasis; kwargs...)
-    get_vector(𝔤::LieAlgebra, c, B::AbstractBasis; kwargs...)
-    get_vector!(G::LieGroup, X::T, c, B::AbstractBasis; kwargs...)
-    get_vector!(𝔤::LieAlgebra, X::T, c, B::AbstractBasis; kwargs...)
-
-Return the vector corresponding to a set of coefficients in an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`)
-of the [`LieAlgebra`](@ref) `𝔤`.
-Since all tangent vectors are assumed to be represented in the Lie algebra,
-both signatures are equivalent.
-The operation can be performed in-place of a tangent vector `X` of type `::T`.
-
-By default this function requires [`identity_element`](@ref)`(G)` and calls
-the corresponding [`get_vector`](@extref ManifoldsBase :jl:function:`ManifoldsBase.get_vectors`) function
-of the Riemannian manifold the Lie group is build on.
-
-The inverse operation is [`get_coordinates`](@ref).
-
-# Keyword arguments
-
-* `tangent_vector_type` specify the tangent vector type to use for the allocating variants.
-
-See also [`hat`](@ref)
-"""
-
-@doc "$(_doc_get_vector)"
-function ManifoldsBase.get_vector(
-    G::LieGroup,
-    c,
-    B::ManifoldsBase.AbstractBasis=DefaultLieAlgebraOrthogonalBasis();
-    tangent_vector_type=nothing,
-    kwargs...,
-)
-    return ManifoldsBase._get_vector(G, c, B, tangent_vector_type)
-end
-
-@doc "$(_doc_get_vector)"
-function ManifoldsBase.get_vector!(
-    G::LieGroup, X, c, B::ManifoldsBase.AbstractBasis=DefaultLieAlgebraOrthogonalBasis()
-)
-    return ManifoldsBase._get_vector!(G, X, c, B)
-end
-function ManifoldsBase._get_vector!(
-    G::LieGroup, X::T, c, B::ManifoldsBase.AbstractBasis
-) where {T}
-    return ManifoldsBase.get_vector!(G.manifold, X, identity_element(G, T), c, B)
-end
-# Overwrite layer 2 since we do not have a base point and as well if a basis is provided and if we get nothing
-# (define for all basis when moving this to Base)
-@inline function ManifoldsBase._get_vector(
-    M::LieGroup, c, B::DefaultLieAlgebraOrthogonalBasis, ::Nothing
-)
-    return get_vector_lie(M, c, number_system(B))
-end
-@inline function ManifoldsBase._get_vector(
-    M::LieGroup, c, B::DefaultLieAlgebraOrthogonalBasis, T::Type
-)
-    return get_vector_lie(M, c, number_system(B), T)
-end
-
-@doc "$(_doc_get_vector)"
-ManifoldsBase.get_vector!(G::LieGroup, X, c, B::ManifoldsBase.AbstractBasis)
-
-@inline function get_vector_lie(G::LieGroup, c, N)
-    X = zero_vector(G)
-    return get_vector_lie!(G, X, c, N)
-end
-@inline function get_vector_lie(G::LieGroup, c, N, T::Type)
-    X = zero_vector(G, T)
-    return get_vector_lie!(G, X, c, N)
-end
-@inline function get_vector_lie!(G::LieGroup, Y::T, c, N) where {T}
-    return get_vector!(
-        base_manifold(G),
-        Y,
-        identity_element(G, T),
-        c,
-        ManifoldsBase.DefaultOrthogonalBasis(N),
-    )
-end
-
-_doc_hat = """
-    hat(G::LieGroup, c)
-    hat(G::LieGroup, c, T::Type)
-    hat!(G::LieGroup, X::T, c)
-
-Compute the hat map ``(⋅)^̂ `` that maps a vector of coordinates ``c_i``
-with respect to a certain basis to a tangent vector in the Lie algebra
-
-```math
-X = $(_tex(:sum))_{i∈$(_tex(:Cal,"I"))} c_iB_i,
-```
-
-where ``$(_tex(:Set, "B_i"))_{i∈$(_tex(:Cal,"I"))}`` is a basis of the Lie algebra
-and ``$(_tex(:Cal,"I"))`` a corresponding index set, which is usually ``$(_tex(:Cal,"I"))=$(_tex(:Set,raw"1,\ldots,n"))``.
-
-For the allocating variant, you can specify the type `T` of the tangent vector to obtain,
-in case there are different representations. The first signature produces the default representation.
-
-The computation can be performed in-place of `X`.
-The inverse of `hat` is [`vee`](@ref).
-
-Technically, `hat` is a specific case of [`get_vector`](@ref) and is implemented using the
-[`DefaultLieAlgebraOrthogonalBasis`](@ref)
-"""
-
-# function hat end
-@doc "$(_doc_hat)"
-function hat(G::LieGroup{𝔽}, c) where {𝔽}
-    return get_vector_lie(G, c, 𝔽)
-end
-function hat(G::LieGroup{𝔽}, c, T::Type) where {𝔽}
-    return get_vector_lie(G, c, 𝔽, T)
-end
-
-# function hat! end
-@doc "$(_doc_hat)"
-function hat!(G::LieGroup{𝔽}, X, c) where {𝔽}
-    get_vector_lie!(G, X, c, 𝔽)
-    return X
-end
-
 _doc_identity_element = """
     identity_element(G::LieGroup)
     identity_element(G::LieGroup, T)
@@ -950,8 +769,8 @@ function logarithm! end
 logarithm!(G::LieGroup, ::Any, ::Any)
 
 function logarithm!(
-    G::LieGroup{𝔽,Op}, X, e::Identity{Op}
-) where {𝔽,Op<:AbstractGroupOperation}
+    G::L, X, e::Identity{Op}
+) where {𝔽,Op<:AbstractGroupOperation,L<:LieGroup{𝔽,Op}}
     return zero_vector!(G, X)
 end
 
@@ -1045,40 +864,6 @@ function Base.show(io::IO, G::LieGroup)
     return print(io, "LieGroup($(G.manifold), $(G.op))")
 end
 
-_doc_vee = """
-    vee(G::LieGroup, X)
-    vee!(G::LieGroup, c, X)
-
-Compute the vee map ``(⋅)^∨`` that maps a tangent vector `X` from the [`LieAlgebra`](@ref)
-to its coordinates with respect to the [`DefaultLieAlgebraOrthogonalBasis`](@ref) basis in the Lie algebra
-
-```math
-X = $(_tex(:sum))_{i∈$(_tex(:Cal,"I"))} c_iB_i,
-```
-
-where ``$(_tex(:Set, "B_i"))_{i∈$(_tex(:Cal,"I"))}`` is a basis of the Lie algebra
-and ``$(_tex(:Cal,"I"))`` a corresponding index set, which is usually ``$(_tex(:Cal,"I"))=$(_tex(:Set,raw"1,\ldots,n"))``.
-
-The computation can be performed in-place of `c`.
-The inverse of `vee` is [`hat`](@ref).
-
-Technically, `vee` is a specific case of [`get_coordinates`](@ref) and is implemented using
-the [`DefaultLieAlgebraOrthogonalBasis`](@ref).
-"""
-
-# function vee end
-@doc "$(_doc_vee)"
-function vee(G::LieGroup{𝔽}, X) where {𝔽}
-    return get_coordinates_lie(G, X, 𝔽)
-end
-
-# function vee! end
-@doc "$(_doc_vee)"
-function vee!(G::LieGroup{𝔽}, c, X) where {𝔽}
-    get_coordinates_lie!(G, c, X, 𝔽)
-    return c
-end
-
 """
     zero_vector(G::LieGroup)
     zero_vector(G::LieGroup, T::Type)
@@ -1132,12 +917,6 @@ function ManifoldsBase.allocate_result(
 )
     # both get a type allocated like rand
     return ManifoldsBase.allocate_result(G.manifold, rand)
-end
-function ManifoldsBase.allocate_result(
-    M::LieGroup, f::typeof(ManifoldsBase.get_coordinates), X, basis::AbstractBasis{𝔽}
-) where {𝔽}
-    T = ManifoldsBase.coordinate_eltype(M, X, 𝔽)
-    return ManifoldsBase.allocate_coordinates(M, X, T, number_of_coordinates(M, basis))
 end
 # fallback macro
 
