@@ -264,7 +264,7 @@ function test_diff_inv(G::LieGroup, g, X; expected=missing, test_mutating::Bool=
     @testset "diff_inv" begin
         𝔤 = LieAlgebra(G)
         Y1 = diff_inv(G, g, X)
-        @test is_vector(G, g, Y1)
+        @test is_vector(G, g, Y1, true)
         if test_mutating
             Y2 = zero_vector(𝔤, typeof(X))
             Y2 = diff_inv!(G, Y2, g, X)
@@ -292,7 +292,7 @@ function test_diff_left_compose(
     @testset "diff_left_compose" begin
         𝔤 = LieAlgebra(G)
         Y1 = diff_left_compose(G, g, h, X)
-        @test is_vector(G, g, Y1)
+        @test is_vector(G, g, Y1, true)
         if test_mutating
             Y2 = zero_vector(𝔤, typeof(X))
             diff_left_compose!(G, Y2, g, h, X)
@@ -442,7 +442,7 @@ function test_exp_log(
             # Lie group log
             Y1 = logarithm(G, g)
             if test_mutating
-                Y2 = zero_vector(G, typeof(X))
+                Y2 = zero_vector(𝔤, typeof(X))
                 logarithm!(G, Y2, g)
                 @test isapprox(𝔤, Y1, Y2; atol=atol)
                 logarithm!(G, Y2, e)
@@ -459,7 +459,7 @@ function test_exp_log(
                 @test isapprox(𝔤, Y1, Y2)
             end
             @test is_point(𝔤, Y1; error=:error)
-            Y3 = zero_vector(G, typeof(X))
+            Y3 = zero_vector(𝔤, typeof(X))
             @test isapprox(LieAlgebra(G), Y3, logarithm(G, e); atol=atol)
             logarithm!(G, Y3, e)
             @test isapprox(G, e, Y3, logarithm(G, e, typeof(Y3)); atol=atol)

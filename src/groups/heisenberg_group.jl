@@ -153,7 +153,8 @@ function ManifoldsBase.log!(
 end
 
 @doc raw"""
-    log(G::HeisenbergGroup, g)
+    logarithm(G::HeisenbergGroup, g)
+    logarithm!(G::HeisenbergGroup, X, g)
 
 Lie group logarithm for the [`HeisenbergGroup`](@ref) `G` of the point `g`.
 The formula reads

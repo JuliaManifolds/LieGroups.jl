@@ -290,19 +290,18 @@ This can be computed in-place of `X`.
 
 @doc "$(_doc_logarithm_mult)"
 logarithm(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, g) where {𝔽} = log(g)
-
 function logarithm(
     G::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
-    e::Identity{MatrixMultiplicationGroupOperation},
+    ::Identity{MatrixMultiplicationGroupOperation},
 ) where {𝔽}
-    return zero_vector(G)
+    return zero_vector(LieAlgebra(G))
 end
 function logarithm(
     G::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
     ::Identity{MatrixMultiplicationGroupOperation},
     T::Type,
 ) where {𝔽}
-    return zero_vector(G, T)
+    return zero_vector(LieAlgebra(G), T)
 end
 
 @doc "$(_doc_logarithm_mult)"
@@ -316,7 +315,7 @@ function logarithm!(
     X,
     ::Identity{MatrixMultiplicationGroupOperation},
 ) where {𝔽}
-    return zero_vector!(G, X)
+    return zero_vector!(LieAlgebra(G), X)
 end
 
 LinearAlgebra.mul!(q, ::Identity{<:AbstractMultiplicationGroupOperation}, p) = copyto!(q, p)

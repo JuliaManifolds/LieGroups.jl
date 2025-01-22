@@ -672,8 +672,20 @@ function logarithm!(::LeftSpecialEuclideanGroup, X, g)
     copyto!(X, log(g))
     return X
 end
+function logarithm!(
+    ::LeftSpecialEuclideanGroup, X, e::Identity{<:LeftSpecialEuclideanGroupOperation}
+)
+    fill!(X, 0)
+    return X
+end
 function logarithm!(::RightSpecialEuclideanGroup, X, g)
     copyto!(X, log(g))
+    return X
+end
+function logarithm!(
+    ::RightSpecialEuclideanGroup, X, e::Identity{<:RightSpecialEuclideanGroupOperation}
+)
+    fill!(X, 0)
     return X
 end
 

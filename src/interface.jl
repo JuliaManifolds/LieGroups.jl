@@ -864,33 +864,6 @@ function Base.show(io::IO, G::LieGroup)
     return print(io, "LieGroup($(G.manifold), $(G.op))")
 end
 
-"""
-    zero_vector(G::LieGroup)
-    zero_vector(G::LieGroup, T::Type)
-
-Generate a $(_link(:zero_vector)) of type `T` in the [`LieAlgebra`](@ref) ``𝔤`` of
-the [`LieGroup`](@ref) `G` of type `T`.
-By default this calls `zero_vector(G)` which should implement a generic variant suitable for
-the usually expected types
-
-Note that for the in-place variant `zero_vector!(G, X::T, e)` the type can be inferred by `X`.
-"""
-ManifoldsBase.zero_vector(G::LieGroup{𝔽,<:O}, T::Type) where {𝔽,O<:AbstractGroupOperation}
-
-function ManifoldsBase.zero_vector(
-    G::LieGroup{𝔽,<:O}, T::Type
-) where {𝔽,O<:AbstractGroupOperation}
-    return ManifoldsBase.zero_vector(G.manifold, identity_element(G, T))
-end
-function ManifoldsBase.zero_vector(G::LieGroup{𝔽,<:O}) where {𝔽,O<:AbstractGroupOperation}
-    return ManifoldsBase.zero_vector(G.manifold, identity_element(G))
-end
-function ManifoldsBase.zero_vector!(
-    G::LieGroup{𝔽,<:O}, X::T
-) where {𝔽,O<:AbstractGroupOperation,T}
-    return ManifoldsBase.zero_vector!(G.manifold, X, identity_element(G, T))
-end
-
 #
 # Allocation hints - mainly pass-through, especially for power manifolds
 
@@ -908,9 +881,6 @@ function ManifoldsBase.allocate_result(
 end
 function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(log), args...)
     return ManifoldsBase.allocate_result(G.manifold, f, args...)
-end
-function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(zero_vector), g)
-    return ManifoldsBase.allocate_result(G.manifold, f, g)
 end
 function ManifoldsBase.allocate_result(
     G::LieGroup, f::Union{typeof(rand),typeof(identity_element)}

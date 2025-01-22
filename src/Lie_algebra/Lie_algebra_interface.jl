@@ -193,11 +193,11 @@ function ManifoldsBase._get_vector!(
 end
 
 @inline function get_vector_lie(𝔤::LieAlgebra, c, N)
-    X = zero_vector(𝔤.manifold)
+    X = zero_vector(𝔤)
     return get_vector_lie!(𝔤, X, c, N)
 end
 @inline function get_vector_lie(𝔤::LieAlgebra, c, N, T::Type)
-    X = zero_vector(𝔤.manifold, T)
+    X = zero_vector(𝔤, T)
     return get_vector_lie!(𝔤::LieAlgebra, X, c, N)
 end
 @inline function get_vector_lie!(𝔤::LieAlgebra, X::T, c, N) where {T}
@@ -376,19 +376,31 @@ function vee!(𝔤::LieAlgebra{𝔽}, c, X) where {𝔽}
     return c
 end
 
+"""
+    zero_vector(𝔤::LieAlgebra)
+    zero_vector(𝔤::LieAlgebra, T::Type)
+    zero_vector(𝔤::LieAlgebra, X::T)
+
+Generate a $(_link(:zero_vector)) of type `T` in the [`LieAlgebra`](@ref) ``𝔤`` of
+the [`LieGroup`](@ref) `G`.
+By default this calls `zero_vector` on the manifold of `G` at the `identity_element(G,T)`
+
+For the allocating variant the type `T` of the zero vector can be specified.
+"""
+ManifoldsBase.zero_vector(G::LieGroup{𝔽,<:O}, T::Type) where {𝔽,O<:AbstractGroupOperation}
+
 function ManifoldsBase.zero_vector(𝔤::LieAlgebra, T::Type)
-    # pass to Lie group, since that is where we currently have the T variant
-    return ManifoldsBase.zero_vector(𝔤.manifold, T)
+    G = 𝔤.manifold
+    return ManifoldsBase.zero_vector(G.manifold, identity_element(G, T))
 end
 function ManifoldsBase.zero_vector(𝔤::LieAlgebra)
-    # pass to manifold directly
-    return ManifoldsBase.zero_vector(𝔤.manifold.manifold, identity_element(𝔤.manifold))
+    G = 𝔤.manifold
+    return ManifoldsBase.zero_vector(G.manifold, identity_element(G))
 end
 function ManifoldsBase.zero_vector!(𝔤::LieAlgebra, X::T) where {T}
     # pass to manifold directly
-    return ManifoldsBase.zero_vector!(
-        𝔤.manifold.manifold, X, identity_element(𝔤.manifold, T)
-    )
+    G = 𝔤.manifold
+    return ManifoldsBase.zero_vector!(G.manifold, X, identity_element(G, T))
 end
 
 #

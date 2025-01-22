@@ -96,8 +96,8 @@ begin
     test_lie_group(J, properties3, expectations3)
     @testset "𝔰𝔬(4) edge cases" begin
         e = Identity(J)
-        X = zero_vector(J)
         𝔧 = LieAlgebra(J)
+        X = zero_vector(𝔧)
         d = vee(𝔧, X)
         p = exponential(J, X)
         for c in LieGroupsTestSuite.𝔰𝔬4_edges_cases_explog
@@ -106,9 +106,9 @@ begin
                 vee!(𝔧, d, X)
                 @test isapprox(c, d)
                 l = exp(X)
-                exp!(J, p, X)
+                exponential!(J, X)
                 @test l ≈ p
-                p2 = exp(J, log(J, p))
+                p2 = exponential(J, logarithm(J, p))
                 @test isapprox(J, p, p2; atol=1e-6)
             end
         end
