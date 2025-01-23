@@ -264,7 +264,7 @@ function test_diff_inv(G::LieGroup, g, X; expected=missing, test_mutating::Bool=
     @testset "diff_inv" begin
         𝔤 = LieAlgebra(G)
         Y1 = diff_inv(G, g, X)
-        @test is_vector(G, g, Y1; error=:error)
+        @test is_point(𝔤, Y1; error=:error)
         if test_mutating
             Y2 = zero_vector(𝔤, typeof(X))
             Y2 = diff_inv!(G, Y2, g, X)
@@ -292,7 +292,7 @@ function test_diff_left_compose(
     @testset "diff_left_compose" begin
         𝔤 = LieAlgebra(G)
         Y1 = diff_left_compose(G, g, h, X)
-        @test is_vector(G, g, Y1; error=:error)
+        @test is_point(𝔤, Y1; error=:error)
         if test_mutating
             Y2 = zero_vector(𝔤, typeof(X))
             diff_left_compose!(G, Y2, g, h, X)
@@ -320,7 +320,7 @@ function test_diff_right_compose(
     @testset "diff_right_compose" begin
         𝔤 = LieAlgebra(G)
         Y1 = diff_right_compose(G, g, h, X)
-        @test is_vector(G, g, Y1; error=:error)
+        @test is_point(𝔤, Y1; error=:error)
         if test_mutating
             Y2 = zero_vector(𝔤, typeof(X))
             diff_right_compose!(G, Y2, g, h, X)

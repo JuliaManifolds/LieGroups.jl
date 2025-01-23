@@ -68,7 +68,7 @@ which simplifies for [`AdditionGroupOperation`](@ref) to ``Dι_{$(_math(:G))}(g)
 """
 
 @doc "$(_doc_diff_inv_add)"
-diff_inv(G::LieGroup{𝔽,AdditionGroupOperation}, g, X) where {𝔽} = -X
+diff_inv(G::LieGroup{𝔽,AdditionGroupOperation}, g, X) where {𝔽}
 
 @doc "$(_doc_diff_inv_add)"
 function diff_inv!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, X) where {𝔽}
@@ -85,7 +85,7 @@ which simplifies for [`AdditionGroupOperation`](@ref) to ``Dλ_g(h)[X] = X``.
 """
 
 @doc "$(_doc_diff_left_compose_add)"
-diff_left_compose(G::LieGroup{𝔽,AdditionGroupOperation}, g, h, X) where {𝔽} = X
+diff_left_compose(G::LieGroup{𝔽,AdditionGroupOperation}, g, h, X) where {𝔽}
 
 @doc "$(_doc_diff_left_compose_add)"
 function diff_left_compose!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, X) where {𝔽}
@@ -101,7 +101,7 @@ which simplifies for [`AdditionGroupOperation`](@ref) to ``Dρ_g(h)[X] = X``.
 """
 
 @doc "$(_doc_diff_right_compose_add)"
-diff_right_compose(G::LieGroup{𝔽,AdditionGroupOperation}, h, g, X) where {𝔽}
+diff_right_compose(::LieGroup{𝔽,AdditionGroupOperation}, ::Any, ::Any, ::Any) where {𝔽}
 
 @doc "$(_doc_diff_right_compose_add)"
 function diff_right_compose!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, X) where {𝔽}

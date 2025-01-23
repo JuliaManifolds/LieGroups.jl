@@ -67,10 +67,10 @@ This can be computed in-place of `k`.
 """
 
 @doc "$(_doc_compose_mult)"
-compose(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g, h) where {𝔽}
+compose(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any) where {𝔽}
 
 @doc "$(_doc_compose_mult)"
-compose!(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, k, g, h) where {𝔽}
+compose!(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any) where {𝔽}
 
 function _compose!(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, k, g, h) where {𝔽}
     # perform the multiplication “safe”, that is, even when providing
@@ -87,12 +87,14 @@ _doc_diff_conjugate_add = """
     diff_conjugate(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g, h, X)
     diff_conjugate!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, g, h, X)
 
-Compute the differential of the conjutage ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1} = ghg^{-1}``,
+Compute the differential of the conjugate ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1} = ghg^{-1}``,
 which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``D(c_g(h))[X] = gXg^{-1}``.
 """
 
 @doc "$(_doc_diff_conjugate_add)"
-diff_conjugate(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g, h, X) where {𝔽}
+diff_conjugate(
+    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any
+) where {𝔽}
 
 @doc "$(_doc_diff_conjugate_add)"
 function diff_conjugate!(
@@ -124,7 +126,7 @@ Then we get ``g^{$(_tex(:transp))}(g^{-1}(gX)g^{-1})`` which simplifies to ``-g^
 """
 
 @doc "$(_doc_diff_inv_mult)"
-diff_inv(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g, X) where {𝔽}
+diff_inv(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any) where {𝔽}
 
 function diff_inv(
     ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation},
@@ -153,7 +155,12 @@ which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``Dλ_
 """
 
 @doc "$(_doc_diff_left_compose_mult)"
-diff_left_compose(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g, h, X) where {𝔽}
+diff_left_compose(
+    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation},
+    ::Any,
+    ::Any,
+    ::Any,
+) where {𝔽}
 
 @doc "$(_doc_diff_left_compose_mult)"
 function diff_left_compose!(
@@ -171,11 +178,17 @@ which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``Dρ_
 """
 
 @doc "$(_doc_diff_right_compose_mult)"
-diff_right_compose(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, h, g, X) where {𝔽}
+diff_right_compose(
+    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any,
+) where {𝔽}
 
 @doc "$(_doc_diff_right_compose_mult)"
 function diff_right_compose!(
-    G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, g, h, X
+    G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation},
+    Y,
+    g,
+    ::Any,
+    X,
 ) where {𝔽}
     return copyto!(LieAlgebra(G), Y, X * g)
 end
@@ -191,7 +204,7 @@ This can be computed in-place of `g`.
 """
 
 @doc "$(_doc_exponential_mult)"
-exponential(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, X) where {𝔽}
+exponential(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, ::Any) where {𝔽}
 
 @doc "$(_doc_exponential_mult)"
 function exponential!(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, g, X) where {𝔽}
@@ -211,7 +224,7 @@ which for an [`AbstractMultiplicationGroupOperation`](@ref) is the one-element o
 identity_element(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}) where {𝔽}
 
 @doc "$(_doc_identity_element_mult)"
-identity_element!(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, e) where {𝔽}
+identity_element!(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any) where {𝔽}
 function identity_element!(
     ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, e::AbstractMatrix
 ) where {𝔽}
@@ -227,7 +240,7 @@ simplifies to the multiplicative inverse ``g^{-1}``. This can be done in-place o
 """
 
 @doc "$(_doc_inv_mult)"
-Base.inv(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g) where {𝔽}
+Base.inv(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any) where {𝔽}
 
 @doc "$(_doc_inv_mult)"
 function inv!(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, h, g) where {𝔽}
@@ -269,7 +282,7 @@ The computation can be done in-place of `Z`.
 """
 
 @doc "$(_doc_lie_bracket_mult)"
-lie_bracket(::LieAlgebra{𝔽,MatrixMultiplicationGroupOperation}, X, Y) where {𝔽}
+lie_bracket(::LieAlgebra{𝔽,MatrixMultiplicationGroupOperation}, ::Any, ::Any) where {𝔽}
 
 @doc "$(_doc_lie_bracket_mult)"
 function lie_bracket!(::LieAlgebra{𝔽,MatrixMultiplicationGroupOperation}, Z, X, Y) where {𝔽}
@@ -289,7 +302,8 @@ This can be computed in-place of `X`.
 """
 
 @doc "$(_doc_logarithm_mult)"
-logarithm(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, g) where {𝔽} = log(g)
+logarithm(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, ::Any) where {𝔽}
+
 function logarithm(
     G::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
     ::Identity{MatrixMultiplicationGroupOperation},

@@ -71,7 +71,7 @@ begin
     e = Identity(H)
     g_e = [1.0 0.0 0.0; 0.0 -1.0 0.0; 0.0 0.0 -1.0]
     X_e = [0.0 0.0 0.0; 0.0 0.0 -π; 0.0 π 0.0]
-    @test isapprox(LieAlgebra(H), log(H, g_e), X_e)
+    @test isapprox(LieAlgebra(H), logarithm(H, g_e), X_e)
     @test isapprox(H, exponential(H, X_e), g_e)
     #
     #
