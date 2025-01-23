@@ -127,9 +127,11 @@ end
 
 ManifoldsBase.@manifold_element_forwards SpecialEuclideanMatrixPoint value
 ManifoldsBase.@manifold_vector_forwards SpecialEuclideanMatrixTVector value
-ManifoldsBase.@default_manifold_fallbacks SpecialEuclideanGroup SpecialEuclideanMatrixPoint SpecialEuclideanMatrixTVector value value
+ManifoldsBase.@default_manifold_fallbacks LeftSpecialEuclideanGroup SpecialEuclideanMatrixPoint SpecialEuclideanMatrixTVector value value
+ManifoldsBase.@default_manifold_fallbacks RightSpecialEuclideanGroup SpecialEuclideanMatrixPoint SpecialEuclideanMatrixTVector value value
 
-@default_lie_group_fallbacks SpecialEuclideanGroup SpecialEuclideanMatrixPoint SpecialEuclideanMatrixTVector value value
+@default_lie_group_fallbacks LeftSpecialEuclideanGroup SpecialEuclideanMatrixPoint SpecialEuclideanMatrixTVector value value
+@default_lie_group_fallbacks RightSpecialEuclideanGroup SpecialEuclideanMatrixPoint SpecialEuclideanMatrixTVector value value
 
 """
     SpecialEuclideanProductPoint <: AbstractLieGroupPoint
@@ -589,13 +591,19 @@ function logarithm!(G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2
     return X
 end
 function logarithm!(
-    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
+    G::LeftSpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
     X,
     ::Identity{<:LeftSpecialEuclideanGroupOperation},
 )
-    return ManifoldsBase.zero_vector!(G, X)
+    return ManifoldsBase.zero_vector!(LieAlgebra(G), X)
 end
-
+function logarithm!(
+    G::RightSpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
+    X,
+    ::Identity{<:RightSpecialEuclideanGroupOperation},
+)
+    return ManifoldsBase.zero_vector!(LieAlgebra(G), X)
+end
 _doc_log_SE3_id = """
     logarithm(G::SpecialEuclidean, e, g)
     logarithm!(G::SpecialEuclidean, X, e, g)
@@ -642,13 +650,19 @@ function logarithm!(G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3
     return X
 end
 function logarithm!(
-    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
+    G::LeftSpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
     X,
     ::Identity{<:LeftSpecialEuclideanGroupOperation},
 )
     return ManifoldsBase.zero_vector!(G, X)
 end
-
+function logarithm!(
+    G::RightSpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
+    X,
+    ::Identity{<:RightSpecialEuclideanGroupOperation},
+)
+    return ManifoldsBase.zero_vector!(G, X)
+end
 function ManifoldsBase.norm(G::SpecialEuclideanGroup, g, X)
     SOn, Tn = _SOn_and_Tn(G)
     n1 = norm(

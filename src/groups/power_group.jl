@@ -326,7 +326,7 @@ end
 function logarithm!(
     G::LieGroup{𝔽,Op,M}, X, ::Identity{Op}
 ) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
-    return zero_vector!(G, X)
+    return zero_vector!(LieAlgebra(G), X)
 end
 
 function ManifoldsBase.log!(

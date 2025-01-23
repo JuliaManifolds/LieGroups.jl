@@ -304,7 +304,7 @@ end
 function logarithm!(
     PrG::LieGroup{𝔽,Op,M}, X, ::Identity{Op}
 ) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
-    zero_vector!(PrG, X)
+    zero_vector!(LieAlgebra(PrG), X)
     return X
 end
 
