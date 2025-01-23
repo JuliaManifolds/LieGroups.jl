@@ -191,7 +191,7 @@ This can be computed in-place of `g`.
 """
 
 @doc "$(_doc_exponential_mult)"
-exponential(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, X) where {𝔽} = exp(X)
+exponential(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, X) where {𝔽}
 
 @doc "$(_doc_exponential_mult)"
 function exponential!(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, g, X) where {𝔽}

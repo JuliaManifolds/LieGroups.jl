@@ -83,7 +83,7 @@ begin
     @testset "𝔬(4) edge cases" begin
         𝔧 = LieAlgebra(J)
         e = Identity(J)
-        X = zero_vector(J)
+        X = zero_vector(𝔧)
         d = vee(𝔧, X)
         p = exponential(J, X)
         for c in LieGroupsTestSuite.𝔰𝔬4_edges_cases_explog

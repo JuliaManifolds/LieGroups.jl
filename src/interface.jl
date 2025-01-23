@@ -757,10 +757,10 @@ function logarithm(G::LieGroup, g)
     logarithm!(G, X, g)
     return X
 end
-function logarithm(G::LieGroup, e::Identity)
+function logarithm(G::LieGroup{𝔽,Op}, e::Identity{Op}) where {𝔽,Op}
     return zero_vector(LieAlgebra(G))
 end
-function logarithm(G::LieGroup, e::Identity, T::Type)
+function logarithm(G::LieGroup{𝔽,Op}, e::Identity{Op}, T::Type) where {𝔽,Op}
     return zero_vector(LieAlgebra(G), T)
 end
 

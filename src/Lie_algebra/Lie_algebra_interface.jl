@@ -322,7 +322,7 @@ see also [`rand(::LieAlgebra; kwargs...)`](@ref)
 @doc "$(_doc_rand_algebra)"
 Random.rand(::LieAlgebra; kwargs...)
 
-function Random.rand(𝔤::LieAlgebra, T; vector_at=nothing, kwargs...)
+function Random.rand(𝔤::LieAlgebra, T::Type; vector_at=nothing, kwargs...)
     X = allocate_on(𝔤, TangentSpaceType(), T)
     rand!(𝔤, X; vector_at=vector_at, kwargs...)
     return X

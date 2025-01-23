@@ -60,28 +60,25 @@ Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     return ManifoldsBase.submanifold_component(G.manifold, _value(g), 1)
 end
 
-function ManifoldsBase.zero_vector(G::LieGroups.LeftSpecialEuclideanGroup, ::ArrayPartition)
-    n = Manifolds.get_parameter(G.manifold[1].size)[1]
-    return ArrayPartition(zeros(n, n), zeros(n))
-end
 function ManifoldsBase.zero_vector(
-    G::LieGroups.LeftSpecialEuclideanGroup, ::SpecialEuclideanProductTVector
-)
-    n = Manifolds.get_parameter(G.manifold[1].size)[1]
-    return SpecialEuclideanProductTVector(ArrayPartition(zeros(n, n), zeros(n)))
-end
-function ManifoldsBase.zero_vector(
-    G::LieGroups.RightSpecialEuclideanGroup, ::ArrayPartition
-)
+    G::LieAlgebra{
+        𝔽,LieGroups.SpecialEuclideanGroupOperation,LieGroups.SpecialEuclideanGroup
+    },
+    ::ArrayPartition,
+) where {𝔽}
     n = Manifolds.get_parameter(G.manifold[1].size)[1]
     return ArrayPartition(zeros(n), zeros(n, n))
 end
 function ManifoldsBase.zero_vector(
-    G::LieGroups.RightSpecialEuclideanGroup, ::SpecialEuclideanProductTVector
-)
+    G::LieAlgebra{
+        𝔽,LieGroups.SpecialEuclideanGroupOperation,LieGroups.SpecialEuclideanGroup
+    },
+    ::SpecialEuclideanProductTVector,
+) where {𝔽}
     n = Manifolds.get_parameter(G.manifold[1].size)[1]
     return SpecialEuclideanProductTVector(ArrayPartition(zeros(n), zeros(n, n)))
 end
+
 # TODO: Implement?
 # The following three should also work due to the
 # AbstractProductGroup s implementations

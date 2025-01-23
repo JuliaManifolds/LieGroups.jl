@@ -196,16 +196,6 @@ Since `e` is just the zero-element with respect to the corresponding `+`, the fo
 
 @doc "$(_doc_logarithm_add)"
 logarithm(::LieGroup{𝔽,AdditionGroupOperation}, q) where {𝔽} = q
-function logarithm(
-    G::LieGroup{𝔽,AdditionGroupOperation}, ::Identity{AdditionGroupOperation}
-) where {𝔽}
-    return zero_vector(LieAlgebra(G))
-end
-function logarithm(
-    G::LieGroup{𝔽,AdditionGroupOperation}, ::Identity{AdditionGroupOperation}, T::Type
-) where {𝔽}
-    return zero_vector(LieAlgebra(G), T)
-end
 
 @doc "$(_doc_logarithm_add)"
 function logarithm!(G::LieGroup{𝔽,AdditionGroupOperation}, X, g) where {𝔽}

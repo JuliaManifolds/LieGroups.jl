@@ -239,7 +239,7 @@ function test_diff_group_apply(
     @testset "diff_group_apply" begin
         Y1 = diff_group_apply(A, g, p, X)
         G = base_lie_group(A)
-        @test is_vector(G, g, Y1)
+        @test is_vector(G, g, Y1; error=:error)
         𝔤 = LieAlgebra(G)
         if test_mutating
             Y2 = copy(𝔤, X)
@@ -264,7 +264,7 @@ function test_diff_inv(G::LieGroup, g, X; expected=missing, test_mutating::Bool=
     @testset "diff_inv" begin
         𝔤 = LieAlgebra(G)
         Y1 = diff_inv(G, g, X)
-        @test is_vector(G, g, Y1, true)
+        @test is_vector(G, g, Y1; error=:error)
         if test_mutating
             Y2 = zero_vector(𝔤, typeof(X))
             Y2 = diff_inv!(G, Y2, g, X)
@@ -292,7 +292,7 @@ function test_diff_left_compose(
     @testset "diff_left_compose" begin
         𝔤 = LieAlgebra(G)
         Y1 = diff_left_compose(G, g, h, X)
-        @test is_vector(G, g, Y1, true)
+        @test is_vector(G, g, Y1; error=:error)
         if test_mutating
             Y2 = zero_vector(𝔤, typeof(X))
             diff_left_compose!(G, Y2, g, h, X)
@@ -320,7 +320,7 @@ function test_diff_right_compose(
     @testset "diff_right_compose" begin
         𝔤 = LieAlgebra(G)
         Y1 = diff_right_compose(G, g, h, X)
-        @test is_vector(G, g, Y1)
+        @test is_vector(G, g, Y1; error=:error)
         if test_mutating
             Y2 = zero_vector(𝔤, typeof(X))
             diff_right_compose!(G, Y2, g, h, X)
@@ -460,7 +460,7 @@ function test_exp_log(
             end
             @test is_point(𝔤, Y1; error=:error)
             Y3 = zero_vector(𝔤, typeof(X))
-            @test isapprox(LieAlgebra(G), Y3, logarithm(G, e); atol=atol)
+            @test isapprox(𝔤, Y3, logarithm(G, e, typeof(X)); atol=atol)
             logarithm!(G, Y3, e)
             @test isapprox(G, e, Y3, logarithm(G, e, typeof(Y3)); atol=atol)
             @test isapprox(𝔤, log(G, g, g), Y3; atol=atol)
@@ -523,7 +523,7 @@ function test_hat_vee(
         if test_hat
             c = ismissing(expected_value) ? zeros(manifold_dimension(G)) : expected_value
             Y1 = hat(𝔤, c, typeof(X))
-            @test is_vector(G, g, Y1)
+            @test is_vector(G, g, Y1; error=:error)
             !ismissing(expected_value) && @test isapprox(𝔤, X, Y1)
             if test_mutating
                 Y2 = zero_vector(𝔤, typeof(Y1))

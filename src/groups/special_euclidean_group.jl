@@ -654,14 +654,14 @@ function logarithm!(
     X,
     ::Identity{<:LeftSpecialEuclideanGroupOperation},
 )
-    return ManifoldsBase.zero_vector!(G, X)
+    return ManifoldsBase.zero_vector!(LieAlgebra(G), X)
 end
 function logarithm!(
     G::RightSpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
     X,
     ::Identity{<:RightSpecialEuclideanGroupOperation},
 )
-    return ManifoldsBase.zero_vector!(G, X)
+    return ManifoldsBase.zero_vector!(LieAlgebra(G), X)
 end
 function ManifoldsBase.norm(G::SpecialEuclideanGroup, g, X)
     SOn, Tn = _SOn_and_Tn(G)
@@ -813,7 +813,12 @@ function ManifoldsBase.zero_vector(
     return zeros(n + 1, n + 1)
 end
 
-function ManifoldsBase.zero_vector!(G::SpecialEuclideanGroup, X::AbstractMatrix)
-    fill!(X, 0)
+function ManifoldsBase.zero_vector!(G::SpecialEuclideanGroup, X)
+    init_constants!(LieAlgebra(G), X)
+    Y = submanifold_component(G, X, :Rotation)
+    v = submanifold_component(G, X, :Translation)
+    SO3, T3 = _SOn_and_Tn(G)
+    zero_vector!(LieAlgebra(SO3), Y)
+    zero_vector!(LieAlgebra(T3), v)
     return X
 end

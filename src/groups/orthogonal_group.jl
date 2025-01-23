@@ -480,7 +480,7 @@ function logarithm!(
     X,
     ::Identity{MatrixMultiplicationGroupOperation},
 )
-    return zero_vector!(G, X)
+    return zero_vector!(LieAlgebra(G), X)
 end
 
 function logarithm!(

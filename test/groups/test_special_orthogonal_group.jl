@@ -72,7 +72,7 @@ begin
     g_e = [1.0 0.0 0.0; 0.0 -1.0 0.0; 0.0 0.0 -1.0]
     X_e = [0.0 0.0 0.0; 0.0 0.0 -π; 0.0 π 0.0]
     @test isapprox(LieAlgebra(H), log(H, g_e), X_e)
-    @test isapprox(H, exp(H, X_e), g_e)
+    @test isapprox(H, exponential(H, X_e), g_e)
     #
     #
     # SO(4)
@@ -106,7 +106,7 @@ begin
                 vee!(𝔧, d, X)
                 @test isapprox(c, d)
                 l = exp(X)
-                exponential!(J, X)
+                exponential!(J, p, X)
                 @test l ≈ p
                 p2 = exponential(J, logarithm(J, p))
                 @test isapprox(J, p, p2; atol=1e-6)

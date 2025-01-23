@@ -30,6 +30,7 @@ end
 function ProductGroupOperation(operations::AbstractGroupOperation...)
     return ProductGroupOperation(operations)
 end
+
 @inline Base.getindex(pgo::ProductGroupOperation, i::Integer) = pgo.ooperations[i]
 
 @doc raw"""
@@ -67,6 +68,12 @@ Alternatively, the short hand `G × H` can be used.
 """
 function ProductLieGroup(G::LieGroup, H::LieGroup)
     return LieGroup(G.manifold × H.manifold, G.op × H.op)
+end
+
+function ManifoldsBase.submanifold_components(
+    ::LieGroup{𝔽,Op,M}, op::ProductGroupOperation
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    return op.operations
 end
 
 function _compose!(
@@ -310,6 +317,19 @@ end
 
 function ManifoldsBase.log!(
     PrG::LieGroup{𝔽,Op,M}, X, g, h
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PrM = PrG.manifold
+    map(
+        ManifoldsBase.log!,
+        map(LieGroup, PrM.manifolds, PrG.op.operations),
+        submanifold_components(PrM, X),
+        submanifold_components(PrM, g),
+        submanifold_components(PrM, h),
+    )
+    return X
+end
+function ManifoldsBase.log!(
+    PrG::LieGroup{𝔽,Op,M}, X, ::Identity{Op}, h
 ) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     PrM = PrG.manifold
     map(
