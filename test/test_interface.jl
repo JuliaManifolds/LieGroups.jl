@@ -33,13 +33,13 @@ using LieGroupsTestSuite
             LieGroups.identity_element(::typeof(G)) = :id
             LieGroups.identity_element(::typeof(G), T::Type) = :id
             LieGroups.identity_element!(::typeof(G), g) = (g[] = :id)
-            LieGroups.exponential!(::typeof(G), h, X) = :id
-            @test exponential(G, X) === :id
+            LieGroups.exp!(::typeof(G), h, X) = :id
+            @test exp(G, X) === :id
             #
             # same for log
-            ManifoldsBase.allocate_result(::typeof(G), ::typeof(log), g) = :g
-            LieGroups.logarithm!(::typeof(G), X, g) = :g
-            @test logarithm(G, g) === :g
+            ManifoldsBase.allocate_result(::typeof(G), ::typeof(LieGroups.log), g) = :g
+            LieGroups.log!(::typeof(G), X, g) = :g
+            @test log(G, g) === :g
             g2 = Ref(:g)
             inv!(G, g2, e)
             @test g2[] == :id
@@ -47,13 +47,13 @@ using LieGroupsTestSuite
             Base.delete_method(which(identity_element, (typeof(G),)))
             Base.delete_method(which(identity_element, (typeof(G), Type)))
             Base.delete_method(which(identity_element!, typeof.([G, g2])))
-            Base.delete_method(which(LieGroups.exponential!, typeof.([G, h, X])))
+            Base.delete_method(which(LieGroups.exp!, typeof.([G, h, X])))
             Base.delete_method(which(ManifoldsBase.allocate_result, typeof.([G, log, g])))
-            Base.delete_method(which(LieGroups.logarithm!, typeof.([G, X, g])))
+            Base.delete_method(which(LieGroups.log!, typeof.([G, X, g])))
         end
         # so they are undefined here again but we checked the exp fallback
-        @test_throws MethodError exponential!(G, g, X)
-        @test_throws MethodError logarithm!(G, X, g)
+        @test_throws MethodError exp!(G, g, X)
+        @test_throws MethodError log!(G, X, g)
     end
 end
 @testset "Generic Lie Algebra Interface functions" begin

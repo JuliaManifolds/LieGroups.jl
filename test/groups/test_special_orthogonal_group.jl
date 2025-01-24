@@ -71,8 +71,8 @@ begin
     e = Identity(H)
     g_e = [1.0 0.0 0.0; 0.0 -1.0 0.0; 0.0 0.0 -1.0]
     X_e = [0.0 0.0 0.0; 0.0 0.0 -π; 0.0 π 0.0]
-    @test isapprox(LieAlgebra(H), logarithm(H, g_e), X_e)
-    @test isapprox(H, exponential(H, X_e), g_e)
+    @test isapprox(LieAlgebra(H), log(H, g_e), X_e)
+    @test isapprox(H, exp(H, X_e), g_e)
     #
     #
     # SO(4)
@@ -99,16 +99,16 @@ begin
         𝔧 = LieAlgebra(J)
         X = zero_vector(𝔧)
         d = vee(𝔧, X)
-        p = exponential(J, X)
+        p = exp(J, X)
         for c in LieGroupsTestSuite.𝔰𝔬4_edges_cases_explog
             @testset "$c on $J" begin
                 hat!(𝔧, X, c)
                 vee!(𝔧, d, X)
                 @test isapprox(c, d)
                 l = exp(X)
-                exponential!(J, p, X)
+                exp!(J, p, X)
                 @test l ≈ p
-                p2 = exponential(J, logarithm(J, p))
+                p2 = exp(J, log(J, p))
                 @test isapprox(J, p, p2; atol=1e-6)
             end
         end

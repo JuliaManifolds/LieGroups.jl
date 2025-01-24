@@ -32,8 +32,8 @@ const OrthogonalLieAlgebra{T} = LieAlgebra{
 # Generic special cases for O(n) and SO(n)
 
 _doc_exp_O2_id = """
-    exponential(G, X)
-    exponential!(G, g, X)
+    exp(G, X)
+    exp!(G, g, X)
 
 Compute the Lie group exponential function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(2)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(2)``,
 where `e` is the [`Identity`](@ref)`{MatrixMultiplicationGroupOperation}` and `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`) for dispatch.
@@ -54,14 +54,14 @@ the result ``g`` always lies in the connected component of the identity.
 """
 
 @doc "$(_doc_exp_O2_id)"
-exponential(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, X)
+ManifoldsBase.exp(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, X)
 
 @doc "$(_doc_exp_O2_id)"
-exponential!(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, g, X)
+ManifoldsBase.exp!(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, g, X)
 
 _doc_exp_O3_id = """
-    exponential(G, X)
-    exponential!(G, g, X)
+    exp(G, X)
+    exp!(G, g, X)
 
 Compute the Lie group exponential function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(3)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(3)``,
 where `e` is the [`Identity`](@ref)`{MatrixMultiplicationGroupOperation}` and `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`) for dispatch.
@@ -89,14 +89,14 @@ the result ``g`` always lies in the connected component of the identity.
 """
 
 @doc "$(_doc_exp_O3_id)"
-exponential(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, X)
+ManifoldsBase.exp(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, X)
 
 @doc "$(_doc_exp_O3_id)"
-exponential!(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, g, X)
+ManifoldsBase.exp!(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, g, X)
 
 _doc_exp_O4_id = """
-    exponential(G, e, X)
-    exponential!(G, e, g, X)
+    exp(G, e, X)
+    exp!(G, e, g, X)
 
 Compute the Lie group exponential function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(4)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(4)``,
 where `e` is the [`Identity`](@ref)`{MatrixMultiplicationGroupOperation}` and `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`) for dispatch.
@@ -106,12 +106,12 @@ adapted from [GallierXu:2002](@cite), [AndricaRohan:2013](@cite) with a few nume
 """
 
 @doc "$(_doc_exp_O4_id)"
-exponential(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, X)
+ManifoldsBase.exp(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, X)
 
 @doc "$(_doc_exp_O4_id)"
-exponential!(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, g, X)
+ManifoldsBase.exp!(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, g, X)
 
-function exponential!(
+function ManifoldsBase.exp!(
     ::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{2}}}, g, X
 )
     @assert size(X) == (2, 2)
@@ -127,7 +127,7 @@ function exponential!(
     return g
 end
 
-function exponential!(
+function ManifoldsBase.exp!(
     ::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{3}}}, g, X
 )
     θ = norm(X) / sqrt(2)
@@ -143,7 +143,7 @@ function exponential!(
     mul!(g, X, X, b, true)
     return g
 end
-function exponential!(
+function ManifoldsBase.exp!(
     ::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{4}}}, g, X
 )
     T = eltype(X)
@@ -369,8 +369,8 @@ function _get_vector_lie_On!(X, c)
 end
 
 _doc_log_O2_id = """
-    logarithm(G, g)
-    logarithm!(G, X, g)
+    log(G, g)
+    log!(G, X, g)
 
 Compute the Lie group logarithm function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(2)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(2)``,
 where `e` is the [`Identity`](@ref)`{MatrixMultiplicationGroupOperation}` and `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`) for dispatch.
@@ -392,14 +392,14 @@ for any ``g`` in the other component, the logarithmic map is defined, but not th
 """
 
 @doc "$(_doc_log_O2_id)"
-logarithm(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, g)
+ManifoldsBase.log(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, g)
 
 @doc "$(_doc_log_O2_id)"
-logarithm!(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, X, g)
+ManifoldsBase.log!(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, X, g)
 
 _doc_log_O3_id = """
-    logarithm(G, g)
-    logarithm!(G, X, g)
+    log(G, g)
+    log!(G, X, g)
 
 Compute the Lie group logarithm function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(3)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(3)``,
 where `e` is the [`Identity`](@ref)`{MatrixMultiplicationGroupOperation}` and `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`) for dispatch.
@@ -435,14 +435,14 @@ for any ``g`` in the other component, the logarithmic map is defined, but not th
 """
 
 @doc "$(_doc_log_O3_id)"
-logarithm(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, g)
+ManifoldsBase.log(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, g)
 
 @doc "$(_doc_log_O3_id)"
-logarithm!(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, X, g)
+ManifoldsBase.log!(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, X, g)
 
 _doc_log_O4_id = """
-    logarithm(G, g)
-    logarithm!(G, X, g)
+    log(G, g)
+    log!(G, X, g)
 
 Compute the Lie group logarithm function on the [`OrthogonalGroup`](@ref) ``$(_math(:O))(4)`` or [`SpecialOrthogonalGroup`](@ref) ``$(_math(:SO))(4)``,
 where `e` is the [`Identity`](@ref)`{MatrixMultiplicationGroupOperation}` and `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`) for dispatch.
@@ -456,12 +456,12 @@ Note the logarithmic map is only locally around the identity uniquely determined
 """
 
 @doc "$(_doc_log_O4_id)"
-logarithm(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, g)
+ManifoldsBase.log(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, g)
 
 @doc "$(_doc_log_O4_id)"
-logarithm!(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, X, g)
+ManifoldsBase.log!(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, X, g)
 
-function logarithm!(
+function ManifoldsBase.log!(
     ::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}}, X, g
 )
     @assert size(X) == (2, 2)
@@ -475,7 +475,7 @@ function logarithm!(
     end
     return X
 end
-function logarithm!(
+function ManifoldsBase.log!(
     G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
     X,
     ::Identity{MatrixMultiplicationGroupOperation},
@@ -483,7 +483,7 @@ function logarithm!(
     return zero_vector!(LieAlgebra(G), X)
 end
 
-function logarithm!(
+function ManifoldsBase.log!(
     G::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
     X::AbstractMatrix,
     q::AbstractMatrix,
@@ -500,7 +500,7 @@ function logarithm!(
     # project onto 𝔰𝔬(3) for numerical stability
     return project!(LieAlgebra(G), X, X)
 end
-function logarithm!(
+function ManifoldsBase.log!(
     G::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{4}}},
     X::AbstractMatrix,
     q::AbstractMatrix,

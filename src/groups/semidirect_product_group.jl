@@ -295,7 +295,7 @@ Compute the inverse element of an element ``h = (h_1,n_1)`` given by
 g^{-1} = (h_1^{-1}, σ_{h_1}^-1n_1^{-1}).
 ```
 """
-inv(
+Base.inv(
     SDPG::LieGroup{𝔽,Op,M}, g
 ) where {𝔽,Op<:SemiDirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
 

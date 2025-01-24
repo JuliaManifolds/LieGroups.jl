@@ -8,9 +8,9 @@ SpecialEuclideanGroup
 
 ```@docs
 SpecialEuclideanMatrixPoint
-SpecialEuclideanMatrixTVector
+SpecialEuclideanMatrixTangentVector
 SpecialEuclideanProductPoint
-SpecialEuclideanProductTVector
+SpecialEuclideanProductTangentVector
 ```
 
 # Specific functions

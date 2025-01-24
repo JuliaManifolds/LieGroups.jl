@@ -59,7 +59,7 @@ begin
     expectations2 = Dict(:repr => "OrthogonalGroup(3)", :atols => Dict(:exp => 1e-15))
     test_lie_group(H, properties2, expectations2)
     @testset "O(3) special cases" begin
-        @test is_identity(H, exponential(H, zeros(3, 3)))
+        @test is_identity(H, exp(H, zeros(3, 3)))
     end
     #
     #
@@ -85,16 +85,16 @@ begin
         e = Identity(J)
         X = zero_vector(𝔧)
         d = vee(𝔧, X)
-        p = exponential(J, X)
+        p = exp(J, X)
         for c in LieGroupsTestSuite.𝔰𝔬4_edges_cases_explog
             @testset "$c on $J" begin
                 hat!(𝔧, X, c)
                 vee!(𝔧, d, X)
                 @test isapprox(c, d)
                 l = exp(X)
-                exponential!(J, p, X)
+                exp!(J, p, X)
                 @test l ≈ p
-                p2 = exponential(J, logarithm(J, p))
+                p2 = exp(J, log(J, p))
                 @test isapprox(J, p, p2; atol=1e-6)
             end
         end

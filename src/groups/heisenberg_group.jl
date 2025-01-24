@@ -51,9 +51,9 @@ The formula reads
 where ``I_n`` is the ``n×n`` identity matrix, ``0_n`` is the ``n×n`` zero matrix
 and ``\mathbf{a}⋅\mathbf{b}`` is dot product of vectors.
 """
-exponential(G::HeisenbergGroup, X)
+ManifoldsBase.exp(G::HeisenbergGroup, X)
 
-function exponential!(G::HeisenbergGroup, h, X)
+function ManifoldsBase.exp!(G::HeisenbergGroup, h, X)
     n = ManifoldsBase.get_parameter(G.manifold.size)[1]
     copyto!(h, I)
     a_view = _heisenberg_a_view(G, X)
@@ -82,7 +82,7 @@ The expression reads
 where ``I_n`` is the ``n×n`` identity matrix, ``0_n`` is the ``n×n`` zero matrix
 and ``\mathbf{a}⋅\mathbf{b}`` is dot product of vectors.
 """
-function Base.exp(G::HeisenbergGroup, g, X)
+function ManifoldsBase.exp(G::HeisenbergGroup, g, X)
     h = similar(X)
     exp!(G, h, g, X)
     return h
@@ -91,14 +91,14 @@ end
 function ManifoldsBase.exp!(G::HeisenbergGroup, h, g, X)
     n = ManifoldsBase.get_parameter(G.manifold.size)[1]
     copyto!(h, I)
-    a_p_view = _heisenberg_a_view(G, g)
-    b_p_view = _heisenberg_b_view(G, g)
+    a_g_view = _heisenberg_a_view(G, g)
+    b_g_view = _heisenberg_b_view(G, g)
     a_X_view = _heisenberg_a_view(G, X)
     b_X_view = _heisenberg_b_view(G, X)
-    h[1, 2:(n + 1)] .= a_p_view .+ a_X_view
-    h[2:(n + 1), n + 2] .= b_p_view .+ b_X_view
+    h[1, 2:(n + 1)] .= a_g_view .+ a_X_view
+    h[2:(n + 1), n + 2] .= b_g_view .+ b_X_view
     h[1, n + 2] =
-        g[1, n + 2] + X[1, n + 2] + dot(a_X_view, b_X_view) / 2 + dot(a_p_view, b_X_view)
+        g[1, n + 2] + X[1, n + 2] + dot(a_X_view, b_X_view) / 2 + dot(a_g_view, b_X_view)
     return h
 end
 
@@ -127,19 +127,19 @@ The formula reads
 where ``I_n`` is the ``n×n`` identity matrix, ``0_n`` is the ``n×n`` zero matrix
 and ``\mathbf{a}⋅\mathbf{b}`` is dot product of vectors.
 """
-Base.log(::HeisenbergGroup, g, h)
+ManifoldsBase.log(::HeisenbergGroup, g, h)
 
 function ManifoldsBase.log!(G::HeisenbergGroup, X, g, h)
     n = ManifoldsBase.get_parameter(G.manifold.size)[1]
     fill!(X, 0)
-    a_p_view = _heisenberg_a_view(G, g)
-    b_p_view = _heisenberg_b_view(G, g)
-    a_q_view = _heisenberg_a_view(G, h)
-    b_q_view = _heisenberg_b_view(G, h)
-    X[1, 2:(n + 1)] .= a_q_view .- a_p_view
-    X[2:(n + 1), n + 2] .= b_q_view .- b_p_view
-    pinvq_c = dot(a_p_view, b_p_view) - g[1, n + 2] + h[1, n + 2] - dot(a_p_view, b_q_view)
-    X[1, n + 2] = pinvq_c - dot(a_q_view - a_p_view, b_q_view - b_p_view) / 2
+    a_g_view = _heisenberg_a_view(G, g)
+    b_g_view = _heisenberg_b_view(G, g)
+    a_h_view = _heisenberg_a_view(G, h)
+    b_h_view = _heisenberg_b_view(G, h)
+    X[1, 2:(n + 1)] .= a_h_view .- a_g_view
+    X[2:(n + 1), n + 2] .= b_h_view .- b_g_view
+    pinvq_c = dot(a_g_view, b_g_view) - g[1, n + 2] + h[1, n + 2] - dot(a_g_view, b_h_view)
+    X[1, n + 2] = pinvq_c - dot(a_h_view - a_g_view, b_h_view - b_g_view) / 2
     return X
 end
 function ManifoldsBase.log!(
@@ -153,8 +153,8 @@ function ManifoldsBase.log!(
 end
 
 @doc raw"""
-    logarithm(G::HeisenbergGroup, g)
-    logarithm!(G::HeisenbergGroup, X, g)
+    log(G::HeisenbergGroup, g)
+    log!(G::HeisenbergGroup, X, g)
 
 Lie group logarithm for the [`HeisenbergGroup`](@ref) `G` of the point `g`.
 The formula reads
@@ -169,19 +169,24 @@ The formula reads
 where ``I_n`` is the ``n×n`` identity matrix, ``0_n`` is the ``n×n`` zero matrix
 and ``\mathbf{a}⋅\mathbf{b}`` is dot product of vectors.
 """
-logarithm(G::HeisenbergGroup, g)
+ManifoldsBase.log(G::HeisenbergGroup, g)
 
-function logarithm!(G::HeisenbergGroup, X, g)
+function ManifoldsBase.log!(G::HeisenbergGroup, X, g)
     n = ManifoldsBase.get_parameter(G.manifold.size)[1]
     fill!(X, 0)
+    # Obtain views to parts of x
     view_a_X = _heisenberg_a_view(G, X)
     view_b_X = _heisenberg_b_view(G, X)
+    # Set then to views of g
     view_a_X .= _heisenberg_a_view(G, g)
     view_b_X .= _heisenberg_b_view(G, g)
+    # Set first row last entry – since these contain g in X, use them
     X[1, n + 2] = g[1, n + 2] - dot(view_a_X, view_b_X) / 2
     return X
 end
-function logarithm!(::HeisenbergGroup, X, ::Identity{MatrixMultiplicationGroupOperation})
+function ManifoldsBase.log!(
+    ::HeisenbergGroup, X, ::Identity{MatrixMultiplicationGroupOperation}
+)
     fill!(X, 0)
     return X
 end

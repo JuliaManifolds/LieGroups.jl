@@ -53,7 +53,7 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
 * `diff_conjugate` and `diff_conjugate!`
 * `diff_left_compose`, `diff_left_compose!`, `diff_right_compose`, `diff_right_compose!` (formerly `translate_diff` with different sides)
 * `exp(G::LieGroup, g, X)` and `exp!(G::LieGroup, h, g, X)` (formerly `exp_inv` and `exp_inv!`)
-* `exp(G::LieGroup, ::Identity, X)` and `exp!(G::LieGroup, h, ::Identity, X)` (formerly `exp_lie` and `exp_lie!`)
+* `exp(G::LieGroup, X)` and `exp!(G::LieGroup, h, X)` (formerly `exp_lie` and `exp_lie!`)
 * `hat` and `hat!`, with slightly different signatures, since the base point is omitted.
 * `identity_element` and `identity_element!`
 * `inv` and `inv!` (`inv(::AbstractGroupAction)` was formerly `switch_direction`)

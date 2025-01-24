@@ -2,7 +2,7 @@
 
 ```@docs
 LieGroup
-AbstractLieAlgebraTVector
+AbstractLieAlgebraTangentVector
 AbstractLieGroupPoint
 ```
 

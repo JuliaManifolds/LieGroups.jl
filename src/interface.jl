@@ -99,7 +99,7 @@ By sub-typing the [`AbstractManifoldPoint`](@extref `ManifoldsBase.AbstractManif
 abstract type AbstractLieGroupPoint <: ManifoldsBase.AbstractManifoldPoint end
 
 """
-    AbstractLieAlgebraTVector <: ManifoldsBase.TVector
+    AbstractLieAlgebraTangentVector <: ManifoldsBase.AbstractTangentVector
 
 An abstract type for a tangent vector represented in a [`LieAlgebra`](@ref).
 
@@ -113,7 +113,7 @@ it might be necessary to distinguish different types of points, for example
 By sub-typing the [`AbstractManifoldPoint`](@extref `ManifoldsBase.AbstractManifoldPoint`),
 this follows the same idea as in $(_link(:ManifoldsBase)).
 """
-abstract type AbstractLieAlgebraTVector <: ManifoldsBase.TVector end
+abstract type AbstractLieAlgebraTangentVector <: ManifoldsBase.AbstractTangentVector end
 
 #
 #
@@ -371,8 +371,8 @@ function diff_right_compose! end
 diff_right_compose!(::LieGroup, Y, g, h, X)
 
 _doc_exp = """
-    exp(G::LieGroup, g, X, t::Number=1)
-    exp!(G::LieGroup, h, g, X, t::Number=1)
+    exp(G::LieGroup, g, X)
+    exp!(G::LieGroup, h, g, X)
 
 Compute the Lie group exponential map for ``g∈$(_math(:G))`` and ``X∈$(_math(:𝔤))``,
 where ``$(_math(:𝔤))`` denotes the [`LieAlgebra`](@ref) of ``$(_math(:G))``.
@@ -395,24 +395,18 @@ Implementing the Lie group exponential function introduces a default implementat
 """
 
 @doc "$_doc_exp"
-ManifoldsBase.exp(G::LieGroup, ::Any, ::Any, t::Number=1)
+ManifoldsBase.exp(G::LieGroup, ::Any, ::Any)
 
 @doc "$_doc_exp"
 function ManifoldsBase.exp!(G::LieGroup, h, g, X)
-    exponential!(G, h, X)
-    compose!(G, h, g, h)
-    return h
-end
-function ManifoldsBase.exp!(G::LieGroup, h, g, X, t::Number)
-    exponential!(G, h, X, t)
+    exp!(G, h, X)
     compose!(G, h, g, h)
     return h
 end
 
 _doc_exponential = """
-    exponential(G::LieGroup, X::T, t::Number=1)
-    exponential!(G::LieGroup, g, X)
-    exponential!(G::LieGroup, g, X, t::Number=1)
+    exp(G::LieGroup, X::T)
+    exp!(G::LieGroup, g, X)
 
     Compute the (Lie group) exponential function
 
@@ -433,38 +427,22 @@ On matrix Lie groups this is the same as the [matrix exponential](https://en.wik
 The computation can be performed in-place of `g`.
 
 !!! info "Naming convention"
-   There are at least two different objects usually called “logarithm” that need to be distinguished
+   There are at least two different objects usually called “exponential” that need to be distinguished
 
    * the [(Riemannian) exponential map](@extref `ManifoldsBase.exp`) map `exp(M, p, X)` from $(_link(:ManifoldsBase))
    * the exponential map for a (left/right/bi-invariant) Cartan-Schouten (pseudo-)metric `exp(G, g, X)`, which we use as a default within this package
-   * the (matrix/Lie group) exponential function `exponential(G, g)` which agrees with the previous one for `g` being the identity there.
-
-   To avoid ambiguities in multiple dispatch, the actual implementation of the Lie group exponential function is this function
+   * the (matrix/Lie group) exponential function `exp(G, g)` which agrees with the previous one for `g` being the identity there.
 """
 
 @doc "$(_doc_exponential)"
-function exponential(G::LieGroup{𝔽,O}, X::T) where {𝔽,O<:AbstractGroupOperation,T}
+function ManifoldsBase.exp(G::LieGroup{𝔽,O}, X::T) where {𝔽,O<:AbstractGroupOperation,T}
     g = identity_element(G, T)
-    exponential!(G, g, X)
+    exp!(G, g, X)
     return g
 end
-function exponential(
-    G::LieGroup{𝔽,O}, X::T, t::Number
-) where {𝔽,O<:AbstractGroupOperation,T}
-    g = identity_element(G, T)
-    exponential!(G, g, X, t)
-    return g
-end
-
-function exponential! end
 
 @doc "$(_doc_exponential)"
-exponential!(G::LieGroup, ::Any, ::Any, t::Number=1)
-
-function exponential!(G::LieGroup, g, X, t::Number)
-    # default: auto fuse
-    return exponential!(G, g, t * X)
-end
+ManifoldsBase.exp!(G::LieGroup, ::Any, ::Any)
 
 _doc_identity_element = """
     identity_element(G::LieGroup)
@@ -474,7 +452,7 @@ _doc_identity_element = """
 Return a point representation of the [`Identity`](@ref) on the [`LieGroup`](@ref) `G`.
 By default this representation is the default array or number representation.
 If there exist several representations, the type `T` can be used to distinguish between them,
-and it should be provided for both the [`AbstractLieGroupPoint`](@ref) as well as the [`AbstractLieAlgebraTVector`](@ref)
+and it should be provided for both the [`AbstractLieGroupPoint`](@ref) as well as the [`AbstractLieAlgebraTangentVector`](@ref)
 if they differ, since maybe only one of these types might be available for the second signature.
 
 It returns the corresponding default representation of ``e`` as a point on `G`.
@@ -700,7 +678,7 @@ It is given by
 $(_tex(:log))_g h = $(_tex(:log))_{$(_math(:G))}(g^{-1}$(_math(:∘))h)
 ```
 
-where ``$(_tex(:log))_{$(_math(:G))}`` denotes the [Lie group logarithmic function](@ref logarithm(::LieGroup, :Any))
+where ``$(_tex(:log))_{$(_math(:G))}`` denotes the [Lie group logarithmic function](@ref log(::LieGroup, :Any))
 The computation can be performed in-place of `X`.
 
 If `g` is the [`Identity`](@ref) the [Lie group logarithmic function](@ref log(::LieGroup, ::Identity, :Any)) ``$(_tex(:log))_{$(_math(:G))}`` is computed directly.
@@ -721,23 +699,17 @@ end
 
 @doc "$_doc_log"
 function ManifoldsBase.log!(G::LieGroup, X, g, h)
-    logarithm!(G, X, compose(G, inv(G, g), h))
-    return h
-end
-function ManifoldsBase.log!(
-    G::LieGroup{𝔽,Op}, X, ::Identity{Op}, h
-) where {𝔽,Op<:AbstractGroupOperation}
-    logarithm!(G, X, h)
+    log!(G, X, compose(G, inv(G, g), h))
     return h
 end
 
-_doc_logarithm = """
-    logarithm(G::LieGroup, g)
-    logarithm(G::LieGroup, e::Identity, T)
-    logarithm!(G::LieGroup, X::T, g)
+_doc_log = """
+    log(G::LieGroup, g)
+    log(G::LieGroup, e::Identity, T)
+    log!(G::LieGroup, X::T, g)
 
 Compute the (Lie group) logarithmic function ``$(_tex(:log))_{$(_math(:G))}: $(_math(:G)) → $(_math(:𝔤))``,
-which is the inverse of the [Lie group exponential function](@ref exponential(::LieGroup, :Any)).
+which is the inverse of the [Lie group exponential function](@ref exp(::LieGroup, :Any)).
 For the allocating variant, you can specify the type `T`, when the point argument is the identity and hence does not provide the representation used.
 The computation can be performed in-place of `X::T`, which then determines the type.
 
@@ -746,29 +718,30 @@ The computation can be performed in-place of `X::T`, which then determines the t
 
    * the [(Riemannian) logarithm](@extref `ManifoldsBase.log`) map `log(M, p, q)` from $(_link(:ManifoldsBase))
    * the for a (left/right/bi-invariant) Cartan-Schouten (pseudo-)metric `log(G, g, X)`, which we use as a default within this package
-   * the (matrix/Lie group) logarithm function `logarithm(G, g)` which agrees with the previous one for `g` being the identity there.
-
-   To avoid ambiguities in multiple dispatch, the actual implementation of the Lie group logarithm function is this function
+   * the (matrix/Lie group) logarithm function `log(G, g)` which agrees with the previous one for `g` being the identity there.
 """
 
-@doc "$(_doc_logarithm)"
-function logarithm(G::LieGroup, g)
+@doc "$(_doc_log)"
+function ManifoldsBase.log(G::LieGroup, g)
     X = allocate_result(G, log, g)
-    logarithm!(G, X, g)
+    log!(G, X, g)
     return X
 end
-function logarithm(G::LieGroup{𝔽,Op}, e::Identity{Op}) where {𝔽,Op}
+function ManifoldsBase.log(
+    G::LieGroup{𝔽,Op}, e::Identity{Op}
+) where {𝔽,Op<:AbstractGroupOperation}
     return zero_vector(LieAlgebra(G))
 end
-function logarithm(G::LieGroup{𝔽,Op}, e::Identity{Op}, T::Type) where {𝔽,Op}
+function ManifoldsBase.log(
+    G::LieGroup{𝔽,Op}, e::Identity{Op}, T::Type
+) where {𝔽,Op<:AbstractGroupOperation}
     return zero_vector(LieAlgebra(G), T)
 end
 
-function logarithm! end
-@doc "$(_doc_logarithm)"
-logarithm!(G::LieGroup, ::Any, ::Any)
+@doc "$(_doc_log)"
+ManifoldsBase.log!(G::LieGroup, ::Any, ::Any)
 
-function logarithm!(
+function ManifoldsBase.log!(
     G::L, X, e::Identity{Op}
 ) where {𝔽,Op<:AbstractGroupOperation,L<:LieGroup{𝔽,Op}}
     return zero_vector!(G, X)

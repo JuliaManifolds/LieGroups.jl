@@ -136,7 +136,7 @@ If both are product Lie groups, they are combined into one, keeping the order of
 
 For the case that more than two are concatenated with `×` this is iterated.
 """
-cross(::LieGroup...)
+LinearAlgebra.cross(::LieGroup...)
 function LinearAlgebra.cross(G::LieGroup, H::LieGroup)
     return ProductLieGroup(G, H)
 end
@@ -200,12 +200,12 @@ function diff_right_compose!(
     return Y
 end
 
-function exponential!(
+function ManifoldsBase.exp!(
     PrG::LieGroup{𝔽,Op,M}, h, X
 ) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     PrM = PrG.manifold
     map(
-        (M, h, X) -> exponential!(M, h, X), # introduce a function with “hard coded” t
+        (M, h, X) -> exp!(M, h, X), # introduce a function with “hard coded” t
         map(LieGroup, PrM.manifolds, PrG.op.operations),
         submanifold_components(PrM, h),
         submanifold_components(PrM, X),
@@ -295,20 +295,7 @@ function lie_bracket!(
     return Z
 end
 
-function logarithm!(
-    PrG::LieGroup{𝔽,Op,M}, X, g
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
-    PrM = PrG.manifold
-    map(
-        logarithm!,
-        map(LieGroup, PrM.manifolds, PrG.op.operations),
-        submanifold_components(PrM, X),
-        submanifold_components(PrM, g),
-    )
-    return X
-end
-
-function logarithm!(
+function ManifoldsBase.log!(
     PrG::LieGroup{𝔽,Op,M}, X, ::Identity{Op}
 ) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     zero_vector!(LieAlgebra(PrG), X)
@@ -320,7 +307,7 @@ function ManifoldsBase.log!(
 ) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     PrM = PrG.manifold
     map(
-        ManifoldsBase.log!,
+        log!,
         map(LieGroup, PrM.manifolds, PrG.op.operations),
         submanifold_components(PrM, X),
         submanifold_components(PrM, g),
@@ -329,14 +316,26 @@ function ManifoldsBase.log!(
     return X
 end
 function ManifoldsBase.log!(
-    PrG::LieGroup{𝔽,Op,M}, X, ::Identity{Op}, h
+    PrG::LieGroup{𝔽,Op,M}, X, e::Identity{Op}, h
 ) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     PrM = PrG.manifold
     map(
-        ManifoldsBase.log!,
+        log!,
         map(LieGroup, PrM.manifolds, PrG.op.operations),
         submanifold_components(PrM, X),
-        submanifold_components(PrM, g),
+        submanifold_components(PrM, e),
+        submanifold_components(PrM, h),
+    )
+    return X
+end
+function ManifoldsBase.log!(
+    PrG::LieGroup{𝔽,Op,M}, X, h
+) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PrM = PrG.manifold
+    map(
+        log!,
+        map(LieGroup, PrM.manifolds, PrG.op.operations),
+        submanifold_components(PrM, X),
         submanifold_components(PrM, h),
     )
     return X

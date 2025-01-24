@@ -37,7 +37,7 @@ ManifoldsBase.exp(::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}
 ManifoldsBase.exp!(::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, g, X)
 
 @doc "$(_doc_get_coordinates_On)"
-get_coordinates(
+ManifoldsBase.get_coordinates(
     G::SpecialOrthogonalGroup,
     ::Identity{MatrixMultiplicationGroupOperation},
     X,
@@ -45,7 +45,7 @@ get_coordinates(
 )
 
 @doc "$(_doc_get_coordinates_On)"
-get_coordinates!(
+ManifoldsBase.get_coordinates!(
     G::SpecialOrthogonalGroup,
     c,
     ::Identity{MatrixMultiplicationGroupOperation},
@@ -54,7 +54,7 @@ get_coordinates!(
 )
 
 @doc "$(_doc_get_vector_On)"
-get_vector(
+ManifoldsBase.get_vector(
     G::SpecialOrthogonalGroup,
     ::Identity{MatrixMultiplicationGroupOperation},
     c,
@@ -62,7 +62,7 @@ get_vector(
 )
 
 @doc "$(_doc_get_vector_On)"
-get_vector!(
+ManifoldsBase.get_vector!(
     G::SpecialOrthogonalGroup,
     X,
     ::Identity{MatrixMultiplicationGroupOperation},

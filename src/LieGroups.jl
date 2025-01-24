@@ -92,16 +92,15 @@ export TranslationGroup
 export UnitaryGroup
 
 # Points and Tangent representations
-export AbstractLieGroupPoint, AbstractLieAlgebraTVector
-export SpecialEuclideanMatrixPoint, SpecialEuclideanMatrixTVector
-export SpecialEuclideanProductPoint, SpecialEuclideanProductTVector
+export AbstractLieGroupPoint, AbstractLieAlgebraTangentVector
+export SpecialEuclideanMatrixPoint, SpecialEuclideanMatrixTangentVector
+export SpecialEuclideanProductPoint, SpecialEuclideanProductTangentVector
 # Functions
 export adjoint, adjoint!, apply, apply!
 export base_lie_group, base_manifold
 export compose, compose!
 export default_left_action,
     default_right_action,
-    det,
     diff_apply,
     diff_apply!,
     diff_group_apply,
@@ -115,10 +114,10 @@ export hat, hat!
 export inv, inv!, inv_left_compose, inv_left_compose!, inv_right_compose, inv_right_compose!
 export isapprox, is_point, is_vector
 export conjugate, conjugate!, diff_conjugate, diff_conjugate!
-export exp, exp!, exponential, exponential!
+export exp, exp!
 export identity_element, identity_element!, is_identity, inv, inv!, diff_inv, diff_inv!
 export jacobian_conjugate, jacobian_conjugate!
-export lie_bracket, lie_bracket!, log, log!, logarithm, logarithm!
+export lie_bracket, lie_bracket!, log, log!
 export manifold_dimension
 export norm
 export injectivity_radius

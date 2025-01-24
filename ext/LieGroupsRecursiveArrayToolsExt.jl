@@ -6,7 +6,9 @@ using LinearAlgebra
 using ManifoldsBase
 # Implement SE(n) also on an Array Partition
 
-_value(v::Union{SpecialEuclideanProductPoint,SpecialEuclideanProductTVector}) = v.value
+function _value(v::Union{SpecialEuclideanProductPoint,SpecialEuclideanProductTangentVector})
+    return v.value
+end
 _value(v::ArrayPartition) = v
 
 function LieGroups.identity_element(
@@ -26,7 +28,9 @@ LieGroups._check_matrix_affine(::ArrayPartition, ::Int; v=1) = nothing
 
 function ManifoldsBase.submanifold_component(
     G::LieGroups.SpecialEuclideanGroup,
-    g::Union{ArrayPartition,SpecialEuclideanProductPoint,SpecialEuclideanProductTVector},
+    g::Union{
+        ArrayPartition,SpecialEuclideanProductPoint,SpecialEuclideanProductTangentVector
+    },
     ::Val{I},
 ) where {I}
     # pass down to manifold by default
@@ -34,14 +38,18 @@ function ManifoldsBase.submanifold_component(
 end
 function ManifoldsBase.submanifold_component(
     G::LieGroups.LeftSpecialEuclideanGroup,
-    g::Union{ArrayPartition,SpecialEuclideanProductPoint,SpecialEuclideanProductTVector},
+    g::Union{
+        ArrayPartition,SpecialEuclideanProductPoint,SpecialEuclideanProductTangentVector
+    },
     ::Val{:Rotation},
 )
     return ManifoldsBase.submanifold_component(G.manifold, _value(g), 1)
 end
 function ManifoldsBase.submanifold_component(
     G::LieGroups.LeftSpecialEuclideanGroup,
-    g::Union{ArrayPartition,SpecialEuclideanProductPoint,SpecialEuclideanProductTVector},
+    g::Union{
+        ArrayPartition,SpecialEuclideanProductPoint,SpecialEuclideanProductTangentVector
+    },
     ::Val{:Translation},
 )
     return ManifoldsBase.submanifold_component(G.manifold, _value(g), 2)
@@ -54,7 +62,9 @@ Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
 end
 Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     G::LieGroups.RightSpecialEuclideanGroup,
-    g::Union{ArrayPartition,SpecialEuclideanProductPoint,SpecialEuclideanProductTVector},
+    g::Union{
+        ArrayPartition,SpecialEuclideanProductPoint,SpecialEuclideanProductTangentVector
+    },
     ::Val{:Translation},
 )
     return ManifoldsBase.submanifold_component(G.manifold, _value(g), 1)
@@ -73,10 +83,10 @@ function ManifoldsBase.zero_vector(
     G::LieAlgebra{
         𝔽,LieGroups.SpecialEuclideanGroupOperation,LieGroups.SpecialEuclideanGroup
     },
-    ::SpecialEuclideanProductTVector,
+    ::SpecialEuclideanProductTangentVector,
 ) where {𝔽}
     n = Manifolds.get_parameter(G.manifold[1].size)[1]
-    return SpecialEuclideanProductTVector(ArrayPartition(zeros(n), zeros(n, n)))
+    return SpecialEuclideanProductTangentVector(ArrayPartition(zeros(n), zeros(n, n)))
 end
 
 # TODO: Implement?

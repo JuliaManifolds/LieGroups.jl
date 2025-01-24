@@ -109,7 +109,7 @@ function ManifoldsBase.allocate_on(
 end
 
 """
-    SpecialEuclideanMatrixTVector <: AbstractLieGroupPoint
+    SpecialEuclideanMatrixTangentVector <: AbstractLieAlgebraTangentVector
 
 represent a tangent vector on some [`LieGroup`](@ref) by a matrix of the form
 
@@ -121,17 +121,17 @@ where ``$(_tex(:vec, "0"))_n ∈ ℝ^n`` denotes the vector containing zeros.
 
 While this tangent vector itself is not an affine matrix itself, it can be used for the Lie algebra of the affine group
 """
-struct SpecialEuclideanMatrixTVector{T} <: AbstractLieAlgebraTVector
+struct SpecialEuclideanMatrixTangentVector{T} <: AbstractLieAlgebraTangentVector
     value::T
 end
 
 ManifoldsBase.@manifold_element_forwards SpecialEuclideanMatrixPoint value
-ManifoldsBase.@manifold_vector_forwards SpecialEuclideanMatrixTVector value
-ManifoldsBase.@default_manifold_fallbacks LeftSpecialEuclideanGroup SpecialEuclideanMatrixPoint SpecialEuclideanMatrixTVector value value
-ManifoldsBase.@default_manifold_fallbacks RightSpecialEuclideanGroup SpecialEuclideanMatrixPoint SpecialEuclideanMatrixTVector value value
+ManifoldsBase.@manifold_vector_forwards SpecialEuclideanMatrixTangentVector value
+ManifoldsBase.@default_manifold_fallbacks LeftSpecialEuclideanGroup SpecialEuclideanMatrixPoint SpecialEuclideanMatrixTangentVector value value
+ManifoldsBase.@default_manifold_fallbacks RightSpecialEuclideanGroup SpecialEuclideanMatrixPoint SpecialEuclideanMatrixTangentVector value value
 
-@default_lie_group_fallbacks LeftSpecialEuclideanGroup SpecialEuclideanMatrixPoint SpecialEuclideanMatrixTVector value value
-@default_lie_group_fallbacks RightSpecialEuclideanGroup SpecialEuclideanMatrixPoint SpecialEuclideanMatrixTVector value value
+@default_lie_group_fallbacks LeftSpecialEuclideanGroup SpecialEuclideanMatrixPoint SpecialEuclideanMatrixTangentVector value value
+@default_lie_group_fallbacks RightSpecialEuclideanGroup SpecialEuclideanMatrixPoint SpecialEuclideanMatrixTangentVector value value
 
 """
     SpecialEuclideanProductPoint <: AbstractLieGroupPoint
@@ -143,16 +143,16 @@ struct SpecialEuclideanProductPoint{T} <: AbstractLieGroupPoint
 end
 
 """
-    SpecialEuclideanProductTVector <: AbstractLieGroupPoint
+    SpecialEuclideanProductTangentVector <: AbstractLieAlgebraTangentVector
 
-represent a point on a Lie algebra (explicitly) as a point that consists of components
+represent a point on a Lie algebra (explicitly) as a tangent vector consists of components
 """
-struct SpecialEuclideanProductTVector{T} <: AbstractLieAlgebraTVector
+struct SpecialEuclideanProductTangentVector{T} <: AbstractLieAlgebraTangentVector
     value::T
 end
 
 ManifoldsBase.@manifold_element_forwards SpecialEuclideanProductPoint value
-ManifoldsBase.@manifold_vector_forwards SpecialEuclideanProductTVector value
+ManifoldsBase.@manifold_vector_forwards SpecialEuclideanProductTangentVector value
 
 # This union we can also use for the matrix case where we do not care
 
@@ -297,8 +297,8 @@ function default_right_action(::TranslationGroup, ::SpecialOrthogonalGroup)
 end
 
 _doc_exp_SE2_id = """
-    exponential(G::SpecialEuclidean, X)
-    exponential!(G::SpecialEuclideanG, g, X)
+    exp(G::SpecialEuclidean, X)
+    exp!(G::SpecialEuclideanG, g, X)
 
 Compute the Lie group exponential function on the [`SpecialEuclideanGroup`](@ref) `G```=$(_math(:SE))(2)``
 using a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{2}}` for dispatch.
@@ -325,10 +325,10 @@ This result can be computed in-place of `g`.
 """
 
 @doc "$(_doc_exp_SE2_id)"
-exponential(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, ::Any)
+ManifoldsBase.exp(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, ::Any)
 
 @doc "$(_doc_exp_SE2_id)"
-function exponential!(
+function ManifoldsBase.exp!(
     G::SpecialEuclideanGroup{<:ManifoldsBase.TypeParameter{Tuple{2}}}, g, X
 )
     init_constants!(G, g)
@@ -348,13 +348,13 @@ function exponential!(
         copyto!(T2, t, R * v)
     end
     # compute exp(Y) in-place of R
-    exponential!(SO2, R, Y)
+    exp!(SO2, R, Y)
     return g
 end
 
 _doc_exp_SE3_id = """
-    exponential(G::SpecialEuclidean, X)
-    exponential!(G::SpecialEuclidean, g, X)
+    exp(G::SpecialEuclidean, X)
+    exp!(G::SpecialEuclidean, g, X)
 
 Compute the Lie group exponential function on the [`SpecialEuclideanGroup`](@ref) `G```=$(_math(:SE))(3)``
 using a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{3}}` for dispatch.
@@ -382,10 +382,12 @@ This result can be computed in-place of `g`.
 """
 
 @doc "$(_doc_exp_SE3_id)"
-exponential(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, ::Any)
+ManifoldsBase.exp(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, ::Any)
 
 @doc "$(_doc_exp_SE3_id)"
-function exponential!(G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, g, X)
+function ManifoldsBase.exp!(
+    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, g, X
+)
     init_constants!(G, g)
     Y = submanifold_component(G, X, :Rotation)
     v = submanifold_component(G, X, :Translation)
@@ -403,7 +405,7 @@ function exponential!(G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple
         copyto!(T3, t, R * v)
     end
     # compute exp(Y) in-place of R
-    exponential!(SO3, R, Y)
+    exp!(SO3, R, Y)
     return g
 end
 
@@ -472,7 +474,7 @@ function init_constants!(
     G::LieAlgebra{
         ManifoldsBase.RealNumbers,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup
     },
-    X::SpecialEuclideanMatrixTVector,
+    X::SpecialEuclideanMatrixTangentVector,
 )
     init_constants!(G, X.value)
     return X
@@ -544,8 +546,8 @@ function is_identity(G::SpecialEuclideanGroup, g::AbstractMatrix; kwargs...)
 end
 
 _doc_log_SE2_id = """
-    logarithm(G::SpecialEuclidean, e, g)
-    logarithm!(G::SpecialEuclidean, X, e, g)
+    log(G::SpecialEuclidean, e, g)
+    log!(G::SpecialEuclidean, X, e, g)
 
 Compute the Lie group logarithm function on the [`SpecialEuclideanGroup`](@ref) `G```=$(_math(:SE))(2)``,
 where `e` is the [`Identity`](@ref) on ``$(_math(:SE))(2)`` `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{2}}` for dispatch.
@@ -569,17 +571,19 @@ This result can be computed in-place of `g`.
 """
 
 @doc "$(_doc_log_SE2_id)"
-logarithm(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, ::Any)
+ManifoldsBase.log(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, ::Any)
 
 @doc "$(_doc_log_SE2_id)"
-function logarithm!(G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, X, g)
+function ManifoldsBase.log!(
+    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, X, g
+)
     init_constants!(LieAlgebra(G), X)
     R = submanifold_component(G, g, :Rotation)
     t = submanifold_component(G, g, :Translation)
     Y = submanifold_component(G, X, :Rotation)
     v = submanifold_component(G, X, :Translation)
     SO2, T2 = _SOn_and_Tn(G)
-    logarithm!(SO2, Y, R)
+    log!(SO2, Y, R)
     α = norm(Y) / sqrt(2) # skew symmetric, so the norm counts everything “twice” in the sqrt.
     if α ≈ 0
         copyto!(T2, t, v) # U(α) is the identity
@@ -590,14 +594,14 @@ function logarithm!(G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2
     end
     return X
 end
-function logarithm!(
+function ManifoldsBase.log!(
     G::LeftSpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
     X,
     ::Identity{<:LeftSpecialEuclideanGroupOperation},
 )
     return ManifoldsBase.zero_vector!(LieAlgebra(G), X)
 end
-function logarithm!(
+function ManifoldsBase.log!(
     G::RightSpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
     X,
     ::Identity{<:RightSpecialEuclideanGroupOperation},
@@ -605,8 +609,8 @@ function logarithm!(
     return ManifoldsBase.zero_vector!(LieAlgebra(G), X)
 end
 _doc_log_SE3_id = """
-    logarithm(G::SpecialEuclidean, e, g)
-    logarithm!(G::SpecialEuclidean, X, e, g)
+    log(G::SpecialEuclidean, e, g)
+    log!(G::SpecialEuclidean, X, e, g)
 
 Compute the Lie group logarithm function on the [`SpecialEuclideanGroup`](@ref) `G```=$(_math(:SE))(3)``,
 where `e` is the [`Identity`](@ref) on ``$(_math(:SE))(3)`` `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{3}}` for dispatch.
@@ -628,17 +632,19 @@ This result can be computed in-place of `g`.
 """
 
 @doc "$(_doc_log_SE3_id)"
-logarithm(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, ::Any)
+ManifoldsBase.log(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, ::Any)
 
 @doc "$(_doc_log_SE3_id)"
-function logarithm!(G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, X, g)
+function ManifoldsBase.log!(
+    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, X, g
+)
     init_constants!(LieAlgebra(G), X)
     R = submanifold_component(G, g, :Rotation)
     t = submanifold_component(G, g, :Translation)
     Y = submanifold_component(G, X, :Rotation)
     v = submanifold_component(G, X, :Translation)
     SO3, T3 = _SOn_and_Tn(G)
-    logarithm!(SO3, Y, Identity(SO3), R)
+    log!(SO3, Y, Identity(SO3), R)
     α = norm(Y) / sqrt(2) # skew symmetric, so the norm counts everything “twice” in the sqrt.
     if α ≈ 0
         copyto!(T2, v, t) # U(α) is the identity
@@ -649,14 +655,14 @@ function logarithm!(G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3
     end
     return X
 end
-function logarithm!(
+function ManifoldsBase.log!(
     G::LeftSpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
     X,
     ::Identity{<:LeftSpecialEuclideanGroupOperation},
 )
     return ManifoldsBase.zero_vector!(LieAlgebra(G), X)
 end
-function logarithm!(
+function ManifoldsBase.log!(
     G::RightSpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
     X,
     ::Identity{<:RightSpecialEuclideanGroupOperation},
@@ -682,21 +688,21 @@ function ManifoldsBase.norm(G::SpecialEuclideanGroup, ::Identity, X)
     return norm([n1, n2])
 end
 
-function logarithm!(::LeftSpecialEuclideanGroup, X, g)
+function ManifoldsBase.log!(::LeftSpecialEuclideanGroup, X, g)
     copyto!(X, log(g))
     return X
 end
-function logarithm!(
+function ManifoldsBase.log!(
     ::LeftSpecialEuclideanGroup, X, e::Identity{<:LeftSpecialEuclideanGroupOperation}
 )
     fill!(X, 0)
     return X
 end
-function logarithm!(::RightSpecialEuclideanGroup, X, g)
+function ManifoldsBase.log!(::RightSpecialEuclideanGroup, X, g)
     copyto!(X, log(g))
     return X
 end
-function logarithm!(
+function ManifoldsBase.log!(
     ::RightSpecialEuclideanGroup, X, e::Identity{<:RightSpecialEuclideanGroupOperation}
 )
     fill!(X, 0)
@@ -785,7 +791,7 @@ Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
 end
 Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     G::SpecialEuclideanGroup,
-    p::Union{SpecialEuclideanMatrixPoint,SpecialEuclideanMatrixTVector},
+    p::Union{SpecialEuclideanMatrixPoint,SpecialEuclideanMatrixTangentVector},
     ::Val{:Translation},
 )
     n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
@@ -793,7 +799,7 @@ Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
 end
 Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     G::SpecialEuclideanGroup,
-    p::Union{SpecialEuclideanMatrixPoint,SpecialEuclideanMatrixTVector},
+    p::Union{SpecialEuclideanMatrixPoint,SpecialEuclideanMatrixTangentVector},
     ::Val{:Rotation},
 )
     n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]

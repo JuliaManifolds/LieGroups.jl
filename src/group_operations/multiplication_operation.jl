@@ -70,7 +70,9 @@ This can be computed in-place of `k`.
 compose(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any) where {𝔽}
 
 @doc "$(_doc_compose_mult)"
-compose!(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any) where {𝔽}
+compose!(
+    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any
+) where {𝔽}
 
 function _compose!(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, k, g, h) where {𝔽}
     # perform the multiplication “safe”, that is, even when providing
@@ -156,10 +158,7 @@ which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``Dλ_
 
 @doc "$(_doc_diff_left_compose_mult)"
 diff_left_compose(
-    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation},
-    ::Any,
-    ::Any,
-    ::Any,
+    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any
 ) where {𝔽}
 
 @doc "$(_doc_diff_left_compose_mult)"
@@ -179,23 +178,19 @@ which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``Dρ_
 
 @doc "$(_doc_diff_right_compose_mult)"
 diff_right_compose(
-    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any,
+    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any
 ) where {𝔽}
 
 @doc "$(_doc_diff_right_compose_mult)"
 function diff_right_compose!(
-    G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation},
-    Y,
-    g,
-    ::Any,
-    X,
+    G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, g, ::Any, X
 ) where {𝔽}
     return copyto!(LieAlgebra(G), Y, X * g)
 end
 
 _doc_exponential_mult = """
-    exponential(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, X)
-    exponential!(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, g, X)
+    exp(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, X)
+    exp!(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, g, X)
 
 Compute the Lie group exponential on a [`LieGroup`](@ref) with a [`MatrixMultiplicationGroupOperation`](@ref),
 which simplifies to the [matrix exponential](https://en.wikipedia.org/wiki/Matrix_exponential).
@@ -204,10 +199,12 @@ This can be computed in-place of `g`.
 """
 
 @doc "$(_doc_exponential_mult)"
-exponential(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, ::Any) where {𝔽}
+ManifoldsBase.exp(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, ::Any) where {𝔽}
 
 @doc "$(_doc_exponential_mult)"
-function exponential!(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, g, X) where {𝔽}
+function ManifoldsBase.exp!(
+    ::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, g, X
+) where {𝔽}
     copyto!(g, exp(X))
     return g
 end
@@ -291,9 +288,9 @@ function lie_bracket!(::LieAlgebra{𝔽,MatrixMultiplicationGroupOperation}, Z, 
     return Z
 end
 
-_doc_logarithm_mult = """
-    logarithm(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, g)
-    logarithm!(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, X, g)
+_doc_log_mult = """
+    log(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, g)
+    log!(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, X, g)
 
 Compute the Lie group logarithm on a [`LieGroup`](@ref) with a [`MatrixMultiplicationGroupOperation`](@ref),
 which simplifies to the [matrix logarithm](https://en.wikipedia.org/wiki/Logarithm_of_a_matrix).
@@ -301,16 +298,16 @@ which simplifies to the [matrix logarithm](https://en.wikipedia.org/wiki/Logarit
 This can be computed in-place of `X`.
 """
 
-@doc "$(_doc_logarithm_mult)"
-logarithm(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, ::Any) where {𝔽}
+@doc "$(_doc_log_mult)"
+ManifoldsBase.log(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, ::Any) where {𝔽}
 
-function logarithm(
+function ManifoldsBase.log(
     G::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
     ::Identity{MatrixMultiplicationGroupOperation},
 ) where {𝔽}
     return zero_vector(LieAlgebra(G))
 end
-function logarithm(
+function ManifoldsBase.log(
     G::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
     ::Identity{MatrixMultiplicationGroupOperation},
     T::Type,
@@ -318,13 +315,15 @@ function logarithm(
     return zero_vector(LieAlgebra(G), T)
 end
 
-@doc "$(_doc_logarithm_mult)"
-function logarithm!(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, X, g) where {𝔽}
+@doc "$(_doc_log_mult)"
+function ManifoldsBase.log!(
+    ::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, X, g
+) where {𝔽}
     copyto!(X, log(g))
     return X
 end
 
-function logarithm!(
+function ManifoldsBase.log!(
     G::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
     X,
     ::Identity{MatrixMultiplicationGroupOperation},
