@@ -352,34 +352,34 @@ function lie_bracket!(::LieAlgebra{𝔽,MatrixMultiplicationGroupOperation}, Z, 
 end
 
 _doc_log_mult = """
-    log(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, e::Identity{MatrixMultiplicationGroupOperation}, g)
-    log!(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, X, e::Identity{MatrixMultiplicationGroupOperation}, g)
+    log(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, e::Identity{<:AbstractMultiplicationGroupOperation}, g)
+    log!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, X, e::Identity{<:AbstractMultiplicationGroupOperation}, g)
 
-Compute the Lie group logarithm on a [`LieGroup`](@ref) with a [`MatrixMultiplicationGroupOperation`](@ref),
-which simplifies to the [matrix logarithm](https://en.wikipedia.org/wiki/Logarithm_of_a_matrix).
+Compute the Lie group logarithm on a [`LieGroup`](@ref) with a concrete instance of [`AbstractMultiplicationGroupOperation`](@ref),
+which simplifies to the [(matrix) logarithm](https://en.wikipedia.org/wiki/Logarithm_of_a_matrix).
 
 This can be computed in-place of `X`.
 """
 
 @doc "$(_doc_log_mult)"
 Base.log(
-    ::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
-    ::Identity{MatrixMultiplicationGroupOperation},
+    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation},
+    ::Identity{<:AbstractMultiplicationGroupOperation},
     g,
 ) where {𝔽} = log(g)
 function Base.log(
-    G::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
-    e::Identity{MatrixMultiplicationGroupOperation},
-    ::Identity{MatrixMultiplicationGroupOperation},
+    G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation},
+    e::Identity{<:AbstractMultiplicationGroupOperation},
+    ::Identity{<:AbstractMultiplicationGroupOperation},
 ) where {𝔽}
     return zero_vector(G, e)
 end
 
 @doc "$(_doc_log_mult)"
 function ManifoldsBase.log!(
-    ::LieGroup{𝔽,MatrixMultiplicationGroupOperation},
+    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation},
     X,
-    ::Identity{MatrixMultiplicationGroupOperation},
+    ::Identity{<:AbstractMultiplicationGroupOperation},
     g,
 ) where {𝔽}
     copyto!(X, log(g))

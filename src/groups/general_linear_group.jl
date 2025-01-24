@@ -5,7 +5,7 @@
 The general linear group ``$(_tex(:rm,"GL"))(n)`` is the set of all invertible matrices
 
 ```math
-$(_tex(:rm,"GL"))(n) = $(_tex(:SetDef, "g ∈ 𝔽^{n×n}", "$(_tex(:rm,"det"))(p) ≠ 0", "big")),
+$(_tex(:rm,"GL"))(n) = $(_tex(:SetDef, "M ∈ 𝔽^{n×n}", "$(_tex(:rm,"det"))(M) ≠ 0", "big")),
 $(_tex(:qquad)) 𝔽 ∈ $(_tex(:Set, "ℝ, ℂ")),
 ```
 equipped with the [`MatrixMultiplicationGroupOperation`](@ref) as the group operation.
@@ -17,7 +17,7 @@ the embedding as an open subset of the space of matrices ``ℝ^{n×n}``.
 
     GeneralLinearGroup(n::Int; field=ℝ, kwargs...)
 
-Generate the general linear group  group on ``𝔽^{n×n}``.
+Generate the general linear group on ``𝔽^{n×n}``.
 All keyword arguments in `kwargs...` are passed on to [`InvertibleMatrices`](@extref `Manifolds.InvertibleMatrices`).
 """
 const GeneralLinearGroup{𝔽,T} = LieGroup{

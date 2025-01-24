@@ -59,6 +59,7 @@ define!(:LaTeX, :Bigl, raw"\Bigl")
 define!(:LaTeX, :Bigr, raw"\Bigr")
 define!(:LaTeX, :def, raw"\coloneqq")
 define!(:LaTeX, :Cal, (letter) -> raw"\mathcal " * "$letter")
+define!(:LaTeX, :cos, raw"\cos")
 define!(:LaTeX, :exp, raw"\exp")
 define!(:LaTeX, :frac, (a, b) -> raw"\frac" * "{$a}{$b}")
 define!(:LaTeX, :Frak, (letter) -> raw"\mathfrak " * "$letter")
@@ -84,6 +85,7 @@ define!(
     (elem, cond, size="") ->
         _tex(:Set, elem * raw"\ " * _tex(Symbol("$(size)")) * raw"|\ " * "$(cond)", size),
 )
+define!(:LaTeX, :sin, raw"\sin")
 define!(:LaTeX, :sum, raw"\sum")
 define!(:LaTeX, :transp, raw"\mathrm{T}")
 #
@@ -102,6 +104,7 @@ define!(:Math, :GroupOp, :symbol, "∘")
 define!(:Math, :GroupOp, :descrption, "the Lie Group operation")
 define!(:Math, :∘, _math(:GroupOp, :symbol))
 define!(:Math, :e, _tex(:rm, "e"))
+define!(:Math, :i, _tex(:rm, "i"))
 define!(:Math, :LieAlgebra, :symbol, (; g="g") -> _tex(:Frak, g))
 define!(:Math, :LieAlgebra, :descrption, "the ie Algebra")
 define!(:Math, :𝔤, (; G="G") -> _math(:LieAlgebra, :symbol; g="g"))
@@ -111,6 +114,8 @@ define!(:Math, :G, (; G="G") -> _math(:LieGroup, :symbol; G=G))
 define!(:Math, :Manifold, :symbol, (; M="M") -> _tex(:Cal, M))
 define!(:Math, :Manifold, :descrption, "the Riemannian manifold")
 define!(:Math, :M, (; M="M") -> _math(:Manifold, :symbol; M=M))
+define!(:Math, :mapsto, raw"\mapsto")
+define!(:Math, :rightarrow, raw"\rightarow")
 
 #
 # ---
