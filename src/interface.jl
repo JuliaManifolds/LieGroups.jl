@@ -548,7 +548,7 @@ end
 
 function is_identity end
 @doc """
-    is_identity(G::LieGroup, q; kwargs)
+    is_identity(G::LieGroup, q; kwargs...)
 
 Check whether `q` is the identity on the [`LieGroup`](@ref) ``$(_math(:G))``.
 This means it is either the [`Identity`](@ref)`{O}` with the respect to the corresponding

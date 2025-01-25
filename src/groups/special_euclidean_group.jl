@@ -221,14 +221,29 @@ function _check_point(
     return length(errs) == 0 ? nothing : first(errs)
 end
 
-# Order in a unified way
+# Order in a unified way – identities as well for resolving ambiguities
 function ManifoldsBase.check_vector(G::LeftSpecialEuclideanGroup, g, X; kwargs...)
     return _check_vector(G, G.manifold[1], G.manifold[2], G.op[1], G.op[2], g, X; kwargs...)
+end
+function ManifoldsBase.check_vector(
+    G::LeftSpecialEuclideanGroup,
+    e::Identity{<:LeftSpecialEuclideanGroupOperation},
+    X;
+    kwargs...,
+)
+    return _check_vector(G, G.manifold[1], G.manifold[2], G.op[1], G.op[2], e, X; kwargs...)
 end
 function ManifoldsBase.check_vector(G::RightSpecialEuclideanGroup, g, X; kwargs...)
     return _check_vector(G, G.manifold[2], G.manifold[1], G.op[2], G.op[1], g, X; kwargs...)
 end
-
+function ManifoldsBase.check_vector(
+    G::RightSpecialEuclideanGroup,
+    e::Identity{<:RightSpecialEuclideanGroupOperation},
+    X;
+    kwargs...,
+)
+    return _check_vector(G, G.manifold[2], G.manifold[1], G.op[2], G.op[1], g, X; kwargs...)
+end
 function _check_vector(
     G::SpecialEuclideanGroup{T}, Rotn, Rn, op1, op2, g, X; kwargs...
 ) where {T}
@@ -707,7 +722,7 @@ function ManifoldsBase.log!(
     log!(SO2, Y, R)
     α = norm(Y) / sqrt(2) # skew symmetric, so the norm counts everything “twice” in the sqrt.
     if α ≈ 0
-        copyto!(T2, t, v) # U(α) is the identity
+        copyto!(T2, v, t) # U(α) is the identity, copy over t
     else
         β = α / 2 * sin(α) / (1 - cos(α))
         v[1] = β * t[1] + α / 2 * t[2]

@@ -215,7 +215,7 @@ get_coordinates!(G::OrthogonalLieAlgebra, c, X, ::DefaultLieAlgebraOrthogonalBas
 
 function get_coordinates_lie!(
     ::CommonUnitarySubAlgebras{
-        ManifoldsBase.RealNumbers,ManifoldsBase.TypeParameter{Tuple{2}}
+        <:ManifoldsBase.RealNumbers,<:ManifoldsBase.TypeParameter{Tuple{2}}
     },
     c,
     X,
@@ -228,7 +228,7 @@ function get_coordinates_lie!(
 end
 function get_coordinates_lie!(
     G::CommonUnitarySubAlgebras{
-        ManifoldsBase.RealNumbers,ManifoldsBase.TypeParameter{Tuple{n}}
+        <:ManifoldsBase.RealNumbers,<:ManifoldsBase.TypeParameter{Tuple{n}}
     },
     c,
     X,
@@ -317,7 +317,7 @@ function get_vector_lie!(
 end
 function get_vector_lie!(
     G::CommonUnitarySubAlgebras{
-        ManifoldsBase.RealNumbers,ManifoldsBase.TypeParameter{Tuple{n}}
+        <:ManifoldsBase.RealNumbers,<:ManifoldsBase.TypeParameter{Tuple{n}}
     },
     X,
     c,

@@ -12,7 +12,7 @@ using LieGroupsTestSuite
     @test repr(G) == rs
     𝔤 = LieAlgebra(G)
     op2 = LieGroupsTestSuite.DummySecondOperation()
-    rs2 = "LieAlgebra( LieGroup(LieGroupsTestSuite.DummyManifold(), LieGroupsTestSuite.DummyOperation()) )"
+    rs2 = "LieAlgebra(LieGroup(LieGroupsTestSuite.DummyManifold(), LieGroupsTestSuite.DummyOperation()))"
     @test repr(𝔤) == rs2
     @test is_identity(G, Identity(op))
     @test !is_identity(G, Identity(op2))

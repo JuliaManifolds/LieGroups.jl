@@ -4,7 +4,7 @@ s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 !(s in LOAD_PATH) && (push!(LOAD_PATH, s))
 using LieGroupsTestSuite
 
-begin
+@testset "Special Unitary Group" begin
     G = SpecialUnitaryGroup(2)
     #g1 = 1 / sqrt(2) * [1.0 1.0; -1.0 1.0]
     #g2 = [0.0 -1.0; 1.0 0.0]

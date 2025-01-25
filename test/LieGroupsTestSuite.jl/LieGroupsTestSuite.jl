@@ -113,6 +113,8 @@ Test  `compose` for given Lie group elements `g`, `h`.
 
 # Keyword arguments
 
+* `atol::Real=0`: the absolute tolerance for the tests of zero-vectors
+`
 * `test_identity::Bool=true`: test that composing with the identity yields the identity (requires `identity_element`)
 * `test_inverse::Bool=true`: test that `g^{-1}g` is the identity (requires `inv`, `inv!`, and `is_identity`)
 * `test_mutating::Bool=true`: test the mutating functions
@@ -121,6 +123,7 @@ function test_compose(
     G::LieGroup,
     g,
     h;
+    atol::Real=0,
     test_inverse::Bool=true,
     test_identity::Bool=true,
     test_mutating::Bool=true,
@@ -134,11 +137,11 @@ function test_compose(
             for g_ in [g, h]
                 g_inv = inv(G, g_)
                 k1 = compose(G, g_inv, g_)
-                @test is_identity(G, k1)
+                @test is_identity(G, k1; atol=atol)
                 if test_mutating
                     compose!(G, k2, g_inv, g_)
-                    @test isapprox(G, k1, k2)
-                    @test is_identity(G, k2)
+                    @test isapprox(G, k1, k2; atol=atol)
+                    @test is_identity(G, k2; atol=atol)
                 end
             end
         end
@@ -147,16 +150,16 @@ function test_compose(
                 for e in [Identity(G), identity_element(G, typeof(g))]
                     k1 = compose(G, g_, e)
                     compose!(G, k2, g_, e)
-                    @test isapprox(G, k1, k2)
+                    @test isapprox(G, k1, k2; atol=atol)
                     k1 = compose(G, e, g_)
                     compose!(G, k2, e, g_)
-                    @test isapprox(G, k1, k2)
+                    @test isapprox(G, k1, k2; atol=atol)
                 end
             end
             e = Identity(G)
             k3 = copy(G, g)
             compose!(G, k3, e, e)
-            @test is_identity(G, k3)
+            @test is_identity(G, k3; atol=atol)
         end
     end
     return nothing
@@ -861,7 +864,17 @@ function test_lie_group(G::LieGroup, properties::Dict, expectations::Dict=Dict()
         # --- C
         if (compose in functions)
             ti = all(in.([inv, is_identity], Ref(functions)))
-            test_compose(G, points[1], points[2]; test_inverse=ti, test_mutating=mutating)
+            compose_atol = get(function_atols, :compose, 0.0)
+            identity_atol = get(function_atols, :is_identity, 0.0)
+            local_atol = max(compose_atol, identity_atol, atol)
+            test_compose(
+                G,
+                points[1],
+                points[2];
+                test_inverse=ti,
+                test_mutating=mutating,
+                atol=local_atol,
+            )
         end
         # since there is a default, also providing compose&inv suffices
         if (conjugate in functions) || (all(in.([compose, inv], Ref(functions))))

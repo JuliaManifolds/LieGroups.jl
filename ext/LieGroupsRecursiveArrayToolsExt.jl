@@ -174,11 +174,4 @@ function ManifoldsBase.zero_vector(
     n = Manifolds.get_parameter(G.manifold[1].size)[1]
     return SpecialEuclideanProductTangentVector(ArrayPartition(zeros(n), zeros(n, n)))
 end
-
-# TODO: Implement?
-# The following three should also work due to the
-# AbstractProductGroup s implementations
-# * `check_point`
-# * `check_size`
-# * `check_vector`
 end

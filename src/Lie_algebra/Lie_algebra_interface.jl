@@ -340,7 +340,7 @@ end
 Random.rand!(::LieAlgebra, X; kwargs...)
 
 function Base.show(io::IO, 𝔤::LieAlgebra)
-    return print(io, "LieAlgebra( $(𝔤.manifold) )")
+    return print(io, "LieAlgebra($(𝔤.manifold))")
 end
 
 _doc_vee = """
