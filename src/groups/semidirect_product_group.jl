@@ -279,7 +279,7 @@ function hat!(
     dim_ranges = ManifoldsBase._get_dim_ranges(dims)
     Prc = map(dr -> (@inbounds view(c, dr)), dim_ranges)
     PrL = LieAlgebra.(LieGroup.(PrM.manifolds, PrG.op.operations))
-    ts = ManifoldsBase.ziptuples(PrL, submanifold_components(PrM, X), Prc)
+    ts = ManifoldsBase.ziptuples(PrL, submanifold_components(PrG, X), Prc)
     map(ts) do t
         return hat!(t...)
     end
@@ -357,7 +357,7 @@ function vee!(
     dim_ranges = ManifoldsBase._get_dim_ranges(dims)
     Prc = map(dr -> (@inbounds view(c, dr)), dim_ranges)
     PrL = LieAlgebra.(LieGroup.(PrM.manifolds, PrG.op.operations))
-    ts = ManifoldsBase.ziptuples(PrL, Prc, submanifold_components(PrM, X))
+    ts = ManifoldsBase.ziptuples(PrL, Prc, submanifold_components(PrG, X))
     map(ts) do t
         return vee!(t...)
     end

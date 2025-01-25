@@ -5,7 +5,8 @@ s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 using LieGroupsTestSuite
 using LieGroupsTestSuite: rotation_matrix
 using LinearAlgebra: I
-begin
+
+@testset "The Orhogonal Group" begin
     G = OrthogonalGroup(2)
     g1 = 1 / sqrt(2) * [1.0 1.0; -1.0 1.0]
     g2 = [0.0 -1.0; 1.0 0.0]

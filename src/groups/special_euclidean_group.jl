@@ -133,6 +133,9 @@ ManifoldsBase.@default_manifold_fallbacks RightSpecialEuclideanGroup SpecialEucl
 @default_lie_group_fallbacks LeftSpecialEuclideanGroup SpecialEuclideanMatrixPoint SpecialEuclideanMatrixTangentVector value value
 @default_lie_group_fallbacks RightSpecialEuclideanGroup SpecialEuclideanMatrixPoint SpecialEuclideanMatrixTangentVector value value
 
+ManifoldsBase.internal_value(semp::SpecialEuclideanMatrixPoint) = semp.value
+ManifoldsBase.internal_value(semtv::SpecialEuclideanMatrixTangentVector) = semtv.value
+
 """
     SpecialEuclideanProductPoint <: AbstractLieGroupPoint
 
@@ -153,7 +156,8 @@ end
 
 ManifoldsBase.@manifold_element_forwards SpecialEuclideanProductPoint value
 ManifoldsBase.@manifold_vector_forwards SpecialEuclideanProductTangentVector value
-
+ManifoldsBase.internal_value(sepp::SpecialEuclideanProductPoint) = sepp.value
+ManifoldsBase.internal_value(septv::SpecialEuclideanProductTangentVector) = septv.value
 # This union we can also use for the matrix case where we do not care
 
 function SpecialEuclideanGroup(n; variant=:left, kwargs...)
@@ -218,37 +222,44 @@ function _check_point(
 end
 
 # Order in a unified way
-function ManifoldsBase.check_vector(G::LeftSpecialEuclideanGroup, X; kwargs...)
-    return _check_vector(G, G.manifold[1], G.manifold[2], G.op[1], G.op[2], X; kwargs...)
+function ManifoldsBase.check_vector(G::LeftSpecialEuclideanGroup, g, X; kwargs...)
+    return _check_vector(G, G.manifold[1], G.manifold[2], G.op[1], G.op[2], g, X; kwargs...)
 end
-function ManifoldsBase.check_vector(G::RightSpecialEuclideanGroup, X; kwargs...)
-    return _check_vector(G, G.manifold[2], G.manifold[1], G.op[2], G.op[1], X; kwargs...)
+function ManifoldsBase.check_vector(G::RightSpecialEuclideanGroup, g, X; kwargs...)
+    return _check_vector(G, G.manifold[2], G.manifold[1], G.op[2], G.op[1], g, X; kwargs...)
 end
 
 function _check_vector(
-    G::SpecialEuclideanGroup{T}, Rotn, Rn, op1, op2, X; kwargs...
+    G::SpecialEuclideanGroup{T}, Rotn, Rn, op1, op2, g, X; kwargs...
 ) where {T}
     errs = DomainError[]
     n = ManifoldsBase.get_parameter(Rotn.size)[1]
     # SO(n)  part
     SOn = LieGroup(Rotn, op1)
     errS = ManifoldsBase.check_vector(
-        SOn, ManifoldsBase.submanifold_component(G, X, :Rotation); kwargs...
+        SOn,
+        ManifoldsBase.submanifold_component(G, g, :Rotation),
+        ManifoldsBase.submanifold_component(G, X, :Rotation);
+        kwargs...,
     )
     !isnothing(errS) && push!(errs, errS)
     # T(n) part
     Tn = LieGroup(Rn, op2)
     errT = ManifoldsBase.check_vector(
-        Tn, ManifoldsBase.submanifold_component(G, X, :Translation); kwargs...
+        Tn,
+        ManifoldsBase.submanifold_component(G, g, :Translation),
+        ManifoldsBase.submanifold_component(G, X, :Translation);
+        kwargs...,
     )
     !isnothing(errT) && push!(errs, errT)
     (length(errs) > 1) && (return ManifoldsBase.CompositeManifoldError(errs))
     return length(errs) == 0 ? nothing : first(errs)
 end
 function ManifoldsBase.check_size(
-    G::LG, g::AbstractMatrix; kwargs...
+    G::LG, g::Union{AbstractMatrix,SpecialEuclideanMatrixPoint}; kwargs...
 ) where {LG<:SpecialEuclideanGroup}
-    n = size(g)
+    _g = ManifoldsBase.internal_value(g)
+    n = size(_g)
     m = ManifoldsBase.representation_size(G)
     if n != m
         return DomainError(
@@ -258,9 +269,34 @@ function ManifoldsBase.check_size(
     end
 end
 function ManifoldsBase.check_size(
-    𝔤::LA, X::AbstractMatrix; kwargs...
-) where {𝔽,LA<:LieAlgebra{𝔽,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup}}
+    G::LG, g::AbstractMatrix, X::AbstractMatrix; kwargs...
+) where {LG<:SpecialEuclideanGroup}
     n = size(X)
+    m = ManifoldsBase.representation_size(G)
+    if n != m
+        return DomainError(
+            n,
+            "The point $(X) can not belong to the Lie Algebra $(𝔤), since its size $(n) is not equal to the manifolds representation size ($(m)).",
+        )
+    end
+end
+function ManifoldsBase.check_size(
+    G::LG, g::SpecialEuclideanMatrixPoint, X::SpecialEuclideanMatrixTangentVector; kwargs...
+) where {LG<:SpecialEuclideanGroup}
+    n = size(X.value)
+    m = ManifoldsBase.representation_size(G)
+    if n != m
+        return DomainError(
+            n,
+            "The point $(X) can not belong to the Lie Algebra $(𝔤), since its size $(n) is not equal to the manifolds representation size ($(m)).",
+        )
+    end
+end
+function ManifoldsBase.check_size(
+    𝔤::LA, X::Union{AbstractMatrix,SpecialEuclideanMatrixTangentVector}; kwargs...
+) where {LA<:LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup}}
+    _X = ManifoldsBase.internal_value(X)
+    n = size(_X)
     m = ManifoldsBase.representation_size(𝔤.manifold)
     if n != m
         return DomainError(
@@ -269,12 +305,20 @@ function ManifoldsBase.check_size(
         )
     end
 end
-
 function _compose!(
     ::SpecialEuclideanGroup, k::AbstractMatrix, g::AbstractMatrix, h::AbstractMatrix
 )
     copyto!(k, g * h)
     return k
+end
+
+Base.convert(::Type{<:AbstractMatrix}, g::SpecialEuclideanMatrixPoint) = g.value
+function Base.convert(::Type{SpecialEuclideanProductPoint}, p::AbstractMatrix)
+    return SpecialEuclideanMatrixPoint(p)
+end
+Base.convert(::Type{<:AbstractMatrix}, X::SpecialEuclideanMatrixTangentVector) = X.value
+function Base.convert(::Type{SpecialEuclideanMatrixTangentVector}, X::AbstractMatrix)
+    return SpecialEuclideanMatrixTangentVector(X)
 end
 
 """
@@ -409,6 +453,87 @@ function ManifoldsBase.exp!(
     return g
 end
 
+@inline function get_coordinates_lie!(
+    𝔤::LieAlgebra{ℝ,<:LeftSpecialEuclideanGroupOperation,<:LeftSpecialEuclideanGroup},
+    c,
+    X::T,
+    N,
+) where {T}
+    G = 𝔤.manifold # SE(n)
+    M = G.manifold # Product manifold
+    dim = manifold_dimension(M)
+    @assert length(c) == dim
+    SOn, Tn = _SOn_and_Tn(G)
+    # first component: R
+    l = manifold_dimension(M.manifolds[1]) # dim(SO(n))
+    B = DefaultLieAlgebraOrthogonalBasis(N)
+    get_coordinates!(
+        LieAlgebra(SOn), view(c, 1:l), submanifold_component(G, X, :Rotation), B
+    )
+    get_coordinates!(
+        LieAlgebra(Tn), view(c, (l + 1):dim), submanifold_component(G, X, :Translation), B
+    )
+    return c
+end
+
+@inline function get_coordinates_lie!(
+    𝔤::LieAlgebra{ℝ,<:RightSpecialEuclideanGroupOperation,<:RightSpecialEuclideanGroup},
+    c,
+    X::T,
+    N,
+) where {T}
+    G = 𝔤.manifold # SE(n)
+    M = G.manifold # Product manifold
+    dim = manifold_dimension(M)
+    @assert length(c) == dim
+    SOn, Tn = _SOn_and_Tn(G)
+    # first component: t
+    l = manifold_dimension(M.manifolds[1]) # dim(T(n))
+    B = DefaultLieAlgebraOrthogonalBasis(N)
+    get_coordinates!(
+        LieAlgebra(Tn), view(c, 1:l), submanifold_component(G, X, :Translation), B
+    )
+    get_coordinates!(
+        LieAlgebra(SOn), view(c, (l + 1):dim), submanifold_component(G, X, :Rotation), B
+    )
+    return c
+end
+
+@inline function get_vector_lie!(
+    𝔤::LieAlgebra{ℝ,<:LeftSpecialEuclideanGroupOperation,<:LeftSpecialEuclideanGroup},
+    X::T,
+    c,
+    N,
+) where {T}
+    G = 𝔤.manifold # SE(n)
+    M = G.manifold # Product manifold
+    # (R,t) so we first to R
+    l = manifold_dimension(M.manifolds[1]) # dim(SO(n))
+    SOn, Tn = _SOn_and_Tn(G)
+    B = DefaultLieAlgebraOrthogonalBasis(N)
+    get_vector!(LieAlgebra(SOn), submanifold_component(G, X, :Rotation), c[1:l], B)
+    get_vector!(
+        LieAlgebra(Tn), submanifold_component(G, X, :Translation), c[(l + 1):end], B
+    )
+    return X
+end
+@inline function get_vector_lie!(
+    𝔤::LieAlgebra{ℝ,<:RightSpecialEuclideanGroupOperation,<:RightSpecialEuclideanGroup},
+    X::T,
+    c,
+    N,
+) where {T}
+    G = 𝔤.manifold # SE(n)
+    M = G.manifold # Product manifold
+    # (R, t) so we first to R
+    l = manifold_dimension(M.manifolds[1]) # dim(T(n))
+    SOn, Tn = _SOn_and_Tn(G)
+    B = DefaultLieAlgebraOrthogonalBasis(N)
+    get_vector!(LieAlgebra(Tn), submanifold_component(G, X, :Translation), c[1:l], B)
+    get_vector!(LieAlgebra(SOn), submanifold_component(G, X, :Rotation), c[(l + 1):end], B)
+    return X
+end
+
 function identity_element(G::SpecialEuclideanGroup)
     return identity_element(G, AbstractMatrix)
 end
@@ -432,7 +557,7 @@ end
 
 _doc_init_constants = """
     init_constants!(G::SpecialEuclidean, g)
-    init_Constants!(𝔰𝔢::LieAlgebra{𝔽, SpecialEuclideanGroupOperation, SpecialEuclidean}, X)
+    init_Constants!(𝔰𝔢::LieAlgebra{ℝ, SpecialEuclideanGroupOperation, SpecialEuclidean}, X)
 
 Initalize the constant elements of `g` or `X`.
 
@@ -456,9 +581,7 @@ end
 
 @doc "$(_doc_init_constants)"
 function init_constants!(
-    G::LieAlgebra{
-        ManifoldsBase.RealNumbers,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup
-    },
+    G::LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup},
     X::AbstractMatrix,
 )
     n = Manifolds.get_parameter(G.manifold.manifold[1].size)[1]
@@ -471,11 +594,9 @@ function init_constants!(G::SpecialEuclideanGroup, g::SpecialEuclideanMatrixPoin
     return g
 end
 function init_constants!(
-    G::LieAlgebra{
-        ManifoldsBase.RealNumbers,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup
-    },
+    G::LieAlgebra{𝔽,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup},
     X::SpecialEuclideanMatrixTangentVector,
-)
+) where {𝔽}
     init_constants!(G, X.value)
     return X
 end
@@ -811,16 +932,45 @@ Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
     return view(p, 1:n, n + 1)
 end
+Base.@propagate_inbounds function ManifoldsBase.submanifold_components(
+    G::LeftSpecialEuclideanGroup, p
+)
+    return (
+        submanifold_component(G, p, :Rotation), submanifold_component(G, p, :Translation)
+    )
+end
+Base.@propagate_inbounds function ManifoldsBase.submanifold_components(
+    G::RightSpecialEuclideanGroup, p
+)
+    return (
+        submanifold_component(G, p, :Translation), submanifold_component(G, p, :Rotation)
+    )
+end
+Base.@propagate_inbounds function ManifoldsBase.submanifold_components(
+    G::LeftSpecialEuclideanGroup, e::Identity{LeftSpecialEuclideanGroupOperation}
+)
+    return Tuple(Identity(op) for op in G.op.operations)
+end
+Base.@propagate_inbounds function ManifoldsBase.submanifold_components(
+    G::RightSpecialEuclideanGroup, e::Identity{RightSpecialEuclideanGroupOperation}
+)
+    return Tuple(Identity(op) for op in G.op.operations)
+end
 
 function ManifoldsBase.zero_vector(
-    G::SpecialEuclideanGroup, ::Type{<:AbstractMatrix}=AbstractMatrix
+    𝔤::LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup},
+    ::Type{<:AbstractMatrix}=AbstractMatrix,
 )
+    G = 𝔤.manifold
     n = Manifolds.get_parameter(G.manifold[1].size)[1]
     return zeros(n + 1, n + 1)
 end
 
-function ManifoldsBase.zero_vector!(G::SpecialEuclideanGroup, X)
-    init_constants!(LieAlgebra(G), X)
+function ManifoldsBase.zero_vector!(
+    𝔤::LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup}, X
+)
+    G = 𝔤.manifold
+    init_constants!(𝔤, X)
     Y = submanifold_component(G, X, :Rotation)
     v = submanifold_component(G, X, :Translation)
     SO3, T3 = _SOn_and_Tn(G)

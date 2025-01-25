@@ -180,7 +180,7 @@ function ManifoldsBase.log!(G::HeisenbergGroup, X, g)
     # Set then to views of g
     view_a_X .= _heisenberg_a_view(G, g)
     view_b_X .= _heisenberg_b_view(G, g)
-    # Set first row last entry – since these contain g in X, use them
+    # Set first row last entry – since these contain g in X
     X[1, n + 2] = g[1, n + 2] - dot(view_a_X, view_b_X) / 2
     return X
 end

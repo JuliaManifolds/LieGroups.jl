@@ -198,7 +198,7 @@ end
 end
 @inline function get_vector_lie(𝔤::LieAlgebra, c, N, T::Type)
     X = zero_vector(𝔤, T)
-    return get_vector_lie!(𝔤::LieAlgebra, X, c, N)
+    return get_vector_lie!(𝔤, X, c, N)
 end
 @inline function get_vector_lie!(𝔤::LieAlgebra, X::T, c, N) where {T}
     G = 𝔤.manifold
@@ -261,7 +261,7 @@ at the [`identity_element`](@ref)`(G)` on `G.manifold` on the [`LieGroup`](@ref)
 of `G`
 """
 function ManifoldsBase.is_point(𝔤::LieAlgebra, X::T; kwargs...) where {T}
-    # the manifold stored in the Fiber / Lie algebra is the Lie group G
+    # 𝔤.manifold is G,
     return ManifoldsBase.is_vector(
         𝔤.manifold, identity_element(𝔤.manifold, T), X; kwargs...
     )
@@ -344,8 +344,8 @@ function Base.show(io::IO, 𝔤::LieAlgebra)
 end
 
 _doc_vee = """
-    vee(𝔤::LieGroup, X)
-    vee!(𝔤::LieGroup, c, X)
+    vee(𝔤::LieAlgebra, X)
+    vee!(𝔤::LieAlgebra, c, X)
 
 Compute the vee map ``(⋅)^∨: $(_math(:𝔤)) → $(_tex(:Cal, "V"))`` that maps a tangent vector `X`
 from the [`LieAlgebra`](@ref) $(_math(:𝔤)) to its coordinates with respect to the [`DefaultLieAlgebraOrthogonalBasis`](@ref) basis in the Lie algebra

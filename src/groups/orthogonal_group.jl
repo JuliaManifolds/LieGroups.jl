@@ -301,7 +301,7 @@ get_vector!(G::OrthogonalLieAlgebra, c, X::DefaultLieAlgebraOrthogonalBasis)
 
 function get_vector_lie!(
     ::CommonUnitarySubAlgebras{
-        ManifoldsBase.RealNumbers,ManifoldsBase.TypeParameter{Tuple{2}}
+        <:ManifoldsBase.RealNumbers,<:ManifoldsBase.TypeParameter{Tuple{2}}
     },
     X,
     c,
@@ -494,7 +494,7 @@ function ManifoldsBase.log!(
         ival = findfirst(λ -> isapprox(λ, 1), eig.values)
         inds = SVector{3}(1:3)
         ax = eig.vectors[inds, ival]
-        return get_vector!(G, X, π * ax, DefaultLieAlgebraOrthogonalBasis())
+        return get_vector!(LieAlgebra(G), X, π * ax, DefaultLieAlgebraOrthogonalBasis())
     end
     X .= q ./ usinc_from_cos(cosθ)
     # project onto 𝔰𝔬(3) for numerical stability

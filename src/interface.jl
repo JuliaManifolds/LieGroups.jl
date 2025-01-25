@@ -587,7 +587,7 @@ identity element corresponding to `G`.
 """
 ManifoldsBase.is_point(G::LieGroup, g; kwargs...)
 
-# resolve identity already here
+# resolve identity already here, everything else passes down to checks.
 
 function ManifoldsBase.is_point(
     G::LieGroup{𝔽,O}, g::Identity{O}; kwargs...
