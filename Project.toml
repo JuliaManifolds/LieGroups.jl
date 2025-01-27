@@ -19,7 +19,7 @@ LieGroupsRecursiveArrayToolsExt = "RecursiveArrayTools"
 [compat]
 Aqua = "0.8"
 LinearAlgebra = "1.10"
-Manifolds = "0.10.11"
+Manifolds = "0.10.13"
 ManifoldsBase = "1"
 Random = "1.10"
 RecursiveArrayTools = "2, 3"

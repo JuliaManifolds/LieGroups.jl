@@ -17,6 +17,7 @@ Order = [:function]
 ## Internal functions and macros
 
 ```@docs
+LieGroups.CommonUnitarySubAlgebras
 LieGroups.@default_lie_group_fallbacks
 ```
 

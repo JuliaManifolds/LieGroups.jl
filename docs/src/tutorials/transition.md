@@ -23,28 +23,28 @@ The list is alphabetical, but first lists types, then functions
 |:---------- |:---------- |:-------------- |
 | `AdditionOperation` | [`AdditionGroupOperation`](@ref) | |
 | `LeftForwardAction` | [`LeftGroupOperationAction`](@ref)
-| `RightBackwardAction` | [`RightGroupOperationAction`](@ref) | |
 | `LeftBackwardAction` | [`InverseRightGroupOperationAction`](@ref) | note that this is now also aa [`AbstractLeftGroupActionType`](@ref) |
 | | [`LieAlgebra`](@ref)`(G)` | new alias to emphasize its manifold- and vector structure as well as for a few dispatch methods. |
 | `GroupManifold(M, op)` | [`LieGroup`](@ref)`(M, op)` | |
 | `PowerGroup(M)` | [`PowerLieGroup`](@ref)`(G,n)` | The main change is, that the constructor now requires a Lie group to build the power Lie group; This also allows for `G^n`. The other two former constructors for nested and nested-replacing are no longer necessary. `PowerLieGroup` behaves exactly the same as [`PowerManifold`](@extref `ManifoldsBase.PowerManifold`). |
 | `ProductGroup(M)` | [`ProductLieGroup`](@ref)`(G, H)` | The main change is, that the constructor now requires two Lie groups to build their product. This also allows for the short hand `G×H` to generate this product. |
 | `SemidirectProductGroup(G, H, a)` | [`LeftSemidirectProductLieGroup`](@ref)`(G, H, a)` | While this staid the same, there is now also the [`default_left_action`](@ref)`(G,H)`. When this agrees with `a` you can use the short hand `G⋉H` to generate this semidirect product. Analogously there now also exists the [`RightSemidirectProductLieGroup`](@ref)`(G,H)` with[`default_left_action`](@ref)`(G,H)` that allows for the short cut `G⋊H` |
+| `RightBackwardAction` | [`RightGroupOperationAction`](@ref) | |
 | `RightForwardAction` | [`InverseLeftGroupOperationAction`](@ref) | note that this is an [`AbstractRightGroupActionType`](@ref) |
 | `adjoint` | [`adjoint`](@ref) | now implemented with a default, when you provide [`diff_conjugate!`](@ref).
 | `apply_diff` | [`diff_apply`](@ref) | modifiers (diff) come first, consistent with [`ManifoldsDiff.jl`](https://juliamanifolds.github.io/ManifoldDiff.jl/stable/) |
 | `apply_diff_group` | [`diff_group_apply`](@ref) | modifiers (diff/group) come first, consistent with [`ManifoldsDiff.jl`](https://juliamanifolds.github.io/ManifoldDiff.jl/stable/) |
 | | [`conjugate`](@ref), [`diff_conjugate`](@ref) | a new function to model ``c_g: \mathcal G → \mathcal G`` given by ``c_g(h) = g∘h∘g^{-1}`` |
-| `differential_exp_argument_lie_approx` | | this is discontinued, see the `differential_exp_argument` in `ManifoldDiff.jl` instead, since `exp_lie` is now just `exp`. |
-| `exp(G, g, X)` | `exp(`[`base_manifold`](@ref base_manifold(G::LieGroup))`(G), g, X)` | the previous defaults whenever not agreeing with the invariant one can now be accessed on the internal manifold |
-| `exp_inv(G, g, X)` | [`exp`](@ref exp(G::LieGroup, g, X, t::Number))`(G, g, X)`  | the exponential map invariant to the group operation is the default on Lie groups here |
-| `exp_lie(G, X)` | [`exponential`](@ref exponential(G::LieGroup, X))`(G, X)` | the (matrix/Lie group) exponential |
+| `differential_exp_argument_lie_approx` | - | is discontinued, see the `differential_exp_argument` in `ManifoldDiff.jl` instead, since `exp_lie` is now just `exp`. |
+| `exp(G, g, X)` | `exp(`[`base_manifold`](@ref base_manifold(G::LieGroup))`(G), g, X)` | the previous defaults whenever not agreeing with the Riemannian one can now be accessed on the internal manifold |
+| `exp_inv(G, g, X)` | [`exp`](@ref exp(G::LieGroup, g, X))`(G, g, X)`  | the exponential map invariant to the group operation is the default on Lie groups here |
+| `exp_lie(G, X)` | [`exponential`](@ref exp(G::LieGroup, X))`(G, X)` | the (matrix/Lie group) exponential |
 | `inverse_translate(G, g, h, c)` | [`inv_left_compose`](@ref)`(G, g, h)`, [`inv_right_compose`](@ref)`(G, g, h)` | compute ``g^{-1}∘h`` and ``g∘h^{-1}``, resp. |
 | `inverse_tranlsate_diff(G, g, h, X, LeftForwardAction())` | - | discontinued, use `diff_left_compose(G, inv(G,g), h)` |
 | `inverse_tranlsate_diff(G, g, h, X, RightBackwardAction())` | - | discontinued, use `diff_left_compose(G, h, inv(G,g))` |
 | `log(G, g, h)` | `log(`[`base_manifold`](@ref base_manifold(G::LieGroup))`(G), g, h)` | you can now access the previous defaults on the internal manifold whenever they do not agree with the invariant one |
 | `log_inv(G, g, h)` | [`log`](@ref log(G::LieGroup, g, h))`(G, g, h)` | the logarithmic map invariant to the group operation is the default on Lie groups here |
-| `log_lie(G, g)` | [`log`](@ref logarithm(G::LieGroup, g))`(G, g)` | the (matrix/Lie group) logarithm |
+| `log_lie(G, g)` | [`log`](@ref log(G::LieGroup, g))`(G, g)` | the (matrix/Lie group) logarithm |
 | `switch_direction(A)` | [`inv`](@ref inv(::GroupAction))`(A)` | switches from an action to its inverse action (formerly the direction forward/backward, sometimes even left/right, do not confuse with the side left/right). |
 | `switch_side(A)` | [`switch`](@ref switch(::GroupAction))`(A)` | switches from a left action to its corresponding right action. |
 | `translate(G, g, h)` | [`compose`](@ref)`(G, g, h)` | unified to `compose` |

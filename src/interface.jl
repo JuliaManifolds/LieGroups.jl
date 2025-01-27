@@ -417,9 +417,8 @@ $(_tex(:exp))_{$(_math(:G))}: $(_math(:𝔤)) → $(_math(:G)),$(_tex(:qquad)) $
 where ``γ_X`` is the unique solution of the initial value problem
 
 ```math
-γ(0) = $(_math(:e)), $(_tex(:quad)) γ'(s) = γ(s)$(_math(:act))X,
+γ(0) = $(_math(:e)), $(_tex(:quad)) γ'(s) = γ(s)$(_math(:act))X.
 ```
-where `X` can be scaled by `t`.
 
 See also [HilgertNeeb:2012; Definition 9.2.2](@cite).
 On matrix Lie groups this is the same as the [matrix exponential](https://en.wikipedia.org/wiki/Matrix_exponential).
@@ -429,7 +428,8 @@ The computation can be performed in-place of `g`.
 !!! info "Naming convention"
    There are at least two different objects usually called “exponential” that need to be distinguished
 
-   * the [(Riemannian) exponential map](@extref `ManifoldsBase.exp`) map `exp(M, p, X)` from $(_link(:ManifoldsBase))
+   * the [(Riemannian) exponential map](@extref `Base.exp-Tuple{AbstractManifold, Any, Any}`) `exp(M, p, X)` from $(_link(:ManifoldsBase)).
+     This can be accessed here using `exp(base_manifold(G), p, X)`
    * the exponential map for a (left/right/bi-invariant) Cartan-Schouten (pseudo-)metric `exp(G, g, X)`, which we use as a default within this package
    * the (matrix/Lie group) exponential function `exp(G, g)` which agrees with the previous one for `g` being the identity there.
 """
@@ -681,13 +681,13 @@ $(_tex(:log))_g h = $(_tex(:log))_{$(_math(:G))}(g^{-1}$(_math(:∘))h)
 where ``$(_tex(:log))_{$(_math(:G))}`` denotes the [Lie group logarithmic function](@ref log(::LieGroup, :Any))
 The computation can be performed in-place of `X`.
 
-If `g` is the [`Identity`](@ref) the [Lie group logarithmic function](@ref log(::LieGroup, ::Identity, :Any)) ``$(_tex(:log))_{$(_math(:G))}`` is computed directly.
-Implementing the Lie group logarithmic function introduces a default implementation for this function with the formula above.
 
-!!! note
-    The Lie group logarithmic map is usually different from the logarithmic map with respect
-    to the metric of the underlying Riemannian manifold ``$(_math(:M))``.
-    To access the (Riemannian) logarithmic map, use `log(`[`base_manifold`](@ref)`G, g, h)`.
+!!! info "Naming convention"
+   There are at least two different objects usually called “logarithm” that need to be distinguished
+
+   * the [(Riemannian) logarithmic map](@extref `Base.log-Tuple{AbstractManifold, Any, Any}`) `log(M, p, X)` from $(_link(:ManifoldsBase))
+   * the exponential map for a (left/right/bi-invariant) Cartan-Schouten (pseudo-)metric `exp(G, g, X)`, which we use as a default within this package
+   * the (matrix/Lie group) exponential function `exp(G, g)` which agrees with the previous one for `g` being the identity there.
 """
 
 @doc "$_doc_log"
@@ -704,8 +704,9 @@ function ManifoldsBase.log!(G::LieGroup, X, g, h)
 end
 
 _doc_log = """
+    log(G::LieGroup, g, h)
     log(G::LieGroup, g)
-    log(G::LieGroup, e::Identity, T)
+    log(G::LieGroup, g::Identity, T)
     log!(G::LieGroup, X::T, g)
 
 Compute the (Lie group) logarithmic function ``$(_tex(:log))_{$(_math(:G))}: $(_math(:G)) → $(_math(:𝔤))``,
@@ -716,9 +717,9 @@ The computation can be performed in-place of `X::T`, which then determines the t
 !!! info "Naming convention"
    There are at least two different objects usually called “logarithm” that need to be distinguished
 
-   * the [(Riemannian) logarithm](@extref `ManifoldsBase.log`) map `log(M, p, q)` from $(_link(:ManifoldsBase))
-   * the for a (left/right/bi-invariant) Cartan-Schouten (pseudo-)metric `log(G, g, X)`, which we use as a default within this package
-   * the (matrix/Lie group) logarithm function `log(G, g)` which agrees with the previous one for `g` being the identity there.
+   * the [(Riemannian) logarithm](@extref `Base.log-Tuple{AbstractManifold, Any, Any}`) map `log(M, p, q)` from $(_link(:ManifoldsBase)). This can be accessed here using `log(base_manifold(G), p, q)`.
+   * the logarithmic map for a (left/right/bi-invariant) Cartan-Schouten (pseudo-)metric `log(G, g, h)`, which we use as a default within this package
+   * the (matrix/Lie group) logarithm function `log(G, h)` which agrees with the previous one for `g` being the identity there.
 """
 
 @doc "$(_doc_log)"
@@ -837,6 +838,16 @@ function Base.show(io::IO, G::LieGroup)
     return print(io, "LieGroup($(G.manifold), $(G.op))")
 end
 
+
+"""
+    submanifold_component_view(G::LieGroup, g, i)
+
+return a view of the submanifold component, that allows to write into it.
+see also [`submanifold_component`](@ref `ManifoldsBase.submanifold_component`) for a
+“read only” access
+"""
+function submanifold_component_view end
+
 #
 # Allocation hints - mainly pass-through, especially for power manifolds
 
@@ -861,8 +872,10 @@ function ManifoldsBase.allocate_result(
     # both get a type allocated like rand
     return ManifoldsBase.allocate_result(G.manifold, rand)
 end
-# fallback macro
 
+#
+#
+# A fallback macro for types that merely wrap the actual data
 """
     default_lie_group_fallbacks(TG, TP, TV, pfield::Symbol, vfield::Symbol)
 
