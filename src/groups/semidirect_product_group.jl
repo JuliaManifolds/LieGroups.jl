@@ -207,22 +207,22 @@ function _compose!(
     # for the first components, just perform the group op
     _compose!(
         G,
-        submanifold_component(PM, k, 1),
-        submanifold_component(PM, g, 1),
-        submanifold_component(PM, h, 1),
+        submanifold_component(SDPG, k, 1),
+        submanifold_component(SDPG, g, 1),
+        submanifold_component(SDPG, h, 1),
     )
     # apply the first element from g to
     apply!(
         A,
-        submanifold_component(PM, k, 2),
-        submanifold_component(PM, h, 1),
-        submanifold_component(PM, g, 2),
+        submanifold_component(SDPG, k, 2),
+        submanifold_component(SDPG, h, 1),
+        submanifold_component(SDPG, g, 2),
     )
     _compose!(
         H,
-        submanifold_component(PM, k, 2),
-        submanifold_component(PM, k, 2),
-        submanifold_component(PM, h, 2),
+        submanifold_component(SDPG, k, 2),
+        submanifold_component(SDPG, k, 2),
+        submanifold_component(SDPG, h, 2),
     )
     return k
 end
@@ -241,22 +241,22 @@ function _compose!(
     # apply the first element from g to
     apply!(
         A,
-        submanifold_component(PM, k, 1),
-        submanifold_component(PM, g, 2),
-        submanifold_component(PM, h, 1),
+        submanifold_component(SDPG, k, 1),
+        submanifold_component(SDPG, g, 2),
+        submanifold_component(SDPG, h, 1),
     )
     _compose!(
         G,
-        submanifold_component(PM, k, 1),
-        submanifold_component(PM, g, 1),
-        submanifold_component(PM, k, 1),
+        submanifold_component(SDPG, k, 1),
+        submanifold_component(SDPG, g, 1),
+        submanifold_component(SDPG, k, 1),
     )
     # For the second just do the group op
     _compose!(
         H,
-        submanifold_component(PM, k, 2),
-        submanifold_component(PM, g, 2),
-        submanifold_component(PM, h, 2),
+        submanifold_component(SDPG, k, 2),
+        submanifold_component(SDPG, g, 2),
+        submanifold_component(SDPG, h, 2),
     )
     return k
 end
@@ -305,13 +305,13 @@ function inv!(
     PM = SDPG.manifold
     G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
     A = GroupAction(SDPG.op.action_type, G, H)
-    inv!(G, submanifold_component(PM, k, 1), submanifold_component(PM, g, 1))
-    inv!(H, submanifold_component(PM, k, 2), submanifold_component(PM, g, 2))
+    inv!(G, submanifold_component(SDPG, k, 1), submanifold_component(PM, g, 1))
+    inv!(H, submanifold_component(SDPG, k, 2), submanifold_component(PM, g, 2))
     apply!( # Apply the group action with g1^-1 to g2^-1
         A,
-        submanifold_component(PM, k, 2),
-        submanifold_component(PM, k, 1),
-        submanifold_component(PM, k, 2),
+        submanifold_component(SDPG, k, 2),
+        submanifold_component(SDPG, k, 1),
+        submanifold_component(SDPG, k, 2),
     )
     return k
 end

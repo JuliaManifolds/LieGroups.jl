@@ -838,7 +838,6 @@ function Base.show(io::IO, G::LieGroup)
     return print(io, "LieGroup($(G.manifold), $(G.op))")
 end
 
-
 """
     submanifold_component_view(G::LieGroup, g, i)
 

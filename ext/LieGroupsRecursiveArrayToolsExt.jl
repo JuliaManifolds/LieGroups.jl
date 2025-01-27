@@ -6,11 +6,6 @@ using LinearAlgebra
 using ManifoldsBase
 # Implement SE(n) also on an Array Partition
 
-function _value(v::Union{SpecialEuclideanProductPoint,SpecialEuclideanProductTangentVector})
-    return v.value
-end
-_value(v::ArrayPartition) = v
-
 Base.convert(::Type{<:ArrayPartition}, g::SpecialEuclideanProductPoint) = g.value
 function Base.convert(::Type{SpecialEuclideanProductPoint}, p::ArrayPartition)
     return SpecialEuclideanProductPoint(p)
@@ -113,14 +108,16 @@ end
 LieGroups._check_matrix_affine(::ArrayPartition, ::Int; v=1) = nothing
 
 function ManifoldsBase.submanifold_component(
-    G::LieGroups.SpecialEuclideanGroup,
+    G::SE,
     g::Union{
         ArrayPartition,SpecialEuclideanProductPoint,SpecialEuclideanProductTangentVector
     },
     ::Val{I},
-) where {I}
+) where {I<:Int,SE<:SpecialEuclideanGroup}
     # pass down to manifold by default
-    return ManifoldsBase.submanifold_component(G.manifold, _value(g), I)
+    return ManifoldsBase.submanifold_component(
+        G.manifold, ManifoldsBase.internal_value(g), I
+    )
 end
 function ManifoldsBase.submanifold_component(
     G::LieGroups.LeftSpecialEuclideanGroup,
@@ -129,7 +126,9 @@ function ManifoldsBase.submanifold_component(
     },
     ::Val{:Rotation},
 )
-    return ManifoldsBase.submanifold_component(G.manifold, _value(g), 1)
+    return ManifoldsBase.submanifold_component(
+        G.manifold, ManifoldsBase.internal_value(g), 1
+    )
 end
 function ManifoldsBase.submanifold_component(
     G::LieGroups.LeftSpecialEuclideanGroup,
@@ -138,7 +137,9 @@ function ManifoldsBase.submanifold_component(
     },
     ::Val{:Translation},
 )
-    return ManifoldsBase.submanifold_component(G.manifold, _value(g), 2)
+    return ManifoldsBase.submanifold_component(
+        G.manifold, ManifoldsBase.internalManifoldsBase.internal_value(g), 2
+    )
 end
 
 Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
@@ -153,7 +154,9 @@ Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     },
     ::Val{:Translation},
 )
-    return ManifoldsBase.submanifold_component(G.manifold, _value(g), 1)
+    return ManifoldsBase.submanifold_component(
+        G.manifold, ManifoldsBase.internalManifoldsBase.internal_value(g), 1
+    )
 end
 
 function ManifoldsBase.zero_vector(

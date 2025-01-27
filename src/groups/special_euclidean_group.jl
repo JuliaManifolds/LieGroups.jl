@@ -923,30 +923,59 @@ Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     G::SpecialEuclideanGroup, p, ::Val{:Rotation}
 )
     n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
-    return view(p, 1:n, 1:n)
+    # view to be able to write, internal_value to “unpack” SEMatrices
+    return view(ManifoldsBase.internal_value(p), 1:n, 1:n)
 end
 Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
-    G::SpecialEuclideanGroup,
-    p::Union{SpecialEuclideanMatrixPoint,SpecialEuclideanMatrixTangentVector},
-    ::Val{:Translation},
+    G::LeftSpecialEuclideanGroup,
+    p::Union{
+        AbstractMatrix,SpecialEuclideanMatrixPoint,SpecialEuclideanMatrixTangentVector
+    },
+    ::Val{1},
 )
     n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
-    return view(p.value, 1:n, n + 1)
+    return view(ManifoldsBase.internal_value(p), 1:n, 1:n)
 end
 Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
-    G::SpecialEuclideanGroup,
-    p::Union{SpecialEuclideanMatrixPoint,SpecialEuclideanMatrixTangentVector},
-    ::Val{:Rotation},
+    G::RightSpecialEuclideanGroup,
+    p::Union{
+        AbstractMatrix,SpecialEuclideanMatrixPoint,SpecialEuclideanMatrixTangentVector
+    },
+    ::Val{2},
 )
     n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
-    return view(p.value, 1:n, 1:n)
+    return view(ManifoldsBase.internal_value(p), 1:n, 1:n)
 end
 Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     G::SpecialEuclideanGroup, p, ::Val{:Translation}
 )
+    # view to be able to write, internal_value to “unpack” SEMatrices
     n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
-    return view(p, 1:n, n + 1)
+    return view(ManifoldsBase.internal_value(p), 1:n, n + 1)
 end
+Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
+    G::LeftSpecialEuclideanGroup,
+    p::Union{
+        AbstractMatrix,SpecialEuclideanMatrixPoint,SpecialEuclideanMatrixTangentVector
+    },
+    ::Val{2},
+)
+    # view to be able to write, internal_value to “unpack” SEMatrices
+    n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
+    return view(ManifoldsBase.internal_value(p), 1:n, n + 1)
+end
+Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
+    G::RightSpecialEuclideanGroup,
+    p::Union{
+        AbstractMatrix,SpecialEuclideanMatrixPoint,SpecialEuclideanMatrixTangentVector
+    },
+    ::Val{1},
+)
+    # view to be able to write, internal_value to “unpack” SEMatrices
+    n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
+    return view(ManifoldsBase.internal_value(p), 1:n, n + 1)
+end
+
 Base.@propagate_inbounds function ManifoldsBase.submanifold_components(
     G::LeftSpecialEuclideanGroup, p
 )
