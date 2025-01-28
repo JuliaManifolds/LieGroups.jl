@@ -188,8 +188,9 @@ that is for `g` = ``(g_1,h_1)``, `h` ``= (g_2,h_2)`` with ``g_1,g_2 ∈ G``, ``h
 this computes
 
 ```math
-    (g_1,h_1) ∘ (g_2,h_2) := (g_1 ⋄ σ_{h_1}(g_2), h_1 ⋆ h_2).
+    (g_1,h_1) ∘ (g_2,h_2) := (g_1 ⋄ g_2, h_1 ⋆ σ_{g_1}(h_2)).
 ```
+
 """
 compose!(
     SDPG::LieGroup{𝔽,LeftSemidirectProductGroupOperation,<:ManifoldsBase.ProductManifold}
@@ -204,28 +205,37 @@ function _compose!(
     PM = SDPG.manifold
     G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
     A = GroupAction(SDPG.op.action_type, G, H)
-    # for the first components, just perform the group op
+    # We have to perform 3 steps applying the group action
+    # 1) x = σ_g[1](h[2]) (a point on H)
+    # 2) compose g[1] and h[1] (a point on G, neither input needed afterwards)
+    # 3) compose g[2] and x (a point on H, neither input needed afterwards)
+    # to avoid to overwrite elements in case k=g or k=h: allocate for result of (1)
+    # especially after (1) we still need g[2] (in case k=g)
+    x = copy(H, submanifold_component(SDPG, k, 2))
+    # (1)
+    apply!(A, x, submanifold_component(SDPG, g, 1), submanifold_component(SDPG, h, 2))
+    # (2)
     _compose!(
         G,
         submanifold_component(SDPG, k, 1),
         submanifold_component(SDPG, g, 1),
         submanifold_component(SDPG, h, 1),
     )
-    # apply the first element from g to
-    apply!(
-        A,
-        submanifold_component(SDPG, k, 2),
-        submanifold_component(SDPG, h, 1),
-        submanifold_component(SDPG, g, 2),
-    )
-    _compose!(
-        H,
-        submanifold_component(SDPG, k, 2),
-        submanifold_component(SDPG, k, 2),
-        submanifold_component(SDPG, h, 2),
-    )
+    _compose!(H, submanifold_component(SDPG, k, 2), submanifold_component(SDPG, g, 2), x)
     return k
 end
+"""
+    compose(L::LieGroup{𝔽,LeftSemidirectProductGroupOperation}, g, h)
+
+Compute the group operation $(_math(:∘))``on the semidirect product Lie group ``L = G ⋊ H``,
+that is for `g` = ``(g_1,h_1)``, `h` ``= (g_2,h_2)`` with ``g_1,g_2 ∈ G``, ``h_1,h_2 ∈ H``
+this computes
+
+```math
+    (g_1,h_1) ∘ (g_2,h_2) := (g_1 ⋄ σ_{h_1}(g_2), h_1 ⋆ h_2).
+```
+
+"""
 function _compose!(
     SDPG::LieGroup{
         𝔽,<:RightSemidirectProductGroupOperation,<:ManifoldsBase.ProductManifold
@@ -237,21 +247,18 @@ function _compose!(
     PM = SDPG.manifold
     G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
     A = GroupAction(SDPG.op.action_type, H, G)
-    # for the first components, just perform the group op
-    # apply the first element from g to
-    apply!(
-        A,
-        submanifold_component(SDPG, k, 1),
-        submanifold_component(SDPG, g, 2),
-        submanifold_component(SDPG, h, 1),
-    )
-    _compose!(
-        G,
-        submanifold_component(SDPG, k, 1),
-        submanifold_component(SDPG, g, 1),
-        submanifold_component(SDPG, k, 1),
-    )
-    # For the second just do the group op
+    # We have to perform 3 steps applying the group action
+    # 1) x = σ_g[2](h[1]) (a point on G)
+    # 2) compose g[1] and x (a point on G)
+    # 3) compose g[2] and h[2] (a point on H)
+    # to avoid to overwrite elements in case k=g or k=h: allocate for result of (1)
+    # especially after (1) we still need g[1] (in case k=g)
+    x = copy(G, submanifold_component(SDPG, k, 1))
+    # (1)
+    apply!(A, x, submanifold_component(SDPG, g, 2), submanifold_component(SDPG, h, 1))
+    # (2)
+    _compose!(G, submanifold_component(SDPG, k, 1), submanifold_component(SDPG, g, 1), x)
+    # (3)
     _compose!(
         H,
         submanifold_component(SDPG, k, 2),
