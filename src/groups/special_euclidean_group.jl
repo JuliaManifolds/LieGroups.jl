@@ -357,13 +357,14 @@ end
 
 _doc_exp_SE2_id = """
     exp(G::SpecialEuclidean, X)
-    exp!(G::SpecialEuclideanG, g, X)
+    exp!(G::SpecialEuclidean, g, X)
 
 Compute the Lie group exponential function on the [`SpecialEuclideanGroup`](@ref) `G```=$(_math(:SE))(2)``
 using a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{2}}` for dispatch.
 
-Since ``X = (Y, v) ∈ $(_math(:se))(2)`` consists of a rotation component ``Y ∈ $(_math(:so))(2)`` and a translation component ``v ∈ $(_math(:t))(2)``,
-we can use [`vee`](@ref) on ``$(_math(:SO))(2)`` to obtain the angle of rotation ``α`` (or alternatively that ``$(_tex(:sqrt,2))α = $(_tex(:norm, "Y"))``
+The Lie algebra vector ``X = (Y, v) ∈ $(_math(:se))(2)`` consists of a rotation component ``Y ∈ $(_math(:so))(2)``
+and a translation component ``v ∈ $(_math(:t))(2)``, so we can use [`vee`](@ref) on ``$(_math(:SO))(2)``
+to obtain the angle of rotation ``α`` (or alternatively that ``$(_tex(:sqrt,2))α = $(_tex(:norm, "Y"))``
 
 For ``α ≠ 0`` define
 ```math

@@ -10,7 +10,7 @@ using LieGroupsTestSuite
     g2 = [0.0 -1.0 0.0; 1.0 0.0 1.0; 0.0 0.0 1.0]
     g3 = [1.0 0.0 1.0; 0.0 1.0 1.0; 0.0 0.0 1.0]
     X1 = [0.0 -0.23 0.0; 0.23 0.0 1.0; 0.0 0.0 0.0]
-    X2 = [0.0 0.30 1.0; -0.20 0.0 1.0; 0.0 0.0 0.0]
+    X2 = [0.0 0.30 1.0; -0.30 0.0 1.0; 0.0 0.0 0.0]
     X3 = [0.0 0.1 1.0; -0.1 0.0 0.0; 0.0 0.0 0.0]
     properties = Dict(
         :Name => "The special Euclidean group (affine matrices)",
@@ -53,7 +53,7 @@ using LieGroupsTestSuite
     gL2 = ArrayPartition([0.0 -1.0; 1.0 0.0], [0.0, 1.0])
     gL3 = ArrayPartition([1.0 0.0; 0.0 1.0], [1.0, 1.0])
     XL1 = ArrayPartition([0.0 -0.23; 0.23 0.0], [0.0, 1.0])
-    XL2 = ArrayPartition([0.0 0.30; -0.20 0.0], [1.0, 1.0])
+    XL2 = ArrayPartition([0.0 0.30; -0.30 0.0], [1.0, 1.0])
     XL3 = ArrayPartition([9.0 0.1; -0.1 0.0], [1.0, 0.0])
     propertiesL = Dict(
         :Name => "The special Euclidean group (left variant)",
@@ -97,8 +97,8 @@ using LieGroupsTestSuite
     gR1 = ArrayPartition([1.0, 0.0], 1 / sqrt(2) * [1.0 1.0; -1.0 1.0])
     gR2 = ArrayPartition([0.0, 1.0], [0.0 -1.0; 1.0 0.0])
     gR3 = ArrayPartition([1.0, 1.0], [1.0 0.0; 0.0 1.0])
-    XR1 = ArrayPartition([0.0, 1.0], [0.0 0.23; -0.23 0.0])
-    XR2 = ArrayPartition([1.0, 1.0], [0.0 0.3; -0.3 1.0])
+    XR1 = ArrayPartition([0.0, 1.0], [0.0 -0.23; 0.23 0.0])
+    XR2 = ArrayPartition([1.0, 1.0], [0.0 0.3; -0.3 0.0])
     XR3 = ArrayPartition([1.0, 0.0], [9.0 -0.1; 0.1 0.0])
     propertiesR = Dict(
         :Name => "The special Euclidean group (right variant)",

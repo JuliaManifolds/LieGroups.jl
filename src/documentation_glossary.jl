@@ -74,7 +74,7 @@ define!(:LaTeX, :l, "") # lazy fallback for sets
 define!(:LaTeX, :r, "") # lazy fallback for sets
 define!(:LaTeX, :log, raw"\log")
 define!(
-    :LaTeX, :norm, (term; index = "") -> raw"\lVert" * "$term" * raw"\rVert" * "_{$index}"
+    :LaTeX, :norm, (term; index = "") -> raw"\lVert" * " $term " * raw"\rVert" * "_{$index}"
 )
 define!(
     :LaTeX,
