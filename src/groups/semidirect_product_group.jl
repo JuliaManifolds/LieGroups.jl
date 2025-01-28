@@ -345,7 +345,7 @@ function inv!(
 end
 function inv!(
     SDPG::LieGroup{𝔽,O,M}, k, ::Identity{O}
-) where {𝔽,O<:SemiDirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,O<:LeftSemidirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     PrM = SDPG.manifold
     map(
         inv!,
@@ -355,7 +355,18 @@ function inv!(
     )
     return k
 end
-
+function inv!(
+    SDPG::LieGroup{𝔽,O,M}, k, ::Identity{O}
+) where {𝔽,O<:RightSemidirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PrM = SDPG.manifold
+    map(
+        inv!,
+        map(LieGroup, PrM.manifolds, SDPG.op.operations),
+        submanifold_components(PrM, k),
+        map(Identity, SDPG.op.operations),
+    )
+    return k
+end
 function identity_element!(
     SDPG::LieGroup{𝔽,Op,M}, e
 ) where {𝔽,Op<:SemiDirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
