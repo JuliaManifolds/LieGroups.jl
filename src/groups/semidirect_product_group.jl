@@ -190,10 +190,11 @@ this computes
 ```math
     (g_1,h_1) ∘ (g_2,h_2) := (g_1 ⋄ g_2, h_1 ⋆ σ_{g_1}(h_2)).
 ```
-
 """
-compose!(
-    SDPG::LieGroup{𝔽,LeftSemidirectProductGroupOperation,<:ManifoldsBase.ProductManifold}
+compose(
+    SDPG::LieGroup{𝔽,LeftSemidirectProductGroupOperation,<:ManifoldsBase.ProductManifold},
+    ::Any,
+    ::Any,
 ) where {𝔽}
 
 function _compose!(
@@ -225,7 +226,7 @@ function _compose!(
     return k
 end
 """
-    compose(L::LieGroup{𝔽,LeftSemidirectProductGroupOperation}, g, h)
+    compose(L::LieGroup{𝔽,RightSemidirectProductGroupOperation}, g, h)
 
 Compute the group operation $(_math(:∘))``on the semidirect product Lie group ``L = G ⋊ H``,
 that is for `g` = ``(g_1,h_1)``, `h` ``= (g_2,h_2)`` with ``g_1,g_2 ∈ G``, ``h_1,h_2 ∈ H``
@@ -234,8 +235,12 @@ this computes
 ```math
     (g_1,h_1) ∘ (g_2,h_2) := (g_1 ⋄ σ_{h_1}(g_2), h_1 ⋆ h_2).
 ```
-
 """
+compose(
+    SDPG::LieGroup{𝔽,RightSemidirectProductGroupOperation,<:ManifoldsBase.ProductManifold},
+    ::Any,
+    ::Any,
+) where {𝔽}
 function _compose!(
     SDPG::LieGroup{
         𝔽,<:RightSemidirectProductGroupOperation,<:ManifoldsBase.ProductManifold
