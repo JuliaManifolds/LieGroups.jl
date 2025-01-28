@@ -268,14 +268,6 @@ function _compose!(
     return k
 end
 
-function identity_element!(
-    SDPG::LieGroup{𝔽,Op,M}, e
-) where {𝔽,Op<:SemiDirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
-    GH = map(LieGroup, SDPG.manifold.manifolds, SDPG.op.operations)
-    identity_element!.(GH, submanifold_components(SDPG.manifold, e))
-    return e
-end
-
 function hat!(
     Pr𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, X, c
 ) where {𝔽,Op<:SemiDirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
@@ -294,13 +286,21 @@ function hat!(
 end
 
 """
-inv(SDPG::LieGroup{𝔽,Op,M}, g) where {𝔽,Op<:SemiDirectProductGroupOperation,M<:ProductManifold}
+    inv(SDPG::LieGroup{𝔽,Op,M}, g) where {𝔽,Op<:SemiDirectProductGroupOperation,M<:ProductManifold}
 
-Compute the inverse element of an element ``h = (h_1,n_1)`` given by
+Compute the inverse element of an element ``g = (g_1,g_2)`` given by
 
 ```math
-g^{-1} = (h_1^{-1}, σ_{h_1}^-1n_1^{-1}).
+g^{-1} = (g_1^{-1}, σ_{g_1^{-1}}g_2^{-1}).
 ```
+
+for the left variant and
+
+```math
+g^{-1} = (σ_{g_2^{-1}} g_1^{-1}, g_2^{-1})
+```
+
+for the right variant, respectively. See also [HilgertNeeb:2012; Proof of Lemma 2.2.3](@cite).
 """
 Base.inv(
     SDPG::LieGroup{𝔽,Op,M}, g
@@ -308,7 +308,7 @@ Base.inv(
 
 function inv!(
     SDPG::LieGroup{𝔽,O,M}, k, g
-) where {𝔽,O<:SemiDirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,O<:LeftSemidirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     PM = SDPG.manifold
     G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
     A = GroupAction(SDPG.op.action_type, G, H)
@@ -323,6 +323,22 @@ function inv!(
     return k
 end
 function inv!(
+    SDPG::LieGroup{𝔽,O,M}, k, g
+) where {𝔽,O<:RightSemidirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    PM = SDPG.manifold
+    G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
+    A = GroupAction(SDPG.op.action_type, G, H)
+    inv!(G, submanifold_component(SDPG, k, 1), submanifold_component(PM, g, 1))
+    inv!(H, submanifold_component(SDPG, k, 2), submanifold_component(PM, g, 2))
+    apply!( # Apply the group action with g2^-1 to g1^-1
+        A,
+        submanifold_component(SDPG, k, 1),
+        submanifold_component(SDPG, k, 2),
+        submanifold_component(SDPG, k, 1),
+    )
+    return k
+end
+function inv!(
     SDPG::LieGroup{𝔽,O,M}, k, ::Identity{O}
 ) where {𝔽,O<:SemiDirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     PrM = SDPG.manifold
@@ -333,6 +349,14 @@ function inv!(
         map(Identity, SDPG.op.operations),
     )
     return k
+end
+
+function identity_element!(
+    SDPG::LieGroup{𝔽,Op,M}, e
+) where {𝔽,Op<:SemiDirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    GH = map(LieGroup, SDPG.manifold.manifolds, SDPG.op.operations)
+    identity_element!.(GH, submanifold_components(SDPG.manifold, e))
+    return e
 end
 
 function Base.show(
