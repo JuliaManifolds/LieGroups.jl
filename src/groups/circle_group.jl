@@ -2,13 +2,18 @@
     CircleGroup = LieGroup{ℂ, ScalarMultiplicationGroupOperation, Manifolds.Circle{ℂ}}
 
 
-The complex circle ``𝕊^1`` is the manifold represented by all complex-valued points ``z ∈ ℂ`` of norm ``1``:
+The complex circle group ``𝕊^1`` is the set of complex numbers ``z ∈ ℂ`` of absolute value ``1``
 
 ```math
-𝕊¹ := $(_tex(:SetDef, "z ∈ ℂ", "|z| = 1", "big")).
+𝕊¹ := $(_tex(:SetDef, "z ∈ ℂ", "|z| = 1", "big")) = $(_tex(:SetDef, "a + bi ∈ ℂ", "a^2+b^2 = 1", "big")),
 ```
 
-The standard complex multiplication (internally via [`ScalarMultiplicationGroupOperation`](@ref)) makes it a Lie group.
+equipped with the group operation of complex multiplication [`ScalarMultiplicationGroupOperation`](@ref). 
+
+It can be identified with the unit circle in ``ℝ^2``, i.e. the one dimensional [`Sphere`](@extref `Manifolds.Sphere`), 
+together with the group operation of adding the angles of two points on the circle. For that construction see [`RealCircleGroup`](@ref).
+
+The (complex) circle group is a one dimensional Riemannian manifold and a Lie group.
 
 # Constructor
 
@@ -24,14 +29,19 @@ const CircleGroup = LieGroup{
 """
     RealCircleGroup = LieGroup{ℝ, AdditionGroupOperation, Manifolds.Circle{ℝ}}
 
-The real circle ``𝕊^1`` is the manifold represented by all real-valued points  ``x ∈ [-π,π)`` and can therefore be understood as a symmetric system of representatives of ``ℝ$(_tex(:rm, raw"\, mod\, ")) 2πℤ``.
+The real circle group ``𝕊^1`` is the set of points on the unit circle in ``ℝ^2``, represented by its angles  ``x ∈ [-π,π)``.
+It is equipped with the group operation of adding angles ``$(_tex(:rm, raw"mod\, ")) 2π`` via [`AdditionGroupOperation`](@ref). 
+
+It it is obtained as a quotient space of the real numbers
+
 ```math
- 𝕊¹ :=  [-π,π) = ℝ $(_tex(:rm, raw"\, mod\, ")) 2πℤ
+ 𝕊¹ := ℝ / 2πℤ = $(_tex(:SetDef, "[x] ∈ ℝ / 2πℤ", "x ∈ [-π,π)", "big")). 
 
 ```
+It can be identified with the set of complex numbers of absolute value 1, i.e. the one dimensional [`Sphere`](@extref `Manifolds.Sphere`), 
+together with the group operation of multiplying two complex numbers. For that construction see [`CircleGroup`](@ref).
 
-
-Addition ``$(_tex(:rm, raw"mod\, ")) 2π`` via [`AdditionGroupOperation`](@ref) defines its structure as a Lie group.
+The (real) circle group is a one dimensional Riemannian manifold and a Lie group.
 
 # Constructor
 
@@ -76,7 +86,7 @@ _doc_exp_complex_circ = """
     exp!(::CircleGroup, g, ::Identity{ScalarMultiplicationGroupOperation}, X)
 
 Computes the Lie group exponential on the complex [`CircleGroup`](@ref), which coincides with the
-[ordinary complex exponential](https://en.wikipedia.org/wiki/Exponential_map_(Lie_theory)#Examples)
+[ordinary complex exponential](https://en.wikipedia.org/wiki/Exponential_map_(Lie_theory)#Examples).
 
 The Lie algebra is precisely the imaginary axis of the complex plane.
 
