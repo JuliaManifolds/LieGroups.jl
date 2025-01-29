@@ -273,8 +273,8 @@ function _compose!(
     return k
 end
 
-function hat!(
-    Pr𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, X, c
+function get_vector_lie!(
+    Pr𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, X, c, N
 ) where {𝔽,Op<:SemiDirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     PrG = Pr𝔤.manifold
     PrM = PrG.manifold
@@ -285,7 +285,7 @@ function hat!(
     PrL = LieAlgebra.(LieGroup.(PrM.manifolds, PrG.op.operations))
     ts = ManifoldsBase.ziptuples(PrL, submanifold_components(PrG, X), Prc)
     map(ts) do t
-        return hat!(t...)
+        return get_vector_lie!(t..., N)
     end
     return X
 end
@@ -394,8 +394,8 @@ function Base.show(
     return print(io, "RightSemidirectProductLieGroup($G, $H, $at)")
 end
 
-function vee!(
-    Pr𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, c, X
+function get_coordinates_lie!(
+    Pr𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, c, X, N
 ) where {𝔽,Op<:SemiDirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     PrG = Pr𝔤.manifold
     PrM = PrG.manifold
@@ -406,7 +406,7 @@ function vee!(
     PrL = LieAlgebra.(LieGroup.(PrM.manifolds, PrG.op.operations))
     ts = ManifoldsBase.ziptuples(PrL, Prc, submanifold_components(PrG, X))
     map(ts) do t
-        return vee!(t...)
+        return get_coordinates_lie!(t..., N)
     end
     return c
 end

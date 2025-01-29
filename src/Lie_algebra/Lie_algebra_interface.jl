@@ -42,6 +42,21 @@ function LieAlgebra(G::LieGroup{𝔽,O}) where {𝔽,O<:AbstractGroupOperation}
     return LieAlgebra{𝔽,O,typeof(G)}(G, Identity(G), ManifoldsBase.TangentSpaceType())
 end
 
+"""
+    base_manifold(𝔤::LieAlgebra)
+
+Return the [`base_manifold`](@extref `ManifoldsBase.base_manifold(::AbstractManifold)`) the
+[`LieGroup`](@ref) of the given [`LieAlgebra`](@ref) is based on.
+"""
+ManifoldsBase.base_manifold(𝔤::LieAlgebra) = base_manifold(base_lie_group(𝔤))
+
+"""
+    base_lie_group(𝔤::LieAlgebra)
+
+Return the [`base_lie_group`](@ref) of the given [`LieAlgebra`](@ref) belongs to.
+"""
+base_lie_group(𝔤::LieAlgebra) = 𝔤.manifold
+
 _doc_get_coordinates = """
     get_coordinates(𝔤::LieAlgebra, X::T, B::AbstractBasis)
     get_coordinates!(𝔤::LieAlgebra, c, X::T, B::AbstractBasis)
@@ -340,7 +355,12 @@ end
 Random.rand!(::LieAlgebra, X; kwargs...)
 
 function Base.show(io::IO, 𝔤::LieAlgebra)
-    return print(io, "LieAlgebra($(𝔤.manifold))")
+    return print(io, "LieAlgebra($(base_lie_group(𝔤)))")
+end
+
+# Overwrite the longer version for tangent spaces
+function Base.show(io::IO, ::MIME"text/plain", 𝔤::LieAlgebra)
+    return print(io, "The Lie algebra of the Lie Group $(base_lie_group(𝔤))")
 end
 
 _doc_vee = """
