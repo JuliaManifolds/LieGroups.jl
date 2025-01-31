@@ -45,7 +45,7 @@ end
 """
     base_manifold(𝔤::LieAlgebra)
 
-Return the [`base_manifold`](@extref `ManifoldsBase.base_manifold(::AbstractManifold)`) the
+Return the [`base_manifold`](@extref `ManifoldsBase.base_manifold`) the
 [`LieGroup`](@ref) of the given [`LieAlgebra`](@ref) is based on.
 """
 ManifoldsBase.base_manifold(𝔤::LieAlgebra) = base_manifold(base_lie_group(𝔤))

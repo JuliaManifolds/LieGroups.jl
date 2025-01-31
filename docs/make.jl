@@ -117,7 +117,7 @@ links = InterLinks(
 makedocs(;
     format=Documenter.HTML(;
         prettyurls=(get(ENV, "CI", nothing) == "true") || ("--prettyurls" ∈ ARGS),
-        assets=["assets/favicon.ico", "assets/citations.css"],
+        assets=["assets/favicon.ico", "assets/citations.css", "assets/link-icons.css"],
     ),
     modules=[LieGroups],
     authors="Seth Axen, Mateusz Baran, Ronny Bergmann, Olivier Verdier, and contributors",
@@ -133,11 +133,11 @@ makedocs(;
             "Power group" => "groups/power_group.md",
             "Product group" => "groups/product_group.md",
             "Semidirect product group" => "groups/semidirect_product_group.md",
-            "Special Euclidean group" => "groups/special_euclidean.md",
-            "Special orthogonal group" => "groups/special_orthogonal.md",
-            "Special unitary group" => "groups/special_unitary.md",
-            "Translation group" => "groups/translation.md",
-            "unitary group" => "groups/unitary.md",
+            "Special Euclidean group" => "groups/special_euclidean_group.md",
+            "Special orthogonal group" => "groups/special_orthogonal_group.md",
+            "Special unitary group" => "groups/special_unitary_group.md",
+            "Translation group" => "groups/translation_group.md",
+            "unitary group" => "groups/unitary_group.md",
         ],
         "Interfaces" => [
             "Lie group" => "interface/group.md",
