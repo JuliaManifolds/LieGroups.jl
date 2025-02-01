@@ -6,4 +6,4 @@ Pages = ["groups/power_group.jl"]
 Order = [:type, :function]
 ```
 
-Op power Lie groups, all functions work element-wise.
+On power Lie groups, all functions work element-wise, so for their formulae, check the corresponding single Lie group for details.
