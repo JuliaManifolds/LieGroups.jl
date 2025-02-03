@@ -364,7 +364,7 @@ using a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{2}}` for
 
 The Lie algebra vector ``X = (Y, v) ∈ $(_math(:se))(2)`` consists of a rotation component ``Y ∈ $(_math(:so))(2)``
 and a translation component ``v ∈ $(_math(:t))(2)``, so we can use [`vee`](@ref) on ``$(_math(:SO))(2)``
-to obtain the angle of rotation ``α`` (or alternatively that ``$(_tex(:sqrt,2))α = $(_tex(:norm, "Y"))``
+to obtain the angle of rotation ``α`` (or alternatively using ``$(_tex(:sqrt,2))α = $(_tex(:norm, "Y"))``)
 
 For ``α ≠ 0`` define
 ```math
@@ -421,7 +421,7 @@ using a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{3}}` for
 
 Since ``X = (Y, v) ∈ $(_math(:se))(3)`` consists of a rotation component ``Y ∈ $(_math(:se))(3)`` and a translation component ``v ∈ $(_math(:t))(3)``,
 we can use [`vee`](@ref) on ``$(_math(:SO))(3)`` computing the coefficients norm to obtain the angle of rotation ``α``
-(or alternatively that ``$(_tex(:sqrt,2))α = $(_tex(:norm, "Y"))``.
+(or alternatively using ``$(_tex(:sqrt,2))α = $(_tex(:norm, "Y"))``).
 
 For ``α ≠ 0`` define
 ```math
@@ -610,7 +610,7 @@ where `e` is the [`Identity`](@ref) on ``$(_math(:SE))(2)`` `G` uses a [`TypePar
 
 Since ``g=(R,t) ∈ $(_math(:SE))(2)`` consists of a rotation component ``R ∈ $(_math(:SO))(2)`` and a translation component ``t ∈ $(_math(:T))(2)``,
 we first compute ``Y = $(_tex(:log))_{$(_math(:SO))(2)}R``.
-Then we can use [`vee`](@ref) on ``$(_math(:SO))(2)`` to obtain the angle of rotation ``α`` (or alternatively that ``$(_tex(:sqrt,2))α = $(_tex(:norm, "Y"))``
+Then we can use [`vee`](@ref) on ``$(_math(:SO))(2)`` to obtain the angle of rotation ``α`` (or alternatively using ``$(_tex(:sqrt,2))α = $(_tex(:norm, "Y"))``)
 
 For ``α ≠ 0`` define
 ```math
@@ -673,18 +673,18 @@ where `e` is the [`Identity`](@ref) on ``$(_math(:SE))(3)`` `G` uses a [`TypePar
 
 Since ``g=(R,t) ∈ $(_math(:SE))(3)`` consists of a rotation component ``R ∈ $(_math(:SO))(3)`` and a translation component ``t ∈ $(_math(:T))(2)``,
 we first compute ``Y = $(_tex(:log))_{$(_math(:SO))(3)}R``.
-Then we can use [`vee`](@ref) on ``$(_math(:SO))(3)`` to obtain the angle of rotation ``α`` (or alternatively that ``$(_tex(:sqrt,2))α = $(_tex(:norm, "Y"))``
+Then we can use [`vee`](@ref) on ``$(_math(:SO))(3)`` to obtain the angle of rotation ``α`` (or alternatively using ``$(_tex(:sqrt,2))α = $(_tex(:norm, "Y"))``)
 
 For ``α ≠ 0`` define
 ```math
-V_α = I_3 - $(_tex(:frac, "1", "2"))Y + β Y^2, $(_tex(:quad))$(_tex(:text," where")) β = $(_tex(:frac, "1","α^2")) - $(_tex(:frac, "1 + $(_tex(:cos))(α)", "2α$(_tex(:sin))(α)"))
+V_α = I_3 - $(_tex(:frac, "1", "2"))Y + β Y^2, $(_tex(:quad))$(_tex(:text," where ")) β = $(_tex(:frac, "1","α^2")) - $(_tex(:frac, "1 + $(_tex(:cos))(α)", "2α$(_tex(:sin))(α)"))
 ```
 and ``V_0 = I_3``, where ``I_3`` is the identity matrix. Note that this is the inverse of ``U_α`` as given in the group exponential
 
 Then the result ``X = (Y, v) ∈ $(_math(:se))(3)`` is given by ``Y ∈ $(_math(:so))(3)`` as computed above and
 ``v = V_α t ∈ $(_math(:t))(3)``.
 
-This result can be computed in-place of `g`.
+This result can be computed in-place of `X`.
 """
 
 @doc "$(_doc_log_SE3_id)"
