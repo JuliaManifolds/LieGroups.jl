@@ -34,8 +34,6 @@ if Base.active_project() != joinpath(@__DIR__, "Project.toml")
     using Pkg
     Pkg.activate(@__DIR__)
     # local temp hack - load ManifoldsBase and Manifold in dev as well
-    Pkg.develop(PackageSpec(; path=(@__DIR__) * "/../../ManifoldsBase.jl/"))
-    Pkg.develop(PackageSpec(; path=(@__DIR__) * "/../../Manifolds.jl/"))
     Pkg.develop(PackageSpec(; path=(@__DIR__) * "/../"))
     Pkg.resolve()
     Pkg.instantiate()
