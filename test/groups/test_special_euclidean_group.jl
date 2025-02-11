@@ -5,6 +5,9 @@ s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 using LieGroupsTestSuite
 
 @testset "Special Euclidean" begin
+    #
+    # ===
+    # Plain matrices
     G = SpecialEuclideanGroup(2)
     g1 = 1 / sqrt(2) .* [1.0 1.0 sqrt(2); -1.0 1.0 0.0; 0.0 0.0 sqrt(2)]
     g2 = [0.0 -1.0 0.0; 1.0 0.0 1.0; 0.0 0.0 1.0]
@@ -47,6 +50,34 @@ using LieGroupsTestSuite
         #:lie_bracket => zero(X1),
     )
     test_lie_group(G, properties, expectations)
+    # Plain Matrices, but typed
+    properties_T = Dict(
+        :Name => "The special Euclidean group (affine matrices as types cases)",
+        :Points => SpecialEuclideanMatrixPoint.([g1, g2, g3]),
+        :Vectors => SpecialEuclideanMatrixTangentVector.([X1, X2, X3]),
+        :Rng => Random.MersenneTwister(),
+        :Functions => [
+            # adjoint,
+            compose,
+            # conjugate,
+            # diff_inv,
+            # diff_left_compose,
+            # diff_right_compose,
+            exp,
+            hat,
+            identity_element,
+            inv,
+            # inv_left_compose,
+            # inv_right_compose,
+            is_identity,
+            # lie_bracket,
+            log,
+            rand,
+            show,
+            vee,
+        ],
+    )
+    test_lie_group(G, properties_T, expectations)
 
     GL = SpecialEuclideanGroup(2)
     gL1 = ArrayPartition(1 / sqrt(2) * [1.0 1.0; -1.0 1.0], [1.0, 0.0])

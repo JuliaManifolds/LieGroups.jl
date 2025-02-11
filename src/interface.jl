@@ -560,8 +560,12 @@ This means it is either the [`Identity`](@ref)`{O}` with the respect to the corr
 """
 is_identity(G::LieGroup, q)
 
-function is_identity(G::LieGroup{𝔽,O}, h; kwargs...) where {𝔽,O<:AbstractGroupOperation}
-    return ManifoldsBase.isapprox(G, Identity{O}(), h; kwargs...)
+# Declare as “fallback” for types
+
+function is_identity(
+    G::LieGroup{𝔽,O}, h::P; kwargs...
+) where {𝔽,P,O<:AbstractGroupOperation}
+    return ManifoldsBase.isapprox(G, identity_element(G, P), h; kwargs...)
 end
 function is_identity(
     ::LieGroup{𝔽,O}, ::Identity{O}; kwargs...
@@ -824,7 +828,7 @@ function Random.rand!(
 ) where {T}
     M = base_manifold(G)
     if vector_at === nothing # for points -> pass to manifold
-        rand!(rng, M, pX, kwargs...)
+        rand!(rng, M, pX; kwargs...)
     else # for tangent vectors -> materialize identity, pass to tangent space there.
         rand!(rng, M, pX; vector_at=identity_element(G, T), kwargs...)
     end
@@ -882,15 +886,18 @@ Introduce default fallbacks for all basic functions on Lie groups, for Lie group
 points of type `TP`, tangent vectors of type `TV`, with forwarding to fields `pfield` and
 `vfield` for point and tangent vector functions, respectively.
 """
-macro default_lie_group_fallbacks(TG, TP, TV, pfield::Symbol, vfield::Symbol)
+macro default_lie_group_fallbacks(TG, TP, TV, gfield::Symbol, Xfield::Symbol)
     block = quote
-        function LieGroups.adjoint(M::$TG, g::$TP, X::$TV)
-            return LieGroups.adjoint(M, g.$pfield, X.$vfield)
+        function LieGroups.adjoint(G::$TG, g::$TP, X::$TV)
+            return LieGroups.adjoint(G, g.$gfield, X.$Xfield)
+        end
+        function LieGroups.adjoint!(G::$TG, Y::$TV, g::$TP, X::$TV)
+            LieGroups.adjoint!(G, Y.$Xfield, g.$gfield, X.$Xfield)
+            return Y
         end
 
-        function LieGroups.adjoint!(M::$TG, Y::$TV, g::$TP, X::$TV)
-            LieGroups.adjoint!(M, Y.$vfield, g.$pfield, X.$vfield)
-            return Y
+        function LieGroups.is_identity(G::$TG, g::$TP; kwargs...)
+            return LieGroups.is_identity(G, g.$gfield)
         end
     end
     return esc(block)

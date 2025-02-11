@@ -103,9 +103,9 @@ struct SpecialEuclideanMatrixPoint{T} <: AbstractLieGroupPoint
 end
 
 function ManifoldsBase.allocate_on(
-    M::SpecialEuclideanGroup, ::Type{SpecialEuclideanMatrixPoint}
-)
-    return SpecialEuclideanMatrixPoint(Matrix(undef, representation_size(M)...))
+    M::SpecialEuclideanGroup, ::Type{SpecialEuclideanMatrixPoint{Matrix{T}}}
+) where {T}
+    return SpecialEuclideanMatrixPoint(Matrix{T}(undef, representation_size(M)...))
 end
 
 """
@@ -770,13 +770,33 @@ function ManifoldsBase.representation_size(G::SpecialEuclideanGroup)
     return (s + 1, s + 1)
 end
 
+# this is always with vector_at=nothing
 function Random.rand!(
     rng::AbstractRNG,
-    G::SpecialEuclideanGroup,
-    gX::AbstractMatrix;
+    G::SEG,
+    g::Union{SpecialEuclideanMatrixPoint,SpecialEuclideanProductPoint};
     vector_at=nothing,
-    kwargs...,
-)
+    kwargs..., #but ignore vector_at, since this is a point
+) where {SEG<:SpecialEuclideanGroup}
+    Random.rand!(rng, G, g.value; vector_at=nothing, kwargs...)
+    return g
+end
+
+# this is always with vector_at!=nothing
+function Random.rand!(
+    rng::AbstractRNG,
+    G::SEG,
+    X::Union{SpecialEuclideanMatrixTangentVector,SpecialEuclideanProductTangentVector};
+    vector_at=nothing,
+    kwargs..., #but ignore vector_at, since this is a point
+) where {SEG<:SpecialEuclideanGroup}
+    return Random.rand!(rng, G, X.value; vector=at = identity_element(G), kwargs...)
+    return X
+end
+
+function Random.rand!(
+    rng::AbstractRNG, G::SEG, gX::AbstractMatrix; vector_at=nothing, kwargs...
+) where {SEG<:SpecialEuclideanGroup}
     SOn, Tn = _SOn_and_Tn(G)
     if vector_at === nothing # for points -> pass to manifold
         init_constants!(G, gX)
@@ -843,7 +863,7 @@ Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     G::SpecialEuclideanGroup, p, ::Val{:Rotation}
 )
     n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
-    # view to be able to write, internal_value to “unpack” SEMatrices
+    # view to be able to write, internal_value to “unpack” SE Matrices
     return view(ManifoldsBase.internal_value(p), 1:n, 1:n)
 end
 Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
@@ -923,11 +943,20 @@ end
 
 function ManifoldsBase.zero_vector(
     𝔤::LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup},
-    ::Type{<:AbstractMatrix}=AbstractMatrix,
-)
+    ::Type{<:AbstractMatrix{T}}=AbstractMatrix,
+) where {T}
     G = 𝔤.manifold
     n = Manifolds.get_parameter(G.manifold[1].size)[1]
-    return zeros(n + 1, n + 1)
+    return zeros(T, n + 1, n + 1)
+end
+
+function ManifoldsBase.zero_vector(
+    𝔤::LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup},
+    ::Type{SpecialEuclideanMatrixTangentVector{<:Matrix{T}}},
+) where {T}
+    G = 𝔤.manifold
+    n = Manifolds.get_parameter(G.manifold[1].size)[1]
+    return SpecialEuclideanMatrixTangentVector(zeros(T, n + 1, n + 1))
 end
 
 function ManifoldsBase.zero_vector!(
