@@ -923,7 +923,6 @@ macro default_lie_group_fallbacks(TG, TP, TV, gfield::Symbol, Xfield::Symbol)
             LieGroups.log!(G, X.$Xfield, g.$gfield)
             return X
         end
-
     end
     return esc(block)
 end
