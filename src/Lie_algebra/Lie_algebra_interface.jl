@@ -410,16 +410,15 @@ For the allocating variant the type `T` of the zero vector can be specified.
 ManifoldsBase.zero_vector(G::LieGroup{𝔽,<:O}, T::Type) where {𝔽,O<:AbstractGroupOperation}
 
 function ManifoldsBase.zero_vector(𝔤::LieAlgebra, T::Type)
-    G = 𝔤.manifold
+    G = 𝔤.manifold # access manifold twice -> pass to manifold directly
     return ManifoldsBase.zero_vector(G.manifold, identity_element(G, T))
 end
 function ManifoldsBase.zero_vector(𝔤::LieAlgebra)
-    G = 𝔤.manifold
+    G = 𝔤.manifold # access manifold twice -> pass to manifold directly
     return ManifoldsBase.zero_vector(G.manifold, identity_element(G))
 end
 function ManifoldsBase.zero_vector!(𝔤::LieAlgebra, X::T) where {T}
-    # pass to manifold directly
-    G = 𝔤.manifold
+    G = 𝔤.manifold # access manifold twice -> pass to manifold directly
     return ManifoldsBase.zero_vector!(G.manifold, X, identity_element(G, T))
 end
 

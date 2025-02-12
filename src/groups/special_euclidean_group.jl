@@ -470,14 +470,16 @@ function ManifoldsBase.exp!(
 end
 
 function identity_element(G::SpecialEuclideanGroup)
-    return identity_element(G, AbstractMatrix)
+    return identity_element(G, AbstractMatrix{Float64})
 end
-function identity_element(G::SpecialEuclideanGroup, ::Type{<:AbstractMatrix})
-    q = zeros(ManifoldsBase.representation_size(G)...)
+function identity_element(G::SpecialEuclideanGroup, ::Type{<:AbstractMatrix{T}}) where {T}
+    q = zeros(T, ManifoldsBase.representation_size(G)...)
     return identity_element!(G, q)
 end
-function identity_element(G::SpecialEuclideanGroup, ::Type{SpecialEuclideanMatrixPoint})
-    q = zeros(ManifoldsBase.representation_size(G)...)
+function identity_element(
+    G::SpecialEuclideanGroup, ::Type{<:SpecialEuclideanMatrixPoint{<:AbstractMatrix{T}}}
+) where {T}
+    q = zeros(T, ManifoldsBase.representation_size(G)...)
     identity_element!(G, q)
     return SpecialEuclideanMatrixPoint(q)
 end

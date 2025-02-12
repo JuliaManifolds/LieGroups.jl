@@ -889,15 +889,23 @@ points of type `TP`, tangent vectors of type `TV`, with forwarding to fields `pf
 macro default_lie_group_fallbacks(TG, TP, TV, gfield::Symbol, Xfield::Symbol)
     block = quote
         function LieGroups.adjoint(G::$TG, g::$TP, X::$TV)
-            return LieGroups.adjoint(G, g.$gfield, X.$Xfield)
+            return $TV(LieGroups.adjoint(G, g.$gfield, X.$Xfield))
         end
         function LieGroups.adjoint!(G::$TG, Y::$TV, g::$TP, X::$TV)
             LieGroups.adjoint!(G, Y.$Xfield, g.$gfield, X.$Xfield)
             return Y
         end
 
+        function LieGroups.compose(G::$TG, g::$TP, h::$TP)
+            return $TP(LieGroups.compose(G, g.$gfield, h.$gfield))
+        end
+        function LieGroups.compose!(G::$TG, k::$TP, g::$TP, h::$TP)
+            LieGroups.compose!(G, k.$gfield, g.$gfield, h.$gfield)
+            return k
+        end
+
         function LieGroups.is_identity(G::$TG, g::$TP; kwargs...)
-            return LieGroups.is_identity(G, g.$gfield)
+            return LieGroups.is_identity(G, g.$gfield; kwargs...)
         end
     end
     return esc(block)
