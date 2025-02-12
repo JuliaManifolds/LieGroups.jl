@@ -904,9 +904,26 @@ macro default_lie_group_fallbacks(TG, TP, TV, gfield::Symbol, Xfield::Symbol)
             return k
         end
 
+        function LieGroups.exp(G::$TG, X::$TV)
+            return $TP(LieGroups.exp(G, X.$Xfield))
+        end
+        function LieGroups.exp!(G::$TG, g::$TP, X::$TV)
+            LieGroups.exp!(G, g.$gfield, X.$Xfield)
+            return g
+        end
+
         function LieGroups.is_identity(G::$TG, g::$TP; kwargs...)
             return LieGroups.is_identity(G, g.$gfield; kwargs...)
         end
+
+        function LieGroups.log(G::$TG, g::$TP)
+            return $TV(LieGroups.log(G, g.$gfield))
+        end
+        function LieGroups.log!(G::$TG, X::$TV, g::$TP)
+            LieGroups.log!(G, X.$Xfield, g.$gfield)
+            return X
+        end
+
     end
     return esc(block)
 end
