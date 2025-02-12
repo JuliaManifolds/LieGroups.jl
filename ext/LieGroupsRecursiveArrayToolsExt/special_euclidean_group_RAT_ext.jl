@@ -1,11 +1,10 @@
-module LieGroupsRecursiveArrayToolsExt
 
-using LieGroups
-using RecursiveArrayTools: ArrayPartition
-using LinearAlgebra
-using ManifoldsBase
-# Implement SE(n) also on an Array Partition
+# disable affine check
+LieGroups._check_matrix_affine(::ArrayPartition, ::Int; v=1) = nothing
 
+#
+# Conversions
+#
 Base.convert(::Type{<:ArrayPartition}, g::SpecialEuclideanProductPoint) = g.value
 function Base.convert(::Type{SpecialEuclideanProductPoint}, p::ArrayPartition)
     return SpecialEuclideanProductPoint(p)
@@ -92,6 +91,32 @@ function Base.convert(
     return SpecialEuclideanMatrixTangentVector(convert(AbstractMatrix, g))
 end
 
+#
+# Functions specialised from the interface
+#
+
+function ManifoldsBase.exp!(
+    G::SpecialEuclideanGroup{<:ManifoldsBase.TypeParameter{Tuple{2}}},
+    g::ArrayPartition,
+    X::ArrayPartition,
+)
+    # This is up to the dispatch types a nearly copy of the matrix case, since
+    # but we can skip to initialise the constant areas
+    LieGroups._exp_SE2!(G, g, X)
+    return g
+end
+
+function ManifoldsBase.exp!(
+    G::SpecialEuclideanGroup{<:ManifoldsBase.TypeParameter{Tuple{3}}},
+    g::ArrayPartition,
+    X::ArrayPartition,
+)
+    # This is up to the dispatch types a nearly copy of the matrix case, since
+    # but we can skip to initialise the constant areas
+    LieGroups._exp_SE3!(G, g, X)
+    return g
+end
+
 function LieGroups.identity_element(
     G::LieGroups.LeftSpecialEuclideanGroup, ::Type{<:ArrayPartition}
 )
@@ -104,8 +129,29 @@ function LieGroups.identity_element(
     SOn, Tn = LieGroups._SOn_and_Tn(G)
     return ArrayPartition(identity_element(Tn), identity_element(SOn))
 end
-# disable affine check
-LieGroups._check_matrix_affine(::ArrayPartition, ::Int; v=1) = nothing
+
+function LieGroups.inv!(G::SpecialEuclideanGroup, h::ArrayPartition, g::ArrayPartition)
+    LieGroups._inv_SE!(G, h, g)
+    return h
+end
+
+function ManifoldsBase.log!(
+    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
+    X::ArrayPartition,
+    g::ArrayPartition,
+)
+    LieGroups._log_SE2!(G, X, g)
+    return X
+end
+
+function ManifoldsBase.log!(
+    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
+    X::ArrayPartition,
+    g::ArrayPartition,
+)
+    _log_SE3!(G, g, X)
+    return X
+end
 
 function ManifoldsBase.submanifold_component(
     G::SE,
@@ -176,5 +222,4 @@ function ManifoldsBase.zero_vector(
 ) where {𝔽}
     n = Manifolds.get_parameter(G.manifold[1].size)[1]
     return SpecialEuclideanProductTangentVector(ArrayPartition(zeros(n), zeros(n, n)))
-end
 end

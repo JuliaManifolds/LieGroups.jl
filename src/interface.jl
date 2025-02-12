@@ -749,7 +749,7 @@ ManifoldsBase.log!(G::LieGroup, ::Any, ::Any)
 function ManifoldsBase.log!(
     G::L, X, e::Identity{Op}
 ) where {𝔽,Op<:AbstractGroupOperation,L<:LieGroup{𝔽,Op}}
-    return zero_vector!(G, X)
+    return zero_vector!(LieAlgebra(G), X)
 end
 
 ManifoldsBase.manifold_dimension(G::LieGroup) = manifold_dimension(G.manifold)
@@ -912,6 +912,18 @@ macro default_lie_group_fallbacks(TG, TP, TV, gfield::Symbol, Xfield::Symbol)
             return g
         end
 
+        function LieGroups.inv(G::$TG, g::$TP)
+            return $TP(LieGroups.inv(G, g.$gfield))
+        end
+        function LieGroups.inv!(G::$TG, h::$TP, g::$TP)
+            LieGroups.inv!(G, h.$gfield, g.$gfield)
+            return h
+        end
+        function LieGroups.inv!(G::$TG, h::$TP, e::Identity)
+            LieGroups.inv!(G, h.$gfield, e)
+            return h
+        end
+
         function LieGroups.is_identity(G::$TG, g::$TP; kwargs...)
             return LieGroups.is_identity(G, g.$gfield; kwargs...)
         end
@@ -921,6 +933,10 @@ macro default_lie_group_fallbacks(TG, TP, TV, gfield::Symbol, Xfield::Symbol)
         end
         function LieGroups.log!(G::$TG, X::$TV, g::$TP)
             LieGroups.log!(G, X.$Xfield, g.$gfield)
+            return X
+        end
+        function LieGroups.log!(G::$TG, X::$TV, e::Identity)
+            LieGroups.log!(G, X.$Xfield, e)
             return X
         end
     end

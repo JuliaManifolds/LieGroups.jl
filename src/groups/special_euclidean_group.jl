@@ -389,9 +389,16 @@ ManifoldsBase.exp(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}}
 
 @doc "$(_doc_exp_SE2_id)"
 function ManifoldsBase.exp!(
-    G::SpecialEuclideanGroup{<:ManifoldsBase.TypeParameter{Tuple{2}}}, g, X
+    G::SpecialEuclideanGroup{<:ManifoldsBase.TypeParameter{Tuple{2}}},
+    g::AbstractMatrix,
+    X::AbstractMatrix,
 )
     init_constants!(G, g)
+    _exp_SE2!(G, g, X)
+    return g
+end
+
+function _exp_SE2!(G::SpecialEuclideanGroup{<:ManifoldsBase.TypeParameter{Tuple{2}}}, g, X)
     Y = submanifold_component(G, X, :Rotation)
     v = submanifold_component(G, X, :Translation)
     R = submanifold_component(G, g, :Rotation)
@@ -411,7 +418,6 @@ function ManifoldsBase.exp!(
     exp!(SO2, R, Y)
     return g
 end
-
 _doc_exp_SE3_id = """
     exp(G::SpecialEuclidean, X)
     exp!(G::SpecialEuclidean, g, X)
@@ -446,9 +452,16 @@ ManifoldsBase.exp(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}
 
 @doc "$(_doc_exp_SE3_id)"
 function ManifoldsBase.exp!(
-    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, g, X
+    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
+    g::AbstractMatrix,
+    X::AbstractMatrix,
 )
     init_constants!(G, g)
+    _exp_SE3!(G, g, X)
+    return g
+end
+
+function _exp_SE3!(G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, g, X)
     Y = submanifold_component(G, X, :Rotation)
     v = submanifold_component(G, X, :Translation)
     R = submanifold_component(G, g, :Rotation)
@@ -563,17 +576,25 @@ This computation can be done in-place of `h`.
 Base.inv(G::SpecialEuclideanGroup, g)
 
 @doc "$(_doc_inv_SEn)"
-function inv!(G::SpecialEuclideanGroup, h, g)
+function inv!(G::SpecialEuclideanGroup, h::AbstractMatrix, g::AbstractMatrix)
     init_constants!(G, h)
+    _inv_SE!(G, h, g)
+    return h
+end
+function _inv_SE!(G::SpecialEuclideanGroup, h, g)
     rg = submanifold_component(G, g, :Rotation)
     tg = submanifold_component(G, g, :Translation)
     rh = submanifold_component(G, h, :Rotation)
     th = submanifold_component(G, h, :Translation)
     copyto!(rh, transpose(rg))
-    copyto!(th, -rh * tg)
-    return h
+    return copyto!(th, -rh * tg)
 end
-function inv!(G::SpecialEuclideanGroup, q, ::Identity{<:SpecialEuclideanGroupOperation})
+
+function inv!(
+    G::SpecialEuclideanGroup,
+    q::AbstractMatrix,
+    ::Identity{<:SpecialEuclideanGroupOperation},
+)
     return identity_element!(G, q)
 end
 
@@ -633,9 +654,16 @@ ManifoldsBase.log(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}}
 
 @doc "$(_doc_log_SE2_id)"
 function ManifoldsBase.log!(
-    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, X, g
+    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
+    X::AbstractMatrix,
+    g::AbstractMatrix,
 )
     init_constants!(LieAlgebra(G), X)
+    _log_SE2!(G, X, g)
+    return X
+end
+
+function _log_SE2!(G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, X, g)
     R = submanifold_component(G, g, :Rotation)
     t = submanifold_component(G, g, :Translation)
     Y = submanifold_component(G, X, :Rotation)
@@ -652,20 +680,7 @@ function ManifoldsBase.log!(
     end
     return X
 end
-function ManifoldsBase.log!(
-    G::LeftSpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
-    X,
-    ::Identity{<:LeftSpecialEuclideanGroupOperation},
-)
-    return ManifoldsBase.zero_vector!(LieAlgebra(G), X)
-end
-function ManifoldsBase.log!(
-    G::RightSpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}},
-    X,
-    ::Identity{<:RightSpecialEuclideanGroupOperation},
-)
-    return ManifoldsBase.zero_vector!(LieAlgebra(G), X)
-end
+
 _doc_log_SE3_id = """
     log(G::SpecialEuclidean, e, g)
     log!(G::SpecialEuclidean, X, e, g)
@@ -694,9 +709,15 @@ ManifoldsBase.log(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}
 
 @doc "$(_doc_log_SE3_id)"
 function ManifoldsBase.log!(
-    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, X, g
+    G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
+    X::AbstractMatrix,
+    g::AbstractMatrix,
 )
     init_constants!(LieAlgebra(G), X)
+    _log_SE3!(G, g, X)
+    return X
+end
+function _log_SE3!(G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, X, g)
     R = submanifold_component(G, g, :Rotation)
     t = submanifold_component(G, g, :Translation)
     Y = submanifold_component(G, X, :Rotation)
@@ -713,20 +734,7 @@ function ManifoldsBase.log!(
     end
     return X
 end
-function ManifoldsBase.log!(
-    G::LeftSpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
-    X,
-    ::Identity{<:LeftSpecialEuclideanGroupOperation},
-)
-    return ManifoldsBase.zero_vector!(LieAlgebra(G), X)
-end
-function ManifoldsBase.log!(
-    G::RightSpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
-    X,
-    ::Identity{<:RightSpecialEuclideanGroupOperation},
-)
-    return ManifoldsBase.zero_vector!(LieAlgebra(G), X)
-end
+
 function ManifoldsBase.norm(G::SpecialEuclideanGroup, g, X)
     SOn, Tn = _SOn_and_Tn(G)
     n1 = norm(
@@ -746,24 +754,8 @@ function ManifoldsBase.norm(G::SpecialEuclideanGroup, ::Identity, X)
     return norm([n1, n2])
 end
 
-function ManifoldsBase.log!(::LeftSpecialEuclideanGroup, X, g)
+function ManifoldsBase.log!(::SpecialEuclideanGroup, X::AbstractMatrix, g::AbstractMatrix)
     copyto!(X, log(g))
-    return X
-end
-function ManifoldsBase.log!(
-    ::LeftSpecialEuclideanGroup, X, e::Identity{<:LeftSpecialEuclideanGroupOperation}
-)
-    fill!(X, 0)
-    return X
-end
-function ManifoldsBase.log!(::RightSpecialEuclideanGroup, X, g)
-    copyto!(X, log(g))
-    return X
-end
-function ManifoldsBase.log!(
-    ::RightSpecialEuclideanGroup, X, e::Identity{<:RightSpecialEuclideanGroupOperation}
-)
-    fill!(X, 0)
     return X
 end
 
