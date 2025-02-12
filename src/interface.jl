@@ -880,13 +880,14 @@ end
 #
 # A fallback macro for types that merely wrap the actual data
 """
-    default_lie_group_fallbacks(TG, TP, TV, pfield::Symbol, vfield::Symbol)
+    default_lie_group_fallbacks(TG, TF, TP, TV, pfield::Symbol, Xfield::Symbol, groupOp)
 
-Introduce default fallbacks for all basic functions on Lie groups, for Lie group of type `TG`,
-points of type `TP`, tangent vectors of type `TV`, with forwarding to fields `pfield` and
-`vfield` for point and tangent vector functions, respectively.
+Introduce default fallbacks for all basic functions on Lie groups, for Lie group of type
+`TG` with number system `TF`, points of type `TP`, tangent vectors of type `TV`, with
+forwarding to fields `pfield` and `Xfield` for point and tangent vector functions,
+respectively. `groupOp` is the group operation.
 """
-macro default_lie_group_fallbacks(TG, TP, TV, gfield::Symbol, Xfield::Symbol)
+macro default_lie_group_fallbacks(TG, TF, TP, TV, gfield::Symbol, Xfield::Symbol, groupOp)
     block = quote
         function LieGroups.adjoint(G::$TG, g::$TP, X::$TV)
             return $TV(LieGroups.adjoint(G, g.$gfield, X.$Xfield))
@@ -919,7 +920,7 @@ macro default_lie_group_fallbacks(TG, TP, TV, gfield::Symbol, Xfield::Symbol)
             LieGroups.inv!(G, h.$gfield, g.$gfield)
             return h
         end
-        function LieGroups.inv!(G::$TG, h::$TP, e::Identity)
+        function LieGroups.inv!(G::$TG, h::$TP, e::Identity{$groupOp})
             LieGroups.inv!(G, h.$gfield, e)
             return h
         end
@@ -935,9 +936,13 @@ macro default_lie_group_fallbacks(TG, TP, TV, gfield::Symbol, Xfield::Symbol)
             LieGroups.log!(G, X.$Xfield, g.$gfield)
             return X
         end
-        function LieGroups.log!(G::$TG, X::$TV, e::Identity)
+        function LieGroups.log!(G::$TG, X::$TV, e::Identity{$groupOp})
             LieGroups.log!(G, X.$Xfield, e)
             return X
+        end
+
+        function LieGroups.zero_vector(𝔤::LieAlgebra{$TF,<:$groupOp,<:$TG}, p::$TP)
+            return $TV(LieGroups.zero_vector(𝔤, p.$gfield))
         end
     end
     return esc(block)

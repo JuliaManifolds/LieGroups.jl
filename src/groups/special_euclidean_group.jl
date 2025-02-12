@@ -130,8 +130,8 @@ ManifoldsBase.@manifold_vector_forwards SpecialEuclideanMatrixTangentVector valu
 ManifoldsBase.@default_manifold_fallbacks LeftSpecialEuclideanGroup SpecialEuclideanMatrixPoint SpecialEuclideanMatrixTangentVector value value
 ManifoldsBase.@default_manifold_fallbacks RightSpecialEuclideanGroup SpecialEuclideanMatrixPoint SpecialEuclideanMatrixTangentVector value value
 
-@default_lie_group_fallbacks LeftSpecialEuclideanGroup SpecialEuclideanMatrixPoint SpecialEuclideanMatrixTangentVector value value
-@default_lie_group_fallbacks RightSpecialEuclideanGroup SpecialEuclideanMatrixPoint SpecialEuclideanMatrixTangentVector value value
+@default_lie_group_fallbacks LeftSpecialEuclideanGroup LieAlgebra{ℝ} SpecialEuclideanMatrixPoint SpecialEuclideanMatrixTangentVector value value LeftSpecialEuclideanGroupOperation
+@default_lie_group_fallbacks RightSpecialEuclideanGroup LieAlgebra{ℝ} SpecialEuclideanMatrixPoint SpecialEuclideanMatrixTangentVector value value RightSpecialEuclideanGroupOperation
 
 ManifoldsBase.internal_value(semp::SpecialEuclideanMatrixPoint) = semp.value
 ManifoldsBase.internal_value(semtv::SpecialEuclideanMatrixTangentVector) = semtv.value
@@ -946,7 +946,7 @@ end
 
 function ManifoldsBase.zero_vector(
     𝔤::LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup},
-    ::Type{SpecialEuclideanMatrixTangentVector{<:Matrix{T}}},
+    ::Type{SpecialEuclideanMatrixTangentVector{Matrix{T}}},
 ) where {T}
     G = 𝔤.manifold
     n = Manifolds.get_parameter(G.manifold[1].size)[1]
