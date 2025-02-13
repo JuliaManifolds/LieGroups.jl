@@ -925,6 +925,11 @@ macro default_lie_group_fallbacks(TG, TF, TP, TV, gfield::Symbol, Xfield::Symbol
             return h
         end
 
+        function ManifoldsBase.isapprox(
+            𝔤::LieAlgebra{<:$TF,<:$groupOp,<:$TG}, X::$TV, Y::$TV; kwargs...
+        )
+            return ManifoldsBase.isapprox(𝔤, X.$Xfield, Y.$Xfield; kwargs...)
+        end
         function LieGroups.is_identity(G::$TG, g::$TP; kwargs...)
             return LieGroups.is_identity(G, g.$gfield; kwargs...)
         end
@@ -941,8 +946,8 @@ macro default_lie_group_fallbacks(TG, TF, TP, TV, gfield::Symbol, Xfield::Symbol
             return X
         end
 
-        function LieGroups.zero_vector(𝔤::LieAlgebra{$TF,<:$groupOp,<:$TG}, p::$TP)
-            return $TV(LieGroups.zero_vector(𝔤, p.$gfield))
+        function LieGroups.zero_vector(𝔤::LieAlgebra{$TF,<:$groupOp,<:$TG}, g::$TP)
+            return $TV(LieGroups.zero_vector(𝔤, g.$gfield))
         end
     end
     return esc(block)
