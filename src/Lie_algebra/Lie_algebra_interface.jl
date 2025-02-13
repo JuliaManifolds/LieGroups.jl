@@ -434,12 +434,14 @@ forwarding to fields `Xfield` and tangent vector functions
 """
 macro default_lie_algebra_fallbacks(TG, TF, Op, TV, Xfield::Symbol)
     block = quote
+        function ManifoldsBase.is_point(𝔤::LieAlgebra{$TF,<:$Op,<:$TG}, X::$TV; kwargs...)
+            return ManifoldsBase.is_point(𝔤, X.$Xfield; kwargs...)
+        end
         function ManifoldsBase.isapprox(
             𝔤::LieAlgebra{$TF,<:$Op,<:$TG}, X::$TV, Y::$TV; kwargs...
         )
             return ManifoldsBase.isapprox(𝔤, X.$Xfield, Y.$Xfield; kwargs...)
         end
-
         function LieGroups.zero_vector(𝔤::LieAlgebra{$TF,<:$Op,<:$TG}, ::Type{$TV})
             return $TV(LieGroups.zero_vector(𝔤, typeof(X.$Xfield)))
         end

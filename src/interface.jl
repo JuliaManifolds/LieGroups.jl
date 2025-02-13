@@ -893,7 +893,7 @@ macro default_lie_group_fallbacks(TG, Op, TP, TV, gfield::Symbol, Xfield::Symbol
             return $TV(allocate(X.$Xfield))
         end
         function ManifoldsBase.allocate_result(::$TG, ::typeof(compose), g::$TP, ::$TP)
-            return $TV(allocate(g.$gfield))
+            return $TP(allocate(g.$gfield))
         end
         function ManifoldsBase.allocate_result(::$TG, ::typeof(exp), X::$TV)
             return $TP(allocate(X.$Xfield))
@@ -909,8 +909,8 @@ macro default_lie_group_fallbacks(TG, Op, TP, TV, gfield::Symbol, Xfield::Symbol
             LieGroups.adjoint!(G, Y.$Xfield, g.$gfield, X.$Xfield)
             return Y
         end
-        function LieGroups.compose!(G::$TG, k::$TP, g::$TP, h::$TP)
-            LieGroups.compose!(G, k.$gfield, g.$gfield, h.$gfield)
+        function LieGroups._compose!(G::$TG, k::$TP, g::$TP, h::$TP)
+            LieGroups._compose!(G, k.$gfield, g.$gfield, h.$gfield)
             return k
         end
         function LieGroups.exp!(G::$TG, g::$TP, X::$TV)
@@ -921,7 +921,7 @@ macro default_lie_group_fallbacks(TG, Op, TP, TV, gfield::Symbol, Xfield::Symbol
             LieGroups.inv!(G, h.$gfield, g.$gfield)
             return h
         end
-        function LieGroups.inv!(G::$TG, h::$TP, e::Identity{$Op})
+        function LieGroups.inv!(G::$TG, h::$TP, e::Identity{<:$Op})
             LieGroups.inv!(G, h.$gfield, e)
             return h
         end
@@ -929,11 +929,17 @@ macro default_lie_group_fallbacks(TG, Op, TP, TV, gfield::Symbol, Xfield::Symbol
         function LieGroups.is_identity(G::$TG, g::$TP; kwargs...)
             return LieGroups.is_identity(G, g.$gfield; kwargs...)
         end
+        function ManifoldsBase.isapprox(
+            G::$TG, e::Identity{<:$Op}, X::$TV, Y::$TV; kwargs...
+        )
+            return ManifoldsBase.isapprox(G, e, X.$Xfield, Y.$Xfield; kwargs...)
+        end
+
         function LieGroups.log!(G::$TG, X::$TV, g::$TP)
             LieGroups.log!(G, X.$Xfield, g.$gfield)
             return X
         end
-        function LieGroups.log!(G::$TG, X::$TV, e::Identity{$Op})
+        function LieGroups.log!(G::$TG, X::$TV, e::Identity{<:$Op})
             LieGroups.log!(G, X.$Xfield, e)
             return X
         end

@@ -483,7 +483,7 @@ function test_exp_log(
             if test_mutating
                 k2 = copy(G, g)
                 exp!(G, k2, X)
-                Y2 = copy(G, g)
+                Y2 = zero_vector(𝔤, typeof(X))
                 log!(G, Y2, k2)
                 @test isapprox(𝔤, Y1, Y2)
             end
@@ -494,7 +494,7 @@ function test_exp_log(
             if test_mutating
                 k2 = copy(G, g)
                 exp!(G, k2, g, X)
-                Y2 = copy(G, g)
+                Y2 = zero_vector(𝔤, typeof(X))
                 log!(G, Y2, g, k2)
                 @test isapprox(𝔤, Y1, Y2)
             end
