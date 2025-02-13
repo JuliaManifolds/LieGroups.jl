@@ -33,8 +33,9 @@ using LieGroupsTestSuite
             LieGroups.identity_element(::typeof(G)) = :id
             LieGroups.identity_element(::typeof(G), T::Type) = :id
             LieGroups.identity_element!(::typeof(G), g) = (g[] = :id)
+            ManifoldsBase.allocate_result(::typeof(G), ::typeof(LieGroups.exp), g) = :a
             LieGroups.exp!(::typeof(G), h, X) = :id
-            @test exp(G, X) === :id
+            @test exp(G, X) === :a
             #
             # same for log
             ManifoldsBase.allocate_result(::typeof(G), ::typeof(LieGroups.log), g) = :g
@@ -49,9 +50,10 @@ using LieGroupsTestSuite
             Base.delete_method(which(identity_element!, typeof.([G, g2])))
             Base.delete_method(which(LieGroups.exp!, typeof.([G, h, X])))
             Base.delete_method(which(ManifoldsBase.allocate_result, typeof.([G, log, g])))
+            Base.delete_method(which(ManifoldsBase.allocate_result, typeof.([G, exp, g])))
             Base.delete_method(which(LieGroups.log!, typeof.([G, X, g])))
         end
-        # so they are undefined here again but we checked the exp fallback
+        # both undefined again.
         @test_throws MethodError exp!(G, g, X)
         @test_throws MethodError log!(G, X, g)
     end

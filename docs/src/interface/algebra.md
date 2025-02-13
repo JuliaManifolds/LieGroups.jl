@@ -13,9 +13,15 @@ Pages = ["src/Lie_algebra/Lie_algebra_interface.jl"]
 Order = [:function]
 ```
 
+## Internal functions and macros
+
+```@docs
+LieGroups.@default_lie_algebra_fallbacks
+```
+
 ## Literature
 
 ```@bibliography
-Pages = ["group.md"]
+Pages = ["algebra.md"]
 Canonical=false
 ```

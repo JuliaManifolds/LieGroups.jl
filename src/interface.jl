@@ -435,7 +435,7 @@ The computation can be performed in-place of `g`.
 """
 
 @doc "$(_doc_exponential)"
-function ManifoldsBase.exp(G::LieGroup{𝔽,O}, X::T) where {𝔽,O<:AbstractGroupOperation,T}
+function ManifoldsBase.exp(G::LieGroup, X)
     g = allocate_result(G, exp, X)
     exp!(G, g, X)
     return g
