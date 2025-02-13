@@ -15,5 +15,5 @@ Order = [:function]
 # Utility functions and constants
 
 ```@docs
-LieGroups.CommonUnitarySubGroups
+LieGroups.CommonUnitarySubGroup
 ```

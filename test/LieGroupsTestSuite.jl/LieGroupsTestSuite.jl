@@ -466,6 +466,8 @@ function test_exp_log(
                 Y2 = zero_vector(𝔤, typeof(X))
                 log!(G, Y2, g, h)
                 @test isapprox(𝔤, Y1, Y2)
+                log!(G, Y2, e, e)
+                @test isapprox(𝔤, Y2, zero_vector(𝔤, typeof(X)))
             end
             @test is_point(𝔤, Y1; error=:error)
             Y3 = zero_vector(𝔤, typeof(X))

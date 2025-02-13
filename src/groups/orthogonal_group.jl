@@ -112,7 +112,7 @@ ManifoldsBase.exp(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, X)
 ManifoldsBase.exp!(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, g, X)
 
 function ManifoldsBase.exp!(
-    ::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{2}}}, g, X
+    ::CommonUnitarySubGroup{ℝ,ManifoldsBase.TypeParameter{Tuple{2}}}, g, X
 )
     @assert size(X) == (2, 2)
     @assert size(g) == (2, 2)
@@ -128,7 +128,7 @@ function ManifoldsBase.exp!(
 end
 
 function ManifoldsBase.exp!(
-    ::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{3}}}, g, X
+    ::CommonUnitarySubGroup{ℝ,ManifoldsBase.TypeParameter{Tuple{3}}}, g, X
 )
     θ = norm(X) / sqrt(2)
     if θ ≈ 0
@@ -144,7 +144,7 @@ function ManifoldsBase.exp!(
     return g
 end
 function ManifoldsBase.exp!(
-    ::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{4}}}, g, X
+    ::CommonUnitarySubGroup{ℝ,ManifoldsBase.TypeParameter{Tuple{4}}}, g, X
 )
     T = eltype(X)
     α, β = angles_4d_skew_sym_matrix(X)
@@ -214,20 +214,20 @@ get_coordinates(G::OrthogonalLieAlgebra, X, ::DefaultLieAlgebraOrthogonalBasis)
 get_coordinates!(G::OrthogonalLieAlgebra, c, X, ::DefaultLieAlgebraOrthogonalBasis)
 
 function get_coordinates_lie!(
-    ::CommonUnitarySubAlgebras{
+    ::CUSA, c, X, ::ManifoldsBase.RealNumbers
+) where {
+    CUSA<:CommonUnitarySubAlgebra{
         <:ManifoldsBase.RealNumbers,<:ManifoldsBase.TypeParameter{Tuple{2}}
     },
-    c,
-    X,
-    ::ManifoldsBase.RealNumbers,
-)
+}
+    println("Fnumps")
     @assert size(X) == (2, 2)
     @assert size(c) == (1,)
     c[1] = X[2, 1]
     return c
 end
 function get_coordinates_lie!(
-    G::CommonUnitarySubAlgebras{
+    G::CommonUnitarySubAlgebra{
         <:ManifoldsBase.RealNumbers,<:ManifoldsBase.TypeParameter{Tuple{n}}
     },
     c,
@@ -241,10 +241,11 @@ function get_coordinates_lie!(
     return c
 end
 function get_coordinates_lie!(
-    G::CommonUnitarySubAlgebras{ℝ}, c, X, ::ManifoldsBase.RealNumbers
+    𝔤::CommonUnitarySubAlgebra{ℝ}, c, X, ::ManifoldsBase.RealNumbers
 )
+    G = 𝔤.manifold
     n = ManifoldsBase.get_parameter(G.manifold.size)[1]
-    @assert length(c) == manifold_dimension(G)
+    @assert length(c) == manifold_dimension(𝔤)
     @assert size(X) == (n, n)
     if n == 2
         c[1] = X[2, 1]
@@ -294,13 +295,13 @@ triangular part – which determines the upper triangular part due to skew-symme
 """
 
 @doc "$(_doc_get_vector_On)"
-get_vector(G::OrthogonalLieAlgebra, X, ::DefaultLieAlgebraOrthogonalBasis)
+get_vector(𝔤::OrthogonalLieAlgebra, X, ::DefaultLieAlgebraOrthogonalBasis)
 
 @doc "$(_doc_get_vector_On)"
-get_vector!(G::OrthogonalLieAlgebra, c, X::DefaultLieAlgebraOrthogonalBasis)
+get_vector!(𝔤::OrthogonalLieAlgebra, c, X::DefaultLieAlgebraOrthogonalBasis)
 
 function get_vector_lie!(
-    ::CommonUnitarySubAlgebras{
+    ::CommonUnitarySubAlgebra{
         <:ManifoldsBase.RealNumbers,<:ManifoldsBase.TypeParameter{Tuple{2}}
     },
     X,
@@ -316,7 +317,7 @@ function get_vector_lie!(
     return X
 end
 function get_vector_lie!(
-    G::CommonUnitarySubAlgebras{
+    𝔤::CommonUnitarySubAlgebra{
         <:ManifoldsBase.RealNumbers,<:ManifoldsBase.TypeParameter{Tuple{n}}
     },
     X,
@@ -324,16 +325,17 @@ function get_vector_lie!(
     ::ManifoldsBase.RealNumbers,
 ) where {n}
     @assert size(X) == (n, n)
-    @assert length(c) == manifold_dimension(G)
+    @assert length(c) == manifold_dimension(𝔤)
     @assert n > 2
     _get_vector_lie_On!(X, c)
     return X
 end
 function get_vector_lie!(
-    G::CommonUnitarySubAlgebras{ManifoldsBase.ℝ}, X, c, ::ManifoldsBase.RealNumbers
+    𝔤::CommonUnitarySubAlgebra{ManifoldsBase.ℝ}, X, c, ::ManifoldsBase.RealNumbers
 )
+    G = 𝔤.manifold
     n = ManifoldsBase.get_parameter(G.manifold.size)[1]
-    @assert length(c) == manifold_dimension(G)
+    @assert length(c) == manifold_dimension(𝔤)
     @assert size(X) == (n, n)
     if n == 2
         X[1, 1] = 0.0
@@ -431,7 +433,6 @@ This result can be computed in-place of `X`
 Note the logarithmic map is only locally around the identity uniquely determined.
 Especially, since ``$(_math(:SO))(3)`` consists of two disjoint connected components and the exponential map is smooth,
 for any ``g`` in the other component, the logarithmic map is defined, but not the inverse of the exponential map.
-
 """
 
 @doc "$(_doc_log_O3_id)"
@@ -462,7 +463,7 @@ ManifoldsBase.log(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, g)
 ManifoldsBase.log!(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, X, g)
 
 function ManifoldsBase.log!(
-    ::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}}, X, g
+    ::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}}, X, g
 )
     @assert size(X) == (2, 2)
     @assert size(g) == (2, 2)
@@ -476,7 +477,7 @@ function ManifoldsBase.log!(
     return X
 end
 function ManifoldsBase.log!(
-    G::CommonUnitarySubGroups{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
+    G::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
     X,
     ::Identity{MatrixMultiplicationGroupOperation},
 )
@@ -484,7 +485,7 @@ function ManifoldsBase.log!(
 end
 
 function ManifoldsBase.log!(
-    G::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
+    G::CommonUnitarySubGroup{ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
     X::AbstractMatrix,
     q::AbstractMatrix,
 )
@@ -501,7 +502,7 @@ function ManifoldsBase.log!(
     return project!(LieAlgebra(G), X, X)
 end
 function ManifoldsBase.log!(
-    G::CommonUnitarySubGroups{ℝ,ManifoldsBase.TypeParameter{Tuple{4}}},
+    G::CommonUnitarySubGroup{ℝ,ManifoldsBase.TypeParameter{Tuple{4}}},
     X::AbstractMatrix,
     q::AbstractMatrix,
 )

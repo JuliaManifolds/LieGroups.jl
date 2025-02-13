@@ -312,6 +312,11 @@ function ManifoldsBase.log!(
     return zero_vector!(LieAlgebra(G), X)
 end
 function ManifoldsBase.log!(
+    G::LieGroup{𝔽,Op,M}, X, ::Identity{Op}, ::Identity{Op}
+) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
+    return zero_vector!(LieAlgebra(G), X)
+end
+function ManifoldsBase.log!(
     PoG::LieGroup{𝔽,Op,M}, X, g, h
 ) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
     PM = PoG.manifold
