@@ -424,11 +424,37 @@ end
 
 #
 #
+# A fallback macro for types that merely wrap the actual data
+"""
+    default_lie_algebra_fallbacks(TG, TF, Op, TV, Xfield::Symbol)
+
+Introduce default fallbacks for all basic functions on Lie algebras, for Lie group of type
+`TG` with number system `TF`, an group operation `Op`, tangent vectors of type `TV`, with
+forwarding to fields `Xfield` and tangent vector functions
+"""
+macro default_lie_algebra_fallbacks(TG, TF, Op, TV, Xfield::Symbol)
+    block = quote
+        function ManifoldsBase.isapprox(
+            𝔤::LieAlgebra{$TF,<:$Op,<:$TG}, X::$TV, Y::$TV; kwargs...
+        )
+            return ManifoldsBase.isapprox(𝔤, X.$Xfield, Y.$Xfield; kwargs...)
+        end
+
+        function LieGroups.zero_vector(𝔤::LieAlgebra{$TF,<:$Op,<:$TG}, ::Type{$TV})
+            return $TV(LieGroups.zero_vector(𝔤, typeof(X.$Xfield)))
+        end
+    end
+    return esc(block)
+end
+
+#
+#
 # allocation helpers
 
 function ManifoldsBase.allocate_result(
     𝔤::LieAlgebra, f::typeof(ManifoldsBase.get_coordinates), X, basis::AbstractBasis{𝔽}
 ) where {𝔽}
-    T = ManifoldsBase.coordinate_eltype(𝔤, X, 𝔽)
-    return ManifoldsBase.allocate_coordinates(𝔤, X, T, number_of_coordinates(𝔤, basis))
+    X_ = internal_value(X)
+    T = ManifoldsBase.coordinate_eltype(𝔤, X_, 𝔽)
+    return ManifoldsBase.allocate_coordinates(𝔤, X_, T, number_of_coordinates(𝔤, basis))
 end

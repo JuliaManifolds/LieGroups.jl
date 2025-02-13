@@ -463,7 +463,7 @@ function test_exp_log(
             # log
             Y1 = log(G, g, h)
             if test_mutating
-                Y2 = copy(G, g)
+                Y2 = zero_vector(𝔤, typeof(X))
                 log!(G, Y2, g, h)
                 @test isapprox(𝔤, Y1, Y2)
             end

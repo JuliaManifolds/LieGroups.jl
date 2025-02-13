@@ -436,7 +436,7 @@ The computation can be performed in-place of `g`.
 
 @doc "$(_doc_exponential)"
 function ManifoldsBase.exp(G::LieGroup{𝔽,O}, X::T) where {𝔽,O<:AbstractGroupOperation,T}
-    g = identity_element(G, T)
+    g = allocate_result(G, exp, X)
     exp!(G, g, X)
     return g
 end
@@ -883,71 +883,59 @@ end
     default_lie_group_fallbacks(TG, TF, TP, TV, pfield::Symbol, Xfield::Symbol, groupOp)
 
 Introduce default fallbacks for all basic functions on Lie groups, for Lie group of type
-`TG` with number system `TF`, points of type `TP`, tangent vectors of type `TV`, with
+`TG` with group operation `Op`, points of type `TP`, tangent vectors of type `TV`, with
 forwarding to fields `pfield` and `Xfield` for point and tangent vector functions,
-respectively. `groupOp` is the group operation.
+respectively.
 """
-macro default_lie_group_fallbacks(TG, TF, TP, TV, gfield::Symbol, Xfield::Symbol, groupOp)
+macro default_lie_group_fallbacks(TG, Op, TP, TV, gfield::Symbol, Xfield::Symbol)
     block = quote
-        function LieGroups.adjoint(G::$TG, g::$TP, X::$TV)
-            return $TV(LieGroups.adjoint(G, g.$gfield, X.$Xfield))
+        function ManifoldsBase.allocate_result(::$TG, ::typeof(adjoint), ::$TP, X::$TV)
+            return $TV(allocate(X.$Xfield))
         end
+        function ManifoldsBase.allocate_result(::$TG, ::typeof(compose), g::$TP, ::$TP)
+            return $TV(allocate(g.$gfield))
+        end
+        function ManifoldsBase.allocate_result(::$TG, ::typeof(exp), X::$TV)
+            return $TP(allocate(X.$Xfield))
+        end
+        function ManifoldsBase.allocate_result(::$TG, ::typeof(inv), g::$TP)
+            return $TP(allocate(g.$gfield))
+        end
+        function ManifoldsBase.allocate_result(::$TG, ::typeof(log), g::$TP)
+            return $TV(allocate(g.$gfield))
+        end
+
         function LieGroups.adjoint!(G::$TG, Y::$TV, g::$TP, X::$TV)
             LieGroups.adjoint!(G, Y.$Xfield, g.$gfield, X.$Xfield)
             return Y
-        end
-
-        function LieGroups.compose(G::$TG, g::$TP, h::$TP)
-            return $TP(LieGroups.compose(G, g.$gfield, h.$gfield))
         end
         function LieGroups.compose!(G::$TG, k::$TP, g::$TP, h::$TP)
             LieGroups.compose!(G, k.$gfield, g.$gfield, h.$gfield)
             return k
         end
-
-        function LieGroups.exp(G::$TG, X::$TV)
-            return $TP(LieGroups.exp(G, X.$Xfield))
-        end
         function LieGroups.exp!(G::$TG, g::$TP, X::$TV)
             LieGroups.exp!(G, g.$gfield, X.$Xfield)
             return g
-        end
-
-        function LieGroups.inv(G::$TG, g::$TP)
-            return $TP(LieGroups.inv(G, g.$gfield))
         end
         function LieGroups.inv!(G::$TG, h::$TP, g::$TP)
             LieGroups.inv!(G, h.$gfield, g.$gfield)
             return h
         end
-        function LieGroups.inv!(G::$TG, h::$TP, e::Identity{$groupOp})
+        function LieGroups.inv!(G::$TG, h::$TP, e::Identity{$Op})
             LieGroups.inv!(G, h.$gfield, e)
             return h
         end
 
-        function ManifoldsBase.isapprox(
-            𝔤::LieAlgebra{<:$TF,<:$groupOp,<:$TG}, X::$TV, Y::$TV; kwargs...
-        )
-            return ManifoldsBase.isapprox(𝔤, X.$Xfield, Y.$Xfield; kwargs...)
-        end
         function LieGroups.is_identity(G::$TG, g::$TP; kwargs...)
             return LieGroups.is_identity(G, g.$gfield; kwargs...)
-        end
-
-        function LieGroups.log(G::$TG, g::$TP)
-            return $TV(LieGroups.log(G, g.$gfield))
         end
         function LieGroups.log!(G::$TG, X::$TV, g::$TP)
             LieGroups.log!(G, X.$Xfield, g.$gfield)
             return X
         end
-        function LieGroups.log!(G::$TG, X::$TV, e::Identity{$groupOp})
+        function LieGroups.log!(G::$TG, X::$TV, e::Identity{$Op})
             LieGroups.log!(G, X.$Xfield, e)
             return X
-        end
-
-        function LieGroups.zero_vector(𝔤::LieAlgebra{$TF,<:$groupOp,<:$TG}, g::$TP)
-            return $TV(LieGroups.zero_vector(𝔤, g.$gfield))
         end
     end
     return esc(block)
