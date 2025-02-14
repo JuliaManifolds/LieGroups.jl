@@ -95,6 +95,9 @@ export UnitaryGroup
 export AbstractLieGroupPoint, AbstractLieAlgebraTangentVector
 export SpecialEuclideanMatrixPoint, SpecialEuclideanMatrixTangentVector
 export SpecialEuclideanProductPoint, SpecialEuclideanProductTangentVector
+
+# Errors
+export CompositeManifoldError
 # Functions
 export adjoint, adjoint!, apply, apply!
 export base_lie_group, base_manifold

@@ -175,5 +175,67 @@ using LieGroupsTestSuite
         @test convert(SpecialEuclideanProductTangentVector, X1) == X4
         @test convert(SpecialEuclideanProductTangentVector, X2) == X4
         @test convert(SpecialEuclideanProductTangentVector, X3) == X4
+
+        # Test also right semi to array
+        g2r = ArrayPartition([1.0, 0.0], 1 / 𝔰 * [1.0 1.0; -1.0 1.0])
+        g4r = SpecialEuclideanProductPoint(g2r)
+        X2r = ArrayPartition([0.0, 1.0], [0.0 -0.23; 0.23 0.0])
+        X4r = SpecialEuclideanProductTangentVector(X2r)
+
+        @test convert(AbstractMatrix, g4r) == g1
+        @test convert(AbstractMatrix, X4r) == X1
+    end
+    @testset "Test special cases in failing checks and internals" begin
+        G = SpecialEuclideanGroup(2)
+        𝔤 = LieAlgebra(G)
+        Gr = SpecialEuclideanGroup(2; variant=:right)
+        g1f = [1.0 0.0 0.0; 0.0 1.0 0.0; 0.0 0.0 2.0]
+        eG = Identity(G)
+        eGm = identity_element(G)
+        @test_throws DomainError is_point(G, g1f; error=:error)
+        @test is_point(G, eG; error=:error)
+        @test_throws DomainError is_point(G, Identity(Gr); error=:error)
+
+        @test is_point(Gr, Identity(Gr); error=:error)
+        @test_throws DomainError is_point(Gr, eG; error=:error)
+        @test_throws DomainError is_point(G, g1f; error=:error)
+        # non rot
+        g2f = [2.0 0.0 0.0; 0.0 1.0 0.0; 0.0 0.0 1.0]
+        @test_throws DomainError is_point(G, g2f; error=:error)
+        # 2 errors
+        g3f = [2.0 0.0 0.0; 0.0 1.0 0.0; 0.0 0.0 2.0]
+        @test_throws CompositeManifoldError is_point(G, g3f; error=:error)
+        g4f = zeros(2, 2)
+        @test_throws DomainError is_point(G, g4f; error=:error)
+
+        X1 = [0.0 -0.23 0.0; 0.23 0.0 1.0; 0.0 0.0 0.0]
+        @test is_vector(G, eG, X1; error=:error)
+        @test is_vector(G, eGm, X1; error=:error)
+        @test is_point(𝔤, X1; error=:error)
+        # not affine
+        X1f = [0.0 -0.23 0.0; 0.23 0.0 1.0; 0.0 0.0 1.0]
+        @test_throws DomainError is_vector(G, eG, X1f; error=:error)
+        @test_throws DomainError is_vector(G, eGm, X1f; error=:error)
+        @test_throws DomainError is_point(𝔤, X1f; error=:error)
+        # not skew
+        X2f = [0.0 -0.63 0.0; 0.23 0.0 1.0; 0.0 0.0 0.0]
+        @test_throws DomainError is_vector(G, eG, X2f; error=:error)
+        @test_throws DomainError is_vector(G, eGm, X2f; error=:error)
+        @test_throws DomainError is_point(𝔤, X2f; error=:error)
+        # neither
+        X3f = [0.0 -0.63 0.0; 0.23 0.0 1.0; 0.0 0.0 1.0]
+        @test_throws CompositeManifoldError is_vector(G, eG, X3f; error=:error)
+        @test_throws CompositeManifoldError is_vector(G, eGm, X3f; error=:error)
+        @test_throws CompositeManifoldError is_point(𝔤, X3f; error=:error)
+        # wrong size
+        X4f = zeros(2, 2)
+        @test_throws DomainError is_vector(G, eG, X4f; error=:error)
+        @test_throws DomainError is_vector(G, eGm, X4f; error=:error)
+        @test_throws DomainError is_point(𝔤, X4f; error=:error)
+
+        # SE2 exp with zero vector
+        @test is_identity(G, exp(G, zero_vector(𝔤)))
+        G3 = SpecialEuclideanGroup(3)
+        @test is_identity(G3, exp(G3, zero_vector(LieAlgebra(G3))))
     end
 end

@@ -15,19 +15,20 @@ function Base.convert(::Type{SpecialEuclideanProductTangentVector}, X::ArrayPart
 end
 # convert between both representations
 function Base.convert(
-    ::Type{<:AbstractMatrix}, g::SpecialEuclideanProductPoint{<:ArrayPartition}
-)
-    n = size(g.value.x[1])[1]
-    A = zeros((n + 1), (n + 1))
-    A[(n + 1), (n + 1)] = 1.0
+    ::Type{AbstractMatrix}, g::SpecialEuclideanProductPoint{<:ArrayPartition{T}}
+) where {T}
+    v = g.value.x
+    n = size(v[1])[1]
+    A = zeros(T, n + 1, n + 1)
+    A[(n + 1), (n + 1)] = one(T)
     # We do not know whether g.value ir (R,t) or (t,R) so we have to depend on sizes
-    s = size(g.value.x[1])
+    s = size(v[1])
     if length(s) == 2 # (R,t)
-        A[1:n, 1:n] .= g.value.x[1]
-        A[1:n, (n + 1)] .= g.value.x[2]
+        A[1:n, 1:n] .= v[1]
+        A[1:n, n + 1] .= v[2]
     else # format (t,R)
-        A[1:n, 1:n] .= g.value.x[2]
-        A[1:n, (n + 1)] .= g.value.x[1]
+        A[1:n, 1:n] .= v[2]
+        A[1:n, n + 1] .= v[1]
     end
     return A
 end
@@ -50,10 +51,10 @@ function Base.convert(
     return ArrayPartition(A[1:n, 1:n], A[1:n, (n + 1)])
 end
 function Base.convert(
-    ::Type{<:AbstractMatrix}, X::SpecialEuclideanProductTangentVector{<:ArrayPartition}
-)
+    ::Type{AbstractMatrix}, X::SpecialEuclideanProductTangentVector{<:ArrayPartition{T}}
+) where {T}
     n = size(X.value.x[1])[1]
-    A = zeros(n + 1, n + 1)
+    A = zeros(T, n + 1, n + 1)
     A[n + 1, n + 1] = 0.0
     # We do not know whether g.value is (R,t) or (t,R) so we have to depend on sizes
     s = size(X.value.x[1])
@@ -67,30 +68,20 @@ function Base.convert(
     return A
 end
 # The reverse is hence not unique, but we can still cast to the special matrix point
-function Base.convert(::Type{T}, g::ArrayPartition) where {T<:SpecialEuclideanMatrixPoint}
-    return T(convert(AbstractMatrix, SpecialEuclideanProductPoint(g)))
-end
 function Base.convert(
     ::Type{T}, g::ArrayPartition
-) where {T<:SpecialEuclideanMatrixTangentVector}
-    return T(convert(AbstractMatrix, SpecialEuclideanProductTangentVector(g)))
+) where {S,T<:SpecialEuclideanMatrixPoint{S}}
+    return T(convert(S, SpecialEuclideanProductPoint(g)))
 end
-function Base.convert(
-    ::M, g::SpecialEuclideanProductPoint{<:ArrayPartition}
-) where {T,M<:AbstractMatrix{T}}
-    v = g.value.x
-    n = size(v[1])[1]
-    A = zeros(T, n + 1, n + 1)
-    # We do not know whether g.value ir (R,t) or (t,R) so we have to depend on sizes
-    s = size(g.x[1])
-    if length(s) == 2 # (R,t)
-        A[1:n, 1:n] .= v[1]
-        A[1:n, n + 1] .= v[2]
-    else # format (t,R)
-        A[1:n, 1:n] .= v[2]
-        A[1:n, n + 1] .= v[1]
-    end
-    return A
+function Base.convert(::Type{SpecialEuclideanMatrixTangentVector}, g::ArrayPartition)
+    return SpecialEuclideanMatrixTangentVector(
+        convert(AbstractMatrix, SpecialEuclideanProductTangentVector(g))
+    )
+end
+function Base.convert(::Type{SpecialEuclideanMatrixPoint}, g::ArrayPartition)
+    return SpecialEuclideanMatrixPoint(
+        convert(AbstractMatrix, SpecialEuclideanProductPoint(g))
+    )
 end
 # convert between both representation explicitly
 # the inverse is again not unique since both (R,t) and (t,R) are possible results.
@@ -100,7 +91,7 @@ function Base.convert(
     return SpecialEuclideanMatrixPoint(convert(AbstractMatrix, g))
 end
 function Base.convert(
-    ::Type{<:SpecialEuclideanProductPoint}, g::SpecialEuclideanMatrixPoint{<:AbstractMatrix}
+    ::Type{SpecialEuclideanProductPoint}, g::SpecialEuclideanMatrixPoint{<:AbstractMatrix}
 )
     return SpecialEuclideanProductPoint(convert(ArrayPartition, g))
 end
@@ -264,7 +255,7 @@ function ManifoldsBase.zero_vector(
 ) where {𝔽,T}
     G = 𝔤.manifold
     n = Manifolds.get_parameter(G.manifold[1].size)[1]
-    return ArrayPartition(T, zeros(n, n), zeros(n))
+    return ArrayPartition(T, zeros(T, n, n), zeros(T, n))
 end
 function ManifoldsBase.zero_vector(
     𝔤::LieAlgebra{
@@ -276,7 +267,7 @@ function ManifoldsBase.zero_vector(
 ) where {𝔽,T}
     G = 𝔤.manifold
     n = Manifolds.get_parameter(G.manifold[1].size)[1]
-    return ArrayPartition(T, zeros(n), zeros(n, n))
+    return ArrayPartition(T, zeros(T, n), zeros(T, n, n))
 end
 function ManifoldsBase.zero_vector(
     𝔤::LieAlgebra{
