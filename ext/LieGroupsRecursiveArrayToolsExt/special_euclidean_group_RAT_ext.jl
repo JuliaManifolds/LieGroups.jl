@@ -15,28 +15,47 @@ function Base.convert(::Type{SpecialEuclideanProductTangentVector}, X::ArrayPart
 end
 # convert between both representations
 function Base.convert(
-    ::Type{AbstractMatrix}, g::SpecialEuclideanProductPoint{<:ArrayPartition}
+    ::Type{<:AbstractMatrix}, g::SpecialEuclideanProductPoint{<:ArrayPartition}
 )
     n = size(g.value.x[1])[1]
-    A = zeros(n + 1, n + 1)
-    A[n + 1, n + 1] = 1.0
+    A = zeros((n + 1), (n + 1))
+    A[(n + 1), (n + 1)] = 1.0
     # We do not know whether g.value ir (R,t) or (t,R) so we have to depend on sizes
     s = size(g.value.x[1])
     if length(s) == 2 # (R,t)
         A[1:n, 1:n] .= g.value.x[1]
-        A[1:n, n + 1] .= g.value.x[2]
+        A[1:n, (n + 1)] .= g.value.x[2]
     else # format (t,R)
         A[1:n, 1:n] .= g.value.x[2]
-        A[1:n, n + 1] .= g.value.x[1]
+        A[1:n, (n + 1)] .= g.value.x[1]
     end
+    return A
+end
+function Base.convert(::Type{<:SpecialEuclideanProductPoint}, g::AbstractMatrix)
+    return SpecialEuclideanProductPoint(
+        convert(ArrayPartition, SpecialEuclideanMatrixPoint(g))
+    )
+end
+function Base.convert(::Type{<:SpecialEuclideanProductTangentVector}, X::AbstractMatrix)
+    return SpecialEuclideanProductTangentVector(
+        convert(ArrayPartition, SpecialEuclideanMatrixTangentVector(X))
+    )
+end
+
+function Base.convert(
+    ::Type{<:ArrayPartition}, g::SpecialEuclideanMatrixPoint{<:AbstractMatrix}
+)
+    A = g.value
+    n = size(A)[1] - 1
+    return ArrayPartition(A[1:n, 1:n], A[1:n, (n + 1)])
 end
 function Base.convert(
-    ::Type{AbstractMatrix}, X::SpecialEuclideanProductTangentVector{<:ArrayPartition}
+    ::Type{<:AbstractMatrix}, X::SpecialEuclideanProductTangentVector{<:ArrayPartition}
 )
     n = size(X.value.x[1])[1]
     A = zeros(n + 1, n + 1)
     A[n + 1, n + 1] = 0.0
-    # We do not know whether g.value ir (R,t) or (t,R) so we have to depend on sizes
+    # We do not know whether g.value is (R,t) or (t,R) so we have to depend on sizes
     s = size(X.value.x[1])
     if length(s) == 2 # (R,t)
         A[1:n, 1:n] .= X.value.x[1]
@@ -45,44 +64,45 @@ function Base.convert(
         A[1:n, 1:n] .= X.value.x[2]
         A[1:n, n + 1] .= X.value.x[1]
     end
+    return A
 end
 # The reverse is hence not unique, but we can still cast to the special matrix point
-function Base.convert(::Type{SpecialEuclideanMatrixPoint}, g::ArrayPartition)
-    n = size(g.x[1])[1]
-    A = zeros(n + 1, n + 1)
-    A[n + 1, n + 1] = 1.0
-    # We do not know whether g.value ir (R,t) or (t,R) so we have to depend on sizes
-    s = size(g.x[1])
-    if length(s) == 2 # (R,t)
-        A[1:n, 1:n] .= g.x[1]
-        A[1:n, n + 1] .= g.x[2]
-    else # format (t,R)
-        A[1:n, 1:n] .= g.x[2]
-        A[1:n, n + 1] .= g.x[1]
-    end
-    return SpecialEuclideanMatrixPoint(A)
+function Base.convert(::Type{T}, g::ArrayPartition) where {T<:SpecialEuclideanMatrixPoint}
+    return T(convert(AbstractMatrix, SpecialEuclideanProductPoint(g)))
 end
-function Base.convert(::Type{SpecialEuclideanMatrixTangentVector}, g::ArrayPartition)
-    n = size(g.x[1])[1]
-    A = zeros(n + 1, n + 1)
-    A[n + 1, n + 1] = 0.0
+function Base.convert(
+    ::Type{T}, g::ArrayPartition
+) where {T<:SpecialEuclideanMatrixTangentVector}
+    return T(convert(AbstractMatrix, SpecialEuclideanProductTangentVector(g)))
+end
+function Base.convert(
+    ::M, g::SpecialEuclideanProductPoint{<:ArrayPartition}
+) where {T,M<:AbstractMatrix{T}}
+    v = g.value.x
+    n = size(v[1])[1]
+    A = zeros(T, n + 1, n + 1)
     # We do not know whether g.value ir (R,t) or (t,R) so we have to depend on sizes
     s = size(g.x[1])
     if length(s) == 2 # (R,t)
-        A[1:n, 1:n] .= g.x[1]
-        A[1:n, n + 1] .= g.x[2]
+        A[1:n, 1:n] .= v[1]
+        A[1:n, n + 1] .= v[2]
     else # format (t,R)
-        A[1:n, 1:n] .= g.x[2]
-        A[1:n, n + 1] .= g.x[1]
+        A[1:n, 1:n] .= v[2]
+        A[1:n, n + 1] .= v[1]
     end
-    return SpecialEuclideanMatrixPoint(A)
+    return A
 end
 # convert between both representation explicitly
 # the inverse is again not unique since both (R,t) and (t,R) are possible results.
 function Base.convert(
-    ::Type{SpecialEuclideanMatrixPoint}, g::SpecialEuclideanProductPoint{<:ArrayPartition}
+    ::Type{<:SpecialEuclideanMatrixPoint}, g::SpecialEuclideanProductPoint{<:ArrayPartition}
 )
     return SpecialEuclideanMatrixPoint(convert(AbstractMatrix, g))
+end
+function Base.convert(
+    ::Type{<:SpecialEuclideanProductPoint}, g::SpecialEuclideanMatrixPoint{<:AbstractMatrix}
+)
+    return SpecialEuclideanProductPoint(convert(ArrayPartition, g))
 end
 function Base.convert(
     ::Type{SpecialEuclideanMatrixTangentVector},
@@ -90,7 +110,19 @@ function Base.convert(
 )
     return SpecialEuclideanMatrixTangentVector(convert(AbstractMatrix, g))
 end
-
+function Base.convert(
+    ::Type{<:ArrayPartition}, g::SpecialEuclideanMatrixTangentVector{<:AbstractMatrix}
+)
+    A = g.value
+    n = size(A)[1] - 1
+    return ArrayPartition(A[1:n, 1:n], A[1:n, (n + 1)])
+end
+function Base.convert(
+    ::Type{<:SpecialEuclideanProductTangentVector},
+    g::SpecialEuclideanMatrixTangentVector{<:AbstractMatrix},
+)
+    return SpecialEuclideanProductTangentVector(convert(ArrayPartition, g))
+end
 #
 # Functions specialised from the interface
 #
@@ -160,7 +192,7 @@ function ManifoldsBase.log!(
     X::ArrayPartition,
     g::ArrayPartition,
 )
-    _log_SE3!(G, g, X)
+    LieGroups._log_SE3!(G, X, g)
     return X
 end
 

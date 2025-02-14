@@ -326,11 +326,11 @@ function _compose!(
 end
 
 Base.convert(::Type{<:AbstractMatrix}, g::SpecialEuclideanMatrixPoint) = g.value
-function Base.convert(::Type{SpecialEuclideanProductPoint}, p::AbstractMatrix)
+function Base.convert(::Type{<:SpecialEuclideanMatrixPoint}, p::AbstractMatrix)
     return SpecialEuclideanMatrixPoint(p)
 end
 Base.convert(::Type{<:AbstractMatrix}, X::SpecialEuclideanMatrixTangentVector) = X.value
-function Base.convert(::Type{SpecialEuclideanMatrixTangentVector}, X::AbstractMatrix)
+function Base.convert(::Type{<:SpecialEuclideanMatrixTangentVector}, X::AbstractMatrix)
     return SpecialEuclideanMatrixTangentVector(X)
 end
 
@@ -696,7 +696,7 @@ function ManifoldsBase.log!(
     g::AbstractMatrix,
 )
     init_constants!(LieAlgebra(G), X)
-    _log_SE3!(G, g, X)
+    _log_SE3!(G, X, g)
     return X
 end
 function _log_SE3!(G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, X, g)
@@ -708,10 +708,10 @@ function _log_SE3!(G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}
     log!(SO3, Y, Identity(SO3), R)
     α = norm(Y) / sqrt(2) # skew symmetric, so the norm counts everything “twice” in the sqrt.
     if α ≈ 0
-        copyto!(T2, v, t) # U(α) is the identity
+        copyto!(T3, v, t) # U(α) is the identity
     else
         β = 1 / α^2 - (1 + cos(α)) / (2 * α * sin(α))
-        Vα = LinearAlgebra.I .- Y ./ 2 .+ β .* Y^2
+        Vα = LinearAlgebra.I - Y ./ 2 .+ β .* Y^2
         mul!(v, Vα, t)
     end
     return X
