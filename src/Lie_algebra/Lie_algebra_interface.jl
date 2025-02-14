@@ -434,6 +434,9 @@ forwarding to fields `Xfield` and tangent vector functions
 """
 macro default_lie_algebra_fallbacks(TG, TF, Op, TV, Xfield::Symbol)
     block = quote
+        function ManifoldsBase.check_size(𝔤::LieAlgebra{$TF,<:$Op,<:$TG}, X::$TV; kwargs...)
+            return ManifoldsBase.check_size(𝔤, X.$Xfield; kwargs...)
+        end
         function ManifoldsBase.is_point(𝔤::LieAlgebra{$TF,<:$Op,<:$TG}, X::$TV; kwargs...)
             return ManifoldsBase.is_point(𝔤, X.$Xfield; kwargs...)
         end

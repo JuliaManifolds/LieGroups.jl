@@ -283,10 +283,9 @@ function _check_vector(
     return length(errs) == 0 ? nothing : first(errs)
 end
 function ManifoldsBase.check_size(
-    G::LG, g::Union{AbstractMatrix,SpecialEuclideanMatrixPoint}; kwargs...
+    G::LG, g::AbstractMatrix; kwargs...
 ) where {LG<:SpecialEuclideanGroup}
-    _g = ManifoldsBase.internal_value(g)
-    n = size(_g)
+    n = size(g)
     m = ManifoldsBase.representation_size(G)
     if n != m
         return DomainError(
@@ -308,22 +307,9 @@ function ManifoldsBase.check_size(
     end
 end
 function ManifoldsBase.check_size(
-    G::LG, g::SpecialEuclideanMatrixPoint, X::SpecialEuclideanMatrixTangentVector; kwargs...
-) where {LG<:SpecialEuclideanGroup}
-    n = size(X.value)
-    m = ManifoldsBase.representation_size(G)
-    if n != m
-        return DomainError(
-            n,
-            "The point $(X) can not belong to the Lie Algebra $(𝔤), since its size $(n) is not equal to the manifolds representation size ($(m)).",
-        )
-    end
-end
-function ManifoldsBase.check_size(
-    𝔤::LA, X::Union{AbstractMatrix,SpecialEuclideanMatrixTangentVector}; kwargs...
+    𝔤::LA, X::AbstractMatrix; kwargs...
 ) where {LA<:LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup}}
-    _X = ManifoldsBase.internal_value(X)
-    n = size(_X)
+    n = size(X)
     m = ManifoldsBase.representation_size(𝔤.manifold)
     if n != m
         return DomainError(
@@ -544,18 +530,6 @@ function init_constants!(
 )
     n = Manifolds.get_parameter(G.manifold.manifold[1].size)[1]
     X[(n + 1), :] .= 0
-    return X
-end
-
-function init_constants!(G::SpecialEuclideanGroup, g::SpecialEuclideanMatrixPoint)
-    init_constants!(G, g.value)
-    return g
-end
-function init_constants!(
-    G::LieAlgebra{𝔽,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup},
-    X::SpecialEuclideanMatrixTangentVector,
-) where {𝔽}
-    init_constants!(G, X.value)
     return X
 end
 
@@ -792,7 +766,7 @@ function Random.rand!(
     vector_at=nothing,
     kwargs..., #but ignore vector_at, since this is a point
 ) where {SEG<:SpecialEuclideanGroup}
-    return Random.rand!(rng, G, X.value; vector=at = identity_element(G), kwargs...)
+    Random.rand!(rng, G, X.value; vector=at = identity_element(G), kwargs...)
     return X
 end
 
