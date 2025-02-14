@@ -11,7 +11,7 @@ on elements of a Lie group ``$(_math(:G))``.
 abstract type AbstractGroupOperation end
 
 """
-    LieAlgebraOrthogonalBasis{𝔽} <: ManifoldsBase.AbstractOrthogonalBasis{𝔽,ManifoldsBase.TangentSpaceType}
+    DefaultLieAlgebraOrthogonalBasis{𝔽} <: ManifoldsBase.AbstractOrthogonalBasis{𝔽,ManifoldsBase.TangentSpaceType}
 
 Specify an orthogonal basis for a Lie algebra.
 This is used as the default within [`hat`](@ref) and [`vee`](@ref).
@@ -23,10 +23,10 @@ at the [`identity_element`](@ref) on the [`base_manifold](@ref base_manifold(::L
     In order to implement the corresponding [`get_coordinates`](@ref) and [`get_vector`](@ref) functions,
     define `get_coordiinates_lie(::LieGroup, p, X, N)` and `get_vector_lie(::LieGroup, p, X, N)`, resp.
 """
-struct LieAlgebraOrthogonalBasis{𝔽} <:
+struct DefaultLieAlgebraOrthogonalBasis{𝔽} <:
        ManifoldsBase.AbstractOrthogonalBasis{𝔽,ManifoldsBase.TangentSpaceType} end
-function LieAlgebraOrthogonalBasis(𝔽::ManifoldsBase.AbstractNumbers=ℝ)
-    return LieAlgebraOrthogonalBasis{𝔽}()
+function DefaultLieAlgebraOrthogonalBasis(𝔽::ManifoldsBase.AbstractNumbers=ℝ)
+    return DefaultLieAlgebraOrthogonalBasis{𝔽}()
 end
 
 """
@@ -83,6 +83,38 @@ Identity(::LieGroup{𝔽,O}) where {𝔽,O<:AbstractGroupOperation} = Identity{O
 Identity(::O) where {O<:AbstractGroupOperation} = Identity(O)
 Identity(::Type{O}) where {O<:AbstractGroupOperation} = Identity{O}()
 
+"""
+    AbstractLieGroupPoint <: ManifoldsBase.AbstractManifoldPoint end
+
+An abstract type for a point on a [`LieGroup`](@ref).
+While an points and tangent vectors are usually kept untyped for flexibility,
+it might be necessary to distinguish different types of points, for example
+
+* for complicated representations that require a struct
+@ semantic verification
+* when there exist different representations
+
+By sub-typing the [`AbstractManifoldPoint`](@extref `ManifoldsBase.AbstractManifoldPoint`), this follows the same idea as in $(_link(:ManifoldsBase)).
+"""
+abstract type AbstractLieGroupPoint <: ManifoldsBase.AbstractManifoldPoint end
+
+"""
+    AbstractLieAlgebraTangentVector <: ManifoldsBase.AbstractTangentVector
+
+An abstract type for a tangent vector represented in a [`LieAlgebra`](@ref).
+
+While an tangent vectors are usually kept untyped for flexibility,
+it might be necessary to distinguish different types of points, for example
+
+* for complicated representations that require a struct
+@ semantic verification
+* when there exist different representations
+
+By sub-typing the [`AbstractManifoldPoint`](@extref `ManifoldsBase.AbstractManifoldPoint`),
+this follows the same idea as in $(_link(:ManifoldsBase)).
+"""
+abstract type AbstractLieAlgebraTangentVector <: ManifoldsBase.AbstractTangentVector end
+
 #
 #
 # --- Functions ---
@@ -90,26 +122,28 @@ Identity(::Type{O}) where {O<:AbstractGroupOperation} = Identity{O}()
 # Internal pass through for coordinates and vectors
 
 @inline function ManifoldsBase._get_coordinates(
-    G::LieGroup, p, X, B::LieAlgebraOrthogonalBasis
+    G::LieGroup, X, B::DefaultLieAlgebraOrthogonalBasis
 )
-    return get_coordinates_lie(G, p, X, number_system(B))
+    return get_coordinates_lie(G, X, number_system(B))
 end
 @inline function ManifoldsBase._get_coordinates!(
-    G::LieGroup, Y, p, X, B::LieAlgebraOrthogonalBasis
+    G::LieGroup, c, X, B::DefaultLieAlgebraOrthogonalBasis
 )
-    return get_coordinates_lie!(G, Y, p, X, number_system(B))
+    return get_coordinates_lie!(G, c, X, number_system(B))
 end
-@inline function ManifoldsBase._get_vector(G::LieGroup, p, c, B::LieAlgebraOrthogonalBasis)
-    return get_vector_lie(G, p, c, number_system(B))
+@inline function ManifoldsBase._get_vector(
+    G::LieGroup, c, B::DefaultLieAlgebraOrthogonalBasis
+)
+    return get_vector_lie(G, c, number_system(B))
 end
 @inline function ManifoldsBase._get_vector!(
-    G::LieGroup, Y, p, c, B::LieAlgebraOrthogonalBasis
+    G::LieGroup, Y, c, B::DefaultLieAlgebraOrthogonalBasis
 )
-    return get_vector_lie!(G, Y, p, c, number_system(B))
+    return get_vector_lie!(G, Y, c, number_system(B))
 end
 
 _doc_adjoint = """
-    adjoint(G::LieGroup, g X)
+    adjoint(G::LieGroup, g, X)
     adjoint!(G::LieGroup, Y, g, X)
 
 Compute the adjoint ``$(_math(:Ad))(g): $(_math(:𝔤)) → $(_math(:𝔤))``, which is defined as
@@ -146,29 +180,23 @@ Return the manifold stored within the [`LieGroup`](@ref) `G`.
 """
 Manifolds.base_manifold(G::LieGroup) = G.manifold
 
+# Since we dispatch per point here, identity is already checked on the `is_point` level.
 function ManifoldsBase.check_point(
     G::LieGroup{𝔽,O}, g; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
     return ManifoldsBase.check_point(G.manifold, g; kwargs...)
 end
-function ManifoldsBase.check_point(
-    G::LieGroup{𝔽,O}, e::Identity{O}; kwargs...
-) where {𝔽,O<:AbstractGroupOperation}
-    return nothing
-end
-function ManifoldsBase.check_point(
-    G::LieGroup{𝔽,O}, e::Identity{O2}; kwargs...
-) where {𝔽,O<:AbstractGroupOperation,O2<:AbstractGroupOperation}
-    return DomainError(
-        e,
-        """
-        The provided point $e is not the Identity on $G.
-        Expected an Identity corresponding to $(G.op).
-        """,
-    )
-end
 
-ManifoldsBase.check_size(G::LieGroup, ::Identity) = nothing
+ManifoldsBase.check_size(::LieGroup, ::Identity) = nothing
+
+function ManifoldsBase.check_vector(G::LieGroup, g::P, X; kwargs...) where {P}
+    return ManifoldsBase.check_vector(G.manifold, identity_element(G, P), X; kwargs...)
+end
+function ManifoldsBase.check_vector(
+    G::LieGroup{𝔽,Op}, ::Identity{Op}, X::T; kwargs...
+) where {𝔽,Op<:AbstractGroupOperation,T}
+    return ManifoldsBase.check_vector(G.manifold, identity_element(G, T), X; kwargs...)
+end
 
 # compose g ∘ h
 _doc_compose = """
@@ -246,9 +274,9 @@ end
 
 ManifoldsBase.copyto!(G::LieGroup, h, g) = copyto!(G.manifold, h, g)
 function ManifoldsBase.copyto!(
-    G::LieGroup{𝔽,O}, h, g::Identity{O}
-) where {𝔽,O<:AbstractGroupOperation}
-    return ManifoldsBase.copyto!(G.manifold, h, identity_element(G))
+    G::LieGroup{𝔽,O}, h::P, g::Identity{O}
+) where {𝔽,O<:AbstractGroupOperation,P}
+    return ManifoldsBase.copyto!(G.manifold, h, identity_element(G, P))
 end
 function ManifoldsBase.copyto!(
     ::LieGroup{𝔽,O}, h::Identity{O}, ::Identity{O}
@@ -343,8 +371,8 @@ function diff_right_compose! end
 diff_right_compose!(::LieGroup, Y, g, h, X)
 
 _doc_exp = """
-    exp(G::LieGroup, g, X, t::Number=1)
-    exp!(G::LieGroup, h, g, X, t::Number=1)
+    exp(G::LieGroup, g, X)
+    exp!(G::LieGroup, h, g, X)
 
 Compute the Lie group exponential map for ``g∈$(_math(:G))`` and ``X∈$(_math(:𝔤))``,
 where ``$(_math(:𝔤))`` denotes the [`LieAlgebra`](@ref) of ``$(_math(:G))``.
@@ -367,24 +395,20 @@ Implementing the Lie group exponential function introduces a default implementat
 """
 
 @doc "$_doc_exp"
-function ManifoldsBase.exp(G::LieGroup, g, X, t::Number=1)
-    h = allocate_result(G, exp, g)
-    exp!(G, h, g, X, t)
-    return h
-end
+ManifoldsBase.exp(G::LieGroup, ::Any, ::Any)
 
 @doc "$_doc_exp"
-function ManifoldsBase.exp!(G::LieGroup, h, g, X, t::Number=1)
-    exp!(G, h, Identity(G), X, t)
+function ManifoldsBase.exp!(G::LieGroup, h, g, X)
+    exp!(G, h, X)
     compose!(G, h, g, h)
     return h
 end
 
-_doc_exp_id = """
-    exp(G::LieGroup, e::Identity, X)
-    exp!(G::LieGroup, h, e::Identity, X)
+_doc_exponential = """
+    exp(G::LieGroup, X::T)
+    exp!(G::LieGroup, g, X)
 
-Compute the (Lie group) exponential function
+    Compute the (Lie group) exponential function
 
 ```math
 $(_tex(:exp))_{$(_math(:G))}: $(_math(:𝔤)) → $(_math(:G)),$(_tex(:qquad)) $(_tex(:exp))_{$(_math(:G))}(X) = γ_X(1),
@@ -393,149 +417,45 @@ $(_tex(:exp))_{$(_math(:G))}: $(_math(:𝔤)) → $(_math(:G)),$(_tex(:qquad)) $
 where ``γ_X`` is the unique solution of the initial value problem
 
 ```math
-γ(0) = $(_math(:e)), $(_tex(:quad)) γ'(t) = γ(t)$(_math(:act))X.
+γ(0) = $(_math(:e)), $(_tex(:quad)) γ'(s) = γ(s)$(_math(:act))X.
 ```
-
-The computation can be performed in-place of `h`.
 
 See also [HilgertNeeb:2012; Definition 9.2.2](@cite).
+On matrix Lie groups this is the same as the [matrix exponential](https://en.wikipedia.org/wiki/Matrix_exponential).
+
+The computation can be performed in-place of `g`.
+
+!!! info "Naming convention"
+   There are at least two different objects usually called “exponential” that need to be distinguished
+
+   * the [(Riemannian) exponential map](@extref `Base.exp-Tuple{AbstractManifold, Any, Any}`) `exp(M, p, X)` from $(_link(:ManifoldsBase)).
+     This can be accessed here using `exp(base_manifold(G), p, X)`
+   * the exponential map for a (left/right/bi-invariant) Cartan-Schouten (pseudo-)metric `exp(G, g, X)`, which we use as a default within this package
+   * the (matrix/Lie group) exponential function `exp(G, g)` which agrees with the previous one for `g` being the identity there.
 """
 
-@doc "$(_doc_exp_id)"
-function ManifoldsBase.exp(
-    G::LieGroup{𝔽,O}, e::Identity{O}, X, t::Number=1
-) where {𝔽,O<:AbstractGroupOperation}
-    h = identity_element(G)
-    exp!(G, h, e, X, t)
-    return h
+@doc "$(_doc_exponential)"
+function ManifoldsBase.exp(G::LieGroup, X)
+    g = allocate_result(G, exp, X)
+    exp!(G, g, X)
+    return g
 end
 
-# Fallback to a MethodError to avoid stack overflow
-@doc "$(_doc_exp_id)"
-function ManifoldsBase.exp!(
-    G::LieGroup{𝔽,Op}, h, e::Identity{Op}, X, t::Number=1
-) where {𝔽,Op<:AbstractGroupOperation}
-    throw(MethodError(exp!, (typeof(G), typeof(h), typeof(e), typeof(X), typeof(t))))
-end
-
-_doc_get_coordinates = """
-    get_coordinates(G::LieGroup, g, X, B::AbstractBasis)
-    get_coordinates(𝔤::LieAlgebra, X, B::AbstractBasis)
-    get_coordinates!(G::LieGroup, c, g, X, B::AbstractBasis)
-    get_coordinates!(𝔤::LieAlgebra, c, X, B::AbstractBasis)
-
-Return the vector of coordinates to the decomposition of `X` with respect to an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`)
-of the [`LieAlgebra`](@ref) `𝔤`.
-Since all tangent vectors are assumed to be represented in the Lie algebra,
-both signatures are equivalent.
-The operation can be performed in-place of `c`.
-
-By default this function requires [`identity_element`](@ref)`(G)` and calls
-the corresponding [`get_coordinates`](@extref ManifoldsBase :jl:function:`ManifoldsBase.get_coordinates`) function
-of the Riemannian manifold the Lie group is build on.
-
-The inverse operation is [`get_vector`](@ref).
-
-See also [`vee`](@ref).
-"""
-
-@doc "$(_doc_get_coordinates)"
-ManifoldsBase.get_coordinates(G::LieGroup, g, X, B::ManifoldsBase.AbstractBasis)
-
-@doc "$(_doc_exp_id)"
-ManifoldsBase.get_coordinates!(G::LieGroup, c, g, X, B::ManifoldsBase.AbstractBasis)
-
-function get_coordinates_lie(G::LieGroup, g, X, N)
-    return get_coordinates(
-        base_manifold(G), identity_element(G), X, ManifoldsBase.DefaultOrthogonalBasis(N)
-    )
-end
-function get_coordinates_lie!(G::LieGroup, Y, g, X, N)
-    return get_coordinates!(
-        base_manifold(G), Y, identity_element(G), X, ManifoldsBase.DefaultOrthogonalBasis(N)
-    )
-end
-
-_doc_get_vector = """
-    get_vector(G::LieGroup, g, c, B::AbstractBasis)
-    get_vector(𝔤::LieAlgebra, c, B::AbstractBasis)
-    get_vector!(G::LieGroup, X, g, c, B::AbstractBasis)
-    get_vector!(𝔤::LieAlgebra, X, c, B::AbstractBasis)
-
-Return the vector corresponding to a set of coefficients in an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`)
-of the [`LieAlgebra`](@ref) `𝔤`.
-Since all tangent vectors are assumed to be represented in the Lie algebra,
-both signatures are equivalend.
-The operation can be performed in-place of a tangent vector `X`.
-
-By default this function requires [`identity_element`](@ref)`(G)` and calls
-the corresponding [`get_vector`](@extref ManifoldsBase :jl:function:`ManifoldsBase.get_vectors`) function
-of the Riemannian manifold the Lie group is build on.
-
-The inverse operation is [`get_coordinates`](@ref).
-
-See also [`hat`](@ref)
-"""
-
-@doc "$(_doc_get_vector)"
-ManifoldsBase.get_vector(G::LieGroup, g, c, B::ManifoldsBase.AbstractBasis)
-
-@doc "$(_doc_exp_id)"
-ManifoldsBase.get_vector!(G::LieGroup, X, g, c, B::ManifoldsBase.AbstractBasis)
-
-@inline function get_vector_lie(G::LieGroup, g, c, N)
-    return get_vector(
-        base_manifold(G), identity_element(G), c, ManifoldsBase.DefaultOrthogonalBasis(N)
-    )
-end
-@inline function get_vector_lie!(G::LieGroup, Y, g, c, N)
-    return get_vector!(
-        base_manifold(G), Y, identity_element(G), c, ManifoldsBase.DefaultOrthogonalBasis(N)
-    )
-end
-
-_doc_hat = """
-    hat(G::LieGroup, c)
-    hat!(G::LieGroup, X, c)
-
-Compute the hat map ``(⋅)^̂ `` that maps a vector of coordinates ``c_i``
-with respect to a certain basis to a tangent vector in the Lie algebra
-
-```math
-X = $(_tex(:sum))_{i∈$(_tex(:Cal,"I"))} c_iB_i,
-```
-
-where ``$(_tex(:Set, "B_i"))_{i∈$(_tex(:Cal,"I"))}`` is a basis of the Lie algebra
-and ``$(_tex(:Cal,"I"))`` a corresponding index set, which is usually ``$(_tex(:Cal,"I"))=$(_tex(:Set,raw"1,\ldots,n"))``.
-
-The computation can be performed in-place of `X`.
-The inverse of `hat` is [`vee`](@ref).
-
-Technically, `hat` is a specific case of [`get_vector`](@ref) and is implemented using the
-[`LieAlgebraOrthogonalBasis`](@ref)
-"""
-
-# function hat end
-@doc "$(_doc_hat)"
-function hat(G::LieGroup{𝔽}, c) where {𝔽}
-    return get_vector_lie(G, Identity(G), c, 𝔽)
-end
-
-# function hat! end
-@doc "$(_doc_hat)"
-function hat!(G::LieGroup{𝔽}, X, c) where {𝔽}
-    get_vector_lie!(G, X, Identity(G), c, 𝔽)
-    return X
-end
+@doc "$(_doc_exponential)"
+ManifoldsBase.exp!(G::LieGroup, ::Any, ::Any)
 
 _doc_identity_element = """
     identity_element(G::LieGroup)
-    identity_element!(G::LieGroup, e)
+    identity_element(G::LieGroup, T)
+    identity_element!(G::LieGroup, e::T)
 
 Return a point representation of the [`Identity`](@ref) on the [`LieGroup`](@ref) `G`.
 By default this representation is the default array or number representation.
-It should return the corresponding default representation of ``e`` as a point on `G` if
-points are not represented by arrays.
+If there exist several representations, the type `T` can be used to distinguish between them,
+and it should be provided for both the [`AbstractLieGroupPoint`](@ref) as well as the [`AbstractLieAlgebraTangentVector`](@ref)
+if they differ, since maybe only one of these types might be available for the second signature.
+
+It returns the corresponding default representation of ``e`` as a point on `G`.
 This can be performed in-place of `e`.
 """
 # `function identity_element end`
@@ -543,6 +463,10 @@ This can be performed in-place of `e`.
 function identity_element(G::LieGroup)
     e = ManifoldsBase.allocate_result(G, identity_element)
     return identity_element!(G, e)
+end
+function identity_element(G::LieGroup, ::Type)
+    # default, call the other one as well
+    return identity_element(G)
 end
 
 function identity_element! end
@@ -574,8 +498,8 @@ function Base.inv(::LieGroup{𝔽,O}, e::Identity{O}) where {𝔽,O<:AbstractGro
     return e
 end
 
-function inv!(G::LieGroup{𝔽,O}, q, ::Identity{O}) where {𝔽,O<:AbstractGroupOperation}
-    return identity_element!(G, q)
+function inv!(G::LieGroup{𝔽,O}, g, ::Identity{O}) where {𝔽,O<:AbstractGroupOperation}
+    return identity_element!(G, g)
 end
 
 _doc_inv_left_compose = """
@@ -624,7 +548,7 @@ end
 
 function is_identity end
 @doc """
-    is_identity(G::LieGroup, q; kwargs)
+    is_identity(G::LieGroup, q; kwargs...)
 
 Check whether `q` is the identity on the [`LieGroup`](@ref) ``$(_math(:G))``.
 This means it is either the [`Identity`](@ref)`{O}` with the respect to the corresponding
@@ -636,8 +560,12 @@ This means it is either the [`Identity`](@ref)`{O}` with the respect to the corr
 """
 is_identity(G::LieGroup, q)
 
-function is_identity(G::LieGroup{𝔽,O}, h; kwargs...) where {𝔽,O<:AbstractGroupOperation}
-    return ManifoldsBase.isapprox(G, Identity{O}(), h; kwargs...)
+# Declare as “fallback” for types
+
+function is_identity(
+    G::LieGroup{𝔽,O}, h::P; kwargs...
+) where {𝔽,P,O<:AbstractGroupOperation}
+    return ManifoldsBase.isapprox(G, identity_element(G, P), h; kwargs...)
 end
 function is_identity(
     ::LieGroup{𝔽,O}, ::Identity{O}; kwargs...
@@ -663,26 +591,22 @@ identity element corresponding to `G`.
 """
 ManifoldsBase.is_point(G::LieGroup, g; kwargs...)
 
-_doc_is_vector = """
-    is_vector(G::LieGroup, X; kwargs...)
-    is_vector(G::LieGroup{𝔽,O}, e::Indentity{O}, X; kwargs...)
+# resolve identity already here, everything else passes down to checks.
 
-Check whether `X` is a tangent vector, that is an element of the [`LieAlgebra`](@ref)
-of `G`.
-The first variant calls [`is_point`](@extref `ManifoldsBase.is_point-Tuple{AbstractManifold, Any, Bool}`) on the [`LieAlgebra`](@ref) `𝔤` of `G`.
-The second variant calls [`is_vector`](@extref ManifoldsBase.is_vector) on the $(_link(:AbstractManifold)) at the [`identity_element`](@ref).
-
-All keyword arguments are passed on to the corresponding call
-"""
-
-@doc "$(_doc_is_vector)"
-ManifoldsBase.is_vector(G::LieGroup, X; kwargs...) = is_point(LieAlgebra(G), X; kwargs...)
-
-@doc "$(_doc_is_vector)"
-function ManifoldsBase.is_vector(
-    G::LieGroup{𝔽,O}, e::Identity{O}, X; kwargs...
+function ManifoldsBase.is_point(
+    G::LieGroup{𝔽,O}, g::Identity{O}; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
-    return is_vector(G.manifold, identity_element(G), X; kwargs...)
+    return true
+end
+function ManifoldsBase.is_point(G::LieGroup, e::Identity; error::Symbol=:none, kwargs...)
+    s = """
+        The provided point $e is not the Identity on $G.
+        Expected an Identity corresponding to $(G.op).
+        """
+    (error === :error) && throw(DomainError(s))
+    (error === :info) && @info s
+    (error === :warn) && @warn s
+    return false
 end
 
 """
@@ -698,12 +622,12 @@ ManifoldsBase.isapprox(G::LieGroup, g, h; kwargs...) = isapprox(G.manifold, g, h
 function ManifoldsBase.isapprox(
     G::LieGroup{𝔽,O}, g::Identity{O}, h; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
-    return ManifoldsBase.isapprox(G.manifold, identity_element(G), h; kwargs...)
+    return ManifoldsBase.isapprox(G, identity_element(G, typeof(h)), h; kwargs...)
 end
 function ManifoldsBase.isapprox(
     G::LieGroup{𝔽,O}, g, h::Identity{O}; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
-    return ManifoldsBase.isapprox(G.manifold, g, identity_element(G); kwargs...)
+    return ManifoldsBase.isapprox(G, g, identity_element(G, typeof(g)); kwargs...)
 end
 function ManifoldsBase.isapprox(
     G::LieGroup{𝔽,O}, g::Identity{O}, h::Identity{O}; kwargs...
@@ -715,6 +639,36 @@ function ManifoldsBase.isapprox(
 ) where {𝔽,O<:AbstractGroupOperation,O2<:AbstractGroupOperation}
     return false
 end
+
+_doc_jacobian_conjugate = """
+    jacobian_conjugate(G::LieGroup, g, h, B::ManifoldsBase.AbstractBasis=DefaultLieAlgebraOrthogonalBasis())
+    jacobian_conjugate!(G::LieGroup, J, g, h, B::ManifoldsBase.AbstractBasis=DefaultLieAlgebraOrthogonalBasis())
+
+Compute the Jacobian of the [`conjugate`](@ref) ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1}``,
+with respect to an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`).
+
+This can be seen as a matrix representation of the [`diff_conjugate`](@ref) ``D(c_g(h))[X]``
+with respect to the given basis.
+
+!!! note
+    For the case that `h` is the [`Identity`](@ref) and the relation of ``D(c_g(h))[X]``
+    to the [`adjoint`](@ref) ``$(_math(:Ad))(g)``, the Jacobian then sometimes called “adjoint matrix”,
+    e.g. in [SolaDerayAtchuthan:2021](@cite), when choosing as a basis the
+    [`DefaultLieAlgebraOrthogonalBasis`](@ref)`()` that is used for [`hat`](@ref) and [`vee`](@ref).
+"""
+@doc "$(_doc_jacobian_conjugate)"
+function jacobian_conjugate(
+    G::LieGroup, g, h, B::ManifoldsBase.AbstractBasis=DefaultLieAlgebraOrthogonalBasis()
+)
+    J = ManifoldsBase.allocate_result(G, jacobian_conjugate, g, h, B)
+    return jacobian_conjugate!(G, J, g, h, B)
+end
+
+function jacobian_conjugate! end
+@doc "$(_doc_jacobian_conjugate)"
+jacobian_conjugate!(
+    ::LieGroup, J, g, h; B::ManifoldsBase.AbstractBasis=DefaultLieAlgebraOrthogonalBasis()
+)
 
 _doc_log = """
     log(G::LieGroup, g, h)
@@ -728,16 +682,16 @@ It is given by
 $(_tex(:log))_g h = $(_tex(:log))_{$(_math(:G))}(g^{-1}$(_math(:∘))h)
 ```
 
-where ``$(_tex(:log))_{$(_math(:G))}`` denotes the [Lie group logarithmic function](@ref log(::LieGroup, ::Identity, :Any))
+where ``$(_tex(:log))_{$(_math(:G))}`` denotes the [Lie group logarithmic function](@ref log(::LieGroup, :Any))
 The computation can be performed in-place of `X`.
 
-If `g` is the [`Identity`](@ref) the [Lie group logarithmic function](@ref log(::LieGroup, ::Identity, :Any)) ``$(_tex(:log))_{$(_math(:G))}`` is computed directly.
-Implementing the Lie group logarithmic function introduces a default implementation for this function with the formula above.
 
-!!! note
-    The Lie group logarithmic map is usually different from the logarithmic map with respect
-    to the metric of the underlying Riemannian manifold ``$(_math(:M))``.
-    To access the (Riemannian) logarithmic map, use `log(`[`base_manifold`](@ref)`G, g, h)`.
+!!! info "Naming convention"
+   There are at least two different objects usually called “logarithm” that need to be distinguished
+
+   * the [(Riemannian) logarithmic map](@extref `Base.log-Tuple{AbstractManifold, Any, Any}`) `log(M, p, X)` from $(_link(:ManifoldsBase))
+   * the exponential map for a (left/right/bi-invariant) Cartan-Schouten (pseudo-)metric `exp(G, g, X)`, which we use as a default within this package
+   * the (matrix/Lie group) exponential function `exp(G, g)` which agrees with the previous one for `g` being the identity there.
 """
 
 @doc "$_doc_log"
@@ -749,35 +703,72 @@ end
 
 @doc "$_doc_log"
 function ManifoldsBase.log!(G::LieGroup, X, g, h)
-    log!(G, X, Identity(G), compose(G, inv(G, g), h))
+    log!(G, X, compose(G, inv(G, g), h))
     return h
 end
 
-_doc_log_id = """
-    log(G::LieGroup, e::Identity, g)
-    log!(G::LieGroup, X, e::Identity, g)
+_doc_log = """
+    log(G::LieGroup, g, h)
+    log(G::LieGroup, g)
+    log(G::LieGroup, g::Identity, T)
+    log!(G::LieGroup, X::T, g)
 
 Compute the (Lie group) logarithmic function ``$(_tex(:log))_{$(_math(:G))}: $(_math(:G)) → $(_math(:𝔤))``,
-which is the inverse of the [Lie group exponential function](@ref exp(::LieGroup, ::Identity, :Any))
-The compuation can be performed in-place of `X`.
+which is the inverse of the [Lie group exponential function](@ref exp(::LieGroup, :Any)).
+For the allocating variant, you can specify the type `T`, when the point argument is the identity and hence does not provide the representation used.
+The computation can be performed in-place of `X::T`, which then determines the type.
+
+!!! info "Naming convention"
+   There are at least two different objects usually called “logarithm” that need to be distinguished
+
+   * the [(Riemannian) logarithm](@extref `Base.log-Tuple{AbstractManifold, Any, Any}`) map `log(M, p, q)` from $(_link(:ManifoldsBase)). This can be accessed here using `log(base_manifold(G), p, q)`.
+   * the logarithmic map for a (left/right/bi-invariant) Cartan-Schouten (pseudo-)metric `log(G, g, h)`, which we use as a default within this package
+   * the (matrix/Lie group) logarithm function `log(G, h)` which agrees with the previous one for `g` being the identity there.
 """
 
-@doc "$(_doc_log_id)"
-function ManifoldsBase.log(G::LieGroup, e::Identity, g)
+@doc "$(_doc_log)"
+function ManifoldsBase.log(G::LieGroup, g)
     X = allocate_result(G, log, g)
-    log!(G, X, e, g)
+    log!(G, X, g)
     return X
+end
+function ManifoldsBase.log(
+    G::LieGroup{𝔽,Op}, e::Identity{Op}
+) where {𝔽,Op<:AbstractGroupOperation}
+    return zero_vector(LieAlgebra(G))
+end
+function ManifoldsBase.log(
+    G::LieGroup{𝔽,Op}, e::Identity{Op}, T::Type
+) where {𝔽,Op<:AbstractGroupOperation}
+    return zero_vector(LieAlgebra(G), T)
+end
+
+@doc "$(_doc_log)"
+ManifoldsBase.log!(G::LieGroup, ::Any, ::Any)
+
+function ManifoldsBase.log!(
+    G::L, X, e::Identity{Op}
+) where {𝔽,Op<:AbstractGroupOperation,L<:LieGroup{𝔽,Op}}
+    return zero_vector!(LieAlgebra(G), X)
 end
 
 ManifoldsBase.manifold_dimension(G::LieGroup) = manifold_dimension(G.manifold)
 
-ManifoldsBase.norm(G::LieGroup, g, X) = norm(G.manifold, g, X)
+# TODO: wrap this in the Cartan-Schouten metric on the Lie algebra.
+ManifoldsBase.norm(G::LieGroup, g, X) = norm(G.manifold, identity_element(G, typeof(g)), X)
+
+ManifoldsBase.project!(G::LieGroup, h, g) = project!(G.manifold, h, g)
+# Since tangent vectors are always in the Lie algebra, project always on TeG
+function ManifoldsBase.project!(G::LieGroup, Y, g, X::T) where {T}
+    return project!(G.manifold, Y, identity_element(G, T), X)
+end
 
 _doc_rand = """
     rand(::LieGroup; vector_at=nothing, σ::Real=1.0, kwargs...)
-    rand(::LieAlgebra; σ::Real=1.0, kwargs...)
-    rand!(::LieGroup, gX; vector_at=nothing, σ::Real=1.0, kwargs...)
-    rand!(::LieAlgebra, X; σ::Real=1.0, kwargs...)
+    rand(::LieGroup, PT::Type; vector_at=nothing, σ::Real=1.0, kwargs...)
+    rand!(::LieAlgebra, T::Type; σ::Real=1.0, kwargs...)
+    rand!(::LieGroup, gX::PT; vector_at=nothing, σ::Real=1.0, kwargs...)
+    rand!(::LieAlgebra, X::T; σ::Real=1.0, kwargs...)
 
 Compute a random point or tangent vector on a Lie group.
 
@@ -786,22 +777,60 @@ underlying manifold itself.
 
 For tangent vectors, an element in the Lie Algebra is generated,
 see also [`rand(::LieAlgebra; kwargs...)`](@ref)
+
+For both cases, you can provide the type ``T`` for the tangent vector and/or point ``PT``,
+if you want to generate a random point in a certain representation.
+For the in-place variants the type is inferred from `pX´ and `X`, respectively.
 """
 
 @doc "$(_doc_rand)"
 Random.rand(::LieGroup; kwargs...)
+
+# New in LIeGroups – maybe move to ManifoldsBase at some point
+@doc "$(_doc_rand)"
+Random.rand(G::LieGroup, T::Type; vector_at=nothing, kwargs...)
+
+function Random.rand(M::LieGroup, T::Type, d::Integer; kwargs...)
+    return [rand(M, T; kwargs...) for _ in 1:d]
+end
+function Random.rand(rng::AbstractRNG, G::LieGroup, T::Type, d::Integer; kwargs...)
+    return [rand(rng, G, T; kwargs...) for _ in 1:d]
+end
+function Random.rand(G::LieGroup, d::Integer; kwargs...)
+    return [rand(M; kwargs...) for _ in 1:d]
+end
+function Random.rand(G::LieGroup, T::Type; vector_at=nothing, kwargs...)
+    if vector_at === nothing
+        gX = allocate_on(G, T)
+    else
+        gX = allocate_on(G, TangentSpaceType(), T)
+    end
+    rand!(G, gX; vector_at=vector_at, kwargs...)
+    return gX
+end
+function Random.rand(rng::AbstractRNG, M::LieGroup, T::Type; vector_at=nothing, kwargs...)
+    if vector_at === nothing
+        gX = allocate_on(M, T)
+    else
+        gX = allocate_on(M, TangentSpaceType(), T)
+    end
+    rand!(rng, M, gX; vector_at=vector_at, kwargs...)
+    return gX
+end
 
 @doc "$(_doc_rand)"
 function Random.rand!(G::LieGroup, pX; kwargs...)
     return rand!(Random.default_rng(), G, pX; kwargs...)
 end
 
-function Random.rand!(rng::AbstractRNG, G::LieGroup, pX; vector_at=nothing, kwargs...)
+function Random.rand!(
+    rng::AbstractRNG, G::LieGroup, pX::T; vector_at=nothing, kwargs...
+) where {T}
     M = base_manifold(G)
     if vector_at === nothing # for points -> pass to manifold
-        rand!(rng, M, pX, kwargs...)
+        rand!(rng, M, pX; kwargs...)
     else # for tangent vectors -> materialize identity, pass to tangent space there.
-        rand!(rng, M, pX; vector_at=identity_element(G), kwargs...)
+        rand!(rng, M, pX; vector_at=identity_element(G, T), kwargs...)
     end
 end
 
@@ -813,55 +842,23 @@ function Base.show(io::IO, G::LieGroup)
     return print(io, "LieGroup($(G.manifold), $(G.op))")
 end
 
-_doc_vee = """
-    vee(G::LieGroup, X)
-    vee!(G::LieGroup, c, X)
-
-Compute the vee map ``(⋅)^∨`` that maps a tangent vector `X` from the [`LieAlgebra`](@ref)
-to its coordinates with respect to the [`LieAlgebraOrthogonalBasis`](@ref) basis in the Lie algebra
-
-```math
-X = $(_tex(:sum))_{i∈$(_tex(:Cal,"I"))} c_iB_i,
-```
-
-where ``$(_tex(:Set, "B_i"))_{i∈$(_tex(:Cal,"I"))}`` is a basis of the Lie algebra
-and ``$(_tex(:Cal,"I"))`` a corresponding index set, which is usually ``$(_tex(:Cal,"I"))=$(_tex(:Set,raw"1,\ldots,n"))``.
-
-The computation can be performed in-place of `c`.
-The inverse of `vee` is [`hat`](@ref).
-
-Technically, `vee` is a specific case of [`get_coordinates`](@ref) and is implemented using
-the [`LieAlgebraOrthogonalBasis`](@ref)
-
 """
+    submanifold_component_view(G::LieGroup, g, i)
 
-# function vee end
-@doc "$(_doc_vee)"
-function vee(G::LieGroup{𝔽}, X) where {𝔽}
-    return get_coordinates_lie(G, Identity(G), X, 𝔽)
-end
-
-# function vee! end
-@doc "$(_doc_vee)"
-function vee!(G::LieGroup{𝔽}, c, X) where {𝔽}
-    get_coordinates_lie!(G, c, Identity(G), X, 𝔽)
-    return c
-end
-
-function ManifoldsBase.zero_vector(
-    G::LieGroup{𝔽,O}, ::Identity{O}
-) where {𝔽,O<:AbstractGroupOperation}
-    return zero_vector(G, identity_element(G))
-end
-
-function ManifoldsBase.zero_vector!(
-    G::LieGroup{𝔽,O}, X, ::Identity{O}
-) where {𝔽,O<:AbstractGroupOperation}
-    return zero_vector!(G.manifold, X, identity_element(G))
-end
+return a view of the submanifold component, that allows to write into it.
+see also [`submanifold_component`](@ref `ManifoldsBase.submanifold_component`) for a
+“read only” access
+"""
+function submanifold_component_view end
 
 #
 # Allocation hints - mainly pass-through, especially for power manifolds
+
+ManifoldsBase.allocate_on(G::LieGroup, T::Type) = ManifoldsBase.allocate_on(G.manifold, T)
+function ManifoldsBase.allocate_on(M::LieGroup, T::Type{<:AbstractArray})
+    return ManifoldsBase.allocate_on(M.manifold, T)
+end
+
 function ManifoldsBase.allocate_result(
     G::LieGroup,
     f::Union{typeof(compose),typeof(inv),typeof(conjugate),typeof(exp)},
@@ -872,12 +869,93 @@ end
 function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(log), args...)
     return ManifoldsBase.allocate_result(G.manifold, f, args...)
 end
-function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(zero_vector), g)
-    return ManifoldsBase.allocate_result(G.manifold, f, g)
-end
 function ManifoldsBase.allocate_result(
     G::LieGroup, f::Union{typeof(rand),typeof(identity_element)}
 )
     # both get a type allocated like rand
     return ManifoldsBase.allocate_result(G.manifold, rand)
+end
+
+#
+#
+# A fallback macro for types that merely wrap the actual data
+"""
+    default_lie_group_fallbacks(TG, TF, TP, TV, pfield::Symbol, Xfield::Symbol, groupOp)
+
+Introduce default fallbacks for all basic functions on Lie groups, for Lie group of type
+`TG` with group operation `Op`, points of type `TP`, tangent vectors of type `TV`, with
+forwarding to fields `pfield` and `Xfield` for point and tangent vector functions,
+respectively.
+"""
+macro default_lie_group_fallbacks(TG, Op, TP, TV, gfield::Symbol, Xfield::Symbol)
+    block = quote
+        function ManifoldsBase.allocate_result(::$TG, ::typeof(adjoint), ::$TP, X::$TV)
+            return $TV(allocate(X.$Xfield))
+        end
+        function ManifoldsBase.allocate_result(::$TG, ::typeof(compose), g::$TP, ::$TP)
+            return $TP(allocate(g.$gfield))
+        end
+        function ManifoldsBase.allocate_result(::$TG, ::typeof(exp), X::$TV)
+            return $TP(allocate(X.$Xfield))
+        end
+        function ManifoldsBase.allocate_result(::$TG, ::typeof(inv), g::$TP)
+            return $TP(allocate(g.$gfield))
+        end
+        function ManifoldsBase.allocate_result(::$TG, ::typeof(log), g::$TP)
+            return $TV(allocate(g.$gfield))
+        end
+
+        function LieGroups.adjoint!(G::$TG, Y::$TV, g::$TP, X::$TV)
+            LieGroups.adjoint!(G, Y.$Xfield, g.$gfield, X.$Xfield)
+            return Y
+        end
+
+        # Could probably even be moved to MainfoldsBase?
+        function ManifoldsBase.check_size(G::$TG, g::$TP; kwargs...)
+            return ManifoldsBase.check_size(G, g.$gfield; kwargs...)
+        end
+        function ManifoldsBase.check_size(G::$TG, g::$TP, X::$TV; kwargs...)
+            return ManifoldsBase.check_size(G, g.$gfield, X.$Xfield; kwargs...)
+        end
+
+        function LieGroups._compose!(G::$TG, k::$TP, g::$TP, h::$TP)
+            LieGroups._compose!(G, k.$gfield, g.$gfield, h.$gfield)
+            return k
+        end
+        function LieGroups.exp!(G::$TG, g::$TP, X::$TV)
+            LieGroups.exp!(G, g.$gfield, X.$Xfield)
+            return g
+        end
+
+        function identity_element!(G::$TG, g::$TP)
+            identity_element!(G, g.$gfield)
+            return g
+        end
+        function LieGroups.inv!(G::$TG, h::$TP, g::$TP)
+            LieGroups.inv!(G, h.$gfield, g.$gfield)
+            return h
+        end
+        function LieGroups.inv!(G::$TG, h::$TP, e::Identity{<:$Op})
+            LieGroups.inv!(G, h.$gfield, e)
+            return h
+        end
+
+        function LieGroups.is_identity(G::$TG, g::$TP; kwargs...)
+            return LieGroups.is_identity(G, g.$gfield; kwargs...)
+        end
+        function ManifoldsBase.isapprox(
+            G::$TG, e::Identity{<:$Op}, X::$TV, Y::$TV; kwargs...
+        )
+            return ManifoldsBase.isapprox(G, e, X.$Xfield, Y.$Xfield; kwargs...)
+        end
+        function LieGroups.log!(G::$TG, X::$TV, g::$TP)
+            LieGroups.log!(G, X.$Xfield, g.$gfield)
+            return X
+        end
+        function LieGroups.log!(G::$TG, X::$TV, e::Identity{<:$Op})
+            LieGroups.log!(G, X.$Xfield, e)
+            return X
+        end
+    end
+    return esc(block)
 end
