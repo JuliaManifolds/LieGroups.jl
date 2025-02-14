@@ -159,6 +159,8 @@ end
 
 ManifoldsBase.@manifold_element_forwards SpecialEuclideanProductPoint value
 ManifoldsBase.@manifold_vector_forwards SpecialEuclideanProductTangentVector value
+ManifoldsBase.@default_manifold_fallbacks LeftSpecialEuclideanGroup SpecialEuclideanProductPoint SpecialEuclideanProductTangentVector value value
+ManifoldsBase.@default_manifold_fallbacks RightSpecialEuclideanGroup SpecialEuclideanProductPoint SpecialEuclideanProductTangentVector value value
 
 @default_lie_group_fallbacks LeftSpecialEuclideanGroup LeftSpecialEuclideanGroupOperation SpecialEuclideanProductPoint SpecialEuclideanProductTangentVector value value
 @default_lie_group_fallbacks RightSpecialEuclideanGroup RightSpecialEuclideanGroupOperation SpecialEuclideanProductPoint SpecialEuclideanProductTangentVector value value
@@ -231,7 +233,7 @@ function _check_point(
     return length(errs) == 0 ? nothing : first(errs)
 end
 
-# Order in a unified way – identities as well for resolving ambiguities
+# Order in a unified way with identities as well for resolving ambiguities
 function ManifoldsBase.check_vector(G::LeftSpecialEuclideanGroup, g, X; kwargs...)
     return _check_vector(G, G.manifold[1], G.manifold[2], G.op[1], G.op[2], g, X; kwargs...)
 end
@@ -508,10 +510,6 @@ function identity_element(
 end
 function identity_element!(::SpecialEuclideanGroup, q::AbstractMatrix)
     copyto!(q, I)
-    return q
-end
-function identity_element!(G::SpecialEuclideanGroup, q::SpecialEuclideanMatrixPoint)
-    identity_element!(G, q.value)
     return q
 end
 
@@ -962,7 +960,6 @@ function ManifoldsBase.zero_vector(
     n = Manifolds.get_parameter(G.manifold[1].size)[1]
     return SpecialEuclideanMatrixTangentVector(zeros(T, n + 1, n + 1))
 end
-
 function ManifoldsBase.zero_vector!(
     𝔤::LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup}, X
 )

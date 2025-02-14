@@ -442,9 +442,6 @@ macro default_lie_algebra_fallbacks(TG, TF, Op, TV, Xfield::Symbol)
         )
             return ManifoldsBase.isapprox(𝔤, X.$Xfield, Y.$Xfield; kwargs...)
         end
-        function LieGroups.zero_vector(𝔤::LieAlgebra{$TF,<:$Op,<:$TG}, ::Type{$TV})
-            return $TV(LieGroups.zero_vector(𝔤, typeof(X.$Xfield)))
-        end
     end
     return esc(block)
 end

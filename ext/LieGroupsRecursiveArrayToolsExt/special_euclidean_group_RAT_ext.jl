@@ -118,16 +118,27 @@ function ManifoldsBase.exp!(
 end
 
 function LieGroups.identity_element(
-    G::LieGroups.LeftSpecialEuclideanGroup, ::Type{<:ArrayPartition}
-)
+    G::LieGroups.LeftSpecialEuclideanGroup, ::Type{<:ArrayPartition{T,Tuple{A,B}}}
+) where {T,A,B}
     SOn, Tn = LieGroups._SOn_and_Tn(G)
-    return ArrayPartition(identity_element(SOn), identity_element(Tn))
+    return ArrayPartition(identity_element(SOn, A), identity_element(Tn, B))
 end
 function LieGroups.identity_element(
-    G::LieGroups.RightSpecialEuclideanGroup, ::Type{<:ArrayPartition}
-)
+    G::LieGroups.RightSpecialEuclideanGroup, ::Type{<:ArrayPartition{T,Tuple{A,B}}}
+) where {T,A,B}
     SOn, Tn = LieGroups._SOn_and_Tn(G)
-    return ArrayPartition(identity_element(Tn), identity_element(SOn))
+    return ArrayPartition(identity_element(Tn, A), identity_element(SOn, B))
+end
+function LieGroups.identity_element(
+    G::SpecialEuclideanGroup, ::Type{<:SpecialEuclideanProductPoint{A}}
+) where {A<:ArrayPartition}
+    return SpecialEuclideanProductPoint(identity_element(G, A))
+end
+function LieGroups.identity_element!(G::LieGroups.SpecialEuclideanGroup, g::ArrayPartition)
+    SOn, Tn = LieGroups._SOn_and_Tn(G)
+    identity_element!(SOn, ManifoldsBase.submanifold_component(G, g, :Rotation))
+    identity_element!(Tn, ManifoldsBase.submanifold_component(G, g, :Translation))
+    return g
 end
 
 function LieGroups.inv!(G::SpecialEuclideanGroup, h::ArrayPartition, g::ArrayPartition)
@@ -189,9 +200,15 @@ function ManifoldsBase.submanifold_component(
 end
 
 Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
-    G::LieGroups.RightSpecialEuclideanGroup, g::ArrayPartition, ::Val{:Rotation}
+    G::LieGroups.RightSpecialEuclideanGroup,
+    g::Union{
+        ArrayPartition,SpecialEuclideanProductPoint,SpecialEuclideanProductTangentVector
+    },
+    ::Val{:Rotation},
 )
-    return ManifoldsBase.submanifold_component(G.manifold, g, 2)
+    return ManifoldsBase.submanifold_component(
+        G.manifold, ManifoldsBase.internal_value(g), 2
+    )
 end
 Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     G::LieGroups.RightSpecialEuclideanGroup,
@@ -206,20 +223,34 @@ Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
 end
 
 function ManifoldsBase.zero_vector(
-    G::LieAlgebra{
-        𝔽,LieGroups.SpecialEuclideanGroupOperation,LieGroups.SpecialEuclideanGroup
+    𝔤::LieAlgebra{
+        𝔽,
+        <:LieGroups.LeftSpecialEuclideanGroupOperation,
+        <:LieGroups.LeftSpecialEuclideanGroup,
     },
-    ::ArrayPartition,
-) where {𝔽}
+    ::ArrayPartition{T},
+) where {𝔽,T}
+    G = 𝔤.manifold
     n = Manifolds.get_parameter(G.manifold[1].size)[1]
-    return ArrayPartition(zeros(n), zeros(n, n))
+    return ArrayPartition(T, zeros(n, n), zeros(n))
 end
 function ManifoldsBase.zero_vector(
-    G::LieAlgebra{
-        𝔽,LieGroups.SpecialEuclideanGroupOperation,LieGroups.SpecialEuclideanGroup
+    𝔤::LieAlgebra{
+        𝔽,
+        <:LieGroups.RightSpecialEuclideanGroupOperation,
+        <:LieGroups.RightSpecialEuclideanGroup,
     },
-    ::SpecialEuclideanProductTangentVector,
-) where {𝔽}
+    ::ArrayPartition{T},
+) where {𝔽,T}
+    G = 𝔤.manifold
     n = Manifolds.get_parameter(G.manifold[1].size)[1]
-    return SpecialEuclideanProductTangentVector(ArrayPartition(zeros(n), zeros(n, n)))
+    return ArrayPartition(T, zeros(n), zeros(n, n))
+end
+function ManifoldsBase.zero_vector(
+    𝔤::LieAlgebra{
+        𝔽,<:LieGroups.SpecialEuclideanGroupOperation,<:LieGroups.SpecialEuclideanGroup
+    },
+    ::Type{LieGroups.SpecialEuclideanProductTangentVector{AP}},
+) where {𝔽,AP<:ArrayPartition}
+    return SpecialEuclideanProductTangentVector(zero_vector(𝔤, AP))
 end

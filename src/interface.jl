@@ -909,12 +909,26 @@ macro default_lie_group_fallbacks(TG, Op, TP, TV, gfield::Symbol, Xfield::Symbol
             LieGroups.adjoint!(G, Y.$Xfield, g.$gfield, X.$Xfield)
             return Y
         end
+
+        # Could probably even be moved to MainfoldsBase?
+        function ManifoldsBase.check_size(G::$TG, g::$TP; kwargs...)
+            return ManifoldsBase.check_size(G, g.$gfield; kwargs...)
+        end
+        function ManifoldsBase.check_size(G::$TG, g::$TP, X::$TV; kwargs...)
+            return ManifoldsBase.check_size(G, g.$gfield, X.$Xfield; kwargs...)
+        end
+
         function LieGroups._compose!(G::$TG, k::$TP, g::$TP, h::$TP)
             LieGroups._compose!(G, k.$gfield, g.$gfield, h.$gfield)
             return k
         end
         function LieGroups.exp!(G::$TG, g::$TP, X::$TV)
             LieGroups.exp!(G, g.$gfield, X.$Xfield)
+            return g
+        end
+
+        function identity_element!(G::$TG, g::$TP)
+            identity_element!(G, g.$gfield)
             return g
         end
         function LieGroups.inv!(G::$TG, h::$TP, g::$TP)
@@ -934,7 +948,6 @@ macro default_lie_group_fallbacks(TG, Op, TP, TV, gfield::Symbol, Xfield::Symbol
         )
             return ManifoldsBase.isapprox(G, e, X.$Xfield, Y.$Xfield; kwargs...)
         end
-
         function LieGroups.log!(G::$TG, X::$TV, g::$TP)
             LieGroups.log!(G, X.$Xfield, g.$gfield)
             return X
