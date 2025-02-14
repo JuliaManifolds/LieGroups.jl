@@ -486,6 +486,52 @@ function _exp_SE3!(G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}
     return g
 end
 
+_doc_getindex_SE = """
+    g[G::SpecialEuclideanGroup,s]
+    getindex(g, G::SpecialEuclideanGroup, s)
+    X[𝔤,s]
+    getindex(g, 𝔤, s)
+
+Access sub-parts of a [`SpecialEuclideanGroup`](@ref) `G` or its Lie algebra `𝔤`.
+where `s` can be an index `1`, `2` or `:Rotation`, `:Translation` to access the single parts.
+Use `:` to access all submanifold components as a unified tuple.
+"""
+
+@doc "$(_doc_getindex_SE)"
+function Base.getindex(
+    g::Union{SpecialEuclideanMatrixPoint,SpecialEuclideanProductPoint},
+    G::SpecialEuclideanGroup,
+    s::Union{Symbol,Int},
+)
+    return submanifold_component(G, g, s)
+end
+
+function Base.getindex(
+    g::Union{SpecialEuclideanMatrixPoint,SpecialEuclideanProductPoint},
+    G::SpecialEuclideanGroup,
+    ::Colon,
+)
+    return submanifold_components(G, g)
+end
+
+@doc "$(_doc_getindex_SE)"
+function Base.getindex(
+    g::Union{SpecialEuclideanMatrixTangentVector,SpecialEuclideanMatrixTangentVector},
+    𝔤::LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup},
+    s::Union{Symbol,Int},
+)
+    return submanifold_component(𝔤, g, s)
+end
+
+@doc "$(_doc_getindex_SE)"
+function Base.getindex(
+    g::Union{SpecialEuclideanMatrixTangentVector,SpecialEuclideanMatrixTangentVector},
+    𝔤::LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup},
+    ::Colon,
+)
+    return submanifold_component(𝔤, g)
+end
+
 function identity_element(G::SpecialEuclideanGroup)
     return identity_element(G, AbstractMatrix{Float64})
 end
@@ -737,8 +783,9 @@ function ManifoldsBase.norm(G::SpecialEuclideanGroup, g, X)
 end
 function ManifoldsBase.norm(G::SpecialEuclideanGroup, ::Identity, X)
     SOn, Tn = _SOn_and_Tn(G)
-    n1 = norm(SOn, Identity(SOn), submanifold_component(G, X, :Rotation))
-    n2 = norm(Tn, Identity(Tn), submanifold_component(G, X, :Translation))
+    𝔤 = LieAlgebra(G)
+    n1 = norm(SOn, Identity(SOn), submanifold_component(𝔤, X, :Rotation))
+    n2 = norm(Tn, Identity(Tn), submanifold_component(𝔤, X, :Translation))
     return norm([n1, n2])
 end
 
@@ -841,12 +888,25 @@ end
 @inline function ManifoldsBase.submanifold_component(G::SpecialEuclideanGroup, g, s::Symbol)
     return ManifoldsBase.submanifold_component(G, g, Val(s))
 end
+@inline function ManifoldsBase.submanifold_component(
+    𝔤::LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup}, X, s::Symbol
+)
+    return ManifoldsBase.submanifold_component(𝔤, X, Val(s))
+end
 Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     G::SpecialEuclideanGroup, p, ::Val{:Rotation}
 )
-    n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
+    n = ManifoldsBase.get_parameter(base_manifold(G)[1].size)[1]
     # view to be able to write, internal_value to “unpack” SE Matrices
     return view(ManifoldsBase.internal_value(p), 1:n, 1:n)
+end
+Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
+    𝔤::LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup},
+    X,
+    ::Val{:Rotation},
+)
+    n = ManifoldsBase.get_parameter(base_manifold(𝔤)[1].size)[1]
+    return view(ManifoldsBase.internal_value(X), 1:n, 1:n)
 end
 Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     G::SpecialEuclideanGroup,
@@ -856,33 +916,51 @@ Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     SOn, Tn = _SOn_and_Tn(G)
     return Identity(SOn)
 end
-
 Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     G::LeftSpecialEuclideanGroup,
-    p::Union{
-        AbstractMatrix,SpecialEuclideanMatrixPoint,SpecialEuclideanMatrixTangentVector
-    },
+    p::Union{AbstractMatrix,SpecialEuclideanMatrixPoint},
     ::Val{1},
 )
-    n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
+    n = ManifoldsBase.get_parameter(base_manifold(G)[1].size)[1]
     return view(ManifoldsBase.internal_value(p), 1:n, 1:n)
 end
 Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
+    𝔤::LieAlgebra{ℝ,<:LeftSpecialEuclideanGroupOperation,<:LeftSpecialEuclideanGroup},
+    X::Union{AbstractMatrix,SpecialEuclideanMatrixTangentVector},
+    ::Val{1},
+)
+    n = ManifoldsBase.get_parameter(base_manifold(𝔤)[1].size)[1]
+    return view(ManifoldsBase.internal_value(X), 1:n, 1:n)
+end
+Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     G::RightSpecialEuclideanGroup,
-    p::Union{
-        AbstractMatrix,SpecialEuclideanMatrixPoint,SpecialEuclideanMatrixTangentVector
-    },
+    p::Union{AbstractMatrix,SpecialEuclideanMatrixPoint},
     ::Val{2},
 )
-    n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
+    n = ManifoldsBase.get_parameter(base_manifold(G)[1].size)[1]
     return view(ManifoldsBase.internal_value(p), 1:n, 1:n)
+end
+Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
+    𝔤::LieAlgebra{ℝ,<:RightSpecialEuclideanGroupOperation,<:RightSpecialEuclideanGroup},
+    X::Union{AbstractMatrix,SpecialEuclideanMatrixTangentVector},
+    ::Val{2},
+)
+    n = ManifoldsBase.get_parameter(base_manifold(𝔤)[1].size)[1]
+    return view(ManifoldsBase.internal_value(X), 1:n, 1:n)
 end
 Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     G::SpecialEuclideanGroup, p, ::Val{:Translation}
 )
-    # view to be able to write, internal_value to “unpack” SEMatrices
-    n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
+    n = ManifoldsBase.get_parameter(base_manifold(G)[1].size)[1]
     return view(ManifoldsBase.internal_value(p), 1:n, n + 1)
+end
+Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
+    𝔤::LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup},
+    X,
+    ::Val{:Translation},
+)
+    n = ManifoldsBase.get_parameter(base_manifold(𝔤)[1].size)[1]
+    return view(ManifoldsBase.internal_value(X), 1:n, n + 1)
 end
 Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     G::SpecialEuclideanGroup,
@@ -894,25 +972,40 @@ Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
 end
 Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     G::LeftSpecialEuclideanGroup,
-    p::Union{
-        AbstractMatrix,SpecialEuclideanMatrixPoint,SpecialEuclideanMatrixTangentVector
-    },
+    p::Union{AbstractMatrix,SpecialEuclideanMatrixPoint},
     ::Val{2},
 )
-    # view to be able to write, internal_value to “unpack” SEMatrices
-    n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
+    n = ManifoldsBase.get_parameter(base_manifold(G)[1].size)[1]
     return view(ManifoldsBase.internal_value(p), 1:n, n + 1)
 end
 Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
-    G::RightSpecialEuclideanGroup,
-    p::Union{
-        AbstractMatrix,SpecialEuclideanMatrixPoint,SpecialEuclideanMatrixTangentVector
+    𝔤::LieGroups.LieAlgebra{
+        ℝ,<:LeftSpecialEuclideanGroupOperation,<:LeftSpecialEuclideanGroup
     },
+    X::Union{AbstractMatrix,SpecialEuclideanMatrixTangentVector},
+    ::Val{2},
+)
+    n = ManifoldsBase.get_parameter(base_manifold(𝔤)[1].size)[1]
+    return view(ManifoldsBase.internal_value(X), 1:n, n + 1)
+end
+Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
+    G::RightSpecialEuclideanGroup,
+    p::Union{AbstractMatrix,SpecialEuclideanMatrixPoint},
     ::Val{1},
 )
     # view to be able to write, internal_value to “unpack” SEMatrices
-    n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
+    n = ManifoldsBase.get_parameter(base_manifold(G)[1].size)[1]
     return view(ManifoldsBase.internal_value(p), 1:n, n + 1)
+end
+Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
+    𝔤::LieGroups.LieAlgebra{
+        ℝ,<:RightSpecialEuclideanGroupOperation,<:RightSpecialEuclideanGroup
+    },
+    X::Union{AbstractMatrix,SpecialEuclideanProductTangentVector},
+    ::Val{1},
+)
+    n = ManifoldsBase.get_parameter(base_manifold(𝔤)[1].size)[1]
+    return view(ManifoldsBase.internal_value(X), 1:n, n + 1)
 end
 
 Base.@propagate_inbounds function ManifoldsBase.submanifold_components(
@@ -938,6 +1031,24 @@ Base.@propagate_inbounds function ManifoldsBase.submanifold_components(
     G::RightSpecialEuclideanGroup, e::Identity{RightSpecialEuclideanGroupOperation}
 )
     return Tuple(Identity(op) for op in G.op.operations)
+end
+
+Base.@propagate_inbounds function ManifoldsBase.submanifold_components(
+    𝔤::LieAlgebra{ℝ,<:LeftSpecialEuclideanGroupOperation,<:LeftSpecialEuclideanGroup}, X
+)
+    return (
+        submanifold_component(𝔤, X, :Rotation), submanifold_component(𝔤, X, :Translation)
+    )
+end
+Base.@propagate_inbounds function ManifoldsBase.submanifold_components(
+    𝔤::LieGroups.LieAlgebra{
+        ℝ,<:RightSpecialEuclideanGroupOperation,<:RightSpecialEuclideanGroup
+    },
+    X,
+)
+    return (
+        submanifold_component(𝔤, X, :Translation), submanifold_component(𝔤, X, :Rotation)
+    )
 end
 
 function ManifoldsBase.zero_vector(

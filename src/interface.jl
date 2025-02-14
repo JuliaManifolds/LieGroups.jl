@@ -842,15 +842,6 @@ function Base.show(io::IO, G::LieGroup)
     return print(io, "LieGroup($(G.manifold), $(G.op))")
 end
 
-"""
-    submanifold_component_view(G::LieGroup, g, i)
-
-return a view of the submanifold component, that allows to write into it.
-see also [`submanifold_component`](@ref `ManifoldsBase.submanifold_component`) for a
-“read only” access
-"""
-function submanifold_component_view end
-
 #
 # Allocation hints - mainly pass-through, especially for power manifolds
 

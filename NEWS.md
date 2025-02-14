@@ -14,7 +14,10 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
 * `LieAlgebra`
 * `LieGroup` (formerly `GroupManifold`) as well as the concrete groups
   * `TranslationGroup`
-  * `SpecialEuclideanGroup` (formerly `SpecialEuclidean`)
+  * `SpecialEuclideanGroup` (formerly `SpecialEuclidean`) including
+    * `SpecialEuclideanMatrixPoint` and `SpecialEuclideanMatrixTangentVector` when representing thepoints as affine (abstract) matrices
+    * `SpecialEuclideanProductPoint` and `SpecialEuclideanProductTangentVector` when representing them in a product structure, e.g. as an `ArrayPartition` from [`RecursiveArrayTools`](https://github.com/SciML/RecursiveArrayTools.jl).
+    * neither of those types is necessary, besides for conversion between both. The product representation differs for the left and right semidirect product, while the affine matrix variant does not.
   * `SpecialOrthogonalGroup` (formerly `SpecialOrthogonal`)
   * `SpecialUnitaryGroup` (formerly `SpecialUnitary`)
   * `OrthogonalGroup` (formerly `Orthogonal`)
@@ -44,6 +47,7 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
   * `InverseLeftGroupOperationAction` (formerly `RightForwardAction`)
   * `InverseRightGroupOperationAction` (formerly `LeftBackwardAction`)
 * `DefaultLieAlgebraOrthogonalBasis` (replaces `VeeOrthogonalBasis`, which is still available in `ManifoldsBase.jl`)
+* `AbstractLieGroupPoint` and `AbstractLieAlgebraTangentVector` as abstract types to introduce point and Lie algebra tangent vector representations
 * `Identity`
 * `apply`and `apply!`
 * `base_manifold` to access the manifold within a Lie group

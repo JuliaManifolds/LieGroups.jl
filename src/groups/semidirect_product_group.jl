@@ -286,7 +286,7 @@ function get_vector_lie!(
     dim_ranges = ManifoldsBase._get_dim_ranges(dims)
     Prc = map(dr -> (@inbounds view(c, dr)), dim_ranges)
     PrL = LieAlgebra.(LieGroup.(PrM.manifolds, PrG.op.operations))
-    ts = ManifoldsBase.ziptuples(PrL, submanifold_components(PrG, X), Prc)
+    ts = ManifoldsBase.ziptuples(PrL, submanifold_components(Pr𝔤, X), Prc)
     map(ts) do t
         return get_vector_lie!(t..., N)
     end
@@ -407,7 +407,7 @@ function get_coordinates_lie!(
     dim_ranges = ManifoldsBase._get_dim_ranges(dims)
     Prc = map(dr -> (@inbounds view(c, dr)), dim_ranges)
     PrL = LieAlgebra.(LieGroup.(PrM.manifolds, PrG.op.operations))
-    ts = ManifoldsBase.ziptuples(PrL, Prc, submanifold_components(PrG, X))
+    ts = ManifoldsBase.ziptuples(PrL, Prc, submanifold_components(Pr𝔤, X))
     map(ts) do t
         return get_coordinates_lie!(t..., N)
     end

@@ -184,6 +184,9 @@ using LieGroupsTestSuite
 
         @test convert(AbstractMatrix, g4r) == g1
         @test convert(AbstractMatrix, X4r) == X1
+
+        # Element access
+
     end
     @testset "Test special cases in failing checks and internals" begin
         G = SpecialEuclideanGroup(2)
