@@ -180,16 +180,6 @@ function ManifoldsBase.log!(
     LieGroups._log_SE3!(G, X, g)
     return X
 end
-
-function ManifoldsBase.submanifold_component(
-    G::SE, g::Union{ArrayPartition,SpecialEuclideanProductPoint}, ::Val{I}
-) where {I<:Int,SE<:SpecialEuclideanGroup}
-    # pass down to manifold by default
-    println("A")
-    return ManifoldsBase.submanifold_component(
-        base_manifold(G), ManifoldsBase.internal_value(g), I
-    )
-end
 function ManifoldsBase.submanifold_component(
     G::LieGroups.LeftSpecialEuclideanGroup,
     g::Union{ArrayPartition,SpecialEuclideanProductPoint},
