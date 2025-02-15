@@ -216,14 +216,6 @@ end
 function ManifoldsBase.check_vector(G::LeftSpecialEuclideanGroup, g, X; kwargs...)
     return _check_vector(G, G.manifold[1], G.manifold[2], G.op[1], G.op[2], g, X; kwargs...)
 end
-function ManifoldsBase.check_vector(
-    G::LeftSpecialEuclideanGroup,
-    e::Identity{<:LeftSpecialEuclideanGroupOperation},
-    X;
-    kwargs...,
-)
-    return _check_vector(G, G.manifold[1], G.manifold[2], G.op[1], G.op[2], e, X; kwargs...)
-end
 function ManifoldsBase.check_vector(G::RightSpecialEuclideanGroup, g, X; kwargs...)
     return _check_vector(G, G.manifold[2], G.manifold[1], G.op[2], G.op[1], g, X; kwargs...)
 end
