@@ -31,7 +31,7 @@ using LieGroupsTestSuite
     # SE(2) in 4 variants, left semidirect
     @testset "SE(2)" begin
         G2f = SpecialEuclideanGroup(2)
-        G2p = SpecialEuclideanGroup(2; parameter=:type)
+        G2l = SpecialEuclideanGroup(2; parameter=:type)
         g1 = 1 / 𝔰 .* [1.0 1.0 𝔰; -1.0 1.0 0.0; 0.0 0.0 𝔰]
         g2 = [0.0 -1.0 0.0; 1.0 0.0 1.0; 0.0 0.0 1.0]
         g3 = [1.0 0.0 1.0; 0.0 1.0 1.0; 0.0 0.0 1.0]
@@ -52,7 +52,7 @@ using LieGroupsTestSuite
         XM = SpecialEuclideanMatrixTangentVector.(XA)
         XP = [XL1, XL2, XL3]
         XQ = SpecialEuclideanProductTangentVector.(XP)
-        for G in [G2f, G2p], (pts, vec) in zip([gA, gM, gP, gQ], [XA, XM, XP, XQ])
+        for G in [G2f, G2l], (pts, vec) in zip([gA, gM, gP, gQ], [XA, XM, XP, XQ])
             properties = Dict(
                 :Name => "The special Euclidean group ($G, $(eltype(pts)))",
                 :Points => pts,
@@ -137,12 +137,26 @@ using LieGroupsTestSuite
     #
     #
     # SE(4)
+    @testset "SE(4)" begin
+        G4 = SpecialEuclideanGroup(4)
+        g = identity_element(G4)
+        h = copy(g)
+        h[1:2, 1:2] .= 1 / sqrt(2) .* [1.0 1.0; -1.0 1.0]
+        h[1, 5] = 1.0
 
+        X = log(G4, g)
+        @test norm(X) == 0
+        @test isapprox(G4, exp(G4, X), g)
+
+        Y = log(G4, h)
+        @test is_point(LieAlgebra(G4), Y; error=:error)
+        @test isapprox(G4, exp(G4, Y), h)
+    end
     #
     #
     # Conversions
-    @testset "Conversions between representations" begin
-        G2p = SpecialEuclideanGroup(2)
+    @testset "Conversions between representations and incexinv" begin
+        G2l = SpecialEuclideanGroup(2)
         g1 = 1 / 𝔰 .* [1.0 1.0 𝔰; -1.0 1.0 0.0; 0.0 0.0 𝔰]
         g2 = ArrayPartition(1 / 𝔰 * [1.0 1.0; -1.0 1.0], [1.0, 0.0])
         g3 = SpecialEuclideanMatrixPoint(g1)
@@ -151,42 +165,70 @@ using LieGroupsTestSuite
         X2 = ArrayPartition([0.0 -0.23; 0.23 0.0], [0.0, 1.0])
         X3 = SpecialEuclideanMatrixTangentVector(X1)
         X4 = SpecialEuclideanProductTangentVector(X2)
-        # Convert everyone to everyone! (besides 1->3 since that would have been type piracy)
-        @test convert(AbstractMatrix, g3) == g1
-        @test convert(AbstractMatrix, g4) == g1
-        @test convert(ArrayPartition, g3) == g2
-        @test convert(ArrayPartition, g4) == g2
-
-        @test convert(SpecialEuclideanMatrixPoint, g1) == g3
-        @test convert(SpecialEuclideanMatrixPoint, g2) == g3
-        @test convert(SpecialEuclideanMatrixPoint, g4) == g3
-        @test convert(SpecialEuclideanProductPoint, g1) == g4
-        @test convert(SpecialEuclideanProductPoint, g2) == g4
-        @test convert(SpecialEuclideanProductPoint, g3) == g4
-
-        @test convert(AbstractMatrix, X3) == X1
-        @test convert(AbstractMatrix, X4) == X1
-        @test convert(ArrayPartition, X3) == X2
-        @test convert(ArrayPartition, X4) == X2
-
-        @test convert(SpecialEuclideanMatrixTangentVector, X1) == X3
-        @test convert(SpecialEuclideanMatrixTangentVector, X2) == X3
-        @test convert(SpecialEuclideanMatrixTangentVector, X4) == X3
-        @test convert(SpecialEuclideanProductTangentVector, X1) == X4
-        @test convert(SpecialEuclideanProductTangentVector, X2) == X4
-        @test convert(SpecialEuclideanProductTangentVector, X3) == X4
 
         # Test also right semi to array
+        G2r = SpecialEuclideanGroup(2; variant=:right)
         g2r = ArrayPartition([1.0, 0.0], 1 / 𝔰 * [1.0 1.0; -1.0 1.0])
         g4r = SpecialEuclideanProductPoint(g2r)
         X2r = ArrayPartition([0.0, 1.0], [0.0 -0.23; 0.23 0.0])
         X4r = SpecialEuclideanProductTangentVector(X2r)
+        @testset "Conversions" begin
+            # Convert everyone to everyone! (besides 1->3 since that would have been type piracy)
+            @test convert(AbstractMatrix, g3) == g1
+            @test convert(AbstractMatrix, g4) == g1
+            @test convert(ArrayPartition, g3) == g2
+            @test convert(ArrayPartition, g4) == g2
 
-        @test convert(AbstractMatrix, g4r) == g1
-        @test convert(AbstractMatrix, X4r) == X1
+            @test convert(SpecialEuclideanMatrixPoint, g1) == g3
+            @test convert(SpecialEuclideanMatrixPoint, g2) == g3
+            @test convert(SpecialEuclideanMatrixPoint, g4) == g3
+            @test LieGroups.internal_value(g3) == g1
+            @test convert(SpecialEuclideanProductPoint, g1) == g4
+            @test convert(SpecialEuclideanProductPoint, g2) == g4
+            @test convert(SpecialEuclideanProductPoint, g3) == g4
+            @test LieGroups.internal_value(g4) == g2
 
-        # Element access
+            @test convert(AbstractMatrix, X3) == X1
+            @test convert(AbstractMatrix, X4) == X1
+            @test convert(ArrayPartition, X3) == X2
+            @test convert(ArrayPartition, X4) == X2
 
+            @test convert(SpecialEuclideanMatrixTangentVector, X1) == X3
+            @test convert(SpecialEuclideanMatrixTangentVector, X2) == X3
+            @test convert(SpecialEuclideanMatrixTangentVector, X4) == X3
+            @test convert(SpecialEuclideanProductTangentVector, X1) == X4
+            @test convert(SpecialEuclideanProductTangentVector, X2) == X4
+            @test convert(SpecialEuclideanProductTangentVector, X3) == X4
+
+            @test convert(AbstractMatrix, g4r) == g1
+            @test convert(AbstractMatrix, X4r) == X1
+        end
+        @testset "Element Access & norm" begin
+            for i in [:Rotation, :Translation]
+                @test g3[G2l, i] == g4[G2l, i]
+                @test g3[G2l, i] == g4r[G2r, i]
+                @test X3[LieAlgebra(G2l), i] == X4[LieAlgebra(G2l), i]
+                @test X4r[LieAlgebra(G2r), i] == X3[LieAlgebra(G2l), i]
+            end
+            @test g3[G2l, :] == g4[G2l, :]
+            @test g3[G2l, :] == g4r[G2r, :][[2, 1]]
+            @test X3[LieAlgebra(G2l), :] == X4[LieAlgebra(G2l), :]
+            @test X4r[LieAlgebra(G2r), :] == X3[LieAlgebra(G2l), :][[2, 1]]
+
+            @test norm(G2l, Identity(G2l), X4) == norm(X1)
+        end
+    end
+    @testset "Zero vector special types" begin
+        G2l = SpecialEuclideanGroup(2)
+        𝔤l = LieAlgebra(G2l)
+        X1 = zero_vector(𝔤l, ArrayPartition{Float64})
+        @test X1.x[1] == zeros(2, 2)
+        @test X1.x[2] == zeros(2)
+        G2r = SpecialEuclideanGroup(2; variant=:right)
+        𝔤r = LieAlgebra(G2r)
+        X2 = zero_vector(𝔤r, ArrayPartition{Float64})
+        @test X2.x[1] == zeros(2)
+        @test X2.x[2] == zeros(2, 2)
     end
     @testset "Test special cases in failing checks and internals" begin
         G = SpecialEuclideanGroup(2)

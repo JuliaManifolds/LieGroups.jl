@@ -187,15 +187,8 @@ function ManifoldsBase.check_point(
     return ManifoldsBase.check_point(G.manifold, g; kwargs...)
 end
 
-ManifoldsBase.check_size(::LieGroup, ::Identity) = nothing
-
 function ManifoldsBase.check_vector(G::LieGroup, g::P, X; kwargs...) where {P}
     return ManifoldsBase.check_vector(G.manifold, identity_element(G, P), X; kwargs...)
-end
-function ManifoldsBase.check_vector(
-    G::LieGroup{𝔽,Op}, ::Identity{Op}, X::T; kwargs...
-) where {𝔽,Op<:AbstractGroupOperation,T}
-    return ManifoldsBase.check_vector(G.manifold, identity_element(G, T), X; kwargs...)
 end
 
 # compose g ∘ h
@@ -594,7 +587,7 @@ ManifoldsBase.is_point(G::LieGroup, g; kwargs...)
 # resolve identity already here, everything else passes down to checks.
 
 function ManifoldsBase.is_point(
-    G::LieGroup{𝔽,O}, g::Identity{O}; kwargs...
+    G::LieGroup{𝔽,O}, e::Identity{O}; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
     return true
 end
@@ -607,6 +600,12 @@ function ManifoldsBase.is_point(G::LieGroup, e::Identity; error::Symbol=:none, k
     (error === :info) && @info s
     (error === :warn) && @warn s
     return false
+end
+
+function ManifoldsBase.is_vector(
+    G::LieGroup{𝔽,O}, ::Identity{O}, X; kwargs...
+) where {𝔽,O<:AbstractGroupOperation}
+    return ManifoldsBase.is_point(LieAlgebra(G), X; kwargs...)
 end
 
 """

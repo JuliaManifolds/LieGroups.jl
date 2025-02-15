@@ -278,11 +278,11 @@ function ManifoldsBase.zero_vector(
         <:LieGroups.LeftSpecialEuclideanGroupOperation,
         <:LieGroups.LeftSpecialEuclideanGroup,
     },
-    ::ArrayPartition{T},
+    ::Type{<:ArrayPartition{T}},
 ) where {T}
     G = 𝔤.manifold
-    n = Manifolds.get_parameter(G.manifold[1].size)[1]
-    return ArrayPartition(T, zeros(T, n, n), zeros(T, n))
+    n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
+    return ArrayPartition(zeros(T, n, n), zeros(T, n))
 end
 function ManifoldsBase.zero_vector(
     𝔤::LieAlgebra{
@@ -290,11 +290,11 @@ function ManifoldsBase.zero_vector(
         <:LieGroups.RightSpecialEuclideanGroupOperation,
         <:LieGroups.RightSpecialEuclideanGroup,
     },
-    ::ArrayPartition{T},
+    ::Type{<:ArrayPartition{T}},
 ) where {𝔽,T}
     G = 𝔤.manifold
-    n = Manifolds.get_parameter(G.manifold[1].size)[1]
-    return ArrayPartition(T, zeros(T, n), zeros(T, n, n))
+    n = ManifoldsBase.get_parameter(G.manifold[1].size)[1]
+    return ArrayPartition(zeros(T, n), zeros(T, n, n))
 end
 function ManifoldsBase.zero_vector(
     𝔤::LieAlgebra{

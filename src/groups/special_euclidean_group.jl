@@ -102,13 +102,6 @@ struct SpecialEuclideanMatrixPoint{T} <: AbstractLieGroupPoint
     value::T
 end
 
-function ManifoldsBase.allocate_on(
-    M::SpecialEuclideanGroup, ::Type{SpecialEuclideanMatrixPoint{Matrix{T}}}
-) where {T}
-    println("A")
-    return SpecialEuclideanMatrixPoint(Matrix{T}(undef, representation_size(M)...))
-end
-
 """
     SpecialEuclideanMatrixTangentVector <: AbstractLieAlgebraTangentVector
 
@@ -188,27 +181,12 @@ function _check_matrix_affine(g, n; v=1, kwargs...)
     end
     return nothing
 end
-_check_matrix_affine(g::Identity, n; kwargs...) = nothing
 # Order in a unified way
 function ManifoldsBase.check_point(G::LeftSpecialEuclideanGroup, g; kwargs...)
     return _check_point(G, G.manifold[1], G.manifold[2], G.op[1], G.op[2], g; kwargs...)
 end
 function ManifoldsBase.check_point(G::RightSpecialEuclideanGroup, g; kwargs...)
     return _check_point(G, G.manifold[2], G.manifold[1], G.op[2], G.op[1], g; kwargs...)
-end
-
-# Resolve ambiguities with identity
-function ManifoldsBase.check_point(
-    G::LeftSpecialEuclideanGroup, ::Identity{LeftSemidirectProductGroupOperation}; kwargs...
-)
-    return nothing
-end
-function ManifoldsBase.check_point(
-    G::RightSpecialEuclideanGroup,
-    ::Identity{RightSemidirectProductGroupOperation};
-    kwargs...,
-)
-    return nothing
 end
 
 function _check_point(
@@ -247,14 +225,6 @@ function ManifoldsBase.check_vector(
     return _check_vector(G, G.manifold[1], G.manifold[2], G.op[1], G.op[2], e, X; kwargs...)
 end
 function ManifoldsBase.check_vector(G::RightSpecialEuclideanGroup, g, X; kwargs...)
-    return _check_vector(G, G.manifold[2], G.manifold[1], G.op[2], G.op[1], g, X; kwargs...)
-end
-function ManifoldsBase.check_vector(
-    G::RightSpecialEuclideanGroup,
-    e::Identity{<:RightSpecialEuclideanGroupOperation},
-    X;
-    kwargs...,
-)
     return _check_vector(G, G.manifold[2], G.manifold[1], G.op[2], G.op[1], g, X; kwargs...)
 end
 function _check_vector(
@@ -298,10 +268,7 @@ function ManifoldsBase.check_size(
     end
 end
 function ManifoldsBase.check_size(
-    G::LG,
-    g::Union{AbstractMatrix,Identity{<:SpecialEuclideanGroupOperation}},
-    X::AbstractMatrix;
-    kwargs...,
+    G::LG, g::AbstractMatrix, X::AbstractMatrix; kwargs...
 ) where {LG<:SpecialEuclideanGroup}
     n = size(X)
     m = ManifoldsBase.representation_size(G)
@@ -486,6 +453,11 @@ function _exp_SE3!(G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}
     return g
 end
 
+function ManifoldsBase.exp!(::SpecialEuclideanGroup, g::AbstractMatrix, X::AbstractMatrix)
+    copyto!(g, exp(X))
+    return g
+end
+
 _doc_getindex_SE = """
     g[G::SpecialEuclideanGroup,s]
     getindex(g, G::SpecialEuclideanGroup, s)
@@ -493,7 +465,7 @@ _doc_getindex_SE = """
     getindex(g, 𝔤, s)
 
 Access sub-parts of a [`SpecialEuclideanGroup`](@ref) `G` or its Lie algebra `𝔤`.
-where `s` can be an index `1`, `2` or `:Rotation`, `:Translation` to access the single parts.
+where `s` can be an index `:Rotation`, `:Translation` to access the single parts.
 Use `:` to access all submanifold components as a unified tuple.
 """
 
@@ -516,7 +488,7 @@ end
 
 @doc "$(_doc_getindex_SE)"
 function Base.getindex(
-    g::Union{SpecialEuclideanMatrixTangentVector,SpecialEuclideanMatrixTangentVector},
+    g::Union{SpecialEuclideanMatrixTangentVector,SpecialEuclideanProductTangentVector},
     𝔤::LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup},
     s::Union{Symbol,Int},
 )
@@ -525,11 +497,11 @@ end
 
 @doc "$(_doc_getindex_SE)"
 function Base.getindex(
-    g::Union{SpecialEuclideanMatrixTangentVector,SpecialEuclideanMatrixTangentVector},
+    g::Union{SpecialEuclideanMatrixTangentVector,SpecialEuclideanProductTangentVector},
     𝔤::LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup},
     ::Colon,
 )
-    return submanifold_component(𝔤, g)
+    return submanifold_components(𝔤, g)
 end
 
 function identity_element(G::SpecialEuclideanGroup)
@@ -636,22 +608,6 @@ function ManifoldsBase.isapprox(
     G::SpecialEuclideanGroup, g::AbstractMatrix, h::AbstractMatrix; kwargs...
 )
     return isapprox(g, h; kwargs...)
-end
-function ManifoldsBase.isapprox(
-    G::SpecialEuclideanGroup,
-    g::Identity{SpecialEuclideanGroupOperation},
-    h::AbstractMatrix;
-    kwargs...,
-)
-    return isapprox(h, identity_element(G); kwargs...)
-end
-function ManifoldsBase.isapprox(
-    G::SpecialEuclideanGroup,
-    g::AbstractMatrix,
-    h::Identity{SpecialEuclideanGroupOperation};
-    kwargs...,
-)
-    return isapprox(g, identity_element(G); kwargs...)
 end
 
 function is_identity(G::SpecialEuclideanGroup, g::AbstractMatrix; kwargs...)
@@ -781,6 +737,7 @@ function ManifoldsBase.norm(G::SpecialEuclideanGroup, g, X)
     )
     return norm([n1, n2])
 end
+
 function ManifoldsBase.norm(G::SpecialEuclideanGroup, ::Identity, X)
     SOn, Tn = _SOn_and_Tn(G)
     𝔤 = LieAlgebra(G)
@@ -809,18 +766,6 @@ function Random.rand!(
 ) where {SEG<:SpecialEuclideanGroup}
     Random.rand!(rng, G, g.value; vector_at=nothing, kwargs...)
     return g
-end
-
-# this is always with vector_at!=nothing
-function Random.rand!(
-    rng::AbstractRNG,
-    G::SEG,
-    X::Union{SpecialEuclideanMatrixTangentVector,SpecialEuclideanProductTangentVector};
-    vector_at=nothing,
-    kwargs..., #but ignore vector_at, since this is a point
-) where {SEG<:SpecialEuclideanGroup}
-    Random.rand!(rng, G, X.value; vector=at = identity_element(G), kwargs...)
-    return X
 end
 
 function Random.rand!(
@@ -894,7 +839,9 @@ end
     return ManifoldsBase.submanifold_component(𝔤, X, Val(s))
 end
 Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
-    G::SpecialEuclideanGroup, p, ::Val{:Rotation}
+    G::SpecialEuclideanGroup,
+    p::Union{AbstractMatrix,SpecialEuclideanMatrixPoint},
+    ::Val{:Rotation},
 )
     n = ManifoldsBase.get_parameter(base_manifold(G)[1].size)[1]
     # view to be able to write, internal_value to “unpack” SE Matrices
@@ -902,7 +849,7 @@ Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
 end
 Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     𝔤::LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup},
-    X,
+    X::Union{AbstractMatrix,SpecialEuclideanMatrixTangentVector},
     ::Val{:Rotation},
 )
     n = ManifoldsBase.get_parameter(base_manifold(𝔤)[1].size)[1]
