@@ -866,16 +866,6 @@ Base.@propagate_inbounds function ManifoldsBase.submanifold_components(
         submanifold_component(G, p, :Translation), submanifold_component(G, p, :Rotation)
     )
 end
-Base.@propagate_inbounds function ManifoldsBase.submanifold_components(
-    G::LeftSpecialEuclideanGroup, e::Identity{LeftSpecialEuclideanGroupOperation}
-)
-    return Tuple(Identity(op) for op in G.op.operations)
-end
-Base.@propagate_inbounds function ManifoldsBase.submanifold_components(
-    G::RightSpecialEuclideanGroup, e::Identity{RightSpecialEuclideanGroupOperation}
-)
-    return Tuple(Identity(op) for op in G.op.operations)
-end
 
 Base.@propagate_inbounds function ManifoldsBase.submanifold_components(
     𝔤::LieAlgebra{ℝ,<:LeftSpecialEuclideanGroupOperation,<:LeftSpecialEuclideanGroup}, X

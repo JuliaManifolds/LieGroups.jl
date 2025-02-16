@@ -49,4 +49,10 @@ using LieGroupsTestSuite
         :repr => "PowerLieGroup(LieGroup(LieGroupsTestSuite.DummyManifold(), LieGroupsTestSuite.DummyOperation()), 2)",
     )
     test_lie_group(pG2, properties2, expectations2)
+    @testset "Special cases with identity" begin
+        e = Identity(pG)
+        @test ManifoldsBase.check_size(pG, e) == nothing
+        eF = Identity(AdditionGroupOperation())
+        @test ManifoldsBase.check_size(pG, eF) isa DomainError
+    end
 end
