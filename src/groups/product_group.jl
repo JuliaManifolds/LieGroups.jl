@@ -31,8 +31,6 @@ function ProductGroupOperation(operations::AbstractGroupOperation...)
     return ProductGroupOperation(operations)
 end
 
-@inline Base.getindex(pgo::ProductGroupOperation, i::Integer) = pgo.ooperations[i]
-
 @doc raw"""
     cross(O1::AbstractGroupOperation, O2::AbstractGroupOperation)
     O1 × O2
@@ -45,7 +43,7 @@ If both are product operations, they are combined into one, keeping the order of
 
 For the case that more than two are concatenated with `×` this is iterated.
 """
-cross(::AbstractGroupOperation...)
+LinearAlgebra.cross(::AbstractGroupOperation...)
 function LinearAlgebra.cross(O1::AbstractGroupOperation, O2::AbstractGroupOperation)
     return ProductGroupOperation(O1, O2)
 end
@@ -244,6 +242,9 @@ function get_vector_lie!(
     return X
 end
 
+@inline Base.getindex(pgo::ProductGroupOperation, i::Integer) = pgo.operations[i]
+@inline Base.getindex(pgo::ProductGroupOperation, ::Colon) = pgo.operations
+
 function identity_element!(
     PrG::LieGroup{𝔽,Op,M}, e
 ) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
@@ -320,19 +321,7 @@ function ManifoldsBase.log!(
     )
     return X
 end
-function ManifoldsBase.log!(
-    PrG::LieGroup{𝔽,Op,M}, X, e::Identity{Op}, h
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
-    PrM = PrG.manifold
-    map(
-        log!,
-        map(LieGroup, PrM.manifolds, PrG.op.operations),
-        submanifold_components(PrM, X),
-        submanifold_components(PrM, e),
-        submanifold_components(PrM, h),
-    )
-    return X
-end
+
 function ManifoldsBase.log!(
     PrG::LieGroup{𝔽,Op,M}, X, h
 ) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}

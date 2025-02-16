@@ -230,7 +230,7 @@ using LieGroupsTestSuite
         @test X2.x[1] == zeros(2)
         @test X2.x[2] == zeros(2, 2)
     end
-    @testset "Test special cases in failing checks and internals" begin
+    @testset "Test special cases in expected failing checks and internals" begin
         G = SpecialEuclideanGroup(2)
         𝔤 = LieAlgebra(G)
         Gr = SpecialEuclideanGroup(2; variant=:right)
@@ -282,5 +282,22 @@ using LieGroupsTestSuite
         @test is_identity(G, exp(G, zero_vector(𝔤)))
         G3 = SpecialEuclideanGroup(3)
         @test is_identity(G3, exp(G3, zero_vector(LieAlgebra(G3))))
+    end
+    @testset "Identity Subcomponents and rand special case" begin
+        G = SpecialEuclideanGroup(2)
+        X = zeros(3, 3)
+        e = Identity(G)
+        𝔤 = LieAlgebra(G)
+        @test is_point(𝔤, rand!(G, X; vector_at=e))
+        eO = Identity(SpecialOrthogonalGroup(2))
+        eT = Identity(TranslationGroup(2))
+        @test e[G, :Rotation] == eO
+        @test e[G, :Translation] == eT
+        @test e[G, :] == (eO, eT)
+        Gr = SpecialEuclideanGroup(2; variant=:right)
+        er = Identity(Gr)
+        @test er[Gr, :Rotation] == eO
+        @test er[Gr, :Translation] == eT
+        @test er[G, :] == (eO, eT)
     end
 end

@@ -40,6 +40,7 @@ using LinearAlgebra: I
     )
     expectations = Dict(:repr => "OrthogonalGroup(2)")
     test_lie_group(G, properties, expectations)
+
     #
     #
     # O(3)

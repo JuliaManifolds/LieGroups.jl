@@ -271,18 +271,6 @@ function ManifoldsBase.check_size(
         )
     end
 end
-function ManifoldsBase.check_size(
-    𝔤::LA, X::AbstractMatrix; kwargs...
-) where {LA<:LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup}}
-    n = size(X)
-    m = ManifoldsBase.representation_size(𝔤.manifold)
-    if n != m
-        return DomainError(
-            n,
-            "The point $(X) can not belong to the Lie Algebra $(𝔤), since its size $(n) is not equal to the manifolds representation size ($(m)).",
-        )
-    end
-end
 function _compose!(
     ::SpecialEuclideanGroup, k::AbstractMatrix, g::AbstractMatrix, h::AbstractMatrix
 )
@@ -463,7 +451,7 @@ Use `:` to access all submanifold components as a unified tuple.
 
 @doc "$(_doc_getindex_SE)"
 function Base.getindex(
-    g::Union{SpecialEuclideanMatrixPoint,SpecialEuclideanProductPoint},
+    g::Union{SpecialEuclideanMatrixPoint,SpecialEuclideanProductPoint,Identity},
     G::SpecialEuclideanGroup,
     s::Union{Symbol,Int},
 )
@@ -471,7 +459,7 @@ function Base.getindex(
 end
 
 function Base.getindex(
-    g::Union{SpecialEuclideanMatrixPoint,SpecialEuclideanProductPoint},
+    g::Union{SpecialEuclideanMatrixPoint,SpecialEuclideanProductPoint,Identity},
     G::SpecialEuclideanGroup,
     ::Colon,
 )
@@ -715,19 +703,6 @@ function _log_SE3!(G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}
         mul!(v, Vα, t)
     end
     return X
-end
-
-function ManifoldsBase.norm(G::SpecialEuclideanGroup, g, X)
-    SOn, Tn = _SOn_and_Tn(G)
-    n1 = norm(
-        SOn, submanifold_component(G, g, :Rotation), submanifold_component(G, X, :Rotation)
-    )
-    n2 = norm(
-        Tn,
-        submanifold_component(G, g, :Translation),
-        submanifold_component(G, X, :Translation),
-    )
-    return norm([n1, n2])
 end
 
 function ManifoldsBase.norm(G::SpecialEuclideanGroup, ::Identity, X)
