@@ -112,7 +112,7 @@ ManifoldsBase.exp(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, X)
 ManifoldsBase.exp!(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, g, X)
 
 function ManifoldsBase.exp!(
-    ::CommonUnitarySubGroup{ℝ,ManifoldsBase.TypeParameter{Tuple{2}}}, g, X
+    ::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}}, g, X
 )
     @assert size(X) == (2, 2)
     @assert size(g) == (2, 2)
@@ -128,7 +128,7 @@ function ManifoldsBase.exp!(
 end
 
 function ManifoldsBase.exp!(
-    ::CommonUnitarySubGroup{ℝ,ManifoldsBase.TypeParameter{Tuple{3}}}, g, X
+    ::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{3}}}, g, X
 )
     θ = norm(X) / sqrt(2)
     if θ ≈ 0
@@ -144,7 +144,7 @@ function ManifoldsBase.exp!(
     return g
 end
 function ManifoldsBase.exp!(
-    ::CommonUnitarySubGroup{ℝ,ManifoldsBase.TypeParameter{Tuple{4}}}, g, X
+    ::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{4}}}, g, X
 )
     T = eltype(X)
     α, β = angles_4d_skew_sym_matrix(X)
@@ -216,20 +216,15 @@ get_coordinates!(G::OrthogonalLieAlgebra, c, X, ::DefaultLieAlgebraOrthogonalBas
 function get_coordinates_lie!(
     ::CUSA, c, X, ::ManifoldsBase.RealNumbers
 ) where {
-    CUSA<:CommonUnitarySubAlgebra{
-        <:ManifoldsBase.RealNumbers,<:ManifoldsBase.TypeParameter{Tuple{2}}
-    },
+    CUSA<:CommonUnitarySubAlgebra{ManifoldsBase.ℝ,<:ManifoldsBase.TypeParameter{Tuple{2}}}
 }
-    println("Fnumps")
     @assert size(X) == (2, 2)
     @assert size(c) == (1,)
     c[1] = X[2, 1]
     return c
 end
 function get_coordinates_lie!(
-    G::CommonUnitarySubAlgebra{
-        <:ManifoldsBase.RealNumbers,<:ManifoldsBase.TypeParameter{Tuple{n}}
-    },
+    G::CommonUnitarySubAlgebra{ManifoldsBase.ℝ,<:ManifoldsBase.TypeParameter{Tuple{n}}},
     c,
     X,
     ::ManifoldsBase.RealNumbers,
@@ -241,7 +236,7 @@ function get_coordinates_lie!(
     return c
 end
 function get_coordinates_lie!(
-    𝔤::CommonUnitarySubAlgebra{ℝ}, c, X, ::ManifoldsBase.RealNumbers
+    𝔤::CommonUnitarySubAlgebra{ManifoldsBase.ℝ}, c, X, ::ManifoldsBase.RealNumbers
 )
     G = 𝔤.manifold
     n = ManifoldsBase.get_parameter(G.manifold.size)[1]
@@ -301,9 +296,7 @@ get_vector(𝔤::OrthogonalLieAlgebra, X, ::DefaultLieAlgebraOrthogonalBasis)
 get_vector!(𝔤::OrthogonalLieAlgebra, c, X::DefaultLieAlgebraOrthogonalBasis)
 
 function get_vector_lie!(
-    ::CommonUnitarySubAlgebra{
-        <:ManifoldsBase.RealNumbers,<:ManifoldsBase.TypeParameter{Tuple{2}}
-    },
+    ::CommonUnitarySubAlgebra{ManifoldsBase.ℝ,<:ManifoldsBase.TypeParameter{Tuple{2}}},
     X,
     c,
     ::ManifoldsBase.RealNumbers,
@@ -317,9 +310,7 @@ function get_vector_lie!(
     return X
 end
 function get_vector_lie!(
-    𝔤::CommonUnitarySubAlgebra{
-        <:ManifoldsBase.RealNumbers,<:ManifoldsBase.TypeParameter{Tuple{n}}
-    },
+    𝔤::CommonUnitarySubAlgebra{ℝ,<:ManifoldsBase.TypeParameter{Tuple{n}}},
     X,
     c,
     ::ManifoldsBase.RealNumbers,
@@ -485,7 +476,7 @@ function ManifoldsBase.log!(
 end
 
 function ManifoldsBase.log!(
-    G::CommonUnitarySubGroup{ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
+    G::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
     X::AbstractMatrix,
     q::AbstractMatrix,
 )
@@ -502,7 +493,7 @@ function ManifoldsBase.log!(
     return project!(LieAlgebra(G), X, X)
 end
 function ManifoldsBase.log!(
-    G::CommonUnitarySubGroup{ℝ,ManifoldsBase.TypeParameter{Tuple{4}}},
+    G::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{4}}},
     X::AbstractMatrix,
     q::AbstractMatrix,
 )
