@@ -49,7 +49,7 @@ $(_tex(:exp))_{$(_math(:G))}(X) =  $(_tex(:pmatrix, "$(_tex(:cos))(α) & -$(_tex
 
 This result can be computed in-place of `g`.
 
-Note that since ``$(_math(:SO))(2)`` consists of two disjoint connected components and the exponential map is smooth,
+Note that since ``$(_math(:O))(2)`` consists of two disjoint connected components and the exponential map is smooth,
 the result ``g`` always lies in the connected component of the identity.
 """
 
@@ -380,7 +380,7 @@ $(_tex(:log))_{$(_math(:G))}(g) =  $(_tex(:pmatrix, "0 & α &", "-α & 0")).
 This result can be computed in-place of `X`
 
 Note the logarithmic map is only locally around the identity uniquely determined.
-Especially, since ``$(_math(:SO))(2)`` consists of two disjoint connected components and the exponential map is smooth,
+Especially, since ``$(_math(:O))(2)`` consists of two disjoint connected components and the exponential map is smooth,
 for any ``g`` in the other component, the logarithmic map is defined, but not the inverse of the exponential map.
 """
 
@@ -422,7 +422,7 @@ $(_tex(:log))_{$(_math(:G))}(g) = X.
 This result can be computed in-place of `X`
 
 Note the logarithmic map is only locally around the identity uniquely determined.
-Especially, since ``$(_math(:SO))(3)`` consists of two disjoint connected components and the exponential map is smooth,
+Especially, since ``$(_math(:O))(3)`` consists of two disjoint connected components and the exponential map is smooth,
 for any ``g`` in the other component, the logarithmic map is defined, but not the inverse of the exponential map.
 """
 

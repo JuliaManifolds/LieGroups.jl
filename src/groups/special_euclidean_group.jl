@@ -26,7 +26,7 @@ const RightSpecialEuclideanGroup{T} = LieGroup{
 """
     SpecialEuclideanGroup{T}
 
-The special Euclidean group ``$(_math(:SE))(n) = $(_math(:SO))(n) ⋉ $(_math(:T))(n)``. is the Lie group consisting of the
+The special Euclidean group ``$(_math(:SE))(n) = $(_math(:SO))(n) ⋉ $(_math(:T))(n)`` is the Lie group consisting of the
 [`LeftSemidirectProductGroupOperation`](@ref) of the [`SpecialOrthogonalGroup`](@ref) and the
 [`TranslationGroup`](@ref) together with the [`GroupOperationAction`](@ref)`{`[`LeftGroupOperationAction`](@ref)`}`.
 
@@ -56,7 +56,7 @@ We refer also in general to elements on ``$(_math(:SE))(n)`` as ``g``
 and their rotation and translation components as ``r`` and ``t``, respectively.
 
 # Constructor
-    SpecialEuclideanGroup(n; variant=:left, kwargs...)
+    SpecialEuclideanGroup(n::Int; variant=:left, kwargs...)
     SpecialOrthogonalGroup(n; kwargs...) ⋉ TranslationGroup(n; kwargs...)
     TranslationGroup(n; kwargs...) ⋊ SpecialOrthogonalGroup(n; kwargs...)
 
@@ -136,7 +136,7 @@ ManifoldsBase.internal_value(semtv::SpecialEuclideanMatrixTangentVector) = semtv
 """
     SpecialEuclideanProductPoint <: AbstractLieGroupPoint
 
-represent a point on a Lie group (explicitly) as a point that consists of components
+Represent a point on a Lie group (explicitly) as a point that consists of components
 """
 struct SpecialEuclideanProductPoint{T} <: AbstractLieGroupPoint
     value::T
@@ -145,7 +145,7 @@ end
 """
     SpecialEuclideanProductTangentVector <: AbstractLieAlgebraTangentVector
 
-represent a point on a Lie algebra (explicitly) as a tangent vector consists of components
+Represent a point on a Lie algebra (explicitly) as a tangent vector that consists of components.
 """
 struct SpecialEuclideanProductTangentVector{T} <: AbstractLieAlgebraTangentVector
     value::T
@@ -166,7 +166,7 @@ ManifoldsBase.internal_value(sepp::SpecialEuclideanProductPoint) = sepp.value
 ManifoldsBase.internal_value(septv::SpecialEuclideanProductTangentVector) = septv.value
 # This union we can also use for the matrix case where we do not care
 
-function SpecialEuclideanGroup(n; variant=:left, kwargs...)
+function SpecialEuclideanGroup(n::Int; variant::Symbol=:left, kwargs...)
     SOn = SpecialOrthogonalGroup(n; kwargs...)
     Tn = TranslationGroup(n; kwargs...)
     variant ∉ [:left, :right] && error(
@@ -507,7 +507,7 @@ _doc_init_constants = """
     init_constants!(G::SpecialEuclidean, g)
     init_Constants!(𝔰𝔢::LieAlgebra{ℝ, SpecialEuclideanGroupOperation, SpecialEuclidean}, X)
 
-Initalize the constant elements of `g` or `X`.
+Initialize the constant elements of `g` or `X`.
 
 The matrix representation of ``g∈$(_math(:SE))(n)`` has a last row,
 that contains zeros, besides the diagonal element, which is ``g_{n+1,n+1} = 1``.
@@ -595,11 +595,11 @@ function is_identity(G::SpecialEuclideanGroup, g::AbstractMatrix; kwargs...)
 end
 
 _doc_log_SE2_id = """
-    log(G::SpecialEuclidean, e, g)
-    log!(G::SpecialEuclidean, X, e, g)
+    log(G::SpecialEuclidean, g)
+    log!(G::SpecialEuclidean, X, g)
 
 Compute the Lie group logarithm function on the [`SpecialEuclideanGroup`](@ref) `G```=$(_math(:SE))(2)``,
-where `e` is the [`Identity`](@ref) on ``$(_math(:SE))(2)`` `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{2}}` for dispatch.
+and `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{2}}` for dispatch.
 
 Since ``g=(R,t) ∈ $(_math(:SE))(2)`` consists of a rotation component ``R ∈ $(_math(:SO))(2)`` and a translation component ``t ∈ $(_math(:T))(2)``,
 we first compute ``Y = $(_tex(:log))_{$(_math(:SO))(2)}R``.
