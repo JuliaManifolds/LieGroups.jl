@@ -195,7 +195,12 @@ Since `e` is just the zero-element with respect to the corresponding `+`, the fo
 """
 
 @doc "$(_doc_log_add)"
-ManifoldsBase.log(::LieGroup{𝔽,AdditionGroupOperation}, ::Any) where {𝔽}
+ManifoldsBase.log(::LieGroup{𝔽,AdditionGroupOperation}, q) where {𝔽} = q
+function ManifoldsBase.log(
+    G::LieGroup{𝔽,AdditionGroupOperation}, e::Identity{AdditionGroupOperation}
+) where {𝔽}
+    return zero_vector(G)
+end
 @doc "$(_doc_log_add)"
 function ManifoldsBase.log!(G::LieGroup{𝔽,AdditionGroupOperation}, X, g) where {𝔽}
     return copyto!(G, X, g)

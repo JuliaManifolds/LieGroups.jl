@@ -18,7 +18,7 @@ where ``I_n`` is the ``n×n`` unit matrix, ``$(_tex(:vec, "a")), $(_tex(:vec, "b
 ``$(_tex(:vec, 0))_n`` is the zero vector of length ``n``, and ``c ∈ ℝ`` is a real number.
 The group operation is matrix multiplication.
 
-The Lie Algebra consists of the elements
+The Lie algebra consists of the elements
 ```math
 $(_tex(:pmatrix,
     "0 & $(_tex(:vec, "a"))^{$(_tex(:transp))} & c",

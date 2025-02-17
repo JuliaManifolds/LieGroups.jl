@@ -5,7 +5,7 @@ The orthogonal group ``$(_math(:O))(n)`` is the Lie group consisting of the [`Ma
 manifold of rotations [`OrthogonalMatrices`](@extref `Manifolds.OrthogonalMatrices`).
 
 # Constructor
-    OrthogonalGroup(n; kwargs...)
+    OrthogonalGroup(n::Int; kwargs...)
 
 Generate  orthogonal group ``$(_math(:O))(n)``.
 All keyword arguments in `kwargs...` are passed on to [`OrthogonalMatrices`](@extref `Manifolds.OrthogonalMatrices`) as well.
@@ -14,7 +14,7 @@ const OrthogonalGroup{T} = LieGroup{
     ManifoldsBase.ℝ,MatrixMultiplicationGroupOperation,Manifolds.OrthogonalMatrices{T}
 }
 
-function OrthogonalGroup(n; kwargs...)
+function OrthogonalGroup(n::Int; kwargs...)
     R = Manifolds.OrthogonalMatrices(n; kwargs...)
     return OrthogonalGroup{typeof(R).parameters[1]}(R, MatrixMultiplicationGroupOperation())
 end
@@ -214,7 +214,7 @@ get_coordinates(G::OrthogonalLieAlgebra, X, ::DefaultLieAlgebraOrthogonalBasis)
 get_coordinates!(G::OrthogonalLieAlgebra, c, X, ::DefaultLieAlgebraOrthogonalBasis)
 
 function get_coordinates_lie!(
-    ::CUSA, c, X, ::ManifoldsBase.RealNumbers
+    ::CUSA, c, X, ::DefaultLieAlgebraOrthogonalBasis{ℝ}
 ) where {
     CUSA<:CommonUnitarySubAlgebra{ManifoldsBase.ℝ,<:ManifoldsBase.TypeParameter{Tuple{2}}}
 }
@@ -227,7 +227,7 @@ function get_coordinates_lie!(
     G::CommonUnitarySubAlgebra{ManifoldsBase.ℝ,<:ManifoldsBase.TypeParameter{Tuple{n}}},
     c,
     X,
-    ::ManifoldsBase.RealNumbers,
+    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
 ) where {n}
     @assert size(X) == (n, n)
     @assert length(c) == manifold_dimension(G)
@@ -236,7 +236,7 @@ function get_coordinates_lie!(
     return c
 end
 function get_coordinates_lie!(
-    𝔤::CommonUnitarySubAlgebra{ManifoldsBase.ℝ}, c, X, ::ManifoldsBase.RealNumbers
+    𝔤::CommonUnitarySubAlgebra{ManifoldsBase.ℝ}, c, X, ::DefaultLieAlgebraOrthogonalBasis{ℝ}
 )
     G = 𝔤.manifold
     n = ManifoldsBase.get_parameter(G.manifold.size)[1]
@@ -299,7 +299,7 @@ function get_vector_lie!(
     ::CommonUnitarySubAlgebra{ManifoldsBase.ℝ,<:ManifoldsBase.TypeParameter{Tuple{2}}},
     X,
     c,
-    ::ManifoldsBase.RealNumbers,
+    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
 )
     @assert size(X) == (2, 2)
     @assert size(c) == (1,)
@@ -313,7 +313,7 @@ function get_vector_lie!(
     𝔤::CommonUnitarySubAlgebra{ℝ,<:ManifoldsBase.TypeParameter{Tuple{n}}},
     X,
     c,
-    ::ManifoldsBase.RealNumbers,
+    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
 ) where {n}
     @assert size(X) == (n, n)
     @assert length(c) == manifold_dimension(𝔤)
@@ -322,7 +322,7 @@ function get_vector_lie!(
     return X
 end
 function get_vector_lie!(
-    𝔤::CommonUnitarySubAlgebra{ManifoldsBase.ℝ}, X, c, ::ManifoldsBase.RealNumbers
+    𝔤::CommonUnitarySubAlgebra{ManifoldsBase.ℝ}, X, c, ::DefaultLieAlgebraOrthogonalBasis{ℝ}
 )
     G = 𝔤.manifold
     n = ManifoldsBase.get_parameter(G.manifold.size)[1]
