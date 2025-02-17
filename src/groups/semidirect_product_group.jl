@@ -209,7 +209,9 @@ function _compose!(
     # especially after (1) we still need g[2] (in case k=g)
     x = copy(H, submanifold_component(SDPG, k, Val(2)))
     # (1)
-    apply!(A, x, submanifold_component(SDPG, g, Val(1)), submanifold_component(SDPG, h, Val(2)))
+    apply!(
+        A, x, submanifold_component(SDPG, g, Val(1)), submanifold_component(SDPG, h, Val(2))
+    )
     # (2)
     _compose!(
         G,
@@ -217,7 +219,9 @@ function _compose!(
         submanifold_component(SDPG, g, Val(1)),
         submanifold_component(SDPG, h, Val(1)),
     )
-    _compose!(H, submanifold_component(SDPG, k, Val(2)), submanifold_component(SDPG, g, Val(2)), x)
+    _compose!(
+        H, submanifold_component(SDPG, k, Val(2)), submanifold_component(SDPG, g, Val(2)), x
+    )
     return k
 end
 """
@@ -251,9 +255,13 @@ function _compose!(
     # especially after (1) we still need g[1] (in case k=g)
     x = copy(G, submanifold_component(SDPG, k, Val(1)))
     # (1)
-    apply!(A, x, submanifold_component(SDPG, g, Val(2)), submanifold_component(SDPG, h, Val(1)))
+    apply!(
+        A, x, submanifold_component(SDPG, g, Val(2)), submanifold_component(SDPG, h, Val(1))
+    )
     # (2)
-    _compose!(G, submanifold_component(SDPG, k, Val(1)), submanifold_component(SDPG, g, Val(1)), x)
+    _compose!(
+        G, submanifold_component(SDPG, k, Val(1)), submanifold_component(SDPG, g, Val(1)), x
+    )
     # (3)
     _compose!(
         H,
