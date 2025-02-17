@@ -11,7 +11,7 @@ An abstract type to model group operations on a product manifold
 abstract type AbstractProductGroupOperation <: AbstractGroupOperation end
 
 """
-    ProductGroupOperation{O<:<:NTuple{N,AbstractGroupOperation} where N} <: AbstractProductGroupOperation
+    ProductGroupOperation{O<:NTuple{N,AbstractGroupOperation} where N} <: AbstractProductGroupOperation
 
 A struct do model a tuple of group operations, one for each factor of a product group,
 that together forms a new group operation.
@@ -70,13 +70,13 @@ end
 
 function ManifoldsBase.submanifold_components(
     ::LieGroup{𝔽,Op,M}, op::ProductGroupOperation
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:ProductGroupOperation,M<:ProductManifold}
     return op.operations
 end
 
 function _compose!(
     PrG::LieGroup{𝔽,Op,M}, k, g, h
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:ProductGroupOperation,M<:ProductManifold}
     map(
         compose!,
         map(LieGroup, PrG.manifold.manifolds, PrG.op.operations),
@@ -89,28 +89,28 @@ end
 
 function ManifoldsBase.check_size(
     PrG::LieGroup{𝔽,Op,M}, g
-) where {𝔽,Op<:AbstractProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:AbstractProductGroupOperation,M<:ProductManifold}
     return ManifoldsBase.check_size(PrG.manifold, g)
 end
 function ManifoldsBase.check_size(
     ::LieGroup{𝔽,Op,M}, ::Identity
-) where {𝔽,Op<:AbstractProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:AbstractProductGroupOperation,M<:ProductManifold}
     return nothing
 end
 function ManifoldsBase.check_size(
     PrG::LieGroup{𝔽,Op,M}, g, X
-) where {𝔽,Op<:AbstractProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:AbstractProductGroupOperation,M<:ProductManifold}
     return ManifoldsBase.check_size(PrG.manifold, g, X)
 end
 function ManifoldsBase.check_size(
     PrG::LieGroup{𝔽,Op,M}, ::Identity, X
-) where {𝔽,Op<:AbstractProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:AbstractProductGroupOperation,M<:ProductManifold}
     return ManifoldsBase.check_size(PrG.manifold, identity_element(PrG, typeof(X)), X)
 end
 
 function conjugate!(
     PrG::LieGroup{𝔽,Op,M}, k, g, h
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:ProductGroupOperation,M<:ProductManifold}
     PrM = PrG.manifold
     map(
         conjugate!,
@@ -141,7 +141,7 @@ end
 
 function diff_conjugate!(
     PrG::LieGroup{𝔽,Op,M}, Y, g, h, X
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:ProductGroupOperation,M<:ProductManifold}
     PrM = PrG.manifold
     map(
         diff_conjugate!,
@@ -156,7 +156,7 @@ end
 
 function diff_inv!(
     PrG::LieGroup{𝔽,Op,M}, Y, g, X
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:ProductGroupOperation,M<:ProductManifold}
     PrM = PrG.manifold
     map(
         diff_inv!,
@@ -170,7 +170,7 @@ end
 
 function diff_left_compose!(
     PrG::LieGroup{𝔽,Op,M}, Y, g, h, X
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:ProductGroupOperation,M<:ProductManifold}
     PrM = PrG.manifold
     map(
         diff_left_compose!,
@@ -185,7 +185,7 @@ end
 
 function diff_right_compose!(
     PrG::LieGroup{𝔽,Op,M}, Y, g, h, X
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:ProductGroupOperation,M<:ProductManifold}
     PrM = PrG.manifold
     map(
         diff_right_compose!,
@@ -200,7 +200,7 @@ end
 
 function ManifoldsBase.exp!(
     PrG::LieGroup{𝔽,Op,M}, h, X
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:ProductGroupOperation,M<:ProductManifold}
     PrM = PrG.manifold
     map(
         (M, h, X) -> exp!(M, h, X), # introduce a function with “hard coded” t
@@ -213,7 +213,7 @@ end
 
 function ManifoldsBase.exp!(
     PrG::LieGroup{𝔽,Op,M}, h, g, X
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:ProductGroupOperation,M<:ProductManifold}
     PrM = PrG.manifold
     map(
         (M, h, g, X) -> exp!(M, h, g, X), # introduce a function with “hard coded” t
@@ -227,7 +227,7 @@ end
 
 function get_vector_lie!(
     Pr𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, X, c, B::DefaultLieAlgebraOrthogonalBasis
-) where {𝔽,Op<:AbstractProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:AbstractProductGroupOperation,M<:ProductManifold}
     PrG = Pr𝔤.manifold
     PrM = PrG.manifold
     dims = map(manifold_dimension, PrM.manifolds)
@@ -247,7 +247,7 @@ end
 
 function identity_element!(
     PrG::LieGroup{𝔽,Op,M}, e
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:ProductGroupOperation,M<:ProductManifold}
     PrM = PrG.manifold
     map(
         identity_element!,
@@ -259,7 +259,7 @@ end
 
 function inv!(
     PrG::LieGroup{𝔽,Op,M}, h, g
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:ProductGroupOperation,M<:ProductManifold}
     PrM = PrG.manifold
     map(
         inv!,
@@ -271,7 +271,7 @@ function inv!(
 end
 function inv!(
     PrG::LieGroup{𝔽,Op,M}, h, ::Identity{Op}
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:ProductGroupOperation,M<:ProductManifold}
     PrM = PrG.manifold
     map(
         inv!,
@@ -284,7 +284,7 @@ end
 
 function lie_bracket!(
     PrA::LieAlgebra{𝔽,Op,<:LieGroup{𝔽,Op,M}}, Z, X, Y
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:ProductGroupOperation,M<:ProductManifold}
     PrM = PrA.manifold.manifold
     map(
         lie_bracket!,
@@ -298,19 +298,19 @@ end
 
 function ManifoldsBase.log!(
     PrG::LieGroup{𝔽,Op,M}, X, ::Identity{Op}
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:ProductGroupOperation,M<:ProductManifold}
     zero_vector!(LieAlgebra(PrG), X)
     return X
 end
 function ManifoldsBase.log!(
     PrG::LieGroup{𝔽,Op,M}, X, ::Identity{Op}, ::Identity{Op}
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:ProductGroupOperation,M<:ProductManifold}
     zero_vector!(LieAlgebra(PrG), X)
     return X
 end
 function ManifoldsBase.log!(
     PrG::LieGroup{𝔽,Op,M}, X, g, h
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:ProductGroupOperation,M<:ProductManifold}
     PrM = PrG.manifold
     map(
         log!,
@@ -324,7 +324,7 @@ end
 
 function ManifoldsBase.log!(
     PrG::LieGroup{𝔽,Op,M}, X, h
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:ProductGroupOperation,M<:ProductManifold}
     PrM = PrG.manifold
     map(
         log!,
@@ -337,7 +337,7 @@ end
 
 function Base.show(
     io::IO, G::LieGroup{𝔽,Op,M}
-) where {𝔽,Op<:ProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:ProductGroupOperation,M<:ProductManifold}
     PrM = G.manifold.manifolds
     ops = G.op.operations
     return print(io, "ProductLieGroup($(join(PrM, " × ")), $(join(ops, " × ")))")
@@ -345,7 +345,7 @@ end
 
 function get_coordinates_lie!(
     Pr𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, c, X, B::DefaultLieAlgebraOrthogonalBasis
-) where {𝔽,Op<:AbstractProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:AbstractProductGroupOperation,M<:ProductManifold}
     PrG = Pr𝔤.manifold
     PrM = PrG.manifold
     dims = map(manifold_dimension, PrM.manifolds)
