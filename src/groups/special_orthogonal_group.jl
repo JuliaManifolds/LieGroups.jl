@@ -5,7 +5,7 @@ The special orthogonal group ``$(_math(:SO))(n)`` is the Lie group consisting of
 manifold of rotations [`Rotations`](@extref `Manifolds.Rotations`).
 
 # Constructor
-    SpecialOrthogonalGroup(n; kwargs...)
+    SpecialOrthogonalGroup(n::Int; kwargs...)
 
 Generate  special orthogonal group ``$(_math(:SO))(n)``.
 All keyword arguments in `kwargs...` are passed on to [`Rotations`](@extref `Manifolds.Rotations`) as well.
@@ -14,7 +14,7 @@ const SpecialOrthogonalGroup{T} = LieGroup{
     ManifoldsBase.ℝ,MatrixMultiplicationGroupOperation,Manifolds.Rotations{T}
 }
 
-function SpecialOrthogonalGroup(n; kwargs...)
+function SpecialOrthogonalGroup(n::Int; kwargs...)
     R = Manifolds.Rotations(n; kwargs...)
     return SpecialOrthogonalGroup{typeof(R).parameters[1]}(
         R, MatrixMultiplicationGroupOperation()

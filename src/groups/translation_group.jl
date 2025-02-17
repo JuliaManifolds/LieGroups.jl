@@ -11,7 +11,7 @@ Generate the translation group on ``𝔽^{n₁,…,nᵢ}`` = `Euclidean(n₁,...
 which is isomorphic to the group itself. All keyword arguments in `kwargs...`
 are passed on to [`Euclidean`](@extref `Manifolds.Euclidean`) as well
 
-We denote the Lie Algebra of ``$(_math(:T))(n)`` by ``$(_math(:t))(n)``.
+We denote the Lie algebra of ``$(_math(:T))(n)`` by ``$(_math(:t))(n)``.
 """
 const TranslationGroup{𝔽,T} = LieGroup{𝔽,AdditionGroupOperation,Manifolds.Euclidean{T,𝔽}}
 

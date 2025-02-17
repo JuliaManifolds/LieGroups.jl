@@ -207,17 +207,17 @@ function _compose!(
     # 3) compose g[2] and x (a point on H, neither input needed afterwards)
     # to avoid to overwrite elements in case k=g or k=h: allocate for result of (1)
     # especially after (1) we still need g[2] (in case k=g)
-    x = copy(H, submanifold_component(SDPG, k, 2))
+    x = copy(H, submanifold_component(SDPG, k, Val(2)))
     # (1)
-    apply!(A, x, submanifold_component(SDPG, g, 1), submanifold_component(SDPG, h, 2))
+    apply!(A, x, submanifold_component(SDPG, g, Val(1)), submanifold_component(SDPG, h, Val(2)))
     # (2)
     _compose!(
         G,
-        submanifold_component(SDPG, k, 1),
-        submanifold_component(SDPG, g, 1),
-        submanifold_component(SDPG, h, 1),
+        submanifold_component(SDPG, k, Val(1)),
+        submanifold_component(SDPG, g, Val(1)),
+        submanifold_component(SDPG, h, Val(1)),
     )
-    _compose!(H, submanifold_component(SDPG, k, 2), submanifold_component(SDPG, g, 2), x)
+    _compose!(H, submanifold_component(SDPG, k, Val(2)), submanifold_component(SDPG, g, Val(2)), x)
     return k
 end
 """
@@ -249,17 +249,17 @@ function _compose!(
     # 3) compose g[2] and h[2] (a point on H)
     # to avoid to overwrite elements in case k=g or k=h: allocate for result of (1)
     # especially after (1) we still need g[1] (in case k=g)
-    x = copy(G, submanifold_component(SDPG, k, 1))
+    x = copy(G, submanifold_component(SDPG, k, Val(1)))
     # (1)
-    apply!(A, x, submanifold_component(SDPG, g, 2), submanifold_component(SDPG, h, 1))
+    apply!(A, x, submanifold_component(SDPG, g, Val(2)), submanifold_component(SDPG, h, Val(1)))
     # (2)
-    _compose!(G, submanifold_component(SDPG, k, 1), submanifold_component(SDPG, g, 1), x)
+    _compose!(G, submanifold_component(SDPG, k, Val(1)), submanifold_component(SDPG, g, Val(1)), x)
     # (3)
     _compose!(
         H,
-        submanifold_component(SDPG, k, 2),
-        submanifold_component(SDPG, g, 2),
-        submanifold_component(SDPG, h, 2),
+        submanifold_component(SDPG, k, Val(2)),
+        submanifold_component(SDPG, g, Val(2)),
+        submanifold_component(SDPG, h, Val(2)),
     )
     return k
 end
@@ -308,13 +308,13 @@ function inv!(
     PM = SDPG.manifold
     G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
     A = GroupAction(SDPG.op.action_type, G, H)
-    inv!(G, submanifold_component(SDPG, k, 1), submanifold_component(PM, g, 1))
-    inv!(H, submanifold_component(SDPG, k, 2), submanifold_component(PM, g, 2))
+    inv!(G, submanifold_component(SDPG, k, Val(1)), submanifold_component(PM, g, Val(1)))
+    inv!(H, submanifold_component(SDPG, k, Val(2)), submanifold_component(PM, g, Val(2)))
     apply!( # Apply the group action with g1^-1 to g2^-1
         A,
-        submanifold_component(SDPG, k, 2),
-        submanifold_component(SDPG, k, 1),
-        submanifold_component(SDPG, k, 2),
+        submanifold_component(SDPG, k, Val(2)),
+        submanifold_component(SDPG, k, Val(1)),
+        submanifold_component(SDPG, k, Val(2)),
     )
     return k
 end
@@ -324,13 +324,13 @@ function inv!(
     PM = SDPG.manifold
     G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
     A = GroupAction(SDPG.op.action_type, G, H)
-    inv!(G, submanifold_component(SDPG, k, 1), submanifold_component(PM, g, 1))
-    inv!(H, submanifold_component(SDPG, k, 2), submanifold_component(PM, g, 2))
+    inv!(G, submanifold_component(SDPG, k, Val(1)), submanifold_component(PM, g, Val(1)))
+    inv!(H, submanifold_component(SDPG, k, Val(2)), submanifold_component(PM, g, Val(2)))
     apply!( # Apply the group action with g2^-1 to g1^-1
         A,
-        submanifold_component(SDPG, k, 1),
-        submanifold_component(SDPG, k, 2),
-        submanifold_component(SDPG, k, 1),
+        submanifold_component(SDPG, k, Val(1)),
+        submanifold_component(SDPG, k, Val(2)),
+        submanifold_component(SDPG, k, Val(1)),
     )
     return k
 end

@@ -21,7 +21,7 @@ at the [`identity_element`](@ref) on the [`base_manifold](@ref base_manifold(::L
 
 !!! note
     In order to implement the corresponding [`get_coordinates`](@ref) and [`get_vector`](@ref) functions,
-    define `get_coordiinates_lie(::LieGroup, p, X, N)` and `get_vector_lie(::LieGroup, p, X, N)`, resp.
+    define `get_coordinates_lie(::LieGroup, p, X, B)` and `get_vector_lie(::LieGroup, p, X, B)`, resp.
 """
 struct DefaultLieAlgebraOrthogonalBasis{𝔽} <:
        ManifoldsBase.AbstractOrthogonalBasis{𝔽,ManifoldsBase.TangentSpaceType} end
@@ -124,22 +124,22 @@ abstract type AbstractLieAlgebraTangentVector <: ManifoldsBase.AbstractTangentVe
 @inline function ManifoldsBase._get_coordinates(
     G::LieGroup, X, B::DefaultLieAlgebraOrthogonalBasis
 )
-    return get_coordinates_lie(G, X, number_system(B))
+    return get_coordinates_lie(G, X, B)
 end
 @inline function ManifoldsBase._get_coordinates!(
     G::LieGroup, c, X, B::DefaultLieAlgebraOrthogonalBasis
 )
-    return get_coordinates_lie!(G, c, X, number_system(B))
+    return get_coordinates_lie!(G, c, X, B)
 end
 @inline function ManifoldsBase._get_vector(
     G::LieGroup, c, B::DefaultLieAlgebraOrthogonalBasis
 )
-    return get_vector_lie(G, c, number_system(B))
+    return get_vector_lie(G, c, B)
 end
 @inline function ManifoldsBase._get_vector!(
     G::LieGroup, Y, c, B::DefaultLieAlgebraOrthogonalBasis
 )
-    return get_vector_lie!(G, Y, c, number_system(B))
+    return get_vector_lie!(G, Y, c, B)
 end
 
 _doc_adjoint = """
@@ -196,7 +196,7 @@ _doc_compose = """
     compose(G::LieGroup, g, h)
     compose!(G::LieGroup, k, g, h)
 
-Perform the group oepration ``g $(_math(:∘)) h`` for two ``g, h ∈ $(_math(:G))``
+Perform the group operation ``g $(_math(:∘)) h`` for two ``g, h ∈ $(_math(:G))``
 on the [`LieGroup`](@ref) `G`. This can also be done in-place of `h`.
 
 !!! info

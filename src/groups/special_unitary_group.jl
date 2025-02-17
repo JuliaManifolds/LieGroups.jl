@@ -5,7 +5,7 @@ The special orthogonal group ``$(_math(:SU))(n)`` is the Lie group consisting of
 manifold of rotations [`GeneralUnitaryMatrices`](@extref `Manifolds.GeneralUnitaryMatrices`) with determinant one.
 
 # Constructor
-   SpecialUnitaryGroup(n; kwargs...)
+   SpecialUnitaryGroup(n::Int; kwargs...)
 
 Generate special unitary group ``$(_math(:SU))(n)``.
 All keyword arguments in `kwargs...` are passed on to [`Rotations`](@extref `Manifolds.Rotations`) as well.
@@ -16,7 +16,7 @@ const SpecialUnitaryGroup{T} = LieGroup{
     Manifolds.GeneralUnitaryMatrices{T,ℂ,Manifolds.DeterminantOneMatrices},
 }
 
-function SpecialUnitaryGroup(n; kwargs...)
+function SpecialUnitaryGroup(n::Int; kwargs...)
     GU = Manifolds.GeneralUnitaryMatrices(
         n, ManifoldsBase.ℂ, Manifolds.DeterminantOneMatrices; kwargs...
     )
