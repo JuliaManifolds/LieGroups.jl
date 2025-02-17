@@ -4,7 +4,7 @@
 
 The `HeisenbergGroup(n)` is the group of ``(n+2)×(n+2)`` matrices,
 see also [BinzPods:2008](@cite) or [Heisenberg group](https://en.wikipedia.org/wiki/Heisenberg_group)
-where `T` specifies the `eltype` of the matrix entries. `
+where `T` specifies the `eltype` of the matrix entries.
 
 ```math
 $(_tex(:pmatrix,

@@ -226,7 +226,7 @@ function ManifoldsBase.exp!(
 end
 
 function get_vector_lie!(
-    Pr𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, X, c, N
+    Pr𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, X, c, B::DefaultLieAlgebraOrthogonalBasis
 ) where {𝔽,Op<:AbstractProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     PrG = Pr𝔤.manifold
     PrM = PrG.manifold
@@ -237,7 +237,7 @@ function get_vector_lie!(
     PrL = LieAlgebra.(LieGroup.(PrM.manifolds, PrG.op.operations))
     ts = ManifoldsBase.ziptuples(PrL, submanifold_components(PrM, X), Prc)
     map(ts) do t
-        return get_vector_lie!(t..., N)
+        return get_vector_lie!(t..., B)
     end
     return X
 end
@@ -344,7 +344,7 @@ function Base.show(
 end
 
 function get_coordinates_lie!(
-    Pr𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, c, X, N
+    Pr𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, c, X, B::DefaultLieAlgebraOrthogonalBasis
 ) where {𝔽,Op<:AbstractProductGroupOperation,M<:ManifoldsBase.ProductManifold}
     PrG = Pr𝔤.manifold
     PrM = PrG.manifold
@@ -355,7 +355,7 @@ function get_coordinates_lie!(
     PrL = LieAlgebra.(LieGroup.(PrM.manifolds, PrG.op.operations))
     ts = ManifoldsBase.ziptuples(PrL, Prc, submanifold_components(PrM, X))
     map(ts) do t
-        return get_coordinates_lie!(t..., N)
+        return get_coordinates_lie!(t..., B)
     end
     return c
 end

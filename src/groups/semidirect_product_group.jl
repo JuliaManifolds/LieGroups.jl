@@ -192,16 +192,11 @@ where ``∘`` denotes the group operation on ``L``, ``⋄`` and ``⋆`` those on
 respectively, and ``σ`` is the group action specified by the [`AbstractGroupActionType`](#ref) within the [`LeftSemidirectProductLieGroup`](@ref)  ``L``.
 """
 compose(
-    SDPG::LieGroup{𝔽,LeftSemidirectProductGroupOperation,<:ManifoldsBase.ProductManifold},
-    ::Any,
-    ::Any,
+    SDPG::LieGroup{𝔽,LeftSemidirectProductGroupOperation,<:ProductManifold}, ::Any, ::Any
 ) where {𝔽}
 
 function _compose!(
-    SDPG::LieGroup{𝔽,<:LeftSemidirectProductGroupOperation,<:ManifoldsBase.ProductManifold},
-    k,
-    g,
-    h,
+    SDPG::LieGroup{𝔽,<:LeftSemidirectProductGroupOperation,<:ProductManifold}, k, g, h
 ) where {𝔽}
     PM = SDPG.manifold
     G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
@@ -240,17 +235,10 @@ where ``∘`` denotes the group operation on ``L``, ``⋄`` and ``⋆`` those on
 respectively, and ``σ`` is the group action specified by the [`AbstractGroupActionType`](#ref) within the [`RightSemidirectProductLieGroup`](@ref) ``L``.
 """
 compose(
-    SDPG::LieGroup{𝔽,RightSemidirectProductGroupOperation,<:ManifoldsBase.ProductManifold},
-    ::Any,
-    ::Any,
+    SDPG::LieGroup{𝔽,RightSemidirectProductGroupOperation,<:ProductManifold}, ::Any, ::Any
 ) where {𝔽}
 function _compose!(
-    SDPG::LieGroup{
-        𝔽,<:RightSemidirectProductGroupOperation,<:ManifoldsBase.ProductManifold
-    },
-    k,
-    g,
-    h,
+    SDPG::LieGroup{𝔽,<:RightSemidirectProductGroupOperation,<:ProductManifold}, k, g, h
 ) where {𝔽}
     PM = SDPG.manifold
     G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
@@ -277,8 +265,8 @@ function _compose!(
 end
 
 function get_vector_lie!(
-    Pr𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, X, c, N
-) where {𝔽,Op<:SemiDirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    Pr𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, X, c, B::DefaultLieAlgebraOrthogonalBasis
+) where {𝔽,Op<:SemiDirectProductGroupOperation,M<:ProductManifold}
     PrG = Pr𝔤.manifold
     PrM = PrG.manifold
     dims = map(manifold_dimension, PrM.manifolds)
@@ -288,7 +276,7 @@ function get_vector_lie!(
     PrL = LieAlgebra.(LieGroup.(PrM.manifolds, PrG.op.operations))
     ts = ManifoldsBase.ziptuples(PrL, submanifold_components(Pr𝔤, X), Prc)
     map(ts) do t
-        return get_vector_lie!(t..., N)
+        return get_vector_lie!(t..., B)
     end
     return X
 end
@@ -296,7 +284,7 @@ end
 """
     inv(SDPG::LieGroup{𝔽,Op,M}, g) where {𝔽,Op<:SemiDirectProductGroupOperation,M<:ProductManifold}
 
-Compute the inverse element of an element ``g = (g_1,g_2)`` given by
+Compute the inverse element of an element ``g = (g_1, g_2)`` given by
 
 ```math
 g^{-1} = (g_1^{-1}, σ_{g_1^{-1}}g_2^{-1}).
@@ -312,11 +300,11 @@ for the right variant, respectively. See also [HilgertNeeb:2012; Proof of Lemma 
 """
 Base.inv(
     SDPG::LieGroup{𝔽,Op,M}, g
-) where {𝔽,Op<:SemiDirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:SemiDirectProductGroupOperation,M<:ProductManifold}
 
 function inv!(
     SDPG::LieGroup{𝔽,O,M}, k, g
-) where {𝔽,O<:LeftSemidirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,O<:LeftSemidirectProductGroupOperation,M<:ProductManifold}
     PM = SDPG.manifold
     G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
     A = GroupAction(SDPG.op.action_type, G, H)
@@ -332,7 +320,7 @@ function inv!(
 end
 function inv!(
     SDPG::LieGroup{𝔽,O,M}, k, g
-) where {𝔽,O<:RightSemidirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,O<:RightSemidirectProductGroupOperation,M<:ProductManifold}
     PM = SDPG.manifold
     G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
     A = GroupAction(SDPG.op.action_type, G, H)
@@ -348,7 +336,7 @@ function inv!(
 end
 function inv!(
     SDPG::LieGroup{𝔽,O,M}, k, ::Identity{O}
-) where {𝔽,O<:LeftSemidirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,O<:LeftSemidirectProductGroupOperation,M<:ProductManifold}
     PrM = SDPG.manifold
     map(
         inv!,
@@ -360,7 +348,7 @@ function inv!(
 end
 function inv!(
     SDPG::LieGroup{𝔽,O,M}, k, ::Identity{O}
-) where {𝔽,O<:RightSemidirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,O<:RightSemidirectProductGroupOperation,M<:ProductManifold}
     PrM = SDPG.manifold
     map(
         inv!,
@@ -372,25 +360,21 @@ function inv!(
 end
 function identity_element!(
     SDPG::LieGroup{𝔽,Op,M}, e
-) where {𝔽,Op<:SemiDirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+) where {𝔽,Op<:SemiDirectProductGroupOperation,M<:ProductManifold}
     GH = map(LieGroup, SDPG.manifold.manifolds, SDPG.op.operations)
     identity_element!.(GH, submanifold_components(SDPG.manifold, e))
     return e
 end
 
 function Base.show(
-    io::IO,
-    SDPG::LieGroup{𝔽,<:LeftSemidirectProductGroupOperation,<:ManifoldsBase.ProductManifold},
+    io::IO, SDPG::LieGroup{𝔽,<:LeftSemidirectProductGroupOperation,<:ProductManifold}
 ) where {𝔽}
     G, H = LieGroup.(SDPG.manifold.manifolds, SDPG.op.operations)
     at = SDPG.op.action_type
     return print(io, "LeftSemidirectProductLieGroup($G, $H, $at)")
 end
 function Base.show(
-    io::IO,
-    SDPG::LieGroup{
-        𝔽,<:RightSemidirectProductGroupOperation,<:ManifoldsBase.ProductManifold
-    },
+    io::IO, SDPG::LieGroup{𝔽,<:RightSemidirectProductGroupOperation,<:ProductManifold}
 ) where {𝔽}
     G, H = LieGroup.(SDPG.manifold.manifolds, SDPG.op.operations)
     at = SDPG.op.action_type
@@ -398,8 +382,8 @@ function Base.show(
 end
 
 function get_coordinates_lie!(
-    Pr𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, c, X, N
-) where {𝔽,Op<:SemiDirectProductGroupOperation,M<:ManifoldsBase.ProductManifold}
+    Pr𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, c, X, B::DefaultLieAlgebraOrthogonalBasis
+) where {𝔽,Op<:SemiDirectProductGroupOperation,M<:ProductManifold}
     PrG = Pr𝔤.manifold
     PrM = PrG.manifold
     dims = map(manifold_dimension, PrM.manifolds)
@@ -409,7 +393,7 @@ function get_coordinates_lie!(
     PrL = LieAlgebra.(LieGroup.(PrM.manifolds, PrG.op.operations))
     ts = ManifoldsBase.ziptuples(PrL, Prc, submanifold_components(Pr𝔤, X))
     map(ts) do t
-        return get_coordinates_lie!(t..., N)
+        return get_coordinates_lie!(t..., B)
     end
     return c
 end

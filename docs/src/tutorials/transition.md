@@ -40,8 +40,8 @@ The list is alphabetical, but first lists types, then functions
 | `exp_inv(G, g, X)` | [`exp`](@ref exp(G::LieGroup, g, X))`(G, g, X)`  | the exponential map invariant to the group operation is the default on Lie groups here |
 | `exp_lie(G, X)` | [`exp`](@ref exp(G::LieGroup, X))`(G, X)` | the (matrix/Lie group) exponential |
 | `inverse_translate(G, g, h, c)` | [`inv_left_compose`](@ref)`(G, g, h)`, [`inv_right_compose`](@ref)`(G, g, h)` | compute ``g^{-1}∘h`` and ``g∘h^{-1}``, resp. |
-| `inverse_tranlsate_diff(G, g, h, X, LeftForwardAction())` | - | discontinued, use `diff_left_compose(G, inv(G,g), h)` |
-| `inverse_tranlsate_diff(G, g, h, X, RightBackwardAction())` | - | discontinued, use `diff_left_compose(G, h, inv(G,g))` |
+| `inverse_translate_diff(G, g, h, X, LeftForwardAction())` | - | discontinued, use `diff_left_compose(G, inv(G,g), h)` |
+| `inverse_translate_diff(G, g, h, X, RightBackwardAction())` | - | discontinued, use `diff_left_compose(G, h, inv(G,g))` |
 | `log(G, g, h)` | `log(`[`base_manifold`](@ref base_manifold(G::LieGroup))`(G), g, h)` | you can now access the previous defaults on the internal manifold whenever they do not agree with the invariant one |
 | `log_inv(G, g, h)` | [`log`](@ref log(G::LieGroup, g, h))`(G, g, h)` | the logarithmic map invariant to the group operation is the default on Lie groups here |
 | `log_lie(G, g)` | [`log`](@ref log(G::LieGroup, g))`(G, g)` | the (matrix/Lie group) logarithm |
@@ -51,10 +51,10 @@ The list is alphabetical, but first lists types, then functions
 | `translate_diff(G, g, X, c)` | [`diff_left_compose`](@ref)`(G, g, h, X)`, [`diff_right_compose`](@ref)`(G, g, h, X)` | for compose ``g∘h`` the functions now specify whether the derivative is taken w.r.t. to the left (`g`) or right (`h`) argument |
 | `VeeOrthogonalBasis` | [`DefaultLieAlgebraOrthogonalBasis`](@ref) | |
 
-# Further notable changes
+## Further notable changes
 
 1. In general the default for tangent vectors is now to represent them in the [`LieAlgebra`](@ref), which obtains its own name now, though defined as a constant of a certain tangent space.
 2. In accordance with point 1., the [`GeneralLinearGroup`](@ref) (formerly `GeneralLinear`) switched to using its Lie algebra to represent tangent vectors.
 3. Formerly, both a a power manifold of Lie groups as a manifold as well as a Lie group of a power manifold as a Lie group were possible. This is unified to just defining `G^n` as the Lie group on the power manifold with the element-wise group operation.
 4. Formerly, product manifolds were stored as a [`ProductManifold`](@extref) of Lie groups and an indicator for the group operation, that the direct product should be used. This is switched to internally only store a [`ProductManifold`](@extref) as well as a (new) [`ProductGroupOperation`](@ref) that specifies one group operation for every factor.
-5. both the last two points achieve one unified modelling aspect of Lie groups: They are now always a Riemannian manifold `M` together with a group operation `op`, but a Lie group does not store another Lie group (or product of them) internally – with one common type they share, a [`LieGroup`](@ref).
+5. The last two points achieve one unified modelling aspect of Lie groups: they are now always a manifold `M` together with a group operation `op`, but a Lie group does not store another Lie group (or product of them) internally – with one common type they share, a [`LieGroup`](@ref).

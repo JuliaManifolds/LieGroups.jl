@@ -186,7 +186,7 @@ function ManifoldsBase.submanifold_component(
     ::Val{:Rotation},
 )
     return ManifoldsBase.submanifold_component(
-        base_manifold(G), ManifoldsBase.internal_value(g), 1
+        base_manifold(G), ManifoldsBase.internal_value(g), Val(1)
     )
 end
 function ManifoldsBase.submanifold_component(
@@ -195,7 +195,7 @@ function ManifoldsBase.submanifold_component(
     ::Val{:Translation},
 )
     return ManifoldsBase.submanifold_component(
-        base_manifold(G), ManifoldsBase.internal_value(g), 2
+        base_manifold(G), ManifoldsBase.internal_value(g), Val(2)
     )
 end
 
@@ -209,7 +209,7 @@ function ManifoldsBase.submanifold_component(
     ::Val{:Rotation},
 )
     return ManifoldsBase.submanifold_component(
-        base_manifold(𝔤), ManifoldsBase.internal_value(X), 1
+        base_manifold(𝔤), ManifoldsBase.internal_value(X), Val(1)
     )
 end
 function ManifoldsBase.submanifold_component(
@@ -222,7 +222,7 @@ function ManifoldsBase.submanifold_component(
     ::Val{:Translation},
 )
     return ManifoldsBase.submanifold_component(
-        base_manifold(𝔤), ManifoldsBase.internal_value(X), 2
+        base_manifold(𝔤), ManifoldsBase.internal_value(X), Val(2)
     )
 end
 
@@ -232,7 +232,7 @@ Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     ::Val{:Rotation},
 )
     return ManifoldsBase.submanifold_component(
-        base_manifold(G), ManifoldsBase.internal_value(g), 2
+        base_manifold(G), ManifoldsBase.internal_value(g), Val(2)
     )
 end
 Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
@@ -241,7 +241,7 @@ Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     ::Val{:Translation},
 )
     return ManifoldsBase.submanifold_component(
-        base_manifold(G), ManifoldsBase.internal_value(g), 1
+        base_manifold(G), ManifoldsBase.internal_value(g), Val(1)
     )
 end
 
@@ -255,7 +255,7 @@ Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     ::Val{:Rotation},
 )
     return ManifoldsBase.submanifold_component(
-        base_manifold(𝔤), ManifoldsBase.internal_value(X), 2
+        base_manifold(𝔤), ManifoldsBase.internal_value(X), Val(2)
     )
 end
 Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
@@ -268,7 +268,7 @@ Base.@propagate_inbounds function ManifoldsBase.submanifold_component(
     ::Val{:Translation},
 )
     return ManifoldsBase.submanifold_component(
-        base_manifold(𝔤), ManifoldsBase.internal_value(X), 1
+        base_manifold(𝔤), ManifoldsBase.internal_value(X), Val(1)
     )
 end
 

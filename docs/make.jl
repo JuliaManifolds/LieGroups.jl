@@ -134,7 +134,7 @@ makedocs(;
             "Special orthogonal group" => "groups/special_orthogonal_group.md",
             "Special unitary group" => "groups/special_unitary_group.md",
             "Translation group" => "groups/translation_group.md",
-            "unitary group" => "groups/unitary_group.md",
+            "Unitary group" => "groups/unitary_group.md",
         ],
         "Interfaces" => [
             "Lie group" => "interface/group.md",
