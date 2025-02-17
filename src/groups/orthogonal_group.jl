@@ -342,6 +342,9 @@ end
 function _get_vector_lie_On!(X, c)
     n = size(X, 1)
     @inbounds begin
+        X[1, 1] = 0
+        X[2, 2] = 0
+        X[3, 3] = 0
         X[1, 2] = -c[3]
         X[2, 1] = c[3]
         X[1, 3] = c[2]
