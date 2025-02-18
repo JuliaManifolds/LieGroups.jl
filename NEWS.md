@@ -74,7 +74,16 @@ Compared to `Manifolds.jl`
 * all `translate` functions are not implemented here, since you can just use `compose`. The differentials are implemented as listed above with respect to both left and right argument of compose
 * all `inverse_apply` functions are not implemented here, since it is recommended to use `apply(inv(A), g, p)` as a replacement.
 
-## Old Changelog pre 0.1.0
+## [0.0.3] – unreleased
+
+
+### Added
+
+* Finishes most of the work on the interface for the `LieGroup` type and the new `LieAlgebra` type.
+* Finishes a generic implementation of a `SemiDirectProductGroupOperation`
+* All details will be detailed in the next release
+
+## Old Changelog pre 0.0.3
 
 __Two previous releases where done by Yueh-Hua Tu in 2022 before he was so kind to transfer the development to the JuliaManifolds GitHub organisation.__
 
