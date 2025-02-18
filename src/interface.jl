@@ -119,29 +119,6 @@ abstract type AbstractLieAlgebraTangentVector <: ManifoldsBase.AbstractTangentVe
 #
 # --- Functions ---
 
-# Internal pass through for coordinates and vectors
-
-@inline function ManifoldsBase._get_coordinates(
-    G::LieGroup, X, B::DefaultLieAlgebraOrthogonalBasis
-)
-    return get_coordinates_lie(G, X, B)
-end
-@inline function ManifoldsBase._get_coordinates!(
-    G::LieGroup, c, X, B::DefaultLieAlgebraOrthogonalBasis
-)
-    return get_coordinates_lie!(G, c, X, B)
-end
-@inline function ManifoldsBase._get_vector(
-    G::LieGroup, c, B::DefaultLieAlgebraOrthogonalBasis
-)
-    return get_vector_lie(G, c, B)
-end
-@inline function ManifoldsBase._get_vector!(
-    G::LieGroup, Y, c, B::DefaultLieAlgebraOrthogonalBasis
-)
-    return get_vector_lie!(G, Y, c, B)
-end
-
 _doc_adjoint = """
     adjoint(G::LieGroup, g, X)
     adjoint!(G::LieGroup, Y, g, X)
