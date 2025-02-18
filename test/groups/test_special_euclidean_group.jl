@@ -6,26 +6,7 @@ using LieGroupsTestSuite
 
 @testset "Special Euclidean" begin
     𝔰 = sqrt(2)
-    fcts = [
-        # adjoint,
-        compose,
-        # conjugate,
-        # diff_inv,
-        # diff_left_compose,
-        # diff_right_compose,
-        exp,
-        hat,
-        identity_element,
-        inv,
-        # inv_left_compose,
-        # inv_right_compose,
-        is_identity,
-        # lie_bracket,
-        log,
-        rand,
-        show,
-        vee,
-    ]
+    fcts = [compose, exp, hat, identity_element, inv, is_identity, log, rand, show, vee]
     #
     # ===
     # SE(2) in 4 variants, left semidirect

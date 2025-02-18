@@ -818,10 +818,6 @@ end
 
 #
 # Allocation hints - mainly pass-through, especially for power manifolds
-
-function ManifoldsBase.allocate_on(G::LieGroup, T::Type)
-    return ManifoldsBase.allocate_on(base_manifold(G), T)
-end
 function ManifoldsBase.allocate_on(G::LieGroup, T::Type{<:AbstractArray})
     return ManifoldsBase.allocate_on(base_manifold(G), T)
 end
