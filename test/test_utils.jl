@@ -7,6 +7,8 @@ using LieGroups, Test
     @test_throws DomainError LieGroups.log_safe!(Y, [-1.0 0.0; 0.0 -1.0])
     @test_throws DomainError LieGroups.log_safe!(Y, [-1.0 1.0; 0.0 -1.0])
     @test_throws DomainError LieGroups.log_safe!(Y, [-1.0 1.0; 0.5 -1.0])
+    # Check `triu` case is approx the same as normal log
+    LieGroups.log_safe!(Y, [1.0 0.0; 0.4 1.0]) ≈ log([1.0 0.0; 0.4 1.0])
     # Check Schur `triu` case is approx the same as normal log
     LieGroups.log_safe!(Y, [1.0 0.5; 0.4 1.0]) ≈ log([1.0 0.5; 0.4 1.0])
     # Default: Complex, use log
