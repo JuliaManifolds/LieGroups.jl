@@ -35,7 +35,7 @@ The list is alphabetical, but first lists types, then functions
 | `apply_diff` | [`diff_apply`](@ref) | modifiers (diff) come first, consistent with [`ManifoldsDiff.jl`](https://juliamanifolds.github.io/ManifoldDiff.jl/stable/) |
 | `apply_diff_group` | [`diff_group_apply`](@ref) | modifiers (diff/group) come first, consistent with [`ManifoldsDiff.jl`](https://juliamanifolds.github.io/ManifoldDiff.jl/stable/) |
 | | [`conjugate`](@ref), [`diff_conjugate`](@ref) | a new function to model ``c_g: \mathcal G → \mathcal G`` given by ``c_g(h) = g∘h∘g^{-1}`` |
-| `differential_exp_argument_lie_approx` | - | is discontinued, see the `differential_exp_argument` in `ManifoldDiff.jl` instead, since `exp_lie` is now just `exp`. |
+| `differential_exp_argument_lie_approx` | - | discontinued due to name change. Though available in `ManifoldDiff.jl` for `GroupManifolds`, that will move to `differential_exp_argument` instead, since `exp_lie` changed to now just `exp`. |
 | `exp(G, g, X)` | `exp(`[`base_manifold`](@ref base_manifold(G::LieGroup))`(G), g, X)` | the previous defaults whenever not agreeing with the Riemannian one can now be accessed on the internal manifold |
 | `exp_inv(G, g, X)` | [`exp`](@ref exp(G::LieGroup, g, X))`(G, g, X)`  | the exponential map invariant to the group operation is the default on Lie groups here |
 | `exp_lie(G, X)` | [`exp`](@ref exp(G::LieGroup, X))`(G, X)` | the (matrix/Lie group) exponential |
@@ -55,6 +55,6 @@ The list is alphabetical, but first lists types, then functions
 
 1. In general the default for tangent vectors is now to represent them in the [`LieAlgebra`](@ref), which obtains its own name now, though defined as a constant of a certain tangent space.
 2. In accordance with point 1., the [`GeneralLinearGroup`](@ref) (formerly `GeneralLinear`) switched to using its Lie algebra to represent tangent vectors.
-3. Formerly, both a a power manifold of Lie groups as a manifold as well as a Lie group of a power manifold as a Lie group were possible. This is unified to just defining `G^n` as the Lie group on the power manifold with the element-wise group operation.
+3. Formerly, both a power manifold of Lie groups as a manifold as well as a Lie group of a power manifold as a Lie group were possible. This is unified to just defining `G^n` as the Lie group on the power manifold with the element-wise group operation.
 4. Formerly, product manifolds were stored as a [`ProductManifold`](@extref) of Lie groups and an indicator for the group operation, that the direct product should be used. This is switched to internally only store a [`ProductManifold`](@extref) as well as a (new) [`ProductGroupOperation`](@ref) that specifies one group operation for every factor.
-5. The last two points achieve one unified modelling aspect of Lie groups: they are now always a manifold `M` together with a group operation `op`, but a Lie group does not store another Lie group (or product of them) internally – with one common type they share, a [`LieGroup`](@ref).
+5. The last two points achieve one unified modelling aspect of Lie groups: they are now always a manifold `M` together with a group operation `op`, but a Lie group does not store another Lie group (or product of them) internally with one common type they share, a [`LieGroup`](@ref).
