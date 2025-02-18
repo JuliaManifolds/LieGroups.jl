@@ -316,13 +316,14 @@ function inv!(
     PM = SDPG.manifold
     G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
     A = GroupAction(SDPG.op.action_type, G, H)
+    g2_ = copy(H, submanifold_component(PM, g, Val(2)))
     inv!(G, submanifold_component(SDPG, k, Val(1)), submanifold_component(PM, g, Val(1)))
     inv!(H, submanifold_component(SDPG, k, Val(2)), submanifold_component(PM, g, Val(2)))
-    apply!( # Apply the group action with g1^-1 to g2^-1
+    apply!( # Apply the group action with g1^-1 to g2
         A,
         submanifold_component(SDPG, k, Val(2)),
         submanifold_component(SDPG, k, Val(1)),
-        submanifold_component(SDPG, k, Val(2)),
+        g2_,
     )
     return k
 end
@@ -332,13 +333,15 @@ function inv!(
     PM = SDPG.manifold
     G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
     A = GroupAction(SDPG.op.action_type, G, H)
+    # to avoid side effects, copy?
+    g1_ = copy(G, submanifold_component(PM, g, Val(1)))
     inv!(G, submanifold_component(SDPG, k, Val(1)), submanifold_component(PM, g, Val(1)))
     inv!(H, submanifold_component(SDPG, k, Val(2)), submanifold_component(PM, g, Val(2)))
-    apply!( # Apply the group action with g2^-1 to g1^-1
+    apply!( # Apply the group action with g2^-1 to g1
         A,
         submanifold_component(SDPG, k, Val(1)),
         submanifold_component(SDPG, k, Val(2)),
-        submanifold_component(SDPG, k, Val(1)),
+        g1_,
     )
     return k
 end

@@ -54,7 +54,7 @@ using LieGroupsTestSuite
         Y2 = ArrayPartition(copy(X2), copy(X1))
         Y3 = ArrayPartition(copy(X3), copy(X3))
         properties = Dict(
-            :Name => "The generic left semidirect product group",
+            :Name => "The generic left semi-direct product group",
             :Points => [h1, h2, h3],
             :Vectors => [Y1, Y2, Y3],
             :Functions => [identity_element, inv, show],
@@ -63,6 +63,7 @@ using LieGroupsTestSuite
             :repr => "LeftSemidirectProductLieGroup(SpecialOrthogonalGroup(2), SpecialOrthogonalGroup(2), LeftGroupOperationAction())",
         )
         test_lie_group(Gl, properties, expectations_l)
+        properties[:Name] = "The generic left semi-direct product group"
         expectations_r = Dict(
             :repr => "RightSemidirectProductLieGroup(SpecialOrthogonalGroup(2), SpecialOrthogonalGroup(2), RightGroupOperationAction())",
         )
