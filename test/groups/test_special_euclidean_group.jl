@@ -215,7 +215,7 @@ using LieGroupsTestSuite
             @test X3[LieAlgebra(G2l), :] == X4[LieAlgebra(G2l), :]
             @test X4r[LieAlgebra(G2r), :] == X3[LieAlgebra(G2l), :][[2, 1]]
 
-            @test norm(G2l, Identity(G2l), X4) == norm(X1)
+            @test norm(LieAlgebra(G2l), X4) == norm(X1)
         end
     end
     @testset "Zero vector special types" begin

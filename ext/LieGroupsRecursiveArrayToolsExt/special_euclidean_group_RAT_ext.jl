@@ -180,6 +180,24 @@ function ManifoldsBase.log!(
     LieGroups._log_SE3!(G, X, g)
     return X
 end
+
+function LinearAlgebra.norm(
+    𝔤::LieAlgebra{
+        ℝ,<:LieGroups.SpecialEuclideanGroupOperation,<:LieGroups.SpecialEuclideanGroup
+    },
+    X::ArrayPartition,
+)
+    G = LieGroups.base_lie_group(𝔤)
+    SOn, Tn = LieGroups._SOn_and_Tn(G)
+    n1 = LinearAlgebra.norm(
+        LieGroups.LieAlgebra(SOn), ManifoldsBase.submanifold_component(𝔤, X, :Rotation)
+    )
+    n2 = LinearAlgebra.norm(
+        LieGroups.LieAlgebra(Tn), ManifoldsBase.submanifold_component(𝔤, X, :Translation)
+    )
+    return LinearAlgebra.norm([n1, n2])
+end
+
 function ManifoldsBase.submanifold_component(
     G::LieGroups.LeftSpecialEuclideanGroup,
     g::Union{ArrayPartition,SpecialEuclideanProductPoint},

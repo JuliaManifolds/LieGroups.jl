@@ -1,4 +1,4 @@
-using LieGroups, Test, ManifoldsBase
+using LieGroups, Test, ManifoldsBase, Random
 
 s = joinpath(@__DIR__, "LieGroupsTestSuite.jl")
 !(s in LOAD_PATH) && (push!(LOAD_PATH, s))
@@ -78,5 +78,41 @@ end
         d = copy(c)
         @test get_vector!(𝔤, d, c, B) == get_vector!(M, d, q, c, B)
         @test c == d
+        @test project(G, p) == project(M, p)
+        @test project(𝔤, X) == project(M, p, X)
+        @test project(𝔤, X, X) == project(M, p, X)
+    end
+    @testset "Defaults on a nearly empty (nonimplemented) Lie group" begin
+        G = LieGroup(
+            LieGroupsTestSuite.DummyManifold(), LieGroupsTestSuite.DummyOperation()
+        )
+        # Locally define zero vector
+        LieGroups.zero_vector(::typeof(LieAlgebra(G))) = :id
+        e = Identity(G)
+        @test log(G, e) == :id
+        Base.delete_method(which(zero_vector, (typeof(LieAlgebra(G)),)))
+        # verify deletion
+        @test_throws ErrorException zero_vector(LieAlgebra(G))
+    end
+    @testset "Test (new) rand(G, T, d)" begin
+        M = ManifoldsBase.DefaultManifold(2)
+        op = AdditionGroupOperation()
+        G = LieGroup(M, op)
+        𝔤 = LieAlgebra(G)
+        q = zeros(2)
+        Random.seed!(42)
+        p = rand(G, Vector{Float64}; vector_at=q)
+        @test is_point(G, p)
+        pts1 = rand(G, 2)
+        @test all(is_point.(Ref(G), pts1))
+        pts2 = rand(G, Vector{Float64}, 2)
+        @test all(is_point.(Ref(G), pts2))
+        rng = Random.MersenneTwister()
+        pts3 = rand(rng, G, 2)
+        @test all(is_point.(Ref(G), pts3))
+        pts4 = rand(rng, G, Vector{Float64}, 2)
+        @test all(is_point.(Ref(G), pts4))
+        p2 = rand(rng, G, Vector{Float64}; vector_at=q)
+        @test is_point(G, p2)
     end
 end

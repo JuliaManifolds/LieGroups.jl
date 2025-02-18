@@ -199,7 +199,7 @@ ManifoldsBase.log(::LieGroup{𝔽,AdditionGroupOperation}, q) where {𝔽} = q
 function ManifoldsBase.log(
     G::LieGroup{𝔽,AdditionGroupOperation}, e::Identity{AdditionGroupOperation}
 ) where {𝔽}
-    return zero_vector(G)
+    return zero_vector(LieAlgebra(G))
 end
 @doc "$(_doc_log_add)"
 function ManifoldsBase.log!(G::LieGroup{𝔽,AdditionGroupOperation}, X, g) where {𝔽}

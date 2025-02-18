@@ -161,11 +161,13 @@ Manifolds.base_manifold(G::LieGroup) = G.manifold
 function ManifoldsBase.check_point(
     G::LieGroup{𝔽,O}, g; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
-    return ManifoldsBase.check_point(G.manifold, g; kwargs...)
+    return ManifoldsBase.check_point(base_manifold(G), g; kwargs...)
 end
 
 function ManifoldsBase.check_vector(G::LieGroup, g::P, X; kwargs...) where {P}
-    return ManifoldsBase.check_vector(G.manifold, identity_element(G, P), X; kwargs...)
+    return ManifoldsBase.check_vector(
+        base_manifold(G), identity_element(G, P), X; kwargs...
+    )
 end
 
 # compose g ∘ h
@@ -242,11 +244,11 @@ function conjugate!(G::LieGroup, k, g, h)
     return k
 end
 
-ManifoldsBase.copyto!(G::LieGroup, h, g) = copyto!(G.manifold, h, g)
+ManifoldsBase.copyto!(G::LieGroup, h, g) = copyto!(base_manifold(G), h, g)
 function ManifoldsBase.copyto!(
     G::LieGroup{𝔽,O}, h::P, g::Identity{O}
 ) where {𝔽,O<:AbstractGroupOperation,P}
-    return ManifoldsBase.copyto!(G.manifold, h, identity_element(G, P))
+    return ManifoldsBase.copyto!(base_manifold(G), h, identity_element(G, P))
 end
 function ManifoldsBase.copyto!(
     ::LieGroup{𝔽,O}, h::Identity{O}, ::Identity{O}
@@ -555,7 +557,7 @@ end
     is_point(G::LieGroup, g; kwargs...)
 
 Check whether `g` is a valid point on the Lie Group `G`.
-This falls back to checking whether `g` is a valid point on `G.manifold`,
+This falls back to checking whether `g` is a valid point on the [`base_manifold`](@ref)`G`.
 unless `g` is an [`Identity`](@ref). Then, it is checked whether it is the
 identity element corresponding to `G`.
 """
@@ -594,7 +596,8 @@ after handling the cases where one or more
 of the points are the [`Identity`](@ref).
 All keyword argments are passed to this function as well.
 """
-ManifoldsBase.isapprox(G::LieGroup, g, h; kwargs...) = isapprox(G.manifold, g, h; kwargs...)
+ManifoldsBase.isapprox(G::LieGroup, g, h; kwargs...) =
+    isapprox(base_manifold(G), g, h; kwargs...)
 function ManifoldsBase.isapprox(
     G::LieGroup{𝔽,O}, g::Identity{O}, h; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
@@ -728,16 +731,7 @@ function ManifoldsBase.log!(
     return zero_vector!(LieAlgebra(G), X)
 end
 
-ManifoldsBase.manifold_dimension(G::LieGroup) = manifold_dimension(G.manifold)
-
-# TODO: wrap this in the Cartan-Schouten metric on the Lie algebra.
-ManifoldsBase.norm(G::LieGroup, g, X) = norm(G.manifold, identity_element(G, typeof(g)), X)
-
-ManifoldsBase.project!(G::LieGroup, h, g) = project!(G.manifold, h, g)
-# Since tangent vectors are always in the Lie algebra, project always on TeG
-function ManifoldsBase.project!(G::LieGroup, Y, g, X::T) where {T}
-    return project!(G.manifold, Y, identity_element(G, T), X)
-end
+ManifoldsBase.manifold_dimension(G::LieGroup) = manifold_dimension(base_manifold(G))
 
 _doc_rand = """
     rand(::LieGroup; vector_at=nothing, σ::Real=1.0, kwargs...)
@@ -759,21 +753,25 @@ if you want to generate a random point in a certain representation.
 For the in-place variants the type is inferred from `pX´ and `X`, respectively.
 """
 
+function ManifoldsBase.project!(G::LieGroup, g, p)
+    return ManifoldsBase.project!(base_manifold(G), g, p)
+end
+
 @doc "$(_doc_rand)"
 Random.rand(::LieGroup; kwargs...)
 
-# New in LIeGroups – maybe move to ManifoldsBase at some point
+# New in LIeGroups, maybe move to ManifoldsBase at some point
 @doc "$(_doc_rand)"
 Random.rand(G::LieGroup, T::Type; vector_at=nothing, kwargs...)
 
-function Random.rand(M::LieGroup, T::Type, d::Integer; kwargs...)
-    return [rand(M, T; kwargs...) for _ in 1:d]
+function Random.rand(G::LieGroup, T::Type, d::Integer; kwargs...)
+    return [rand(G, T; kwargs...) for _ in 1:d]
 end
 function Random.rand(rng::AbstractRNG, G::LieGroup, T::Type, d::Integer; kwargs...)
     return [rand(rng, G, T; kwargs...) for _ in 1:d]
 end
 function Random.rand(G::LieGroup, d::Integer; kwargs...)
-    return [rand(M; kwargs...) for _ in 1:d]
+    return [rand(G; kwargs...) for _ in 1:d]
 end
 function Random.rand(G::LieGroup, T::Type; vector_at=nothing, kwargs...)
     if vector_at === nothing
@@ -811,19 +809,21 @@ function Random.rand!(
 end
 
 function ManifoldsBase.representation_size(G::LieGroup)
-    return representation_size(G.manifold)
+    return representation_size(base_manifold(G))
 end
 
 function Base.show(io::IO, G::LieGroup)
-    return print(io, "LieGroup($(G.manifold), $(G.op))")
+    return print(io, "LieGroup($(base_manifold(G)), $(G.op))")
 end
 
 #
 # Allocation hints - mainly pass-through, especially for power manifolds
 
-ManifoldsBase.allocate_on(G::LieGroup, T::Type) = ManifoldsBase.allocate_on(G.manifold, T)
-function ManifoldsBase.allocate_on(M::LieGroup, T::Type{<:AbstractArray})
-    return ManifoldsBase.allocate_on(M.manifold, T)
+function ManifoldsBase.allocate_on(G::LieGroup, T::Type)
+    return ManifoldsBase.allocate_on(base_manifold(G), T)
+end
+function ManifoldsBase.allocate_on(G::LieGroup, T::Type{<:AbstractArray})
+    return ManifoldsBase.allocate_on(base_manifold(G), T)
 end
 
 function ManifoldsBase.allocate_result(
@@ -831,16 +831,16 @@ function ManifoldsBase.allocate_result(
     f::Union{typeof(compose),typeof(inv),typeof(conjugate),typeof(exp)},
     args...,
 )
-    return ManifoldsBase.allocate_result(G.manifold, ManifoldsBase.exp, args...)
+    return ManifoldsBase.allocate_result(base_manifold(G), ManifoldsBase.exp, args...)
 end
 function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(log), args...)
-    return ManifoldsBase.allocate_result(G.manifold, f, args...)
+    return ManifoldsBase.allocate_result(base_manifold(G), f, args...)
 end
 function ManifoldsBase.allocate_result(
     G::LieGroup, f::Union{typeof(rand),typeof(identity_element)}
 )
     # both get a type allocated like rand
-    return ManifoldsBase.allocate_result(G.manifold, rand)
+    return ManifoldsBase.allocate_result(base_manifold(G), rand)
 end
 
 #

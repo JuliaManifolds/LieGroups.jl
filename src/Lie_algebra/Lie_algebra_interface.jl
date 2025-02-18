@@ -292,19 +292,19 @@ function lie_bracket! end
 @doc "$(_doc_lie_bracket)"
 lie_bracket!(𝔤::LieAlgebra, Z, X, Y)
 
-function LinearAlgebra.norm(G::LieGroup{𝔽,O}, X) where {𝔽,O<:AbstractGroupOperation}
-    return LinearAlgebra.norm(G, identity_element(G), X)
+function LinearAlgebra.norm(𝔤::LieAlgebra, X)
+    return LinearAlgebra.norm(base_manifold(𝔤), identity_element(base_lie_group(𝔤)), X)
 end
 # Avoid an ambiguity
-function LinearAlgebra.norm(G::LieGroup{𝔽,O}, X::Real) where {𝔽,O<:AbstractGroupOperation}
-    return LinearAlgebra.norm(G, identity_element(G), X)
+function LinearAlgebra.norm(𝔤::LA, X::Real) where {LA<:LieAlgebra}
+    return LinearAlgebra.norm(base_manifold(𝔤), identity_element(base_lie_group(𝔤)), X)
 end
 
 function ManifoldsBase.project!(𝔤::LieAlgebra, Y, X)
-    return ManifoldsBase.project!(𝔤.manifold.manifold, Y, identity_element(𝔤.manifold), X)
+    return ManifoldsBase.project!(base_manifold(𝔤), Y, identity_element(𝔤.manifold), X)
 end
 function ManifoldsBase.project!(𝔤::LieAlgebra, W, X, V)
-    return ManifoldsBase.project!(𝔤.manifold.manifold, W, identity_element(𝔤.manifold), V)
+    return ManifoldsBase.project!(base_manifold(𝔤), W, identity_element(𝔤.manifold), V)
 end
 
 _doc_rand_algebra = """
@@ -427,6 +427,9 @@ macro default_lie_algebra_fallbacks(TG, TF, Op, TV, Xfield::Symbol)
         end
         function ManifoldsBase.is_point(𝔤::LieAlgebra{$TF,<:$Op,<:$TG}, X::$TV; kwargs...)
             return ManifoldsBase.is_point(𝔤, X.$Xfield; kwargs...)
+        end
+        function LinearAlgebra.norm(𝔤::LieAlgebra{$TF,<:$Op,<:$TG}, X::$TV)
+            return LinearAlgebra.norm(𝔤, X.$Xfield)
         end
         function ManifoldsBase.isapprox(
             𝔤::LieAlgebra{$TF,<:$Op,<:$TG}, X::$TV, Y::$TV; kwargs...

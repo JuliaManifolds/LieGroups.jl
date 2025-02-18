@@ -705,11 +705,14 @@ function _log_SE3!(G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}
     return X
 end
 
-function ManifoldsBase.norm(G::SpecialEuclideanGroup, ::Identity, X)
+function LinearAlgebra.norm(
+    𝔤::LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup},
+    X::AbstractMatrix,
+)
+    G = base_lie_group(𝔤)
     SOn, Tn = _SOn_and_Tn(G)
-    𝔤 = LieAlgebra(G)
-    n1 = norm(SOn, Identity(SOn), submanifold_component(𝔤, X, :Rotation))
-    n2 = norm(Tn, Identity(Tn), submanifold_component(𝔤, X, :Translation))
+    n1 = norm(LieAlgebra(SOn), submanifold_component(𝔤, X, :Rotation))
+    n2 = norm(LieAlgebra(Tn), submanifold_component(𝔤, X, :Translation))
     return norm([n1, n2])
 end
 

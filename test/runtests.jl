@@ -40,5 +40,6 @@ end
         include_test("groups/test_special_unitary_group.jl")
         include_test("groups/test_translation_group.jl")
     end
+    include("test_utils.jl")
     include("test_aqua.jl")
 end
