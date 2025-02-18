@@ -35,7 +35,7 @@ The list is alphabetical, but first lists types, then functions
 | `apply_diff` | [`diff_apply`](@ref) | modifiers (diff) come first, consistent with [`ManifoldsDiff.jl`](https://juliamanifolds.github.io/ManifoldDiff.jl/stable/) |
 | `apply_diff_group` | [`diff_group_apply`](@ref) | modifiers (diff/group) come first, consistent with [`ManifoldsDiff.jl`](https://juliamanifolds.github.io/ManifoldDiff.jl/stable/) |
 | | [`conjugate`](@ref), [`diff_conjugate`](@ref) | a new function to model ``c_g: \mathcal G → \mathcal G`` given by ``c_g(h) = g∘h∘g^{-1}`` |
-| `differential_exp_argument_lie_approx` | - | discontinued due to name change. Though available in `ManifoldDiff.jl` for `GroupManifolds`, that will move to `differential_exp_argument` instead, since `exp_lie` changed to now just `exp`. |
+| `differential_exp_argument_lie_approx` | - | Scheduled for update and renaming. Though available in `ManifoldDiff.jl` for `GroupManifolds`, that will move to `differential_exp_argument_approx` instead, since `exp_lie` changed to now just `exp`. |
 | `exp(G, g, X)` | `exp(`[`base_manifold`](@ref base_manifold(G::LieGroup))`(G), g, X)` | the previous defaults whenever not agreeing with the Riemannian one can now be accessed on the internal manifold |
 | `exp_inv(G, g, X)` | [`exp`](@ref exp(G::LieGroup, g, X))`(G, g, X)`  | the exponential map invariant to the group operation is the default on Lie groups here |
 | `exp_lie(G, X)` | [`exp`](@ref exp(G::LieGroup, X))`(G, X)` | the (matrix/Lie group) exponential |
