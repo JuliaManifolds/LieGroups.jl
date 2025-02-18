@@ -668,7 +668,7 @@ and that the double inverse is the identity.
 function test_inv(G::LieGroup, g; test_mutating::Bool=true, test_identity::Bool=true)
     @testset "inv" begin
         k1 = inv(G, g)
-        @test is_point(G, k1)
+        @test is_point(G, k1; error=:error)
         g1 = inv(G, k1)
         @test isapprox(G, g, g1)
         if test_mutating
