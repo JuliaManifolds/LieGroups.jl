@@ -116,7 +116,7 @@ function get_coordinates_lie!(
     𝔤::LieAlgebra, c, X::T, ::DefaultLieAlgebraOrthogonalBasis{𝔽}
 ) where {T,𝔽}
     # Provide a default fallback
-    G = 𝔤.manifold
+    G = base_lie_group(𝔤)
     return get_coordinates!(
         base_manifold(G), c, identity_element(G, T), X, DefaultOrthogonalBasis(𝔽)
     )
@@ -170,12 +170,12 @@ end
     return get_vector_lie(𝔤, c, B, T)
 end
 @inline function ManifoldsBase._get_vector(𝔤::LieAlgebra, c, B::AbstractBasis, ::Nothing)
-    G = 𝔤.manifold
-    return get_vector(G.manifold, identity_element(G), c, B)
+    G = base_lie_group(𝔤)
+    return get_vector(base_manifold(G), identity_element(G), c, B)
 end
 @inline function ManifoldsBase._get_vector(𝔤::LieAlgebra, c, B::AbstractBasis, T::Type)
-    G = 𝔤.manifold
-    return get_vector(G.manifold, identity_element(G, T), c, B)
+    G = base_lie_group(𝔤)
+    return get_vector(base_manifold(G), identity_element(G, T), c, B)
 end
 
 @doc "$(_doc_get_vector)"
@@ -193,8 +193,8 @@ end
 function ManifoldsBase._get_vector!(
     𝔤::LieAlgebra, X::T, c, B::ManifoldsBase.AbstractBasis
 ) where {T}
-    G = 𝔤.manifold
-    return ManifoldsBase.get_vector!(G.manifold, X, identity_element(G, T), c, B)
+    G = base_lie_group(𝔤)
+    return ManifoldsBase.get_vector!(base_manifold(G), X, identity_element(G, T), c, B)
 end
 
 @inline function get_vector_lie(𝔤::LieAlgebra, c, N)
@@ -208,7 +208,7 @@ end
 @inline function get_vector_lie!(
     𝔤::LieAlgebra, X::T, c, B::DefaultLieAlgebraOrthogonalBasis{𝔽}
 ) where {T,𝔽}
-    G = 𝔤.manifold
+    G = base_lie_group(𝔤)
     return get_vector!(
         base_manifold(G), X, identity_element(G, T), c, DefaultOrthogonalBasis(𝔽)
     )
@@ -260,13 +260,12 @@ end
 
 Check whether `X` is a valid point on the Lie Algebra `𝔤`.
 This falls back to checking whether `X` is a valid point on the tangent space
-at the [`identity_element`](@ref)`(G)` on `G.manifold` on the [`LieGroup`](@ref)
-of `G`
+at the [`identity_element`](@ref)`(G)` on the [`base_manifold`](@ref `base_manifold(::LieGroup)`)`(G)`
+on the [`LieGroup`](@ref) of `𝔤`
 """
 function ManifoldsBase.is_point(𝔤::LieAlgebra, X::T; kwargs...) where {T}
-    # 𝔤.manifold is G,
     return ManifoldsBase.is_vector(
-        𝔤.manifold, identity_element(𝔤.manifold, T), X; kwargs...
+        base_lie_group(𝔤), identity_element(base_lie_group(𝔤), T), X; kwargs...
     )
 end
 
@@ -301,10 +300,14 @@ function LinearAlgebra.norm(𝔤::LA, X::Real) where {LA<:LieAlgebra}
 end
 
 function ManifoldsBase.project!(𝔤::LieAlgebra, Y, X)
-    return ManifoldsBase.project!(base_manifold(𝔤), Y, identity_element(𝔤.manifold), X)
+    return ManifoldsBase.project!(
+        base_manifold(𝔤), Y, identity_element(base_lie_group(𝔤)), X
+    )
 end
 function ManifoldsBase.project!(𝔤::LieAlgebra, W, X, V)
-    return ManifoldsBase.project!(base_manifold(𝔤), W, identity_element(𝔤.manifold), V)
+    return ManifoldsBase.project!(
+        base_manifold(𝔤), W, identity_element(base_lie_group(𝔤)), V
+    )
 end
 
 _doc_rand_algebra = """
@@ -327,15 +330,19 @@ Random.rand(::LieAlgebra; kwargs...)
 
 function Random.rand(𝔤::LieAlgebra, T::Type; vector_at=nothing, kwargs...)
     X = allocate_on(𝔤, TangentSpaceType(), T)
-    rand!(𝔤, X; vector_at=vector_at, kwargs...)
+    G = base_lie_group(𝔤)
+    rand!(𝔤, X; vector_at=identity_element(G), kwargs...)
     return X
 end
-function Random.rand(G::LieAlgebra, d::Integer; kwargs...)
-    return [rand(M; kwargs...) for _ in 1:d]
+function Random.rand(𝔤::LieAlgebra, d::Integer; vectpr_at=nothing, kwargs...)
+    G = base_lie_group(𝔤)
+    M = base_manifold(G)
+    return [rand(M; vector_at=identity_element(G), kwargs...) for _ in 1:d]
 end
 function Random.rand(rng::AbstractRNG, 𝔤::LieAlgebra, T::Type; vector_at=nothing, kwargs...)
-    X = allocate_on(M, TangentSpaceType(), T)
-    rand!(rng, 𝔤, X; vector_at=vector_at, kwargs...)
+    X = allocate_on(base_lie_group(𝔤), TangentSpaceType(), T)
+    G = base_lie_group(𝔤)
+    rand!(rng, 𝔤, X; vector_at=identity_element(G), kwargs...)
     return X
 end
 
@@ -398,16 +405,16 @@ For the allocating variant the type `T` of the zero vector can be specified.
 ManifoldsBase.zero_vector(G::LieGroup{𝔽,<:O}, T::Type) where {𝔽,O<:AbstractGroupOperation}
 
 function ManifoldsBase.zero_vector(𝔤::LieAlgebra, T::Type)
-    G = 𝔤.manifold # access manifold twice -> pass to manifold directly
-    return ManifoldsBase.zero_vector(G.manifold, identity_element(G, T))
+    G = base_lie_group(𝔤) # access manifold twice -> pass to manifold directly
+    return ManifoldsBase.zero_vector(base_manifold(G), identity_element(G, T))
 end
 function ManifoldsBase.zero_vector(𝔤::LieAlgebra)
-    G = 𝔤.manifold # access manifold twice -> pass to manifold directly
-    return ManifoldsBase.zero_vector(G.manifold, identity_element(G))
+    G = base_lie_group(𝔤) # access manifold twice -> pass to manifold directly
+    return ManifoldsBase.zero_vector(base_manifold(G), identity_element(G))
 end
 function ManifoldsBase.zero_vector!(𝔤::LieAlgebra, X::T) where {T}
-    G = 𝔤.manifold # access manifold twice -> pass to manifold directly
-    return ManifoldsBase.zero_vector!(G.manifold, X, identity_element(G, T))
+    G = base_lie_group(𝔤) # access manifold twice -> pass to manifold directly
+    return ManifoldsBase.zero_vector!(base_manifold(G), X, identity_element(G, T))
 end
 
 #

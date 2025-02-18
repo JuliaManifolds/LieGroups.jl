@@ -64,6 +64,7 @@ end
         op = AdditionGroupOperation()
         G = LieGroup(M, op)
         𝔤 = LieAlgebra(G)
+        @test startswith(sprint(show, "text/plain", 𝔤), "The Lie algebra of")
         B = DefaultOrthonormalBasis()
         p = [1.0, 2.0]
         q = [0.0, 0.0]
@@ -75,14 +76,32 @@ end
         @test X == Y
         c = [0.0, 1.0]
         @test get_vector(𝔤, c, B) == get_vector(M, q, c, B)
+        @test get_vector(𝔤, c, B; tangent_vector_type=Vector{Float64}) ==
+            get_vector(M, q, c, B)
         d = copy(c)
         @test get_vector!(𝔤, d, c, B) == get_vector!(M, d, q, c, B)
         @test c == d
         @test project(G, p) == project(M, p)
         @test project(𝔤, X) == project(M, p, X)
         @test project(𝔤, X, X) == project(M, p, X)
+
+        # B2
+        B2 = DefaultLieAlgebraOrthogonalBasis()
+        @test get_vector(𝔤, c, B2) == c #on Euclidean this is the same
+        @test get_vector(𝔤, c, B2; tangent_vector_type=Vector{Float64}) == c
+        @test get_vector(𝔤, c, B2; tangent_vector_type=Vector{Float64}) == c
+        @test hat(𝔤, c) == c # and hat/vee as well
+        # Real fallback test here not 100% accurate
+        𝔤2 = LieAlgebra(LieGroup(ManifoldsBase.DefaultManifold(), AdditionGroupOperation()))
+        @test norm(𝔤, 2) == 2.0
+        # Rand cases pass through tests
+        Random.seed!(42)
+        @test is_point(𝔤, rand(𝔤, Vector{Float64}))
+        @test all(is_point.(Ref(𝔤), rand(𝔤, 3)))
+        rng = Random.MersenneTwister()
+        @test is_point(𝔤, rand(rng, 𝔤, Vector{Float64}))
     end
-    @testset "Defaults on a nearly empty (nonimplemented) Lie group" begin
+    @testset "Defaults on a nearly empty (non-implemented) Lie group" begin
         G = LieGroup(
             LieGroupsTestSuite.DummyManifold(), LieGroupsTestSuite.DummyOperation()
         )

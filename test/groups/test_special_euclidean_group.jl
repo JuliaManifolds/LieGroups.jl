@@ -262,6 +262,9 @@ using LieGroupsTestSuite
         @test_throws DomainError is_vector(G, eG, X1f; error=:error)
         @test_throws DomainError is_vector(G, eGm, X1f; error=:error)
         @test_throws DomainError is_point(𝔤, X1f; error=:error)
+        # test internal fallback as well
+        X1ft = SpecialEuclideanMatrixTangentVector(X1f)
+        @test ManifoldsBase.check_size(𝔤, X1ft) isa DomainError
         # not skew
         X2f = [0.0 -0.63 0.0; 0.23 0.0 1.0; 0.0 0.0 0.0]
         @test_throws DomainError is_vector(G, eG, X2f; error=:error)
