@@ -377,7 +377,7 @@ For the [`SpecialOrthogonalGroup`](@ref), ``g`` might also include reflections.
 The logarithm is then
 
 ```math
-$(_tex(:log))_{$(_math(:G))}(g) =  $(_tex(:pmatrix, "0 & α &", "-α & 0")).
+$(_tex(:log))_{$(_math(:G))}(g) =  $(_tex(:pmatrix, "0 & α", "-α & 0")).
 ```
 
 This result can be computed in-place of `X`
