@@ -241,11 +241,11 @@ Technically, `hat` is a specific case of [`get_vector`](@ref) and is implemented
 
 # function hat end
 @doc "$(_doc_hat)"
-function hat(𝔤::LieAlgebra{𝔽}, c) where {𝔽}
-    return get_vector(𝔤, c, DefaultLieAlgebraOrthogonalBasis(𝔽))
+function hat(𝔤::LieAlgebra, c)
+    return get_vector(𝔤, c, DefaultLieAlgebraOrthogonalBasis())
 end
-function hat(𝔤::LieAlgebra{𝔽}, c, T::Type) where {𝔽}
-    return get_vector(𝔤, c, DefaultLieAlgebraOrthogonalBasis(𝔽); tangent_vector_type=T)
+function hat(𝔤::LieAlgebra, c, T::Type)
+    return get_vector(𝔤, c, DefaultLieAlgebraOrthogonalBasis(); tangent_vector_type=T)
 end
 
 # function hat! end
