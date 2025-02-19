@@ -620,8 +620,8 @@ function ManifoldsBase.isapprox(
 end
 
 _doc_jacobian_conjugate = """
-    jacobian_conjugate(G::LieGroup, g, h, B::ManifoldsBase.AbstractBasis=DefaultLieAlgebraOrthogonalBasis())
-    jacobian_conjugate!(G::LieGroup, J, g, h, B::ManifoldsBase.AbstractBasis=DefaultLieAlgebraOrthogonalBasis())
+    jacobian_conjugate(G::LieGroup, g, h, B::AbstractBasis=DefaultLieAlgebraOrthogonalBasis())
+    jacobian_conjugate!(G::LieGroup, J, g, h, B::AbstractBasis=DefaultLieAlgebraOrthogonalBasis())
 
 Compute the Jacobian of the [`conjugate`](@ref) ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1}``,
 with respect to an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`).
@@ -637,7 +637,7 @@ with respect to the given basis.
 """
 @doc "$(_doc_jacobian_conjugate)"
 function jacobian_conjugate(
-    G::LieGroup, g, h, B::ManifoldsBase.AbstractBasis=DefaultLieAlgebraOrthogonalBasis()
+    G::LieGroup, g, h, B::AbstractBasis=DefaultLieAlgebraOrthogonalBasis()
 )
     J = ManifoldsBase.allocate_result(G, jacobian_conjugate, g, h, B)
     return jacobian_conjugate!(G, J, g, h, B)
@@ -646,7 +646,7 @@ end
 function jacobian_conjugate! end
 @doc "$(_doc_jacobian_conjugate)"
 jacobian_conjugate!(
-    ::LieGroup, J, g, h; B::ManifoldsBase.AbstractBasis=DefaultLieAlgebraOrthogonalBasis()
+    ::LieGroup, J, g, h; B::AbstractBasis=DefaultLieAlgebraOrthogonalBasis()
 )
 
 _doc_log = """
