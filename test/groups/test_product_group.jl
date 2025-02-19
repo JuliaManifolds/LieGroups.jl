@@ -38,13 +38,23 @@ using LieGroupsTestSuite
         :repr => "ProductLieGroup(Euclidean(2; field=ℝ) × Euclidean(2; field=ℝ), AdditionGroupOperation() × AdditionGroupOperation())",
     )
     test_lie_group(G, properties, expectations)
-
+    @testset "A small additional size check" begin
+        @test ManifoldsBase.check_size(G, Identity(G)) == nothing
+        @test ManifoldsBase.check_size(G, Identity(G), X) == nothing
+    end
+    @testset "Special dispatch cass for log" begin end
     @testset "Product Operation generators" begin
+        G = LieGroupsTestSuite.DummyLieGroup()
+        G2 = G × G
         op = LieGroupsTestSuite.DummyOperation()
         op2 = LieGroupsTestSuite.DummySecondOperation()
         O1 = op × op2
         O2 = op2 × op
         @test (O1 × op) == (op × O2)
         @test (O1 × O2) == (op × op2 × op2 × op)
+        @test O1[1] == op
+        @test O1[2] == op2
+        @test O1[:] == (op, op2)
+        @test O1[:] == LieGroups.submanifold_components(G2, O1)
     end
 end

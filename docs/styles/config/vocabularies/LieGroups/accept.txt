@@ -5,4 +5,5 @@ Lie algebras
 Lie group
 Lie groups
 Riemannian
+Schur
 semidirect
