@@ -653,8 +653,8 @@ function _log_SE2!(G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}
 end
 
 _doc_log_SE3_id = """
-    log(G::SpecialEuclidean, e, g)
-    log!(G::SpecialEuclidean, X, e, g)
+    log(G::SpecialEuclidean, g)
+    log!(G::SpecialEuclidean, X, g)
 
 Compute the Lie group logarithm function on the [`SpecialEuclideanGroup`](@ref) `G```=$(_math(:SE))(3)``,
 where `e` is the [`Identity`](@ref) on ``$(_math(:SE))(3)`` `G` uses a [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)`{Tuple{3}}` for dispatch.
