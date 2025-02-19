@@ -398,12 +398,12 @@ On matrix Lie groups this is the same as the [matrix exponential](https://en.wik
 The computation can be performed in-place of `g`.
 
 !!! info "Naming convention"
-   There are at least two different objects usually called “exponential” that need to be distinguished
+    There are at least two different objects usually called “exponential” that need to be distinguished
 
-   * the [(Riemannian) exponential map](@extref `Base.exp-Tuple{AbstractManifold, Any, Any}`) `exp(M, p, X)` from $(_link(:ManifoldsBase)).
-     This can be accessed here using `exp(base_manifold(G), p, X)`
-   * the exponential map for a (left/right/bi-invariant) Cartan-Schouten (pseudo-)metric `exp(G, g, X)`, which we use as a default within this package
-   * the (matrix/Lie group) exponential function `exp(G, g)` which agrees with the previous one for `g` being the identity there.
+    * the [(Riemannian) exponential map](@extref `Base.exp-Tuple{AbstractManifold, Any, Any}`) `exp(M, p, X)` from $(_link(:ManifoldsBase)).
+      This can be accessed here using `exp(base_manifold(G), p, X)`
+    * the exponential map for a (left/right/bi-invariant) Cartan-Schouten (pseudo-)metric `exp(G, g, X)`, which we use as a default within this package
+    * the (matrix/Lie group) exponential function `exp(G, g)` which agrees with the previous one for `g` being the identity there.
 """
 
 @doc "$(_doc_exponential)"
