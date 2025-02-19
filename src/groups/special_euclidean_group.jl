@@ -612,6 +612,7 @@ V_α = $(_tex(:frac, "α", "2")) $(_tex(:pmatrix, "$(_tex(:frac, _tex(:sin)*"α"
 and ``V_0 = I_2``, where ``I_2`` is the identity matrix. Note that this is the inverse of ``U_α`` as given in the group exponential
 
 Then the result ``X = (Y, v) ∈ $(_math(:se))(2)`` is given by ``Y ∈ $(_math(:so))(2)`` as computed above and
+```math
 v = V_αr ∈ $(_math(:T))(2),
 ```
 where ``v`` is computed in-place without setting up ``V_α``
