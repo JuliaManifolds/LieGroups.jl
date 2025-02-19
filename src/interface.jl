@@ -666,11 +666,10 @@ The computation can be performed in-place of `X`.
 
 
 !!! info "Naming convention"
-   There are at least two different objects usually called “logarithm” that need to be distinguished
-
-   * the [(Riemannian) logarithmic map](@extref `Base.log-Tuple{AbstractManifold, Any, Any}`) `log(M, p, X)` from $(_link(:ManifoldsBase))
-   * the exponential map for a (left/right/bi-invariant) Cartan-Schouten (pseudo-)metric `exp(G, g, X)`, which we use as a default within this package
-   * the (matrix/Lie group) exponential function `exp(G, g)` which agrees with the previous one for `g` being the identity there.
+    There are at least two different objects usually called “logarithm” that need to be distinguished
+    * the [(Riemannian) logarithmic map](@extref `Base.log-Tuple{AbstractManifold, Any, Any}`) `log(M, p, X)` from $(_link(:ManifoldsBase))
+    * the exponential map for a (left/right/bi-invariant) Cartan-Schouten (pseudo-)metric `exp(G, g, X)`, which we use as a default within this package
+    * the (matrix/Lie group) exponential function `exp(G, g)` which agrees with the previous one for `g` being the identity there.
 """
 
 @doc "$_doc_log"
@@ -698,11 +697,11 @@ For the allocating variant, you can specify the type `T`, when the point argumen
 The computation can be performed in-place of `X::T`, which then determines the type.
 
 !!! info "Naming convention"
-   There are at least two different objects usually called “logarithm” that need to be distinguished
+    There are at least two different objects usually called “logarithm” that need to be distinguished
 
-   * the [(Riemannian) logarithm](@extref `Base.log-Tuple{AbstractManifold, Any, Any}`) map `log(M, p, q)` from $(_link(:ManifoldsBase)). This can be accessed here using `log(base_manifold(G), p, q)`.
-   * the logarithmic map for a (left/right/bi-invariant) Cartan-Schouten (pseudo-)metric `log(G, g, h)`, which we use as a default within this package
-   * the (matrix/Lie group) logarithm function `log(G, h)` which agrees with the previous one for `g` being the identity there.
+    * the [(Riemannian) logarithm](@extref `Base.log-Tuple{AbstractManifold, Any, Any}`) map `log(M, p, q)` from $(_link(:ManifoldsBase)). This can be accessed here using `log(base_manifold(G), p, q)`.
+    * the logarithmic map for a (left/right/bi-invariant) Cartan-Schouten (pseudo-)metric `log(G, g, h)`, which we use as a default within this package
+    * the (matrix/Lie group) logarithm function `log(G, h)` which agrees with the previous one for `g` being the identity there.
 """
 
 @doc "$(_doc_log)"
