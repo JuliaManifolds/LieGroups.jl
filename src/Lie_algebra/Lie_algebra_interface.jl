@@ -250,8 +250,8 @@ end
 
 # function hat! end
 @doc "$(_doc_hat)"
-function hat!(𝔤::LieAlgebra{𝔽}, X, c) where {𝔽}
-    get_vector!(𝔤, X, c, DefaultLieAlgebraOrthogonalBasis(𝔽))
+function hat!(𝔤::LieAlgebra, X, c)
+    get_vector!(𝔤, X, c, DefaultLieAlgebraOrthogonalBasis())
     return X
 end
 
@@ -380,14 +380,14 @@ the [`DefaultLieAlgebraOrthogonalBasis`](@ref).
 
 # function vee end
 @doc "$(_doc_vee)"
-function vee(𝔤::LieAlgebra{𝔽}, X) where {𝔽}
-    return get_coordinates(𝔤, X, DefaultLieAlgebraOrthogonalBasis(𝔽))
+function vee(𝔤::LieAlgebra, X)
+    return get_coordinates(𝔤, X, DefaultLieAlgebraOrthogonalBasis())
 end
 
 # function vee! end
 @doc "$(_doc_vee)"
-function vee!(𝔤::LieAlgebra{𝔽}, c, X) where {𝔽}
-    get_coordinates!(𝔤, c, X, DefaultLieAlgebraOrthogonalBasis(𝔽))
+function vee!(𝔤::LieAlgebra, c, X)
+    get_coordinates!(𝔤, c, X, DefaultLieAlgebraOrthogonalBasis())
     return c
 end
 
