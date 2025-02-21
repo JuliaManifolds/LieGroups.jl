@@ -53,7 +53,7 @@ end
 #
 # --- A
 """
-    test_adjoint(G::LieGroup, g, X; kwargs...)
+    test_adjoint(G::AbstractLieGroup, g, X; kwargs...)
 
 Test  `adjoint` function for a given Lie group element `g` and a Lie Algebra vector `X`
 
@@ -62,7 +62,7 @@ Test  `adjoint` function for a given Lie group element `g` and a Lie Algebra vec
   default from `diff_conjugate` is used
 * `test_mutating::Bool=true`: test the mutating functions
 """
-function test_adjoint(G::LieGroup, g, X; expected=missing, test_mutating::Bool=true)
+function test_adjoint(G::AbstractLieGroup, g, X; expected=missing, test_mutating::Bool=true)
     @testset "adjoint" begin
         v = if ismissing(expected)
             diff_conjugate(G, g, identity_element(G, typeof(X)), X)
@@ -108,7 +108,7 @@ end
 #
 # --- C
 """
-    test_compose(G::LieGroup, g, h; kwargs...)
+    test_compose(G::AbstractLieGroup, g, h; kwargs...)
 
 Test  `compose` for given Lie group elements `g`, `h`.
 
@@ -121,7 +121,7 @@ Test  `compose` for given Lie group elements `g`, `h`.
 * `test_mutating::Bool=true`: test the mutating functions
 """
 function test_compose(
-    G::LieGroup,
+    G::AbstractLieGroup,
     g,
     h;
     atol::Real=0,
@@ -167,7 +167,7 @@ function test_compose(
 end
 
 """
-    test_conjugate(G::LieGroup, g, h; expected=missing)
+    test_conjugate(G::AbstractLieGroup, g, h; expected=missing)
 
 Test  `conjugate`.
 
@@ -178,7 +178,7 @@ Test  `conjugate`.
 * `test_mutating::Bool=true`: test the mutating functions
 """
 function test_conjugate(
-    G::LieGroup, g, h; expected=missing, test_default::Bool=true, test_mutating::Bool=true
+    G::AbstractLieGroup, g, h; expected=missing, test_default::Bool=true, test_mutating::Bool=true
 )
     @testset "conjugate" begin
         k1 = conjugate(G, g, h)
@@ -255,7 +255,7 @@ function test_diff_group_apply(
 end
 
 """
-    test_diff_inv(G::LieGroup, g, X; expected=missing)
+    test_diff_inv(G::AbstractLieGroup, g, X; expected=missing)
 
 Test  `diff_inv`.
 
@@ -264,7 +264,7 @@ Test  `diff_inv`.
   only consistency between the allocating and the in-place variant is checked.
 * `test_mutating::Bool=true`: test the mutating functions
 """
-function test_diff_inv(G::LieGroup, g, X; expected=missing, test_mutating::Bool=true)
+function test_diff_inv(G::AbstractLieGroup, g, X; expected=missing, test_mutating::Bool=true)
     @testset "diff_inv" begin
         𝔤 = LieAlgebra(G)
         # Check that at identity it is in the Lie algebra
@@ -283,7 +283,7 @@ function test_diff_inv(G::LieGroup, g, X; expected=missing, test_mutating::Bool=
 end
 
 """
-    test_diff_left_compose(G::LieGroup, g, h, X; expected=missing)
+    test_diff_left_compose(G::AbstractLieGroup, g, h, X; expected=missing)
 
 Test  `diff_left_compose`.
 
@@ -293,7 +293,7 @@ Test  `diff_left_compose`.
 * `test_mutating::Bool=true`: test the mutating functions
 """
 function test_diff_left_compose(
-    G::LieGroup, g, h, X; expected=missing, test_mutating::Bool=true
+    G::AbstractLieGroup, g, h, X; expected=missing, test_mutating::Bool=true
 )
     @testset "diff_left_compose" begin
         𝔤 = LieAlgebra(G)
@@ -313,7 +313,7 @@ function test_diff_left_compose(
 end
 
 """
-    test_diff_right_compose(G::LieGroup, g, h, X; expected=missing)
+    test_diff_right_compose(G::AbstractLieGroup, g, h, X; expected=missing)
 
 Test  `diff_right_compose`.
 
@@ -323,7 +323,7 @@ Test  `diff_right_compose`.
 * `test_mutating::Bool=true`: test the mutating functions
 """
 function test_diff_right_compose(
-    G::LieGroup, g, h, X; expected=missing, test_mutating::Bool=true
+    G::AbstractLieGroup, g, h, X; expected=missing, test_mutating::Bool=true
 )
     @testset "diff_right_compose" begin
         𝔤 = LieAlgebra(G)
@@ -343,14 +343,14 @@ function test_diff_right_compose(
 end
 
 """
-    test_copyto(G::LieGroup, g)
+    test_copyto(G::AbstractLieGroup, g)
 
 Test that `copyto!` works also when copying over an `Identity`.
 
 The point `g` can be any point _but_ the `identity_element`.
 The group has to be a mutating one, that is, not work on isbit types.
 """
-function test_copyto(G::LieGroup, g)
+function test_copyto(G::AbstractLieGroup, g)
     @testset "copyto!" begin
         k = copy(G, g)
         e = Identity(G)
@@ -381,7 +381,7 @@ end
 Test  `diff_conjugate`
 """
 function test_diff_conjugate(
-    G::LieGroup, g, h, X; expected=missing, test_mutating::Bool=true
+    G::AbstractLieGroup, g, h, X; expected=missing, test_mutating::Bool=true
 )
     𝔤 = LieAlgebra(G)
     @testset "diff_conjugate" begin
@@ -402,7 +402,7 @@ end
 #
 # --- E
 """
-    test_exp_log(G::LieGroup, g, h, X)
+    test_exp_log(G::AbstractLieGroup, g, h, X)
 
 Test  `exp` and `log` for given Lie group elements `g`, `h` and
 a vector `X` from the Lie Algebra.
@@ -418,7 +418,7 @@ a vector `X` from the Lie Algebra.
 * `test_mutating::Bool=true`: test the mutating functions
 """
 function test_exp_log(
-    G::LieGroup,
+    G::AbstractLieGroup,
     g,
     h,
     X;
@@ -511,7 +511,7 @@ end
 #
 # --- H
 """
-    test_hat_vee(G::LieGroup, g, X; kwargs...)
+    test_hat_vee(G::AbstractLieGroup, g, X; kwargs...)
 
 Test `hat` and `vee` for given Lie group element `g` and a Lie Algebra vector `X`.
 
@@ -523,7 +523,7 @@ Test `hat` and `vee` for given Lie group element `g` and a Lie Algebra vector `X
 * `test_hat::Bool=true`: test the hat function
 """
 function test_hat_vee(
-    G::LieGroup,
+    G::AbstractLieGroup,
     g,
     X;
     test_mutating::Bool=true,
@@ -596,7 +596,7 @@ function test_injectivity_radius(G::LieGroup; expected=missing)
 end
 
 """
-    test_inv_compose(G::LieGroup, g, h, X; kwargs...)
+    test_inv_compose(G::AbstractLieGroup, g, h, X; kwargs...)
 
 Test the special functions combining inv and compose, `inv_left_compose` and `inv_right_compose`.
 For these tests both `compose` and `inv` are required.
@@ -608,7 +608,7 @@ For these tests both `compose` and `inv` are required.
 * `test_right::Bool=true`: test ``g∘h^{-1}``
 """
 function test_inv_compose(
-    G::LieGroup,
+    G::AbstractLieGroup,
     g,
     h;
     expected_left=missing,
@@ -655,7 +655,7 @@ function test_inv_compose(
 end
 
 """
-    test_inv(G::LieGroup, g)
+    test_inv(G::AbstractLieGroup, g)
 
 Test the inverse function, both the allocating and the in-place variant,
 and that the double inverse is the identity.
@@ -665,7 +665,7 @@ and that the double inverse is the identity.
 * `test_mutating::Bool=true`: test the mutating functions
 * `test_identity::Bool=true`: test that `inv(e) == e`
 """
-function test_inv(G::LieGroup, g; test_mutating::Bool=true, test_identity::Bool=true)
+function test_inv(G::AbstractLieGroup, g; test_mutating::Bool=true, test_identity::Bool=true)
     @testset "inv" begin
         k1 = inv(G, g)
         @test is_point(G, k1; error=:error)
@@ -696,7 +696,7 @@ function test_inv(G::LieGroup, g; test_mutating::Bool=true, test_identity::Bool=
 end
 
 """
-    test_is_identity(G::LieGroup, g)
+    test_is_identity(G::AbstractLieGroup, g)
 
 Test that the `Identity` returns that `is_identity` is true and that it is a point
 """
@@ -716,7 +716,7 @@ end
 #
 # --- L
 """
-    test_lie_bracket(G::LieGroup, X, Y; expected=missing)
+    test_lie_bracket(G::AbstractLieGroup, X, Y; expected=missing)
 
 Test  `lie_bracket`.
 
@@ -725,7 +725,7 @@ Test  `lie_bracket`.
   if not provided, only consistency between the allocating and the in-place variant is checked.
 * `test_mutating::Bool=true`: test the mutating functions
 """
-function test_lie_bracket(G::LieGroup, X, Y; expected=missing, test_mutating::Bool=true)
+function test_lie_bracket(G::AbstractLieGroup, X, Y; expected=missing, test_mutating::Bool=true)
     @testset "lie_bracket" begin
         𝔤 = LieAlgebra(G)
         Z1 = lie_bracket(𝔤, X, Y)
@@ -757,7 +757,7 @@ both the random point and the random tangent vector variants are tested.
 * `rng=missing`: test with a specific random number generator
 """
 function test_rand(
-    G::LieGroup, g; test_mutating::Bool=true, rng::Union{Missing,AbstractRNG}=missing
+    G::AbstractLieGroup, g; test_mutating::Bool=true, rng::Union{Missing,AbstractRNG}=missing
 )
     @testset "rand" begin
         g1 = rand(G)
@@ -816,7 +816,7 @@ end
 #
 #
 """
-    test_lie_group(G::LieGroup, properties::Dict, expectations::Dict)
+    test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dict)
 
 Test the Lie group ``G`` based on a `Dict` of properties and a `Dict` of `expectations
 
@@ -846,7 +846,7 @@ Possible `expectations` are
 * `:repr` is a sting one gets from `repr(G)`
 * `:vee` for the result of `vee(G, X)` where `X` is the first of the vectors
 """
-function test_lie_group(G::LieGroup, properties::Dict, expectations::Dict=Dict())
+function test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dict=Dict())
     atol = get(expectations, :atol, 0.0)
     mutating = get(properties, :Mutating, true)
     functions = get(properties, :Functions, Function[])
@@ -1009,7 +1009,7 @@ function test_lie_group(G::LieGroup, properties::Dict, expectations::Dict=Dict()
 end
 
 """
-    test_group_action(G::LieGroup, properties::Dict, expectations::Dict)
+    test_group_action(G::AbstractLieGroup, properties::Dict, expectations::Dict)
 
 Test the Lie group ``G`` based on a `Dict` of properties and a `Dict` of `expectations`.
 
@@ -1030,7 +1030,7 @@ Possible `expectations` are
 * `:apply` for the result of `apply` on the first group and manifold point
 * `:diff_apply` for the result of `apply` on the first group and manifold point together with the first tangent vector
 * `:atol` a global absolute tolerance, defaults to `1e-8`
-* `:group` is the `LieGroup` describing the action
+* `:group` is the `AbstractLieGroup` describing the action
 * `:manifold` is the `AbstractManifold` the action acts upon
 * `:repr` is a sting one gets from `repr(G)`
 """

@@ -18,14 +18,14 @@ _note_action_argument_order = """
     AbstractLeftGroupActionType <: AbstractGroupActionType
 
 A type representing a (smooth) group action ``σ: $(_math(:G)) × $(_math(:M)) → $(_math(:M))``
-of a [`LieGroup`](@ref) ``$(_math(:G))`` acting (from the left) on an $(_link(:AbstractManifold)) ``$(_math(:M))``.
+of a [`AbstractLieGroup`](@ref) ``$(_math(:G))`` acting (from the left) on an $(_link(:AbstractManifold)) ``$(_math(:M))``.
 with the following properties
 
 1. ``σ($(_math(:e)), p) = p`` holds for all ``p ∈ $(_math(:M))``
 2. ``σ(g, σ(h, p)) = σ(g$(_math(:∘))h, p)`` holds for all ``g,h ∈ $(_math(:G))``, ``p ∈ $(_math(:M))``
 
 
-where ``$(_math(:∘))`` denotes the group operation of the [`LieGroup`](@ref) ``$(_math(:G))``.
+where ``$(_math(:∘))`` denotes the group operation of the [`AbstractLieGroup`](@ref) ``$(_math(:G))``.
 See also [HilgertNeeb:2012; Definition 9.1.11](@cite).
 
 The type of action can be seen a bit better when writing the action as a family ``σ_g(p)``:
@@ -54,13 +54,13 @@ abstract type AbstractLeftGroupActionType <: AbstractGroupActionType end
     AbstractRightGroupActionType <: AbstractGroupActionType
 
 A type representing a (smooth) group action ``σ: $(_math(:M)) × $(_math(:G)) → $(_math(:M))``
-of a [`LieGroup`](@ref) ``$(_math(:G))`` acting (from the right) on an $(_link(:AbstractManifold)) ``$(_math(:M))``.
+of a [`AbstractLieGroup`](@ref) ``$(_math(:G))`` acting (from the right) on an $(_link(:AbstractManifold)) ``$(_math(:M))``.
 with the following properties
 
 1. ``σ(p, $(_math(:e))) = p`` holds for all ``p ∈ $(_math(:M))``
 2. ``σ(σ(p, g), h) = σ(p, g$(_math(:∘))h)`` holds for all ``g,h ∈ $(_math(:G))``, ``p ∈ $(_math(:M))``
 
-where ``$(_math(:∘))`` denotes the group operation of the [`LieGroup`](@ref) ``$(_math(:G))``.
+where ``$(_math(:∘))`` denotes the group operation of the [`AbstractLieGroup`](@ref) ``$(_math(:G))``.
 See also [HilgertNeeb:2012; Remark 9.1.12](@cite).
 
 The type of action can be seen a bit better when writing the action as a family ``σ_g(p)``:
@@ -88,9 +88,9 @@ abstract type AbstractRightGroupActionType <: AbstractGroupActionType end
 """
     GroupAction{T<:GroupActionType, L<:LieGroup, M<:AbstractManifold}
 
-Specify a group action of [`AbstractGroupActionType`](@ref) `T` of a [`LieGroup`](@ref) `G` acting on `M`.
+Specify a group action of [`AbstractGroupActionType`](@ref) `T` of a [`AbstractLieGroup`](@ref) `G` acting on `M`.
 
-Let ``$(_math(:M))`` be a $(_link(:AbstractManifold)) and ``$(_math(:G))`` be a [`LieGroup`](@ref)
+Let ``$(_math(:M))`` be a $(_link(:AbstractManifold)) and ``$(_math(:G))`` be a [`AbstractLieGroup`](@ref)
 with group operation ``$(_math(:∘))``.
 
 A (smooth) action of the group ``$(_math(:G))`` on the manifold ``$(_math(:M))`` is a map
@@ -114,7 +114,7 @@ with the properties
 See [HilgertNeeb:2012; Section 9.1.3](@cite) for more details.
 
 """
-struct GroupAction{T<:AbstractGroupActionType,L<:LieGroup,M<:ManifoldsBase.AbstractManifold}
+struct GroupAction{T<:AbstractGroupActionType,L<:AbstractLieGroup,M<:ManifoldsBase.AbstractManifold}
     type::T
     group::L
     manifold::M
@@ -151,7 +151,7 @@ function base_lie_group end
 @doc """
     base_lie_group(A::GroupAction)
 
-Return the [`LieGroup`](@ref) of the [`GroupAction`](@ref)
+Return the [`AbstractLieGroup`](@ref) of the [`GroupAction`](@ref)
 specifying the action.
 """
 base_lie_group(A::GroupAction) = A.group
@@ -165,19 +165,19 @@ ManifoldsBase.base_manifold(A::GroupAction) = A.manifold
 
 function default_left_action end
 """
-    default_left_action(G::LieGroup, M::AbstractManifold)
+    default_left_action(G::AbstractLieGroup, M::AbstractManifold)
 
 Return the default left action for a Lie group `G` acting on a manifold `M`.
 """
-default_left_action(N::LieGroup, M::AbstractManifold)
+default_left_action(N::AbstractLieGroup, M::AbstractManifold)
 
 function default_right_action end
 """
-    default_right_action(G::LieGroup, M::AbstractManifold)
+    default_right_action(G::AbstractLieGroup, M::AbstractManifold)
 
 Return the default right action for a Lie group `G` acting on a manifold `M`.
 """
-default_right_action(N::LieGroup, M::AbstractManifold)
+default_right_action(N::AbstractLieGroup, M::AbstractManifold)
 
 _doc_diff_apply = """
     diff_apply(A::GroupAction{T, L, M}, g, p, X)

@@ -8,7 +8,7 @@ Represent the Lie algebra ``$(_math(:𝔤))``, that is a ``𝔽`` vector space w
 1. ``[X,X] = 0`` for all ``X ∈ $(_math(:𝔤))``
 2. The Jacobi identity ``[X, [Y,Z]] = [[X,Y],Z] = [Y, [X,Z]]`` holds for all ``X, Y, Z ∈ $(_math(:𝔤))``.
 
-The Lie algebras considered here are those related to a [`LieGroup`](@ref) ``$(_math(:G))``,
+The Lie algebras considered here are those related to a [`AbstractLieGroup`](@ref) ``$(_math(:G))``,
 namely the tangent space ``T_{$(_math(:e))}$(_math(:G))`` at the [`Identity`](@ref),
 this is internally just a `const` of the corresponding $(_link(:TangentSpace)).
 
@@ -32,7 +32,7 @@ this is internally just a `const` of the corresponding $(_link(:TangentSpace)).
 
     LieAlgebra(G::LieGroup)
 
-Return the Lie Algebra belonging to the [`LieGroup`](@ref) `G`.
+Return the Lie Algebra belonging to the [`AbstractLieGroup`](@ref) `G`.
 """
 const LieAlgebra{𝔽,O<:AbstractGroupOperation,G<:LieGroup{𝔽,O}} = ManifoldsBase.Fiber{
     𝔽,ManifoldsBase.TangentSpaceType,G,Identity{O}
@@ -46,7 +46,7 @@ end
     base_manifold(𝔤::LieAlgebra)
 
 Return the [`base_manifold`](@extref `ManifoldsBase.base_manifold`) the
-[`LieGroup`](@ref) of the given [`LieAlgebra`](@ref) is based on.
+[`AbstractLieGroup`](@ref) of the given [`LieAlgebra`](@ref) is based on.
 """
 ManifoldsBase.base_manifold(𝔤::LieAlgebra) = base_manifold(base_lie_group(𝔤))
 
@@ -123,9 +123,9 @@ function get_coordinates_lie!(
 end
 
 _doc_get_vector = """
-    get_vector(G::LieGroup, c, B::AbstractBasis; kwargs...)
+    get_vector(G::AbstractLieGroup, c, B::AbstractBasis; kwargs...)
     get_vector(𝔤::LieAlgebra, c, B::AbstractBasis; kwargs...)
-    get_vector!(G::LieGroup, X::T, c, B::AbstractBasis; kwargs...)
+    get_vector!(G::AbstractLieGroup, X::T, c, B::AbstractBasis; kwargs...)
     get_vector!(𝔤::LieAlgebra, X::T, c, B::AbstractBasis; kwargs...)
 
 Return the vector corresponding to a set of coefficients in an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`)
@@ -261,7 +261,7 @@ end
 Check whether `X` is a valid point on the Lie Algebra `𝔤`.
 This falls back to checking whether `X` is a valid point on the tangent space
 at the [`identity_element`](@ref)`(G)` on the [`base_manifold`](@ref)`(G)`
-on the [`LieGroup`](@ref) of `𝔤`
+on the [`AbstractLieGroup`](@ref) of `𝔤`
 """
 function ManifoldsBase.is_point(𝔤::LieAlgebra, X::T; kwargs...) where {T}
     return ManifoldsBase.is_vector(
@@ -313,7 +313,7 @@ end
 _doc_rand_algebra = """
     rand(::LieGroup; vector_at=nothing, σ=1.0, kwargs...)
     rand(::LieAlgebra; σ=1.0, kwargs...)
-    rand!(::LieGroup, gX; vector_at=nothing, kwargs...)
+    rand!(::AbstractLieGroup, gX; vector_at=nothing, kwargs...)
     rand!(::LieAlgebra, X; σ=1.0, kwargs...)
 
 Compute a random point or tangent vector on a Lie group.
@@ -397,7 +397,7 @@ end
     zero_vector!(𝔤::LieAlgebra, X::T)
 
 Generate a $(_link(:zero_vector)) of type `T` in the [`LieAlgebra`](@ref) ``𝔤`` of
-the [`LieGroup`](@ref) `G`.
+the [`AbstractAbstractAbstractLieGroup`](@ref) `G`.
 By default this calls `zero_vector` on the manifold of `G` at the `identity_element(G,T)`
 
 For the allocating variant the type `T` of the zero vector can be specified.
