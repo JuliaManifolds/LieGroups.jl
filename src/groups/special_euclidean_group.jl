@@ -90,7 +90,7 @@ const SpecialEuclideanGroupOperation = Union{
 """
     SpecialEuclideanMatrixPoint <: AbstractLieGroupPoint
 
-represent a point on some [`LieGroup`](@ref) by an [affine matrix](https://en.wikipedia.org/wiki/Affine_group#Matrix_representation).
+represent a point on some [`AbstractLieGroup`](@ref) by an [affine matrix](https://en.wikipedia.org/wiki/Affine_group#Matrix_representation).
 
 ```math
 $(_tex(:pmatrix, "M & v", "$(_tex(:vec, "0"))_n^{$(_tex(:transp))} & 1")) ∈ ℝ^{(n+1)×(n+1)},
@@ -105,7 +105,7 @@ end
 """
     SpecialEuclideanMatrixTangentVector <: AbstractLieAlgebraTangentVector
 
-represent a tangent vector on some [`LieGroup`](@ref) by a matrix of the form
+represent a tangent vector on some [`AbstractLieGroup`](@ref) by a matrix of the form
 
 ```math
 $(_tex(:pmatrix, "M & v", "$(_tex(:vec, "0"))_n^{$(_tex(:transp))} & 0")) ∈ ℝ^{(n+1)×(n+1)},
