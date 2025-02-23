@@ -397,7 +397,7 @@ end
     zero_vector!(𝔤::LieAlgebra, X::T)
 
 Generate a $(_link(:zero_vector)) of type `T` in the [`LieAlgebra`](@ref) ``𝔤`` of
-the [`AbstractAbstractAbstractLieGroup`](@ref) `G`.
+the [`AbstractLieGroup`](@ref) `G`.
 By default this calls `zero_vector` on the manifold of `G` at the `identity_element(G,T)`
 
 For the allocating variant the type `T` of the zero vector can be specified.

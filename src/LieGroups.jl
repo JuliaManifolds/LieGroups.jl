@@ -61,6 +61,7 @@ export AbstractLieGroup
 export LieGroup, LieAlgebra
 export PowerLieGroup, ProductLieGroup
 export LeftSemidirectProductLieGroup, RightSemidirectProductLieGroup
+export ValidationLieGroup
 export DefaultLieAlgebraOrthogonalBasis
 export ×, ^, ⋉, ⋊
 #

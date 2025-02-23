@@ -25,13 +25,13 @@ Current contexts are
 
 Generate the Validation Lie Group for the given [`AbstractLieGroup`](@ref) `L`.
 If `check_manifold` is set to `true` the inner manifold is additionally wrapped
-in a [`ValidationManifold`](@exref `ManifoldsBase.ValidationManifold`).
+in a [`ValidationManifold`](@extref `ManifoldsBase.ValidationManifold`).
 All suitable keywords are passed to the constructor of the validation manifold as well.
 
 # Keyword arguments
 
 * `error::Symbol=:error`: specify how errors in the validation should be reported.
-  this is passed to [`is_point`](@ref) and [`is_vector`](@ref) as the `error` keyword argument.
+  this is passed to [`is_point`](@extref `ManifoldsBase.is_point`) and [`is_vector`](@extref `ManifoldsBase.is_vector`) as the `error` keyword argument.
   Available values are `:error`, `:warn`, `:info`, and `:none`. Every other value is treated as `:none`.
 * `ignore_contexts = Vector{Symbol}()` a vector to indicate which validation contexts should not be performed.
 * `ignore_functions=Dict{Function,Union{Symbol,Vector{Symbol}}}()` a dictionary to disable certain contexts within functions.

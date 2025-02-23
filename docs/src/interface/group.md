@@ -1,6 +1,7 @@
 # An interface for Lie groups
 
 ```@docs
+AbstractLieGroup
 LieGroup
 AbstractLieAlgebraTangentVector
 AbstractLieGroupPoint

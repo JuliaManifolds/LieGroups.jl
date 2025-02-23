@@ -27,8 +27,45 @@ Arguments
     exit(0)
 end
 
+run_quarto = "--quarto" in ARGS
+run_on_CI = (get(ENV, "CI", nothing) == "true")
+tutorials_in_menu = !("--exclude-tutorials" ∈ ARGS)
+## Build tutorials menu
+tutorials_menu =
+    "How to..." => [
+        "🚀 Get Started with LieGroups.jl" => "tutorials/getstarted.md",
+        "Transition from `GroupManifolds`" => "tutorials/transition.md",
+    ]
+all_tutorials_exist = true
+for (name, file) in tutorials_menu.second
+    fn = joinpath(@__DIR__, "src/", file)
+    if !isfile(fn) || filesize(fn) == 0 # nonexistent or empty file
+        global all_tutorials_exist = false
+        if !run_quarto
+            @warn "Tutorial $name does not exist at $fn."
+            if (!isfile(fn)) && (endswith(file, "getstarted.md"))
+                @warn "Generating empty file, since this tutorial is linked to from the documentation."
+                touch(fn)
+            end
+        end
+    end
+end
+if !all_tutorials_exist && !run_quarto && !run_on_CI
+    @warn """
+        Not all tutorials exist. Run `make.jl --quarto` to generate them. For this run they are excluded from the menu.
+    """
+    tutorials_in_menu = false
+end
+if !tutorials_in_menu
+    @warn """
+    You are either explicitly or implicitly excluding the tutorials from the documentation.
+    You will not be able to see their menu entries nor their rendered pages.
+    """
+    run_on_CI &&
+        (@error "On CI, the tutorials have to be either rendered with Quarto or be cached.")
+end
 #
-# (a) if docs is not the current active environment, switch to it
+# (b) if docs is not the current active environment, switch to it
 # (from https://github.com/JuliaIO/HDF5.jl/pull/1020/) 
 if Base.active_project() != joinpath(@__DIR__, "Project.toml")
     using Pkg
@@ -39,8 +76,8 @@ if Base.active_project() != joinpath(@__DIR__, "Project.toml")
     Pkg.instantiate()
 end
 
-# (b) Did someone say render?
-if "--quarto" ∈ ARGS
+# (c) If quarto is set, or we are on CI, run quarto
+if run_quarto || run_on_CI
     using CondaPkg
     CondaPkg.withenv() do
         @info "Rendering Quarto"
@@ -56,28 +93,14 @@ if "--quarto" ∈ ARGS
         run(`quarto render $(tutorials_folder)`)
         return nothing
     end
-else
-    # fallback to at least create empty files for tutorials that are directly linked from the docs
-    #    touch(joinpath(@__DIR__, "src/tutorials/Optimize.md"))
 end
 
-tutorials_in_menu = true
-if "--exclude-tutorials" ∈ ARGS
-    @warn """
-    You are excluding the tutorials from the Menu,
-    which might be done if you can not render them locally.
-
-    Remember that this should never be done on CI for the full documentation.
-    """
-    tutorials_in_menu = false
-end
-
-# (c) load necessary packages for the docs
+# (d) load necessary packages for the docs
 using Documenter
 using DocumenterCitations, DocumenterInterLinks
 using LieGroups
 
-# (d) add contributing.md to docs
+# (e) add contributing.md to docs
 generated_path = joinpath(@__DIR__, "src")
 base_url = "https://github.com/JuliaManifolds/LieGroups.jl/blob/main/"
 isdir(generated_path) || mkdir(generated_path)
@@ -99,13 +122,7 @@ for (md_file, doc_file) in [("CONTRIBUTING.md", "contributing.md"), ("NEWS.md", 
     end
 end
 
-## Build tutorials menu
-tutorials_menu =
-    "How to..." => [
-        "🚀 Get Started with LieGroups.jl" => "tutorials/getstarted.md",
-        "Transition from `GroupManifolds`" => "tutorials/transition.md",
-    ]
-# (e) finally make docs
+# (f) finally make docs
 bib = CitationBibliography(joinpath(@__DIR__, "src", "references.bib"); style=:alpha)
 links = InterLinks(
     "ManifoldsBase" => ("https://juliamanifolds.github.io/ManifoldsBase.jl/stable/"),
