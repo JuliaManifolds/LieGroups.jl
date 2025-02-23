@@ -5,5 +5,4 @@ s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 using LieGroupsTestSuite
 
 @testset "Validation Lie group" begin
-
 end
