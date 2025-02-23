@@ -114,7 +114,9 @@ with the properties
 See [HilgertNeeb:2012; Section 9.1.3](@cite) for more details.
 
 """
-struct GroupAction{T<:AbstractGroupActionType,L<:AbstractLieGroup,M<:ManifoldsBase.AbstractManifold}
+struct GroupAction{
+    T<:AbstractGroupActionType,L<:AbstractLieGroup,M<:ManifoldsBase.AbstractManifold
+}
     type::T
     group::L
     manifold::M

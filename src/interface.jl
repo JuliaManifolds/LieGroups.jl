@@ -35,8 +35,8 @@ end
 An abstract type to represent Lie groups. For most cases it should suffice to “combine”
 an $(_link(:AbstractManifold)) with an [`AbstractGroupOperation`](@ref), see [`LieGroup`](@ref).
 """
-abstract type AbstractLieGroup{𝔽, O<:AbstractGroupOperation, M<:AbstractManifold{𝔽}} <: AbstractManifold{𝔽} end
-
+abstract type AbstractLieGroup{𝔽,O<:AbstractGroupOperation,M<:AbstractManifold{𝔽}} <:
+              AbstractManifold{𝔽} end
 
 """
     LieGroup{𝔽, O<:AbstractGroupOperation, M<:AbstractManifold{𝔽}} <:  AbstractLieGroup{𝔽, O, M}
@@ -213,10 +213,14 @@ function compose! end
 
 @doc "$(_doc_compose)"
 compose!(G::AbstractLieGroup, k, g, h) = _compose!(G, k, g, h)
-function compose!(G::AbstractLieGroup{𝔽,O}, k, ::Identity{O}, h) where {𝔽,O<:AbstractGroupOperation}
+function compose!(
+    G::AbstractLieGroup{𝔽,O}, k, ::Identity{O}, h
+) where {𝔽,O<:AbstractGroupOperation}
     return copyto!(G, k, h)
 end
-function compose!(G::AbstractLieGroup{𝔽,O}, k, g, ::Identity{O}) where {𝔽,O<:AbstractGroupOperation}
+function compose!(
+    G::AbstractLieGroup{𝔽,O}, k, g, ::Identity{O}
+) where {𝔽,O<:AbstractGroupOperation}
     return copyto!(G, k, g)
 end
 function compose!(
@@ -476,11 +480,15 @@ function inv! end
 @doc "$_doc_inv"
 inv!(G::AbstractLieGroup, h, g)
 
-function Base.inv(::AbstractLieGroup{𝔽,O}, e::Identity{O}) where {𝔽,O<:AbstractGroupOperation}
+function Base.inv(
+    ::AbstractLieGroup{𝔽,O}, e::Identity{O}
+) where {𝔽,O<:AbstractGroupOperation}
     return e
 end
 
-function inv!(G::AbstractLieGroup{𝔽,O}, g, ::Identity{O}) where {𝔽,O<:AbstractGroupOperation}
+function inv!(
+    G::AbstractLieGroup{𝔽,O}, g, ::Identity{O}
+) where {𝔽,O<:AbstractGroupOperation}
     return identity_element!(G, g)
 end
 
@@ -580,7 +588,9 @@ function ManifoldsBase.is_point(
 ) where {𝔽,O<:AbstractGroupOperation}
     return true
 end
-function ManifoldsBase.is_point(G::AbstractLieGroup, e::Identity; error::Symbol=:none, kwargs...)
+function ManifoldsBase.is_point(
+    G::AbstractLieGroup, e::Identity; error::Symbol=:none, kwargs...
+)
     s = """
         The provided point $e is not the Identity on $G.
         Expected an Identity corresponding to $(G.op).
@@ -791,7 +801,9 @@ function Random.rand(G::AbstractLieGroup, T::Type; vector_at=nothing, kwargs...)
     rand!(G, gX; vector_at=vector_at, kwargs...)
     return gX
 end
-function Random.rand(rng::AbstractRNG, M::AbstractLieGroup, T::Type; vector_at=nothing, kwargs...)
+function Random.rand(
+    rng::AbstractRNG, M::AbstractLieGroup, T::Type; vector_at=nothing, kwargs...
+)
     if vector_at === nothing
         gX = allocate_on(M, T)
     else

@@ -21,6 +21,19 @@ LieGroups.CommonUnitarySubAlgebra
 LieGroups.@default_lie_group_fallbacks
 ```
 
+## A validation Lie group
+
+```@docs
+ValidationLieGroup
+```
+
+### Internal functions
+
+```@docs
+LieGroups._vLc
+LieGroups._msg
+```
+
 ## Literature
 
 ```@bibliography

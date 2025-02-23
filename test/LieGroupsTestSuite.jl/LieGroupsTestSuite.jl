@@ -178,7 +178,12 @@ Test  `conjugate`.
 * `test_mutating::Bool=true`: test the mutating functions
 """
 function test_conjugate(
-    G::AbstractLieGroup, g, h; expected=missing, test_default::Bool=true, test_mutating::Bool=true
+    G::AbstractLieGroup,
+    g,
+    h;
+    expected=missing,
+    test_default::Bool=true,
+    test_mutating::Bool=true,
 )
     @testset "conjugate" begin
         k1 = conjugate(G, g, h)
@@ -264,7 +269,9 @@ Test  `diff_inv`.
   only consistency between the allocating and the in-place variant is checked.
 * `test_mutating::Bool=true`: test the mutating functions
 """
-function test_diff_inv(G::AbstractLieGroup, g, X; expected=missing, test_mutating::Bool=true)
+function test_diff_inv(
+    G::AbstractLieGroup, g, X; expected=missing, test_mutating::Bool=true
+)
     @testset "diff_inv" begin
         𝔤 = LieAlgebra(G)
         # Check that at identity it is in the Lie algebra
@@ -665,7 +672,9 @@ and that the double inverse is the identity.
 * `test_mutating::Bool=true`: test the mutating functions
 * `test_identity::Bool=true`: test that `inv(e) == e`
 """
-function test_inv(G::AbstractLieGroup, g; test_mutating::Bool=true, test_identity::Bool=true)
+function test_inv(
+    G::AbstractLieGroup, g; test_mutating::Bool=true, test_identity::Bool=true
+)
     @testset "inv" begin
         k1 = inv(G, g)
         @test is_point(G, k1; error=:error)
@@ -725,7 +734,9 @@ Test  `lie_bracket`.
   if not provided, only consistency between the allocating and the in-place variant is checked.
 * `test_mutating::Bool=true`: test the mutating functions
 """
-function test_lie_bracket(G::AbstractLieGroup, X, Y; expected=missing, test_mutating::Bool=true)
+function test_lie_bracket(
+    G::AbstractLieGroup, X, Y; expected=missing, test_mutating::Bool=true
+)
     @testset "lie_bracket" begin
         𝔤 = LieAlgebra(G)
         Z1 = lie_bracket(𝔤, X, Y)
@@ -757,7 +768,10 @@ both the random point and the random tangent vector variants are tested.
 * `rng=missing`: test with a specific random number generator
 """
 function test_rand(
-    G::AbstractLieGroup, g; test_mutating::Bool=true, rng::Union{Missing,AbstractRNG}=missing
+    G::AbstractLieGroup,
+    g;
+    test_mutating::Bool=true,
+    rng::Union{Missing,AbstractRNG}=missing,
 )
     @testset "rand" begin
         g1 = rand(G)

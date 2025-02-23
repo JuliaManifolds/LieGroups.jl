@@ -82,7 +82,7 @@ function ManifoldsBase.get_coordinates(
 end
 # Mimic the levels from ManifoldsBase just without the base point p
 function ManifoldsBase._get_coordinates(𝔤::LieAlgebra, X::T, B::AbstractBasis) where {T}
-    G = 𝔤.manifold
+    G = base_lie_group(𝔤)
     return get_coordinates(base_manifold(G), identity_element(G, T), X, B)
 end
 @doc "$(_doc_get_coordinates)"

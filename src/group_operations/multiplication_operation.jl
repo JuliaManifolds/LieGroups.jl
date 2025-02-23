@@ -73,10 +73,7 @@ compose(
 
 @doc "$(_doc_compose_mult)"
 compose!(
-    ::AbstractLieGroup{𝔽,<:AbstractMultiplicationGroupOperation},
-    ::Any,
-    ::Any,
-    ::Any,
+    ::AbstractLieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any
 ) where {𝔽}
 
 function _compose!(
@@ -107,11 +104,7 @@ diff_conjugate(
 
 @doc "$(_doc_diff_conjugate_add)"
 function diff_conjugate!(
-    G::AbstractLieGroup{𝔽,<:AbstractMultiplicationGroupOperation},
-    Y,
-    g,
-    h,
-    X,
+    G::AbstractLieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, g, h, X
 ) where {𝔽}
     inv_right_compose!(G, Y, X, g) # Y = Xg^{-1}
     compose!(G, Y, g, Y) # Y = gY
@@ -139,7 +132,9 @@ Then we get ``g^{$(_tex(:transp))}(g^{-1}(gX)g^{-1})`` which simplifies to ``-g^
 """
 
 @doc "$(_doc_diff_inv_mult)"
-diff_inv(::AbstractLieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any) where {𝔽}
+diff_inv(
+    ::AbstractLieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any
+) where {𝔽}
 
 function diff_inv(
     ::AbstractLieGroup{𝔽,<:AbstractMultiplicationGroupOperation},
@@ -151,7 +146,9 @@ function diff_inv(
 end
 
 @doc "$(_doc_diff_inv_mult)"
-function diff_inv!(::AbstractLieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, p, X) where {𝔽}
+function diff_inv!(
+    ::AbstractLieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, p, X
+) where {𝔽}
     p_inv = inv(p)
     Z = X * p_inv
     mul!(Y, p', Z)
@@ -169,19 +166,12 @@ which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``Dλ_
 
 @doc "$(_doc_diff_left_compose_mult)"
 diff_left_compose(
-    ::AbstractLieGroup{𝔽,<:AbstractMultiplicationGroupOperation},
-    ::Any,
-    ::Any,
-    ::Any,
+    ::AbstractLieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any
 ) where {𝔽}
 
 @doc "$(_doc_diff_left_compose_mult)"
 function diff_left_compose!(
-    G::AbstractLieGroup{𝔽,<:AbstractMultiplicationGroupOperation},
-    Y,
-    g,
-    h,
-    X,
+    G::AbstractLieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, g, h, X
 ) where {𝔽}
     return copyto!(LieAlgebra(G), Y, g * X)
 end
@@ -196,19 +186,12 @@ which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``Dρ_
 
 @doc "$(_doc_diff_right_compose_mult)"
 diff_right_compose(
-    ::AbstractLieGroup{𝔽,<:AbstractMultiplicationGroupOperation},
-    ::Any,
-    ::Any,
-    ::Any,
+    ::AbstractLieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any
 ) where {𝔽}
 
 @doc "$(_doc_diff_right_compose_mult)"
 function diff_right_compose!(
-    G::AbstractLieGroup{𝔽,<:AbstractMultiplicationGroupOperation},
-    Y,
-    g,
-    ::Any,
-    X,
+    G::AbstractLieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, g, ::Any, X
 ) where {𝔽}
     return copyto!(LieAlgebra(G), Y, X * g)
 end
@@ -224,7 +207,9 @@ This can be computed in-place of `g`.
 """
 
 @doc "$(_doc_exponential_mult)"
-ManifoldsBase.exp(::AbstractLieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, ::Any) where {𝔽}
+ManifoldsBase.exp(
+    ::AbstractLieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, ::Any
+) where {𝔽}
 
 @doc "$(_doc_exponential_mult)"
 function ManifoldsBase.exp!(
@@ -250,8 +235,7 @@ identity_element!(
     ::AbstractLieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any
 ) where {𝔽}
 function identity_element!(
-    ::AbstractLieGroup{𝔽,<:AbstractMultiplicationGroupOperation},
-    e::AbstractMatrix,
+    ::AbstractLieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, e::AbstractMatrix
 ) where {𝔽}
     return copyto!(e, LinearAlgebra.I)
 end
@@ -273,9 +257,7 @@ function inv!(::AbstractLieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, h
     return h
 end
 function inv!(
-    G::AbstractLieGroup{𝔽,O},
-    q,
-    ::Identity{O},
+    G::AbstractLieGroup{𝔽,O}, q, ::Identity{O}
 ) where {𝔽,O<:AbstractMultiplicationGroupOperation}
     return identity_element!(G, q)
 end

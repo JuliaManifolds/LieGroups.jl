@@ -14,7 +14,7 @@ using LinearAlgebra, ManifoldsBase, Manifolds, StaticArrays, Random
 
 import LinearAlgebra: adjoint, adjoint!
 
-using ManifoldsBase: RealNumbers, ComplexNumbers, ℝ, ℂ
+using ManifoldsBase: RealNumbers, ComplexNumbers, ℝ, ℂ, internal_value
 
 #
 #
