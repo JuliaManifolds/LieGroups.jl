@@ -579,7 +579,7 @@ function Base.rand(G::ValidationLieGroup; vector_at=nothing, kwargs...)
     if vector_at !== nothing
         is_point(G, vector_at; within=rand, context=(:Input,), kwargs...)
     end
-    gX = rand(G.manifold; vector_at=vector_at, kwargs...)
+    gX = rand(G.lie_group; vector_at=vector_at, kwargs...)
     if vector_at !== nothing
         is_point(LieAlgebra(G), gX; within=rand, context=(:Output,), kwargs...)
     else
