@@ -76,6 +76,7 @@ end
 struct ValidationLieAlgebraTangentVector{T} <: AbstractLieAlgebraTangentVector
     value::T
 end
+ValidationLieAlgebraTangentVector(value::ValidationLieAlgebraTangentVector) = value
 ManifoldsBase.internal_value(X::ValidationLieAlgebraTangentVector) = X.value
 ManifoldsBase.@manifold_vector_forwards ValidationLieAlgebraTangentVector value
 @default_lie_group_fallbacks ValidationLieGroup AbstractGroupOperation ManifoldsBase.ValidationMPoint ValidationLieAlgebraTangentVector value value
@@ -215,6 +216,28 @@ function conjugate!(G::ValidationLieGroup, k, g, h; kwargs...)
     return k
 end
 
+function Base.copyto!(G::ValidationLieGroup, h, g)
+    copyto!(G.lie_group, internal_value(h), internal_value(g))
+    return h
+end
+function Base.copyto!(
+    G::ValidationLieGroup{𝔽,O}, e::Identity{O}, g
+) where {𝔽,O<:AbstractGroupOperation}
+    copyto!(G.lie_group, e, internal_value(g))
+    return e
+end
+function Base.copyto!(
+    G::ValidationLieGroup{𝔽,O}, h, e::Identity{O}
+) where {𝔽,O<:AbstractGroupOperation}
+    copyto!(G.lie_group, internal_value(h), e)
+    return h
+end
+function Base.copyto!(
+    ::ValidationLieGroup{𝔽,O}, h::Identity{O}, ::Identity{O}
+) where {𝔽,O<:AbstractGroupOperation}
+    return h
+end
+
 function diff_conjugate(G::ValidationLieGroup, g, h, X; kwargs...)
     is_point(G, g; widthin=diff_conjugate, context=(:Input,), kwargs...)
     is_point(G, h; widthin=diff_conjugate, context=(:Input,), kwargs...)
@@ -238,7 +261,7 @@ function diff_conjugate!(G::ValidationLieGroup, Y, g, h, X; kwargs...)
     return Y
 end
 
-function diff_inv!(G::ValidationLieGroup, Y, h, X; kwargs...)
+function diff_inv!(G::ValidationLieGroup, Y, g, X; kwargs...)
     is_point(G, g; widthin=diff_inv, context=(:Input,), kwargs...)
     is_point(LieAlgebra(G), X; widthin=diff_inv, context=(:Input,), kwargs...)
     diff_inv!(G.lie_group, internal_value(Y), internal_value(g), internal_value(X))
@@ -348,7 +371,7 @@ function Base.inv(G::ValidationLieGroup, g; kwargs...)
     return ValidationMPoint(h)
 end
 function Base.inv(
-    G::LieGroups.ValidationLieGroup{𝔽,O}, e::LieGroups.Identity{O}; kwargs...
+    G::LieGroups.ValidationLieGroup{𝔽,O}, e::Identity{O}; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
     is_identity(G.lie_group, e; kwargs...)
     return ValidationMPoint(inv(G.lie_group, e))
@@ -360,7 +383,7 @@ function inv!(G::ValidationLieGroup, h, g; kwargs...)
     return h
 end
 function inv!(
-    G::ValidationLieGroup{𝔽,O}, h, e::LieGroups.Identity{O}; kwargs...
+    G::ValidationLieGroup{𝔽,O}, h, e::Identity{O}; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
     is_identity(G.lie_group, e; kwargs...)
     inv!(G.lie_group, internal_value(h), e)
@@ -400,13 +423,13 @@ end
 
 is_identity(G::ValidationLieGroup, g) = is_identity(G.lie_group, internal_value(g))
 function is_identity(
-    G::ValidationLieGroup{𝔽,O}, e::LieGroups.Identity{O}; kwargs...
+    G::ValidationLieGroup{𝔽,O}, e::Identity{O}; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
     return is_identity(G.lie_group, e)
 end
 function is_identity(
     G::ValidationLieGroup{𝔽,<:AbstractGroupOperation},
-    e::LieGroups.Identity{<:AbstractGroupOperation};
+    e::Identity{<:AbstractGroupOperation};
     kwargs...,
 ) where {𝔽}
     return is_identity(G.lie_group, e)
@@ -441,9 +464,9 @@ function ManifoldsBase.is_point(
     context::NTuple{N,Symbol} where {N}=(),
     kwargs...,
 ) where {𝔽,O<:AbstractGroupOperation}
-    G = base_lie_group(𝔤).lieGroup
-    !_vLc(G, within, (:Vector, context...)) && return true
-    return is_point(LieAlgebra(G), internal_value(X); error=error, kwargs...)
+    vG = base_lie_group(𝔤)
+    !_vLc(vG, within, (:Vector, context...)) && return true
+    return is_point(LieAlgebra(vG.lie_group), internal_value(X); error=error, kwargs...)
 end
 
 function ManifoldsBase.isapprox(G::ValidationLieGroup, g, h; kwargs...)
@@ -472,6 +495,16 @@ function ManifoldsBase.isapprox(
     G::ValidationLieGroup{𝔽,O}, g::Identity{O}, h::Identity{O2}; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation,O2<:AbstractGroupOperation}
     return isapprox(G.lie_group, g, h; kwargs...)
+end
+function ManifoldsBase.isapprox(
+    𝔤::LieAlgebra{𝔽,O,<:ValidationLieGroup}, X, Y; kwargs...
+) where {𝔽,O<:AbstractGroupOperation}
+    G = base_lie_group(𝔤).lie_group
+    _X = internal_value(X)
+    _Y = internal_value(Y)
+    is_point(LieAlgebra(G), _X; within=isapprox, context=(:Input,), kwargs...)
+    is_point(LieAlgebra(G), _Y; within=isapprox, context=(:Input,), kwargs...)
+    return isapprox(LieAlgebra(G), _X, _Y; kwargs...)
 end
 
 function jacobian_conjugate(
@@ -569,4 +602,31 @@ function Base.show(io::IO, G::ValidationLieGroup)
     G_if = G.ignore_functions
     (length(G_if) > 0) && (s *= "    * ignore_functions = $(G_if)")
     return print(io, s)
+end
+
+function ManifoldsBase.zero_vector(
+    𝔤::LieAlgebra{𝔽,O,<:ValidationLieGroup}, T::Type
+) where {𝔽,O<:AbstractGroupOperation}
+    G = base_lie_group(𝔤).lie_group
+    return ValidationLieAlgebraTangentVector(zero_vector(LieAlgebra(G), T))
+end
+function ManifoldsBase.zero_vector(
+    𝔤::LieAlgebra{𝔽,O,<:ValidationLieGroup}, ::Type{ValidationLieAlgebraTangentVector{T}}
+) where {𝔽,O<:AbstractGroupOperation,T}
+    G = base_lie_group(𝔤).lie_group
+    return ValidationLieAlgebraTangentVector(zero_vector(LieAlgebra(G), T))
+end
+function ManifoldsBase.zero_vector(
+    𝔤::LieAlgebra{𝔽,O,<:ValidationLieGroup}
+) where {𝔽,O<:AbstractGroupOperation}
+    G = base_lie_group(𝔤).lie_group
+    return ValidationLieAlgebraTangentVector(zero_vector(LieAlgebra(G)))
+end
+
+function ManifoldsBase.zero_vector!(
+    𝔤::LieAlgebra{𝔽,O,<:ValidationLieGroup}, X::T
+) where {𝔽,O<:AbstractGroupOperation,T}
+    G = base_lie_group(𝔤).lie_group
+    T2 = typeof(internal_value(X))
+    return ValidationLieAlgebraTangentVector(zero_vector(G, T))
 end

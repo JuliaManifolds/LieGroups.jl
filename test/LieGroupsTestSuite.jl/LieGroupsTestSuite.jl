@@ -281,7 +281,7 @@ function test_diff_inv(
         if test_mutating
             Y2 = zero_vector(𝔤, typeof(X))
             Y2 = diff_inv!(G, Y2, g, X)
-            @test isapprox(G, g, Y1, Y2)
+            @test isapprox(𝔤, Y1, Y2)
         end
         if !ismissing(expected)
             @test isapprox(𝔤, Y1, expected)

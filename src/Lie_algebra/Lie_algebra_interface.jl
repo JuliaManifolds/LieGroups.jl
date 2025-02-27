@@ -30,15 +30,15 @@ this is internally just a `const` of the corresponding $(_link(:TangentSpace)).
 
 # Constructor
 
-    LieAlgebra(G::LieGroup)
+    LieAlgebra(G::AbstractLieGroup)
 
 Return the Lie Algebra belonging to the [`AbstractLieGroup`](@ref) `G`.
 """
-const LieAlgebra{𝔽,O<:AbstractGroupOperation,G<:LieGroup{𝔽,O}} = ManifoldsBase.Fiber{
+const LieAlgebra{𝔽,O<:AbstractGroupOperation,G<:AbstractLieGroup{𝔽,O}} = ManifoldsBase.Fiber{
     𝔽,ManifoldsBase.TangentSpaceType,G,Identity{O}
 }
 
-function LieAlgebra(G::LieGroup{𝔽,O}) where {𝔽,O<:AbstractGroupOperation}
+function LieAlgebra(G::AbstractLieGroup{𝔽,O}) where {𝔽,O<:AbstractGroupOperation}
     return LieAlgebra{𝔽,O,typeof(G)}(G, Identity(G), ManifoldsBase.TangentSpaceType())
 end
 
