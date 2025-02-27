@@ -666,7 +666,7 @@ end
 function jacobian_conjugate! end
 @doc "$(_doc_jacobian_conjugate)"
 jacobian_conjugate!(
-    ::AbstractLieGroup, J, g, h; B::AbstractBasis=DefaultLieAlgebraOrthogonalBasis()
+    ::AbstractLieGroup, J, g, h, B::AbstractBasis=DefaultLieAlgebraOrthogonalBasis()
 )
 
 _doc_log = """
@@ -736,7 +736,7 @@ function ManifoldsBase.log(
     return zero_vector(LieAlgebra(G))
 end
 function ManifoldsBase.log(
-    G::AbstractLieGroup{𝔽,Op}, e::Identity{Op}, T::Type
+    G::AbstractLieGroup{𝔽,Op}, ::Identity{Op}, T::Type
 ) where {𝔽,Op<:AbstractGroupOperation}
     return zero_vector(LieAlgebra(G), T)
 end
@@ -745,8 +745,8 @@ end
 ManifoldsBase.log!(G::AbstractLieGroup, ::Any, ::Any)
 
 function ManifoldsBase.log!(
-    G::L, X, e::Identity{Op}
-) where {𝔽,Op<:AbstractGroupOperation,L<:AbstractLieGroup{𝔽,Op}}
+    G::AbstractLieGroup{𝔽,Op}, X, e::Identity{Op}
+) where {𝔽,Op<:AbstractGroupOperation}
     return zero_vector!(LieAlgebra(G), X)
 end
 
