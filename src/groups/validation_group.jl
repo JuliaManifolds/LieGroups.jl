@@ -60,13 +60,13 @@ function ValidationLieGroup(
     D<:Dict{<:Function,<:Union{Symbol,<:AbstractVector{Symbol}}},V<:AbstractVector{Symbol}
 }
     if check_manifold
-        M = ManifoldBase.ValidationManifold(
+        M = ValidationManifold(
             L.manifold;
             error=error,
             ignore_functions=ignore_functions,
             ignore_contexts=ignore_contexts,
         )
-        _lie_group = LieGroup(L.op, M)
+        _lie_group = LieGroup(M, L.op)
     else
         _lie_group = L
     end
@@ -419,7 +419,7 @@ function ManifoldsBase.is_point(
     context::NTuple{N,Symbol} where {N}=(),
     kwargs...,
 )
-    !_vGc(G, within, (:Point, context...)) && return true
+    !_vLc(G, within, (:Point, context...)) && return true
     return is_point(G.lie_group, internal_value(g); error=error, kwargs...)
 end
 function ManifoldsBase.is_point(
@@ -430,7 +430,7 @@ function ManifoldsBase.is_point(
     context::NTuple{N,Symbol} where {N}=(),
     kwargs...,
 )
-    !_vGc(G, within, (:Point, context...)) && return true
+    !_vLc(G, within, (:Point, context...)) && return true
     return is_point(G.lie_group, e; error=error, kwargs...)
 end
 function ManifoldsBase.is_point(
@@ -442,7 +442,7 @@ function ManifoldsBase.is_point(
     kwargs...,
 ) where {𝔽,O<:AbstractGroupOperation}
     G = base_lie_group(𝔤).lieGroup
-    !_vGc(G, within, (:Vector, context...)) && return true
+    !_vLc(G, within, (:Vector, context...)) && return true
     return is_point(LieAlgebra(G), internal_value(X); error=error, kwargs...)
 end
 
@@ -558,3 +558,15 @@ end
 ManifoldsBase.manifold_dimension(G::ValidationLieGroup) = manifold_dimension(G.lie_group)
 
 ManifoldsBase.representation_size(G::ValidationLieGroup) = representation_size(G.lie_group)
+
+function Base.show(io::IO, G::ValidationLieGroup)
+    s = """
+    ValidationLieGroup of $(G.lie_group)
+        * mode = :$(G.mode)
+    """
+    G_ig = G.ignore_contexts
+    (length(G_ig) > 0) && (s *= "    * ignore_context = $(G_ig)\n")
+    G_if = G.ignore_functions
+    (length(G_if) > 0) && (s *= "    * ignore_functions = $(G_if)")
+    return print(io, s)
+end

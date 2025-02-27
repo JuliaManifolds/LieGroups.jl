@@ -582,7 +582,7 @@ end
 # --- `I`
 
 """
-    test_injectivity_radius(G::LieGroup; kwargs...)
+    test_injectivity_radius(G::AbstractLieGroup; kwargs...)
 
 Test the function `injectivity_radius`.
 
@@ -590,7 +590,7 @@ Test the function `injectivity_radius`.
 
 * `expected=missing`: expected value for global injectivity radius.
 """
-function test_injectivity_radius(G::LieGroup; expected=missing)
+function test_injectivity_radius(G::AbstractLieGroup; expected=missing)
     @testset "injectivity radius" begin
         if ismissing(expected)
             @test injectivity_radius(G) isa Real
@@ -709,7 +709,7 @@ end
 
 Test that the `Identity` returns that `is_identity` is true and that it is a point
 """
-function test_identity(G::LieGroup)
+function test_identity(G::AbstractLieGroup)
     @testset "Identity" begin
         e = Identity(G)
         @test is_point(G, e; error=:error)
@@ -755,7 +755,7 @@ end
 #
 # --- R
 """
-    test_rand(G::LieGroup)
+    test_rand(G::AbstractLieGroup)
 
 Test the random function, both the allocating and the in-place variant,
 as well as the variant with an `rng`, if one is provided.

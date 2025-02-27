@@ -97,6 +97,7 @@ export UnitaryGroup
 export AbstractLieGroupPoint, AbstractLieAlgebraTangentVector
 export SpecialEuclideanMatrixPoint, SpecialEuclideanMatrixTangentVector
 export SpecialEuclideanProductPoint, SpecialEuclideanProductTangentVector
+export ValidationMPoint, ValidationLieAlgebraTangentVector
 
 # Errors
 export CompositeManifoldError
