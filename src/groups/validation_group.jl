@@ -604,18 +604,7 @@ function lie_bracket!(
     is_point(𝔤, X; widthin=lie_bracket, context=(:Output,), kwargs...)
     return Z
 end
-function lie_bracket!(
-    𝔤::LieAlgebra{𝔽,AdditionGroupOperation,<:ValidationLieGroup}, Z, X, Y; kwargs...
-) where {𝔽}
-    G = base_lie_group(𝔤).lie_group
-    is_point(𝔤, X; widthin=lie_bracket, context=(:Input,), kwargs...)
-    is_point(𝔤, X; widthin=lie_bracket, context=(:Input,), kwargs...)
-    lie_bracket!(
-        LieAlgebra(G), unwrap_validation(Z), unwrap_validation(X), unwrap_validation(Y)
-    )
-    is_point(𝔤, X; widthin=lie_bracket, context=(:Output,), kwargs...)
-    return Z
-end
+
 function Base.log(G::ValidationLieGroup, g; kwargs...)
     is_point(G, g; widthin=log, context=(:Input,), kwargs...)
     X = log(G.lie_group, unwrap_validation(g))
@@ -664,6 +653,13 @@ function LinearAlgebra.norm(
     G = base_lie_group(𝔤).lie_group
     is_point(𝔤, X; within=norm, context=(:Input,), kwargs...)
     return norm(LieAlgebra(G), unwrap_validation(X))
+end
+function LinearAlgebra.norm(
+    𝔤::LieAlgebra{𝔽,O,<:ValidationLieGroup}, X::Real; kwargs...
+) where {𝔽,O<:AbstractGroupOperation}
+    G = base_lie_group(𝔤).lie_group
+    is_point(𝔤, X; within=norm, context=(:Input,), kwargs...)
+    return norm(LieAlgebra(G), X)
 end
 
 function Base.rand(G::ValidationLieGroup; vector_at=nothing, kwargs...)

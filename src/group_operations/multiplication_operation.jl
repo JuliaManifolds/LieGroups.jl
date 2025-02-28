@@ -282,7 +282,9 @@ The computation can be done in-place of `Z`.
 lie_bracket(::LieAlgebra{𝔽,MatrixMultiplicationGroupOperation}, ::Any, ::Any) where {𝔽}
 
 @doc "$(_doc_lie_bracket_mult)"
-function lie_bracket!(::LieAlgebra{𝔽,MatrixMultiplicationGroupOperation}, Z, X, Y) where {𝔽}
+function lie_bracket!(
+    ::LieAlgebra{𝔽,O,<:LieGroup{𝔽,O}}, Z, X, Y
+) where {𝔽,O<:MatrixMultiplicationGroupOperation}
     mul!(Z, X, Y)
     mul!(Z, Y, X, -1, true)
     return Z
