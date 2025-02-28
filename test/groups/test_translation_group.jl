@@ -17,6 +17,7 @@ begin
             adjoint,
             compose,
             conjugate,
+            diff_conjugate,
             diff_inv,
             diff_left_compose,
             diff_right_compose,

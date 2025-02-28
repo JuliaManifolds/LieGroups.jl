@@ -180,7 +180,9 @@ The computation can be done in-place of `Z`.
 lie_bracket(𝔤::LieAlgebra{𝔽,AdditionGroupOperation}, X, Y) where {𝔽}
 
 @doc "$(_doc_lie_bracket_add)"
-function lie_bracket!(𝔤::LieAlgebra{𝔽,AdditionGroupOperation}, Z, X, Y) where {𝔽}
+function lie_bracket!(
+    𝔤::LieAlgebra{𝔽,O,<:LieGroup{𝔽,O}}, Z, X, Y
+) where {𝔽,O<:AdditionGroupOperation}
     return zero_vector!(𝔤, Z)
 end
 
