@@ -393,11 +393,6 @@ function identity_element!(G::ValidationLieGroup, g; kwargs...)
     is_point(G, g; widthin=identity_element, context=(:Output,), kwargs...)
     return g
 end
-function identity_element!(G::ValidationLieGroup, g::AbstractMatrix; kwargs...)
-    identity_element!(G.lie_group, g)
-    is_point(G, g; widthin=identity_element, context=(:Output,), kwargs...)
-    return g
-end
 
 function Base.inv(G::ValidationLieGroup, g; kwargs...)
     is_point(G, g; widthin=inv, context=(:Input,), kwargs...)

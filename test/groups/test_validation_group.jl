@@ -1,4 +1,4 @@
-using LieGroups, Random, Test
+using LieGroups, Random, Test, ManifoldsBase
 
 s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 !(s in LOAD_PATH) && (push!(LOAD_PATH, s))
@@ -15,6 +15,7 @@ using LieGroupsTestSuite
         adjoint,
         compose,
         conjugate,
+        diff_conjugate,
         diff_inv,
         diff_left_compose,
         diff_right_compose,
@@ -61,4 +62,26 @@ using LieGroupsTestSuite
         :lie_bracket => zero(X1),
     )
     test_lie_group(VG, properties, expectations)
+    @testset "Constructors" begin
+        # Constructor that does not also wrap the manifold
+        @test ValidationLieGroup(G, false).lie_group isa TranslationGroup
+        # the Lie algebra tangent vectors do not “double wrap”
+        @test LieGroups.ValidationLieAlgebraTangentVector(vX1) === vX1
+        # unwrap works also in ManifoldsBase
+        ManifoldsBase.internal_value(vX1) === X1
+        # non-typed default hat
+        @test hat(LieAlgebra(VG), [1.0, 2.0, 3.0]).value == [1.0, 2.0, 3.0]
+        e = ones(3)
+        # check inplace disambiguation
+        @test identity_element!(VG, e) == zeros(3)
+        @test is_vector(VG, Identity(VG), X1)
+        @test is_vector(VG, Identity(VG), vX1)
+        # fallback on Real fails here since X=2.0 is not a tangent vector
+        @test_throws DomainError norm(LieAlgebra(VG), 2.0)
+        # passthrough
+        @test representation_size(VG) == (3,)
+        Y = zero_vector(LieAlgebra(VG))
+        @test Y isa ValidationLieAlgebraTangentVector
+        @test Y.value == zeros(3)
+    end
 end
