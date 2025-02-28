@@ -109,34 +109,6 @@ define!(:LaTeX, :sum, raw"\sum")
 define!(:LaTeX, :text, (text) -> raw"\text" * "{$(text)}")
 define!(:LaTeX, :transp, raw"\mathrm{T}")
 define!(:LaTeX, :vec, (v) -> raw"\mathbf" * "{$v}")
-#
-# ---
-# Mathematics and semantic symbols
-# :symbol the symbol,
-# :description the description
-_math(args...; kwargs...) = glossary(:Math, args...; kwargs...)
-define!(:Math, :Adjoint, :symbol, raw"\mathrm{Ad}")
-define!(:Math, :Adjoint, :descrption, "the adjoint operation")
-define!(:Math, :Ad, _math(:Adjoint, :symbol))
-define!(:Math, :GroupAction, :symbol, "⋅")
-define!(:Math, :GroupAction, :descrption, "a Lie Group Action")
-define!(:Math, :act, _math(:GroupAction, :symbol))
-define!(:Math, :GroupOp, :symbol, "∘")
-define!(:Math, :GroupOp, :descrption, "the Lie Group operation")
-define!(:Math, :∘, _math(:GroupOp, :symbol))
-define!(:Math, :e, _tex(:rm, "e"))
-define!(:Math, :i, _tex(:rm, "i"))
-define!(:Math, :LieAlgebra, :symbol, (; g="g") -> _tex(:Frak, g))
-define!(:Math, :LieAlgebra, :descrption, "the ie Algebra")
-define!(:Math, :𝔤, (; G="G") -> _math(:LieAlgebra, :symbol; g="g"))
-define!(:Math, :LieGroup, :symbol, (; G="G") -> _tex(:Cal, G))
-define!(:Math, :LieGroup, :descrption, "the Lie Group")
-define!(:Math, :G, (; G="G") -> _math(:LieGroup, :symbol; G=G))
-define!(:Math, :Manifold, :symbol, (; M="M") -> _tex(:Cal, M))
-define!(:Math, :Manifold, :descrption, "the Riemannian manifold")
-define!(:Math, :M, (; M="M") -> _math(:Manifold, :symbol; M=M))
-define!(:Math, :mapsto, raw"\mapsto")
-define!(:Math, :rightarrow, raw"\rightarow")
 
 #
 # ---
@@ -166,6 +138,7 @@ define!(
     "[`zero_vector`](@extref `ManifoldsBase.zero_vector-Tuple{AbstractManifold, Any}`)",
 )
 
+
 #
 # ---
 # Mathematics and semantic symbols
@@ -183,18 +156,21 @@ define!(:Math, :GroupOp, :symbol, "∘")
 define!(:Math, :GroupOp, :description, "the Lie Group operation")
 define!(:Math, :∘, _math(:GroupOp, :symbol))
 define!(:Math, :e, _tex(:rm, "e"))
+define!(:Math, :𝔤, (; G="G") -> _math(:LieAlgebra, :symbol; g="g"))
+define!(:Math, :G, (; G="G") -> _math(:LieGroup, :symbol; G=G))
+define!(:Math, :i, _tex(:rm, "i"))
 define!(:Math, :LieAlgebra, :symbol, (; g="g") -> _tex(:frak, g))
 define!(:Math, :LieAlgebra, :description, "the ie Algebra")
-define!(:Math, :𝔤, (; G="G") -> _math(:LieAlgebra, :symbol; g="g"))
 define!(:Math, :LieGroup, :symbol, (; G="G") -> _tex(:Cal, G))
 define!(:Math, :LieGroup, :description, "the Lie Group")
-define!(:Math, :G, (; G="G") -> _math(:LieGroup, :symbol; G=G))
+define!(:Math, :mapsto, raw"\mapsto")
 define!(:Math, :Manifold, :symbol, (; M="M") -> _tex(:Cal, M))
 define!(:Math, :Manifold, :description, "the Riemannian manifold")
 define!(:Math, :M, (; M="M") -> _math(:Manifold, :symbol; M=M))
 define!(:Math, :O, :symbol, _tex(:rm, "O"))
 define!(:Math, :O, :description, "the orthogonal group")
 define!(:Math, :O, _math(:O, :symbol))
+define!(:Math, :rightarrow, raw"\rightarow")
 define!(:Math, :se, :symbol, _tex(:frak, "se"))
 define!(:Math, :se, :description, "the Lie algebra of the special Euclidean group")
 define!(:Math, :se, _math(:se, :symbol))

@@ -21,10 +21,7 @@ The (complex) circle group is a one dimensional Riemannian manifold and a Lie gr
 
 Generate the complex circle group.
 """
-const CircleGroup = LieGroup{
-    ℂ, ScalarMultiplicationGroupOperation, Manifolds.Circle{ℂ}
-}
-
+const CircleGroup = LieGroup{ℂ,ScalarMultiplicationGroupOperation,Manifolds.Circle{ℂ}}
 
 """
     RealCircleGroup = LieGroup{ℝ, AdditionGroupOperation, Manifolds.Circle{ℝ}}
@@ -49,11 +46,7 @@ The (real) circle group is a one dimensional Riemannian manifold and a Lie group
 
 Generate the real circle group.
 """
-const RealCircleGroup = LieGroup{
-    ℝ, AdditionGroupOperation, Manifolds.Circle{ℝ}
-}
-
-
+const RealCircleGroup = LieGroup{ℝ,AdditionGroupOperation,Manifolds.Circle{ℝ}}
 
 function CircleGroup()
     circ = Manifolds.Circle(ℂ)
@@ -80,7 +73,6 @@ exp(::RealCircleGroup, ::Identity{AdditionGroupOperation}, X)
 @doc "$(_doc_exp_real_circ)"
 exp!(M::RealCircleGroup, g, Id::Identity{AdditionGroupOperation}, X)
 
-
 _doc_exp_complex_circ = """
     exp(::CircleGroup, ::Identity{ScalarMultiplicationGroupOperation}, X)
     exp!(::CircleGroup, g, ::Identity{ScalarMultiplicationGroupOperation}, X)
@@ -97,14 +89,11 @@ $(_tex(:exp)) ($(_math(:i))t) = $(_tex(:cos))(t) + $(_math(:i))$(_tex(:sin))(t)
 
 """
 
-
 @doc "$(_doc_exp_complex_circ)"
 exp(::CircleGroup, ::Identity{ScalarMultiplicationGroupOperation}, X)
 
 @doc "$(_doc_exp_complex_circ)"
 exp!(M::CircleGroup, g, Id::Identity{ScalarMultiplicationGroupOperation}, X)
-
-
 
 function Base.show(io::IO, ::CircleGroup)
     return print(io, "CircleGroup()")

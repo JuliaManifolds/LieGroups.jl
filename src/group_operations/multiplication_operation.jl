@@ -235,7 +235,6 @@ function identity_element!(
     return copyto!(e, LinearAlgebra.I)
 end
 
-
 _doc_identity_element_scalar_mult = """
     identity_element(G::LieGroup{𝔽,ScalarMultiplicationGroupOperation})
     identity_element!(G::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, e)
@@ -245,14 +244,12 @@ which for an [`ScalarMultiplicationGroupOperation`](@ref) is the one-element.
 """
 
 @doc "$(_doc_identity_element_scalar_mult)"
-identity_element(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}) where {𝔽} = 1.
+identity_element(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}) where {𝔽} = 1.0
 
 @doc "$(_doc_identity_element_scalar_mult)"
 identity_element!(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, e) where {𝔽}
-function identity_element!(
-    ::LieGroup{𝔽, ScalarMultiplicationGroupOperation}, e
-) where {𝔽}
-    return e[] = 1.
+function identity_element!(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, e) where {𝔽}
+    return e[] = 1.0
 end
 
 _doc_exp_scalar_mult = """
@@ -284,11 +281,6 @@ function ManifoldsBase.exp!(
     g[] = exp(t .* X)
     return g
 end
-
-
-
-
-
 
 _doc_inv_mult = """
     inv(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperationroupOperation}, g)
@@ -364,33 +356,26 @@ This can be computed in-place of `X`.
 ManifoldsBase.log(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any) where {𝔽}
 
 function ManifoldsBase.log(
-    G::LieGroup{𝔽,O},
-    ::Identity{O},
+    G::LieGroup{𝔽,O}, ::Identity{O}
 ) where {𝔽,O<:AbstractMultiplicationGroupOperation}
     return zero_vector(LieAlgebra(G))
 end
 function ManifoldsBase.log(
-    G::LieGroup{𝔽,O},
-    ::Identity{O},
-    T::Type,
+    G::LieGroup{𝔽,O}, ::Identity{O}, T::Type
 ) where {𝔽,O<:AbstractMultiplicationGroupOperation}
     return zero_vector(LieAlgebra(G), T)
 end
 
 @doc "$(_doc_log_mult)"
 function ManifoldsBase.log!(
-    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation},
-    X,
-    g,
+    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, X, g
 ) where {𝔽}
     copyto!(X, log(g))
     return X
 end
 
 function ManifoldsBase.log!(
-    G::LieGroup{𝔽,O},
-    X,
-    ::Identity{O},
+    G::LieGroup{𝔽,O}, X, ::Identity{O}
 ) where {𝔽,O<:AbstractMultiplicationGroupOperation}
     return zero_vector!(LieAlgebra(G), X)
 end
