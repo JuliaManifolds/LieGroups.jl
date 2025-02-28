@@ -348,6 +348,31 @@ function ManifoldsBase.exp!(G::ValidationLieGroup, h, g, X; kwargs...)
     return g
 end
 
+function hat(
+    𝔤::LieAlgebra{𝔽,O,<:ValidationLieGroup}, c; kwargs...
+) where {𝔽,O<:AbstractGroupOperation}
+    G = base_lie_group(𝔤).lie_group
+    X = hat(LieAlgebra(G), c)
+    is_point(𝔤, X; widthin=hat, context=(:Output,), kwargs...)
+    return ValidationLieAlgebraTangentVector(X)
+end
+function hat(
+    𝔤::LieAlgebra{𝔽,O,<:ValidationLieGroup}, c, T::Type; kwargs...
+) where {𝔽,O<:AbstractGroupOperation}
+    G = base_lie_group(𝔤).lie_group
+    X = hat(LieAlgebra(G), c, T)
+    is_point(𝔤, X; widthin=hat, context=(:Output,), kwargs...)
+    return ValidationLieAlgebraTangentVector(X)
+end
+function hat!(
+    𝔤::LieAlgebra{𝔽,O,<:ValidationLieGroup}, X, c; kwargs...
+) where {𝔽,O<:AbstractGroupOperation}
+    G = base_lie_group(𝔤).lie_group
+    hat!(LieAlgebra(G), internal_value(X), c)
+    is_point(𝔤, X; widthin=hat, context=(:Output,), kwargs...)
+    return X
+end
+
 function identity_element(G::ValidationLieGroup; kwargs...)
     g = identity_element(G.lie_group)
     is_point(G, g; widthin=identity_element, context=(:Output,), kwargs...)
@@ -469,6 +494,16 @@ function ManifoldsBase.is_point(
     !_vLc(vG, within, (:Vector, context...)) && return true
     return is_point(LieAlgebra(vG.lie_group), internal_value(X); error=error, kwargs...)
 end
+function ManifoldsBase.is_vector(
+    G::ValidationLieGroup{𝔽,O}, e::Identity{O}, X; kwargs...
+) where {𝔽,O<:AbstractGroupOperation}
+    return ManifoldsBase.is_vector(G.lie_group, e, internal_value(X); kwargs...)
+end
+function ManifoldsBase.is_vector(G::ValidationLieGroup, g, X; kwargs...)
+    return ManifoldsBase.is_vector(
+        G.lie_group, internal_value(g), internal_value(X); kwargs...
+    )
+end
 
 function ManifoldsBase.isapprox(G::ValidationLieGroup, g, h; kwargs...)
     is_point(G, g; within=isapprox, context=(:Input,), kwargs...)
@@ -576,9 +611,11 @@ function ManifoldsBase.log!(G::ValidationLieGroup, X, g, h; kwargs...)
     return X
 end
 
-function LinearAlgebra.norm(𝔤::LieAlgebra{𝔽,O,<:ValidationLieGroup}, X; kwargs...) where {𝔽, O<:AbstractGroupOperation}
+function LinearAlgebra.norm(
+    𝔤::LieAlgebra{𝔽,O,<:ValidationLieGroup}, X; kwargs...
+) where {𝔽,O<:AbstractGroupOperation}
     G = base_lie_group(𝔤).lie_group
-    is_point(𝔤, X; within=rand, context=(:Input,), kwargs...)
+    is_point(𝔤, X; within=norm, context=(:Input,), kwargs...)
     return norm(LieAlgebra(G), internal_value(X))
 end
 
@@ -611,6 +648,22 @@ function Base.show(io::IO, G::ValidationLieGroup)
     return print(io, s)
 end
 
+function vee(
+    𝔤::LieAlgebra{𝔽,O,<:ValidationLieGroup}, X; kwargs...
+) where {𝔽,O<:AbstractGroupOperation}
+    is_point(𝔤, X; widthin=vee, context=(:Input,), kwargs...)
+    G = base_lie_group(𝔤).lie_group
+    return vee(LieAlgebra(G), internal_value(X))
+end
+function vee!(
+    𝔤::LieAlgebra{𝔽,O,<:ValidationLieGroup}, c, X; kwargs...
+) where {𝔽,O<:AbstractGroupOperation}
+    is_point(𝔤, X; widthin=vee, context=(:Input,), kwargs...)
+    G = base_lie_group(𝔤).lie_group
+    vee!(LieAlgebra(G), internal_value(c), internal_value(X))
+    return X
+end
+
 function ManifoldsBase.zero_vector(
     𝔤::LieAlgebra{𝔽,O,<:ValidationLieGroup}, T::Type
 ) where {𝔽,O<:AbstractGroupOperation}
@@ -635,5 +688,5 @@ function ManifoldsBase.zero_vector!(
 ) where {𝔽,O<:AbstractGroupOperation,T}
     G = base_lie_group(𝔤).lie_group
     T2 = typeof(internal_value(X))
-    return ValidationLieAlgebraTangentVector(zero_vector(G, T))
+    return ValidationLieAlgebraTangentVector(zero_vector(G, T2))
 end
