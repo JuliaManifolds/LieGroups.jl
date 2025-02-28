@@ -39,7 +39,7 @@ using LieGroupsTestSuite
         :Functions => fcts,
     )
     expectations = Dict(
-        :repr => "TranslationGroup(3; field=ℝ)",
+        :repr => "ValidationLieGroup of TranslationGroup(3; field=ℝ)\n    * mode = :error\n",
         :diff_inv => -X1,
         :diff_left_compose => X1,
         :diff_right_compose => X1,
@@ -48,14 +48,14 @@ using LieGroupsTestSuite
     test_lie_group(VG, properties, expectations)
 
     properties = Dict(
-        :Name => "ValidationLieGroup of TranslationGroup(3; field=ℝ)\n    * mode = :error",
+        :Name => "Validation of Translation group with types points/vectors",
         :Points => [vg1, vg2, vg3],
         :Vectors => [vX1, vX2, vX3],
         :Rng => Random.MersenneTwister(),
         :Functions => fcts,
     )
     expectations = Dict(
-        :Name => "ValidationLieGroup of TranslationGroup(3; field=ℝ)\n    * mode = :error",
+        :Name => "ValidationLieGroup of TranslationGroup(3; field=ℝ)\n    * mode = :error\n",
         :diff_left_compose => X1,
         :diff_right_compose => X1,
         :lie_bracket => zero(X1),

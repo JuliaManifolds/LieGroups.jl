@@ -715,9 +715,9 @@ function test_identity(G::AbstractLieGroup)
         @test is_point(G, e; error=:error)
         @test is_identity(G, e)
         e2 = Identity(DummyOperation)
-        @test !is_point(G, e2)
+        @test !is_point(G, e2; error=:none)
         @test_throws DomainError !is_point(G, e2; error=:error)
-        @test !is_identity(G, e2)
+        @test !is_identity(G, e2; error=:none)
     end
     return nothing
 end
@@ -819,7 +819,7 @@ For now this (only) checks that `"\$G"` yields the `repr_string`.
 
 Requires `show` (or `repr`) to be implemented.
 """
-function test_show(G::Union{GroupAction,LieGroup}, repr_string::AbstractString)
+function test_show(G::Union{GroupAction,AbstractLieGroup}, repr_string::AbstractString)
     @testset "repr(G, g, h)" begin
         @test repr(G) == repr_string
     end
