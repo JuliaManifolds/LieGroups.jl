@@ -81,6 +81,8 @@ ManifoldsBase.internal_value(X::ValidationLieAlgebraTangentVector) = X.value
 ManifoldsBase.@manifold_vector_forwards ValidationLieAlgebraTangentVector value
 @default_lie_group_fallbacks ValidationLieGroup AbstractGroupOperation ManifoldsBase.ValidationMPoint ValidationLieAlgebraTangentVector value value
 
+Identity(VG::ValidationLieGroup) = Identity(VG.lie_group)
+
 #
 #
 # An access helper function
@@ -167,7 +169,6 @@ end
 #
 #
 # Implement all of the interface but include checks
-Identity(VG::ValidationLieGroup) = Identity(VG.lie_group)
 
 function Base.adjoint(G::ValidationLieGroup, g, X; kwargs...)
     is_point(G, g; widthin=adjoint, context=(:Input,), kwargs...)
@@ -573,6 +574,12 @@ function ManifoldsBase.log!(G::ValidationLieGroup, X, g, h; kwargs...)
     log!(G.lie_group, internal_value(X), internal_value(g), internal_value(h))
     is_point(LieAlgebra(G), X; widthin=log, context=(:Input,), kwargs...)
     return X
+end
+
+function LinearAlgebra.norm(𝔤::LieAlgebra{𝔽,O,<:ValidationLieGroup}, X; kwargs...) where {𝔽, O<:AbstractGroupOperation}
+    G = base_lie_group(𝔤).lie_group
+    is_point(𝔤, X; within=rand, context=(:Input,), kwargs...)
+    return norm(LieAlgebra(G), internal_value(X))
 end
 
 function Base.rand(G::ValidationLieGroup; vector_at=nothing, kwargs...)

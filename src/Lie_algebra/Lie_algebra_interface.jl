@@ -12,8 +12,6 @@ The Lie algebras considered here are those related to a [`AbstractLieGroup`](@re
 namely the tangent space ``T_{$(_math(:e))}$(_math(:G))`` at the [`Identity`](@ref),
 this is internally just a `const` of the corresponding $(_link(:TangentSpace)).
 
-
-
 !!! note "Convention for representing tangent vectors in the Lie algebra"
     A vector field ``$(_tex(:Cal,"X")): $(_math(:G)) → T$(_math(:G))``, ``X(g) ∈ T_g$(_math(:G))``
     is called a left-invariant vector field if it satisfies
@@ -292,7 +290,7 @@ function lie_bracket! end
 lie_bracket!(𝔤::LieAlgebra, Z, X, Y)
 
 function LinearAlgebra.norm(𝔤::LieAlgebra, X)
-    return LinearAlgebra.norm(base_manifold(𝔤), identity_element(base_lie_group(𝔤)), X)
+    return norm(base_manifold(𝔤), identity_element(base_lie_group(𝔤)), X)
 end
 # Avoid an ambiguity
 function LinearAlgebra.norm(𝔤::LA, X::Real) where {LA<:LieAlgebra}
