@@ -84,4 +84,44 @@ using LieGroupsTestSuite
         @test Y isa ValidationLieAlgebraTangentVector
         @test Y.value == zeros(3)
     end
+    @testset "_msg defaults w/strings" begin
+        @test_logs (:warn, "msg") LieGroups._msg(VG, "msg"; error=:warn)
+        @test_logs (:info, "msg") LieGroups._msg(VG, "msg"; error=:info)
+        @test LieGroups._msg(VG, "msg"; error=:nothing) === nothing
+        @test_logs LieGroups._msg(VG, "msg"; error=:none)
+        @test_throws ErrorException LieGroup._msg(VG, "msg"; error=:error)
+        # same with error
+        @test_logs (:warn,) LieGroups._msg(VG, ErrorException("msg"); error=:warn)
+        @test_logs (:info,) LieGroups._msg(VG, ErrorException("msg"); error=:info)
+        @test LieGroups._msg(VG, ErrorException("msg"); error=:nothing) === nothing
+        @test_logs LieGroups._msg(VG, ErrorException("msg"); error=:none)
+        @test_throws ErrorException LieGroup._msg(VG, ErrorException("msg"); error=:error)
+    end
+    @testset "_vlc responses when to exclude certain functions or contexts" begin
+        VG1 = ValidationLieGroup(G; ignore_functions=Dict(exp => :All))
+        VG2 = ValidationLieGroup(G; ignore_functions=Dict(exp => :Input))
+        VG3 = ValidationLieGroup(G; ignore_contexts=[:Input])
+        # VG1: checks disabled for all of exp
+        @test !LieGroups._vLc(VG1, exp, :Input)
+        @test !LieGroups._vLc(VG1, exp, :Ouput)
+        # but others are not
+        @test LieGroups._vLc(VG1, log, :Input)
+        @test LieGroups._vLc(VG1, log, :Ouput)
+        @test LieGroups._vLc(VG1, nothing, :Ouput)
+        # VG2: checks disabled for input of exp, but not :Output
+        @test !LieGroups._vLc(VG2, exp, :Input)
+        @test LieGroups._vLc(VG2, exp, :Ouput)
+        # VG3: checks disabled for all Inputs
+        @test !LieGroups._vLc(VG3, exp, :Input)
+        @test LieGroups._vLc(VG3, exp, :Ouput)
+        @test !LieGroups._vLc(VG3, log, :Input)
+        @test LieGroups._vLc(VG3, log, :Ouput)
+        @test LieGroups._vLc(VG3, log, (:Ouput, :Point))
+        @test !LieGroups._vLc(VG3, log, (:Ouput, :Input))
+        @test LieGroups._vLc(VG3, nothing, :Ouput)
+        # generic fallbacks
+        @test LieGroups._vLc(:a, :b)
+        @test !LieGroups._vLc((:a, :b), :b)
+        @test LieGroups._vLc((:a, :c), :b)
+    end
 end

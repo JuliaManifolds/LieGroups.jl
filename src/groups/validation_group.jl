@@ -95,8 +95,10 @@ unwrap_validation(vP::ValidationMPoint) = vP.value
 """
     _vLc(M::ValidationLieGroup, f::Function, context::Symbol)
     _vLc(M::ValidationLieGroup, f::Function, context::NTuple{N,Symbol}) where {N}
+    _vLc(M::ValidationLieGroup, ::Nothing, context::NTuple{N,Symbol}) where {N}
 
-Return whether a check should be performed within `f` and the `context`(`s`) provided.
+Return whether a check should be performed within `f` and the `context`(`s`) provided,
+if the second argument is `:Nothing`, only the context is checked
 
 This function returns false and hence indicates not to check, when
 * (one of the) `context`(`s`) is in the ignore list for `f` within `ignore_functions`
