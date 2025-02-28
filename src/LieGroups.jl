@@ -1,16 +1,20 @@
 @doc raw"""
 LieGroups.jl: Lie groups and Lie algebras in Julia.
 
-The package is named after the norwegian mathematician [Sophus Lie](https://en.wikipedia.org/wiki/Sophus_Lie).
+The package is named after the Norwegian mathematician [Marius Sophus Lie](https://en.wikipedia.org/wiki/Sophus_Lie) (1842–1899).
 
-* 📚 Documentation: [manoptjl.org](https://juliamanifolds.github.io/LieGroups.jl/dev/)
+* 📚 Documentation: [juliamanifolds.github.io/LieGroups.jl/](https://juliamanifolds.github.io/LieGroups.jl/)
 * 📦 Repository: [github.com/JuliaManifolds/LieGroups.jl](https://github.com/JuliaManifolds/LieGroups.jl)
 * 💬 Discussions: [github.com/JuliaManifolds/LieGroups.jl/discussions](https://github.com/JuliaManifolds/LieGroups.jl/discussions)
 * 🎯 Issues: [github.com/JuliaManifolds/LieGroups.jl/issues](https://github.com/JuliaManifolds/LieGroups.jl/issues)
 """
 module LieGroups
 
-using LinearAlgebra, ManifoldsBase, Manifolds, Random
+using LinearAlgebra, ManifoldsBase, Manifolds, StaticArrays, Random
+
+import LinearAlgebra: adjoint, adjoint!
+
+using ManifoldsBase: RealNumbers, ComplexNumbers, ℝ, ℂ
 
 #
 #
@@ -22,6 +26,7 @@ import Manifolds:
 # Both define the following structs, so these for now lead to asking for explicit prefixes
 # Manifolds: Identity, TranslationGroup
 include("documentation_glossary.jl")
+include("utils.jl")
 include("interface.jl")
 include("Lie_algebra/Lie_algebra_interface.jl")
 # Generic Operations
@@ -36,15 +41,27 @@ include("group_actions/group_operation_action.jl")
 include("groups/power_group.jl")
 include("groups/product_group.jl")
 include("groups/semidirect_product_group.jl")
+
 # Lie groups
+
 include("groups/translation_group.jl")
 include("groups/general_linear_group.jl")
 include("groups/circle_group.jl")
+include("groups/heisenberg_group.jl")
+
+# includes generic implementations for O(n), U(n), SO(n), SO(n), so we load this first
+include("groups/unitary_group.jl")
+include("groups/orthogonal_group.jl")
+include("groups/special_unitary_group.jl")
+include("groups/special_orthogonal_group.jl")
+
+# Products of Groups
+include("groups/special_euclidean_group.jl")
 
 export LieGroup, LieAlgebra
 export PowerLieGroup, ProductLieGroup
 export LeftSemidirectProductLieGroup, RightSemidirectProductLieGroup
-export LieAlgebraOrthogonalBasis
+export DefaultLieAlgebraOrthogonalBasis
 export ×, ^, ⋉, ⋊
 #
 #
@@ -63,19 +80,33 @@ export LeftSemidirectProductGroupOperation, RightSemidirectProductGroupOperation
 export AbstractGroupActionType
 export AbstractLeftGroupActionType, AbstractRightGroupActionType
 export LeftGroupOperationAction, RightGroupOperationAction
-export InverseLeftGroupOperationAction, InverseRightGroupOperationAction
 export GroupAction, GroupOperationAction
+export InverseLeftGroupOperationAction, InverseRightGroupOperationAction
+
 #
 #
 # Specific groups
-export TranslationGroup, GeneralLinearGroup, CircleGroup, RealCircleGroup
+export CircleGroup, RealCircleGroup
+export GeneralLinearGroup
+export HeisenbergGroup
+export OrthogonalGroup
+export SpecialEuclideanGroup, SpecialOrthogonalGroup, SpecialUnitaryGroup
+export TranslationGroup
+export UnitaryGroup
 
+# Points and Tangent representations
+export AbstractLieGroupPoint, AbstractLieAlgebraTangentVector
+export SpecialEuclideanMatrixPoint, SpecialEuclideanMatrixTangentVector
+export SpecialEuclideanProductPoint, SpecialEuclideanProductTangentVector
+
+# Errors
+export CompositeManifoldError
+# Functions
 export adjoint, adjoint!, apply, apply!
 export base_lie_group, base_manifold
 export compose, compose!
 export default_left_action,
     default_right_action,
-    det,
     diff_apply,
     diff_apply!,
     diff_group_apply,
@@ -91,9 +122,11 @@ export isapprox, is_point, is_vector
 export conjugate, conjugate!, diff_conjugate, diff_conjugate!
 export exp, exp!
 export identity_element, identity_element!, is_identity, inv, inv!, diff_inv, diff_inv!
+export jacobian_conjugate, jacobian_conjugate!
 export lie_bracket, lie_bracket!, log, log!
 export manifold_dimension
 export norm
+export injectivity_radius
 export rand, rand!
 export switch
 export vee, vee!

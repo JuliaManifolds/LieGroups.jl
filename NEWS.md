@@ -14,7 +14,16 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
 * `LieAlgebra`
 * `LieGroup` (formerly `GroupManifold`) as well as the concrete groups
   * `TranslationGroup`
+  * `SpecialEuclideanGroup` (formerly `SpecialEuclidean`) including
+    * `SpecialEuclideanMatrixPoint` and `SpecialEuclideanMatrixTangentVector` when representing thepoints as affine (abstract) matrices
+    * `SpecialEuclideanProductPoint` and `SpecialEuclideanProductTangentVector` when representing them in a product structure, e.g. as an `ArrayPartition` from [`RecursiveArrayTools`](https://github.com/SciML/RecursiveArrayTools.jl).
+    * neither of those types is necessary, besides for conversion between both. The product representation differs for the left and right semidirect product, while the affine matrix variant does not.
+  * `SpecialOrthogonalGroup` (formerly `SpecialOrthogonal`)
+  * `SpecialUnitaryGroup` (formerly `SpecialUnitary`)
+  * `OrthogonalGroup` (formerly `Orthogonal`)
+  * `UnitaryGroup` (formerly `Unitary`)
   * `GeneralLinearGroup` (formerly `GeneralLinear`)
+  * `HeisenbergGroup`
   * `LeftSemidirectProductLieGroup` (formerly `SemidirectProductGroup`)
   * `⋉` (alias for `LeftSemidirectProductGroupOperation` when a `default_left_action(G,H)` is defined for the two groups)
   * `PowerLieGroup` (formerly `PowerGroup`)
@@ -24,7 +33,7 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
   * `⋊` (alias for `RightSemidirectProductGroupOperation` when a `default_right_action(G,H)` is defined for the two groups)
 * `AbstractGroupOperation` as well as its concrete subtypes
   * `AdditionGroupOperation` (formerly `AdditionOperation`)
-  * `MultiplicationGroupOperation` (formerly `MultiplicationOperation`)
+  * `MatrixMultiplicationGroupOperation` (formerly `MultiplicationOperation`)
   * `PowerGroupOperation` (formerly the Lie group was stored inside a power manifold)
   * `ProductGroupOperation` (formerly the Lie groups were stored inside a product manifold)
   * `LeftSemidirectProductGroupOperation` (this was formerly only implicitly stored in the `SemidirectProductGroup`)
@@ -37,7 +46,8 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
   * `RightGroupOperationAction` (formerly `RightBackwardAction`)
   * `InverseLeftGroupOperationAction` (formerly `RightForwardAction`)
   * `InverseRightGroupOperationAction` (formerly `LeftBackwardAction`)
-* `LieAlgebraOrthogonalBasis` (replaces `VeeOrthogonalBasis`, which is still available in `ManifoldsBase.jl`)
+* `DefaultLieAlgebraOrthogonalBasis` (replaces `VeeOrthogonalBasis`, which is still available in `ManifoldsBase.jl`)
+* `AbstractLieGroupPoint` and `AbstractLieAlgebraTangentVector` as abstract types to introduce point and Lie algebra tangent vector representations
 * `Identity`
 * `apply`and `apply!`
 * `base_manifold` to access the manifold within a Lie group
@@ -47,13 +57,14 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
 * `diff_conjugate` and `diff_conjugate!`
 * `diff_left_compose`, `diff_left_compose!`, `diff_right_compose`, `diff_right_compose!` (formerly `translate_diff` with different sides)
 * `exp(G::LieGroup, g, X)` and `exp!(G::LieGroup, h, g, X)` (formerly `exp_inv` and `exp_inv!`)
-* `exp(G::LieGroup, ::Identity, X)` and `exp!(G::LieGroup, h, ::Identity, X)` (formerly `exp_lie` and `exp_lie!`)
+* `exp(G::LieGroup, X)` and `exp!(G::LieGroup, h, X)` (formerly `exp_lie` and `exp_lie!`)
 * `hat` and `hat!`, with slightly different signatures, since the base point is omitted.
 * `identity_element` and `identity_element!`
 * `inv` and `inv!` (`inv(::AbstractGroupAction)` was formerly `switch_direction`)
 * `inv_left_compose`, `inv_left_compose!` and `inv_right_compose`, `inv_right_compose!` (these functions correspond to `inverse_translate` with corresponding direction and side)
 * `is_identity`
 * `lie_bracket` and `lie_bracket!`
+* `jacobian_conjugate` (formerly `adjoint_matrix`, which is now a special case of this)
 * `log(G::LieGroup, g, h)` and `log!(G::LieGroup, X, g, h)` (formerly `log_inv` and `log_inv!`)
 * `log(G::LieGroup, ::Identity, g)` and `log!(G::LieGroup, X, ::Identity, g)` (formerly `log_lie` and `log_lie!`)
 * `switch` (formerly `switch_side`)
@@ -63,7 +74,16 @@ Compared to `Manifolds.jl`
 * all `translate` functions are not implemented here, since you can just use `compose`. The differentials are implemented as listed above with respect to both left and right argument of compose
 * all `inverse_apply` functions are not implemented here, since it is recommended to use `apply(inv(A), g, p)` as a replacement.
 
-## Old Changelog pre 0.1.0
+## [0.0.3] – unreleased
+
+
+### Added
+
+* Finishes most of the work on the interface for the `LieGroup` type and the new `LieAlgebra` type.
+* Finishes a generic implementation of a `SemiDirectProductGroupOperation`
+* All details will be detailed in the next release
+
+## Old Changelog pre 0.0.3
 
 __Two previous releases where done by Yueh-Hua Tu in 2022 before he was so kind to transfer the development to the JuliaManifolds GitHub organisation.__
 
