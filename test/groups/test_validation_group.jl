@@ -62,7 +62,7 @@ using LieGroupsTestSuite
         :lie_bracket => zero(X1),
     )
     test_lie_group(VG, properties, expectations)
-    @testset "Constructors" begin
+    @testset "Constructors and corner cases" begin
         # Constructor that does not also wrap the manifold
         @test ValidationLieGroup(G, false).lie_group isa TranslationGroup
         # the Lie algebra tangent vectors do not “double wrap”
@@ -78,7 +78,10 @@ using LieGroupsTestSuite
         @test is_vector(VG, Identity(VG), vX1)
         # fallback on Real fails here since X=2.0 is not a tangent vector
         @test_throws DomainError norm(LieAlgebra(VG), 2.0)
-        # passthrough
+        # Deactivate test
+        VG2 = ValidationLieGroup(G; ignore_contexts=[:Input])
+        @test norm(LieAlgebra(VG2), 2.0) isa Number
+        # pass through
         @test representation_size(VG) == (3,)
         Y = zero_vector(LieAlgebra(VG))
         @test Y isa ValidationLieAlgebraTangentVector
@@ -91,11 +94,11 @@ using LieGroupsTestSuite
         @test_logs LieGroups._msg(VG, "msg"; error=:none)
         @test_throws ErrorException LieGroup._msg(VG, "msg"; error=:error)
         # same with error
-        @test_logs (:warn,) LieGroups._msg(VG, ErrorException("msg"); error=:warn)
-        @test_logs (:info,) LieGroups._msg(VG, ErrorException("msg"); error=:info)
-        @test LieGroups._msg(VG, ErrorException("msg"); error=:nothing) === nothing
-        @test_logs LieGroups._msg(VG, ErrorException("msg"); error=:none)
-        @test_throws ErrorException LieGroup._msg(VG, ErrorException("msg"); error=:error)
+        @test_logs (:warn,) LieGroups._msg(VG, DomainError("msg"); error=:warn)
+        @test_logs (:info,) LieGroups._msg(VG, DomainError("msg"); error=:info)
+        @test LieGroups._msg(VG, DomainError("msg"); error=:nothing) === nothing
+        @test_logs LieGroups._msg(VG, DomainError("msg"); error=:none)
+        @test_throws DomainError LieGroups._msg(VG, DomainError("msg"); error=:error)
     end
     @testset "_vlc responses when to exclude certain functions or contexts" begin
         VG1 = ValidationLieGroup(G; ignore_functions=Dict(exp => :All))
@@ -123,5 +126,15 @@ using LieGroupsTestSuite
         @test LieGroups._vLc(:a, :b)
         @test !LieGroups._vLc((:a, :b), :b)
         @test LieGroups._vLc((:a, :c), :b)
+    end
+    @testset "isapprox passthrough" begin
+        e = Identity(G)
+        e2 = Identity(LieGroups.MatrixMultiplicationGroupOperation)
+        @test !isapprox(VG, e2, e)
+        @test !isapprox(VG, e, e2)
+        @test isapprox(VG, e, e)
+        @test_throws DomainError isapprox(VG, e2, e2)
+        @test_throws DomainError isapprox(VG, e2, g1)
+        @test_throws DomainError isapprox(VG, g1, e2)
     end
 end

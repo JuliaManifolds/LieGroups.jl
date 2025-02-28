@@ -638,7 +638,11 @@ function ManifoldsBase.isapprox(
 ) where {𝔽,O<:AbstractGroupOperation,O2<:AbstractGroupOperation}
     return false
 end
-
+function ManifoldsBase.isapprox(
+    G::AbstractLieGroup{𝔽,O}, g::Identity{O2}, h::Identity{O}; kwargs...
+) where {𝔽,O<:AbstractGroupOperation,O2<:AbstractGroupOperation}
+    return false
+end
 _doc_jacobian_conjugate = """
     jacobian_conjugate(G::AbstractLieGroup, g, h, B::AbstractBasis=DefaultLieAlgebraOrthogonalBasis())
     jacobian_conjugate!(G::AbstractLieGroup, J, g, h, B::AbstractBasis=DefaultLieAlgebraOrthogonalBasis())

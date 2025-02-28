@@ -159,7 +159,7 @@ function _msg(
     (error === :info) && (@info str)
     return nothing
 end
-function ManifoldsBase._msg(
+function _msg(
     G::ValidationLieGroup,
     err::Union{DomainError,ArgumentError,ErrorException};
     error=G.mode,
@@ -539,6 +539,11 @@ function ManifoldsBase.isapprox(
 end
 function ManifoldsBase.isapprox(
     G::ValidationLieGroup{𝔽,O}, g::Identity{O}, h::Identity{O2}; kwargs...
+) where {𝔽,O<:AbstractGroupOperation,O2<:AbstractGroupOperation}
+    return isapprox(G.lie_group, g, h; kwargs...)
+end
+function ManifoldsBase.isapprox(
+    G::ValidationLieGroup{𝔽,O}, g::Identity{O2}, h::Identity{O}; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation,O2<:AbstractGroupOperation}
     return isapprox(G.lie_group, g, h; kwargs...)
 end
