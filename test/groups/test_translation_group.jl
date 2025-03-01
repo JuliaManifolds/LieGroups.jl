@@ -27,6 +27,7 @@ begin
             inv_left_compose,
             inv_right_compose,
             is_identity,
+            jacobian_conjugate,
             lie_bracket,
             log,
             rand,

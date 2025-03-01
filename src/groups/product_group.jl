@@ -344,7 +344,7 @@ function Base.show(
 end
 
 function get_coordinates_lie!(
-    Pr𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, c, X, B::DefaultLieAlgebraOrthogonalBasis
+    Pr𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, c, X
 ) where {𝔽,Op<:AbstractProductGroupOperation,M<:ProductManifold}
     PrG = Pr𝔤.manifold
     PrM = PrG.manifold

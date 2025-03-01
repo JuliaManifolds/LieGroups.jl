@@ -620,20 +620,26 @@ function ManifoldsBase.isapprox(
 end
 
 _doc_jacobian_conjugate = """
-    jacobian_conjugate(G::LieGroup, g, h, B::AbstractBasis=DefaultLieAlgebraOrthogonalBasis())
-    jacobian_conjugate!(G::LieGroup, J, g, h, B::AbstractBasis=DefaultLieAlgebraOrthogonalBasis())
+    jacobian_conjugate(G::LieGroup, g, h; basis::AbstractBasis=DefaultLieAlgebraOrthogonalBasis(); X=zero_vector(LieAlgebar(G)))
+    jacobian_conjugate!(G::LieGroup, J, g, h; basis::AbstractBasis=DefaultLieAlgebraOrthogonalBasis(); X=zero_vector(LieAlgebar(G)))
 
 Compute the Jacobian of the [`conjugate`](@ref) ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1}``,
-with respect to an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`).
+with respect to an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`) of the [`LieAlgebra`](@ref).
 
-This can be seen as a matrix representation of the [`diff_conjugate`](@ref) ``D(c_g(h))[X]``
-with respect to the given basis.
+A default is implemented using [`diff_conjugate`](@ref) ``D(c_g(h))[X]``:
+the ``j``th column of of the Jacobian matrix ``J`` are given by the coefficients of
+the tangent vector `D(c_g(h))[X_j]`` with respect to the basis ``B``,
+where ``X_j`` is the ``j``th basis vector of ``B``.
 
 !!! note
     For the case that `h` is the [`Identity`](@ref) and the relation of ``D(c_g(h))[X]``
     to the [`adjoint`](@ref) ``$(_math(:Ad))(g)``, the Jacobian then sometimes called “adjoint matrix”,
     e.g. in [SolaDerayAtchuthan:2021](@cite), when choosing as a basis the
     [`DefaultLieAlgebraOrthogonalBasis`](@ref)`()` that is used for [`hat`](@ref) and [`vee`](@ref).
+
+## Keyword arguments
+
+* `X=zero_vector(LieAlgebra(G))` pass an interims memory to store the Lie algebra tangent vector in.
 """
 @doc "$(_doc_jacobian_conjugate)"
 function jacobian_conjugate(
@@ -645,9 +651,27 @@ end
 
 function jacobian_conjugate! end
 @doc "$(_doc_jacobian_conjugate)"
-jacobian_conjugate!(
-    ::LieGroup, J, g, h; B::AbstractBasis=DefaultLieAlgebraOrthogonalBasis()
+function jacobian_conjugate!(
+    G::LieGroup,
+    J,
+    g,
+    h,
+    B::AbstractBasis=DefaultLieAlgebraOrthogonalBasis();
+    X=zero_vector(LieAlgebra(G)),
 )
+    n = number_of_coordinates(base_manifold(G), B)
+    𝔤 = LieAlgebra(G)
+    c = zeros(eltype(J), n)
+    for j in 1:n
+        c .= 0
+        c[j] = 1
+        get_vector!(𝔤, X, c, B)         # store ``X_j`` in X
+        diff_conjugate!(G, X, g, h, X) # compute the differential in-place
+        get_coordinates!(𝔤, c, X, B)   # compute its coordinates in B
+        J[:, j] .= c                    # store the result in J
+    end
+    return J
+end
 
 _doc_log = """
     log(G::LieGroup, g, h)
@@ -827,6 +851,10 @@ function ManifoldsBase.allocate_result(
     args...,
 )
     return ManifoldsBase.allocate_result(base_manifold(G), ManifoldsBase.exp, args...)
+end
+function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(jacobian_conjugate), g, h, B)
+    n = number_of_coordinates(G.manifold, B)
+    return zeros(float(number_eltype(g)), n, n)
 end
 function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(log), args...)
     return ManifoldsBase.allocate_result(base_manifold(G), f, args...)
