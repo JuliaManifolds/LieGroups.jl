@@ -1,3 +1,5 @@
 [deps]
 IJulia = "7073ff75-c697-5162-941a-fcdaad2a7d2a"
 LieGroups = "6774de46-80ba-43f8-ba42-e41071ccfc5f"
+Manifolds = "1cead3c2-87b3-11e9-0ccd-23c62b72b94e"
+RecursiveArrayTools = "731186ca-8d62-57ce-b412-fbd966d074cd"

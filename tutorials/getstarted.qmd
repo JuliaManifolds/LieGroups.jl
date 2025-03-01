@@ -1,3 +1,92 @@
 # 🚀 Get Started with LieGroups.jl
 
-In this tutorial, we aim to present how to get started with `LieGroups.jl`.
+## Introduction
+
+This tutorial introduces both a few basics of [Lie groups](https://en.wikipedia.org/wiki/Lie_group) as well as how to use [LieGroups.jl](https://juliamanifolds.github.io/LieGroups.jl/stable/). The Lie groups we consider are the rotations in the plane,
+or [special orthogonal group](../groups/special_orthogonal_group.md) as well as rigid body motions,
+or in other words the [special euclidean group](../groups/special_euclidean_group.md).
+
+In a nutshell a Lie group ``𝒢`` is a [manifold](https://en.wikipedia.org/wiki/Manifold) that also is a group a group operation.
+A manifold informally be described as a set that “locally looks like a Euclidean space”
+and has some way to measure angles at every point, to be precise an inner product, that is allowed to (smoothly)
+depend on the point we are at.
+A [group](https://en.wikipedia.org/wiki/Group_(mathematics)) means that on the set there also
+exists an operation, within this package usually denoted by ``∘: ``,
+`LieGroups.jl` uses the manifolds defined in [`Manifolds.jl`](https://juliamanifolds.github.io/Manifolds.jl/stable/). For more details on that, see also the [introductory tutorial](https://juliamanifolds.github.io/Manifolds.jl/stable/tutorials/getstarted/) there.
+
+For more theoretical background, see for example [HilgertNeeb:2012](@cite), especially their Chapter 9.
+
+## Rotations on the plane ``ℝ^2`` and in ``ℝ^3``.
+
+This first part considers rotations in the plane. These can be represented by rotation matrices
+```math
+R_α = \begin{pmatrix} \cos(α),& -\sin(α)\\ \sin(α) & \cos(α) \end{pmatrix},\qquad α ∈ ℝ,
+```
+
+where we already represent all possible rotations when restricting ``α`` to ``[0,2π]``.
+Adding two matrices ``R_α + R_β`` does not yield a valid rotation matrix again, but we
+can have these matrices in mind as being “locally like the real line”, since changing the rotation angle
+slightly yields rotation matrices that are “close by” in the sense that they perform nearly the same rotation
+when applied to a point ``x ∈ ℝ^2`` by computing ``R_αx```.
+Matrix multiplication ``R_β = R_{α_1}*R_{α_1}`` does yield a new rotation and also fulfils all other
+properties to yield a group operation. Using trigonometric identities we observe that ``β = α_1 + α_2``.
+
+The set of rotation matrices is hence a Lie group and called the [special orthogonal group](../groups/special_orthogonal_group.md) ``\mathrm{SO}(2)``. In `LieGroups.jl` we initialise this as
+
+```{julia}
+using LieGroups, RecursiveArrayTools
+G = SpecialOrthogonalGroup(2)
+```
+
+Elements ``g, h ∈ \mathrm{SO}(2)`` we generate as
+
+```{julia}
+g = [1.0 0.0; 0.0 1.0]
+h = 1/sqrt(2) .* [1.0 -1.0; 1.0 1.0]
+```
+
+A first thing to do is to use [`is_point`](@ref) to verify they are valid.
+
+```{julia}
+[is_point(G,g), is_point(G,h)]
+```
+
+# TODO
+* compose
+* lie group exponential & logarithm
+* Lie algebra
+
+SO(3)
+* hat/vee to get to vectors
+* group action and apply
+
+(towards) SE(3)
+* product of two Lie groups
+* semidirect product
+
+
+## Technical details
+
+This tutorial is cached. It was last run on the following package versions.
+
+```{julia}
+#| code-fold: true
+#| echo: false
+using Pkg
+Pkg.status()
+```
+```{julia}
+#| code-fold: true
+#| echo: false
+using Dates
+println("This tutorial was last rendered $(now())");
+```
+
+## Literature
+
+````{=commonmark}
+```@bibliography
+Pages = ["getstarted.md"]
+Canonical=false
+```
+````
