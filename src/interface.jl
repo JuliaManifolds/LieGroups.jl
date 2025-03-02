@@ -194,8 +194,29 @@ function compose(
     return g
 end
 
-function _compose(G::LieGroup, g, h)
-    k = ManifoldsBase.allocate_result(G, compose, g, h)
+function get_number_type(x::Number)
+    return typeof(x)
+end
+
+function get_number_type(x::Array{<:Number, 0})
+    return typeof(x[])
+end
+
+function get_number_type(x::Ref{<:Number})
+    return typeof(x[])
+end
+
+function _compose(G::LieGroup{𝔽,O}, g, h) where {𝔽,O<:AbstractGroupOperation}
+    if ManifoldsBase.representation_size(G) == ()
+        T = promote_type(get_number_type(g), get_number_type(h))
+        if T<:Number
+            k = fill(zero(T)) # Allocate a scalar zero value for representation size ()
+        else
+            throw(ArgumentError("Unsupported type for zero-dimensional array:  " * string(g) * ", "*  string(h)))
+        end
+    else
+        k = ManifoldsBase.allocate_result(G, compose, g, h)
+    end
     return _compose!(G, k, g, h)
 end
 

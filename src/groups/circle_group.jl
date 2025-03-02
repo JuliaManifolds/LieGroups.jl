@@ -82,12 +82,13 @@ Computes the Lie group exponential on the complex [`CircleGroup`](@ref), which c
 
 The Lie algebra is precisely the imaginary axis of the complex plane.
 
-This can be computed in-place of `X`.
+This can be computed in-place of `g`.
 ```math
 $(_tex(:exp)) ($(_math(:i))t) = $(_tex(:cos))(t) + $(_math(:i))$(_tex(:sin))(t)
 ```
 
 """
+
 
 @doc "$(_doc_exp_complex_circ)"
 exp(::CircleGroup, X)

@@ -114,7 +114,7 @@ links = InterLinks(
 makedocs(;
     format=Documenter.HTML(;
         prettyurls=(get(ENV, "CI", nothing) == "true") || ("--prettyurls" ∈ ARGS),
-        assets=["assets/favicon.ico", "assets/citations.css", "assets/link-icons.css"],
+        assets=["assets/favicon.ico", "assets/citations.css"],
     ),
     modules=[LieGroups],
     authors="Seth Axen, Mateusz Baran, Ronny Bergmann, Olivier Verdier, and contributors",

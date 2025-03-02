@@ -14,13 +14,6 @@ A group operation that is realised by a matrix multiplication.
 """
 struct MatrixMultiplicationGroupOperation <: AbstractMultiplicationGroupOperation end
 
-"""
-    ScalarMultiplicationGroupOperation <: AbstractMultiplicationGroupOperation
-
-A group operation that is realised by a scalar multiplication.
-"""
-struct ScalarMultiplicationGroupOperation <: AbstractMultiplicationGroupOperation end
-
 Base.:*(::Identity{MatrixMultiplicationGroupOperation}, p::Union{AbstractMatrix,Number}) = p
 function Base.:*(
     p::Union{AbstractMatrix,Number}, ::Identity{MatrixMultiplicationGroupOperation}
@@ -74,14 +67,13 @@ This can be computed in-place of `k`.
 """
 
 @doc "$(_doc_compose_mult)"
-compose(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any) where {𝔽}
-
+compose(::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, ::Any, ::Any) where {𝔽}
 @doc "$(_doc_compose_mult)"
 compose!(
     ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any
 ) where {𝔽}
 
-function _compose!(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, k, g, h) where {𝔽}
+function _compose!(::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, k, g, h) where {𝔽}
     # perform the multiplication “safe”, that is, even when providing
     # one of the inputs `g,h`` and as output `k`
     (k === g || k === h) ? copyto!(k, g * h) : mul!(k, g, h)
@@ -235,53 +227,6 @@ function identity_element!(
     return copyto!(e, LinearAlgebra.I)
 end
 
-_doc_identity_element_scalar_mult = """
-    identity_element(G::LieGroup{𝔽,ScalarMultiplicationGroupOperation})
-    identity_element!(G::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, e)
-
-Return the a point representation of the [`Identity`](@ref),
-which for an [`ScalarMultiplicationGroupOperation`](@ref) is the one-element.
-"""
-
-@doc "$(_doc_identity_element_scalar_mult)"
-identity_element(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}) where {𝔽} = 1.0
-
-@doc "$(_doc_identity_element_scalar_mult)"
-identity_element!(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, e) where {𝔽}
-function identity_element!(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, e) where {𝔽}
-    return e[] = 1.0
-end
-
-_doc_exp_scalar_mult = """
-    exp(G::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, e::Identity{ScalarMultiplicationGroupOperation}, X, t::Number=1)
-    exp!(G::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, g, e::Identity{ScalarMultiplicationGroupOperation}, X, t::Number=1)
-
-Compute the Lie group exponential on a [`LieGroup`](@ref) with a [`ScalarMultiplicationGroupOperation`](@ref),
-which simplifies to the [ordinary exponential](https://en.wikipedia.org/wiki/Matrix_exponential).
-
-This can be computed in-place of `g`.
-"""
-
-@doc "$(_doc_exp_scalar_mult)"
-Base.exp(
-    ::LieGroup{𝔽,ScalarMultiplicationGroupOperation},
-    ::Identity{ScalarMultiplicationGroupOperation},
-    X,
-    t::Number=1,
-) where {𝔽} = exp(t * X)
-
-@doc "$(_doc_exp_scalar_mult)"
-function ManifoldsBase.exp!(
-    ::LieGroup{𝔽,ScalarMultiplicationGroupOperation},
-    g,
-    ::Identity{ScalarMultiplicationGroupOperation},
-    X,
-    t::Number=1,
-) where {𝔽}
-    g[] = exp(t .* X)
-    return g
-end
-
 _doc_inv_mult = """
     inv(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperationroupOperation}, g)
     inv!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, h, g)
@@ -400,4 +345,5 @@ function LinearAlgebra.mul!(
 )
     return q
 end
+
 Base.one(e::Identity{<:AbstractMultiplicationGroupOperation}) = e
