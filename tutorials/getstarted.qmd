@@ -6,13 +6,14 @@ This tutorial introduces both a few basics of [Lie groups](https://en.wikipedia.
 or [special orthogonal group](../groups/special_orthogonal_group.md) as well as rigid body motions,
 or in other words the [special euclidean group](../groups/special_euclidean_group.md).
 
-In a nutshell a Lie group $𝒢$ is a [manifold](https://en.wikipedia.org/wiki/Manifold) that also is a group a group operation.
+In a nutshell a Lie group $𝒢$ is a [manifold](https://en.wikipedia.org/wiki/Manifold) $ℳ$ that also is a group a group operation.
 A manifold informally be described as a set that “locally looks like a Euclidean space”
 and has some way to measure angles at every point, to be precise an inner product, that is allowed to (smoothly)
 depend on the point we are at.
 A [group](https://en.wikipedia.org/wiki/Group_(mathematics)) means that on the set there also
 exists an operation, within this package usually denoted by $∘: 𝒢 × 𝒢 → 𝒢$$,
 `LieGroups.jl` uses the manifolds defined in [`Manifolds.jl`](https://juliamanifolds.github.io/Manifolds.jl/stable/). For more details on that, see also the [introductory tutorial](https://juliamanifolds.github.io/Manifolds.jl/stable/tutorials/getstarted/) there.
+A Lie group is usually written as a tuple $(ℳ,∘)$ os the manifold and the group operation thereon.
 
 For more theoretical background, see for example [HilgertNeeb:2012](@cite), especially their Chapter 9.
 
@@ -173,10 +174,115 @@ log(SO3, g, h)
 
 ## The Special Euclidean group $\mathrm{SE}(3)$ of rigid body motions
 
-# TODO
-* group action and apply
-* product of two Lie groups
-* semidirect product
+There are two further ingredients this tutorial needs to get towards rigid body motions.
+
+### Group actions
+
+For a group like $\mathrm{SO}(3)$ an action describes how points $g ∈ 𝒢$ can act on
+points from a Riemannian manifold $p ∈ ℳ$ – in short an action of a certain [`AbstractGroupActionType`](@ref)
+”combines“ $p$ and $g$ into a new element $q = σ_g(p)$.
+In the example of $𝒢=\mathrm{SO}(3)$ and $ℳ=ℝ^3$ the action is (just) the application of the
+rotation or the matrix-vector multiplication $σ_g(p)=gp$.
+A special case is, when $ℳ$ itself is also a Lie group.
+In the example this is the case, since together with vector addition $p+q$ we get the [`TranslationGroup`](@ref) $T(3) = (ℝ^3, +)$
+Depending on how the concatenation of two types, the [`AbstractLeftGroupActionType`](@ref) like the one here
+and a [`AbstractRightGroupActionType`](@ref).
+
+```{julia}
+T3 = TranslationGroup(3)
+```
+### Products and semidirect products of Lie groups
+
+Similar to [product manifolds](https://juliamanifolds.github.io/ManifoldsBase.jl/stable/metamanifolds/#ProductManifold)
+(direct) [product Lie groups](../groups/product_group.md) are formed the same way. For two Lie groups
+$𝒢 = 𝒢_1 × 𝒢_2$ is the product of the two manifolds together with the component wise application of the group operations:
+the first group operation (of $𝒢_1$) to the first component and that of $𝒢_2$ to the second.
+
+Instead of the component wise or “not interacting” variant of the (direct) product Lie groups,
+for the [semidirect product Lie groups](../groups/semidirect_product_group.md) $𝒢 = 𝒢_1 ⋉ 𝒢_2$
+we also require an action of how $𝒢_1$ acts on $𝒢_2$.
+Semidirect here means that the first component of $𝒢$ is the same as for the direct product,
+but before applying the second group operation on $𝒢_2$ one of the elements is “acted upon”
+from an element of $𝒢_1$. The group operation reads for $(g_1,g_2), (h_1,h_2) ∈ 𝒢$
+
+```math
+(g_1,g_2) ∘ (h_1,h_2) := (g_1 ⋆ h_1, σ_{h_1}(g_2) ⋄ h_2).
+```
+
+### Rigid body motions
+
+We obtain the [special Euclidean group](../groups/special_euclidean_group.md)
+$\mathrm{SE}(3) = \mathrm{SO}(3) ⋉ T(3)`` where the group action is the one discussed as an example before.
+
+```{julia}
+SE3 = SpecialEuclideanGroup(3)
+```
+
+which we could also generate with `SO3` and `T3` from before as
+
+```{julia}
+SO3 ⋉ T3
+```
+
+This call employs the [`default_left_action`](@ref)`(SO3,T3)` to determine the action
+for the semidirect product Lie group. This is defined whenever for two Lie groups, their (left)
+action is clear, because there exists a reasonable default. Otherwise the full form
+
+```{julia}
+LeftSemidirectProductLieGroup(SO3, T3, LeftGroupOperationAction())
+```
+
+is necessary. Here, the first `Left` for the semidirect product refers to the fact that
+the left group acts on the right one before the right group operation is performed.
+[`LeftGroupOperationAction`](@ref) refers to that the group operation – left multiplication with a matrix – is applied here.
+
+For this case, any point $\mathrm{SE}(3)$ is a tuple of a rotation matrix and a vector.
+We model this using [RecursiveArrayTools.jl](https://docs.sciml.ai/RecursiveArrayTools/stable/),
+namely its `ArrayPartition`.
+For example with the rotation matrix `g` from before we have
+
+```{julia}
+g1 = ArrayPartition(g, [1.0, 0.0, 2.0])
+```
+
+and for a pure translation we can reuse `e` as in
+
+```{julia}
+h1 = ArrayPartition(e, [0.0, 3.0, 0.0])
+```
+
+and we can summarize a few operations from before: both are valid points on `SE3`
+
+```{julia}
+(is_point(SE3, g1), is_point(SE3, h1))
+```
+
+we can perform the group operation
+
+```{julia}
+gh1 = compose(SE3, g1, h1)
+```
+
+apply the Lie group exponential
+
+```{julia}
+Y = log(SE3, gh1)
+```
+
+and look at the manifold dimension, it is the sum of the single ones
+
+```{julia}
+manifold_dimension(SE3)
+```
+
+and its coordinates as
+
+```{julia}
+vee(LieAlgebra(SE3), gh1)
+```
+
+which actually is component wise again, the first 3 values refer to the rotation part,
+the second three to the translation part.
 
 ## Technical details
 
