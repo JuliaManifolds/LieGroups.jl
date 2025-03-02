@@ -161,6 +161,16 @@ simplifies to the identity. To still access the Riemannian exponential map with 
 metric (compatible to the Levi-cevita connection) on the underlying Riemannian manifold, use
 `exp(base_manifold(G), g, X)`.
 
+As an example, we compute
+
+```{julia}
+h = exp(SO3, g, X)
+```
+and its inverse is returning `X` as well.
+```{julia}
+log(SO3, g, h)
+```
+
 ## The Special Euclidean group $\mathrm{SE}(3)$ of rigid body motions
 
 # TODO
