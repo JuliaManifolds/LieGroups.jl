@@ -6,39 +6,39 @@ This tutorial introduces both a few basics of [Lie groups](https://en.wikipedia.
 or [special orthogonal group](../groups/special_orthogonal_group.md) as well as rigid body motions,
 or in other words the [special euclidean group](../groups/special_euclidean_group.md).
 
-In a nutshell a Lie group ``𝒢`` is a [manifold](https://en.wikipedia.org/wiki/Manifold) that also is a group a group operation.
+In a nutshell a Lie group $𝒢$ is a [manifold](https://en.wikipedia.org/wiki/Manifold) that also is a group a group operation.
 A manifold informally be described as a set that “locally looks like a Euclidean space”
 and has some way to measure angles at every point, to be precise an inner product, that is allowed to (smoothly)
 depend on the point we are at.
 A [group](https://en.wikipedia.org/wiki/Group_(mathematics)) means that on the set there also
-exists an operation, within this package usually denoted by ``∘: ``,
+exists an operation, within this package usually denoted by $∘: 𝒢 × 𝒢 → 𝒢$$,
 `LieGroups.jl` uses the manifolds defined in [`Manifolds.jl`](https://juliamanifolds.github.io/Manifolds.jl/stable/). For more details on that, see also the [introductory tutorial](https://juliamanifolds.github.io/Manifolds.jl/stable/tutorials/getstarted/) there.
 
 For more theoretical background, see for example [HilgertNeeb:2012](@cite), especially their Chapter 9.
 
-## Rotations on the plane ``ℝ^2`` and in ``ℝ^3``.
+## Rotations on the plane $ℝ^2$ and in $ℝ^3$.
 
 This first part considers rotations in the plane. These can be represented by rotation matrices
 ```math
 R_α = \begin{pmatrix} \cos(α),& -\sin(α)\\ \sin(α) & \cos(α) \end{pmatrix},\qquad α ∈ ℝ,
 ```
 
-where we already represent all possible rotations when restricting ``α`` to ``[0,2π]``.
-Adding two matrices ``R_α + R_β`` does not yield a valid rotation matrix again, but we
+where we already represent all possible rotations when restricting $α$ to $[0,2π]$.
+Adding two matrices $R_α + R_β$ does not yield a valid rotation matrix again, but we
 can have these matrices in mind as being “locally like the real line”, since changing the rotation angle
 slightly yields rotation matrices that are “close by” in the sense that they perform nearly the same rotation
-when applied to a point ``x ∈ ℝ^2`` by computing ``R_αx```.
-Matrix multiplication ``R_β = R_{α_1}*R_{α_1}`` does yield a new rotation and also fulfils all other
-properties to yield a group operation. Using trigonometric identities we observe that ``β = α_1 + α_2``.
+when applied to a point $x ∈ ℝ^2$ by computing $R_αx$.
+Matrix multiplication $R_β = R_{α_1}*R_{α_1}$ does yield a new rotation and also fulfils all other
+properties to yield a group operation. Using trigonometric identities we observe that $β = α_1 + α_2$.
 
-The set of rotation matrices is hence a Lie group and called the [special orthogonal group](../groups/special_orthogonal_group.md) ``\mathrm{SO}(2)``. In `LieGroups.jl` we initialise this as
+The set of rotation matrices is hence a Lie group and called the [special orthogonal group](../groups/special_orthogonal_group.md) $\mathrm{SO}(2)$. In `LieGroups.jl` we initialise this as
 
 ```{julia}
-using LieGroups, RecursiveArrayTools
-G = SpecialOrthogonalGroup(2)
+using LieGroups, LinearAlgebra, RecursiveArrayTools
+SO2 = SpecialOrthogonalGroup(2)
 ```
 
-Elements ``g, h ∈ \mathrm{SO}(2)`` we generate as
+Elements $g, h ∈ \mathrm{SO}(2)$ we generate as
 
 ```{julia}
 g = [1.0 0.0; 0.0 1.0]
@@ -48,22 +48,125 @@ h = 1/sqrt(2) .* [1.0 -1.0; 1.0 1.0]
 A first thing to do is to use [`is_point`](@ref) to verify they are valid.
 
 ```{julia}
-[is_point(G,g), is_point(G,h)]
+(is_point(SO2, g), is_point(SO2, h))
 ```
 
+The already mentioned group operation as the matrix multiplication, there is also a generic
+function available, [`compose`](@ref) as well as its in-place variant [`compose!`](@ref).
+The following two yield the same matrix
+
+```{julia}
+[ compose(SO2, g, h), g*h ]
+```
+
+Furthermore a lot of of functions are “passed down” tp the manifold, which is stored within
+the [`LieGroup`](@ref). For example the dimension of the manifold, or the number of degrees of freedom
+can be accessed via the ``[`manifold_dimension`](@extref `ManifoldsBase.manifold_dimension-Tuple{AbstractManifold}`)``{=commonmark}
+
+```{julia}
+manifold_dimension(SO2)
+```
+
+## The Lie algebra, and the Lie group exponential function.
+
+For the following investigations, we consider the special orthogonal group $\mathrm{SO}(3)$,
+that is rotations in a 3-dimensional space.
+Besides one special rotation in the following code for completeness, a prominent, at first glace
+maybe a bit “dull” point on this Lie group is the identity matrix `e`.
+
+```{julia}
+SO3 = SpecialOrthogonalGroup(3)
+g = [cos(π/3) -sin(π/3) 0.0; sin(π/3) cos(π/3) 0.0; 0.0 0.0 1.0]* [cos(π/4) 0.0 -sin(π/4); 0.0 1.0 0.0; sin(π/4) 0.0 cos(π/4)]
+e = Matrix{Float64}(I,3,3)
+g
+```
+The element `g` can be seen as a rotation by $π/3$ in the x-y-plane combines with a rotation by $π/4$ in the x-z plane.
+
+The tangent space $T_e𝒢$ plays a special role and is called the [`LieAlgebra`](@ref) $𝔤$.
+
+Similar to the ``[Riemannian exponential map](@extref `Base.exp-Tuple{AbstractManifold, Any, Any}`)``{=commonmark}
+The exponential function $\exp_𝒢: 𝔤 → 𝒢$ maps Lie algebra tangent vectors $X ∈ T_e𝒢$
+to a point on the Lie group. This is implemented in [`exp(G::LieGroup, X)`](@ref). It's inverse
+is the Lie group logarithmic function [`log(G::LieGroup, g)`](@ref).
+
+```{julia}
+X = log(SO3,g)
+is_point(LieAlgebra(SO3), X)
+```
+
+```{julia}
+exp(SO3,X)
+```
+
+The term “exponential” has at least three different meanings throughout Lie groups and Riemannian manifolds.
+To be precise, we call the just introduced one “exponential function”, since it often agrees with the [exponential](https://en.wikipedia.org/wiki/Exponential_function).
+
+Taking a closed look at `X` we see
+
+```{julia}
+X
+```
+
+an example that all elements from the Lie algebra are skew symmetric matrices.
+This allows for one way to see that we have three degrees of freedom, cf
+
+```{julia}
+manifold_dimension(SO3)
+```
+
+As the Lie algebra was introduced via a tangent space, we also know that it is a vector space.
+To “turn” the `X` into a vector with three elements, we need a basis of the tangent space
+to decompose `X` into and “read off” its components.
+While in general this can be done using the [bases of a tangent space](https://juliamanifolds.github.io/ManifoldsBase.jl/stable/bases/) from [`ManifoldsBase.jl`](https://juliamanifolds.github.io/ManifoldsBase.jl/stable/),
+a very specific one is [`vee(::LieAlgebra, X)`](@ref)
+
+```{julia}
+c = vee(LieAlgebra(SO3), X)
+```
+
+and its inverse, [`hat(G::LieAlgebra, c)`](@ref)
+
+```{julia}
+X_ = hat(LieAlgebra(SO3),c)
+```
+
+## Representing tangent vectors
+
+Consider the function of left group composition $λ_g(h) = g∘h$.
+Its differential (or push forward) $Dλ_g(e)$ maps from $T_e𝒢$ to $T_g𝒢$
+and is a linear bijection between both spaces.
+Its adjoint differential (or pullback) $D^*λ_g(e)$ maps back from $T_g𝒢$ to $T_e𝒢$.
+
+This allows to introduce an inner product on all tangent spaces, that smoothly varies with
+the base point, we obtain the left-invariant metric
+
+```math
+⟨X,Y⟩_g = ⟨D^*λ_g(e)[X],D^*λ_g(e)⟩_e,
+```
+
+since it is invariant if you use the differential of the left composition to identify tangent vectors.
+We can even “spare” the pullbacks in this definition, when spring tangent vectors as their representants in the Lie algebra.
+This is the default in `LieGroups.jl`.
+
+With respect to this metric on the manifold the exponential and logarithmic maps are given by
+
+```math
+\exp_g(X) = g ∘ \exp_𝒢(X)
+\quad\text{with its inverse}\quad
+\log_g(h) = \log_𝒢(g^{-1}∘h)
+```
+
+With respect to these geodesics and the representation in the Lie algebra, parallel transport
+simplifies to the identity. To still access the Riemannian exponential map with recpect to the
+metric (compatible to the Levi-cevita connection) on the underlying Riemannian manifold, use
+`exp(base_manifold(G), g, X)`.
+
+## The Special Euclidean group $\mathrm{SE}(3)$ of rigid body motions
+
 # TODO
-* compose
-* lie group exponential & logarithm
-* Lie algebra
-
-SO(3)
-* hat/vee to get to vectors
 * group action and apply
-
-(towards) SE(3)
 * product of two Lie groups
 * semidirect product
-
 
 ## Technical details
 
