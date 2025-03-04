@@ -104,6 +104,7 @@ export CompositeManifoldError
 export adjoint, adjoint!, apply, apply!
 export base_lie_group, base_manifold
 export compose, compose!
+export conjugate, conjugate!, diff_conjugate, diff_conjugate!
 export default_left_action,
     default_right_action,
     diff_apply,
@@ -118,7 +119,6 @@ export get_coordinates, get_coordinates!, get_vector, get_vector!
 export hat, hat!
 export inv, inv!, inv_left_compose, inv_left_compose!, inv_right_compose, inv_right_compose!
 export isapprox, is_point, is_vector
-export conjugate, conjugate!, diff_conjugate, diff_conjugate!
 export exp, exp!
 export identity_element, identity_element!, is_identity, inv, inv!, diff_inv, diff_inv!
 export jacobian_conjugate, jacobian_conjugate!
