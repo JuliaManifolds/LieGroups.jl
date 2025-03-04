@@ -691,8 +691,7 @@ function jacobian_conjugate!(
         c[j] = 1
         get_vector!(𝔤, X, c, B)         # store ``X_j`` in X
         diff_conjugate!(G, X, g, h, X) # compute the differential in-place
-        get_coordinates!(𝔤, c, X, B)   # compute its coordinates in B
-        J[:, j] .= c                    # store the result in J
+        get_coordinates!(𝔤, view(J, :, j), X, B)   # compute its coordinates in B and store the result in J
     end
     return J
 end
