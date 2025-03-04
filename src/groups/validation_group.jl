@@ -18,7 +18,13 @@ Current contexts are
 # Fields
 
 * `lie_group::L` the [`AbstractLieGroup`](@ref) to be decorated
-* ``
+* `mode::Symbol`: The mode to be used for error handling, either `:error` or `:warn`
+* `ignore_contexts::AbstractVector{Symbol}`: store contexts to be ignored of validation.
+* `ignore_functions::Dict{<:Function,<:Union{Symbol,<:AbstractVector{Symbol}}`:
+  store contexts to be ignored with in a function or its mutating variant.
+
+where all but the first field are analogous to the setups of the [`ValidationManifold`](@extref `ManifoldsBase.ValidationManifold`).
+We refer to those docs for more examples on their meaning.
 
 # Constructor
     ValidationLieGroup(L::AbstractLieGroup, check_manifold=true; kwargs...)
