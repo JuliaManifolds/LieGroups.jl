@@ -14,7 +14,7 @@ using LinearAlgebra, ManifoldsBase, Manifolds, StaticArrays, Random
 
 import LinearAlgebra: adjoint, adjoint!
 
-using ManifoldsBase: RealNumbers, ComplexNumbers, ℝ, ℂ
+using ManifoldsBase: RealNumbers, ComplexNumbers, ℝ, ℂ, internal_value
 
 #
 #
@@ -41,7 +41,7 @@ include("group_actions/group_operation_action.jl")
 include("groups/power_group.jl")
 include("groups/product_group.jl")
 include("groups/semidirect_product_group.jl")
-
+include("groups/validation_group.jl")
 # Lie groups
 
 include("groups/translation_group.jl")
@@ -57,9 +57,11 @@ include("groups/special_orthogonal_group.jl")
 # Products of Groups
 include("groups/special_euclidean_group.jl")
 
+export AbstractLieGroup
 export LieGroup, LieAlgebra
 export PowerLieGroup, ProductLieGroup
 export LeftSemidirectProductLieGroup, RightSemidirectProductLieGroup
+export ValidationLieGroup
 export DefaultLieAlgebraOrthogonalBasis
 export ×, ^, ⋉, ⋊
 #
@@ -95,6 +97,7 @@ export UnitaryGroup
 export AbstractLieGroupPoint, AbstractLieAlgebraTangentVector
 export SpecialEuclideanMatrixPoint, SpecialEuclideanMatrixTangentVector
 export SpecialEuclideanProductPoint, SpecialEuclideanProductTangentVector
+export ValidationMPoint, ValidationLieAlgebraTangentVector
 
 # Errors
 export CompositeManifoldError
