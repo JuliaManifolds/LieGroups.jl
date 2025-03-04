@@ -6,14 +6,14 @@ This tutorial introduces both a few basics of [Lie groups](https://en.wikipedia.
 or [special orthogonal group](../groups/special_orthogonal_group.md) as well as rigid body motions,
 or in other words the [special euclidean group](../groups/special_euclidean_group.md).
 
-In a nutshell a Lie group $𝒢$ is a [manifold](https://en.wikipedia.org/wiki/Manifold) $ℳ$ that also is a group a group operation.
-A manifold informally be described as a set that “locally looks like a Euclidean space”
+In a nutshell a Lie group $𝒢$ is a [manifold](https://en.wikipedia.org/wiki/Manifold) $ℳ$ that also is a group with a group operation.
+A manifold can informally be described as a set that “locally looks like a Euclidean space”
 and has some way to measure angles at every point, to be precise an inner product, that is allowed to (smoothly)
 depend on the point we are at.
 A [group](https://en.wikipedia.org/wiki/Group_(mathematics)) means that on the set there also
-exists an operation, within this package usually denoted by $∘: 𝒢 × 𝒢 → 𝒢$$,
+exists an operation, within this package usually denoted by $∘: 𝒢 × 𝒢 → 𝒢$,
 `LieGroups.jl` uses the manifolds defined in [`Manifolds.jl`](https://juliamanifolds.github.io/Manifolds.jl/stable/). For more details on that, see also the [introductory tutorial](https://juliamanifolds.github.io/Manifolds.jl/stable/tutorials/getstarted/) there.
-A Lie group is usually written as a tuple $(ℳ,∘)$ os the manifold and the group operation thereon.
+A Lie group is usually written as a tuple $(ℳ,∘)$ with the manifold and the group operation thereon.
 
 For more theoretical background, see for example [HilgertNeeb:2012](@cite), especially their Chapter 9.
 
@@ -21,7 +21,7 @@ For more theoretical background, see for example [HilgertNeeb:2012](@cite), espe
 
 This first part considers rotations in the plane. These can be represented by rotation matrices
 ```math
-R_α = \begin{pmatrix} \cos(α),& -\sin(α)\\ \sin(α) & \cos(α) \end{pmatrix},\qquad α ∈ ℝ,
+R_α = \begin{pmatrix} \cos(α)& -\sin(α)\\ \sin(α) & \cos(α) \end{pmatrix},\qquad α ∈ ℝ,
 ```
 
 where we already represent all possible rotations when restricting $α$ to $[0,2π]$.
@@ -29,7 +29,7 @@ Adding two matrices $R_α + R_β$ does not yield a valid rotation matrix again, 
 can have these matrices in mind as being “locally like the real line”, since changing the rotation angle
 slightly yields rotation matrices that are “close by” in the sense that they perform nearly the same rotation
 when applied to a point $x ∈ ℝ^2$ by computing $R_αx$.
-Matrix multiplication $R_β = R_{α_1}*R_{α_1}$ does yield a new rotation and also fulfils all other
+Matrix multiplication $R_β = R_{α_1} R_{α_2}$ does yield a new rotation and also fulfills all other
 properties to yield a group operation. Using trigonometric identities we observe that $β = α_1 + α_2$.
 
 The set of rotation matrices is hence a Lie group and called the [special orthogonal group](../groups/special_orthogonal_group.md) $\mathrm{SO}(2)$. In `LieGroups.jl` we initialise this as
@@ -81,13 +81,13 @@ g = [cos(π/3) -sin(π/3) 0.0; sin(π/3) cos(π/3) 0.0; 0.0 0.0 1.0]* [cos(π/4)
 e = Matrix{Float64}(I,3,3)
 g
 ```
-The element `g` can be seen as a rotation by $π/3$ in the x-y-plane combines with a rotation by $π/4$ in the x-z plane.
+The element `g` can be seen as a rotation by $π/3$ in the x-y-plane combined with a rotation by $π/4$ in the x-z plane.
 
 The tangent space $T_e𝒢$ plays a special role and is called the [`LieAlgebra`](@ref) $𝔤$.
 
 Similar to the ``[Riemannian exponential map](@extref `Base.exp-Tuple{AbstractManifold, Any, Any}`)``{=commonmark}
 The exponential function $\exp_𝒢: 𝔤 → 𝒢$ maps Lie algebra tangent vectors $X ∈ T_e𝒢$
-to a point on the Lie group. This is implemented in [`exp(G::LieGroup, X)`](@ref). It's inverse
+to a point on the Lie group. This is implemented in [`exp(G::LieGroup, X)`](@ref). Its inverse
 is the Lie group logarithmic function [`log(G::LieGroup, g)`](@ref).
 
 ```{julia}
@@ -158,8 +158,8 @@ With respect to this metric on the manifold the exponential and logarithmic maps
 ```
 
 With respect to these geodesics and the representation in the Lie algebra, parallel transport
-simplifies to the identity. To still access the Riemannian exponential map with recpect to the
-metric (compatible to the Levi-cevita connection) on the underlying Riemannian manifold, use
+simplifies to the identity. To still access the Riemannian exponential map with respect to the
+metric (compatible to the Levi-Civita connection) on the underlying Riemannian manifold, use
 `exp(base_manifold(G), g, X)`.
 
 As an example, we compute
