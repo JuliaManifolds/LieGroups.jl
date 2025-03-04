@@ -58,7 +58,7 @@ if "--quarto" ∈ ARGS
     end
 else
     # fallback to at least create empty files for tutorials that are directly linked from the docs
-    #    touch(joinpath(@__DIR__, "src/tutorials/Optimize.md"))
+    touch(joinpath(@__DIR__, "src/tutorials/getstarted.md"))
 end
 
 tutorials_in_menu = true
