@@ -211,7 +211,7 @@ Test that `copyto!` works also when copying over an `Identity`.
 The point `g` can be any point _but_ the `identity_element`.
 The group has to be a mutating one, that is, not work on isbit types.
 """
-function test_copyto(G::LieGroup, g)
+function test_copyto(G::AbstractLieGroup, g)
     @testset "copyto!" begin
         k = copy(G, g)
         e = Identity(G)
