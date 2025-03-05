@@ -43,7 +43,7 @@ this behaves like the real line, but globally it differs, since $R_{α} = R_{α+
 The set of rotation matrices is hence a Lie group and called the [special orthogonal group](../groups/special_orthogonal_group.md) $\mathrm{SO}(2)$. In `LieGroups.jl` we initialise this as
 
 ```{julia}
-using LieGroups, LinearAlgebra, RecursiveArrayTools
+using LieGroups, LinearAlgebra, RecursiveArrayTools, Rotations
 SO2 = SpecialOrthogonalGroup(2)
 ```
 
@@ -85,7 +85,7 @@ maybe a bit “dull” point on this Lie group is the identity matrix `e`.
 
 ```{julia}
 SO3 = SpecialOrthogonalGroup(3)
-g = [cos(π/3) -sin(π/3) 0.0; sin(π/3) cos(π/3) 0.0; 0.0 0.0 1.0]* [cos(π/4) 0.0 -sin(π/4); 0.0 1.0 0.0; sin(π/4) 0.0 cos(π/4)]
+g = RotZ(π/3)*RotY(π/4)
 e = Matrix{Float64}(I,3,3)
 g
 ```
@@ -142,7 +142,7 @@ X_ = hat(LieAlgebra(SO3),c)
 ## Representing tangent vectors
 
 Consider the function of left group composition $λ_g(h) = g∘h$.
-Its differential (or push forward) $Dλ_g(e)$ maps from $T_e𝒢$ to $T_g𝒢$
+Its ``[differential](@ref diff_left_compose(G::AbstractLieGroup, g, h, X))``{=commonmark} (or push forward) $Dλ_g(e)$ maps from $T_e𝒢$ to $T_g𝒢$
 and is a linear bijection between both spaces.
 Its adjoint differential (or pullback) $D^*λ_g(e)$ maps back from $T_g𝒢$ to $T_e𝒢$.
 
@@ -154,8 +154,12 @@ the base point, we obtain the left-invariant metric
 ```
 
 since it is invariant if you use the differential of the left composition to identify tangent vectors.
-We can even “spare” the pullbacks in this definition, when spring tangent vectors as their representants in the Lie algebra.
+We can even “spare” the pullbacks in this definition, when representing tangent vector alsways by their correspnding representants in the Lie algebra.
 This is the default in `LieGroups.jl`.
+
+Alternatively one can start with the right composition and its ``[differential](@ref diff_right_compose(G::AbstractLieGroup, h, g, X))``{=commonmark} to arrive an right-invariant vector fields and a right-invariant metric.
+
+The left-invariant metric is in general not right-invariant, except for compact Lie groups and their direct products with Translations.
 
 With respect to this metric on the manifold the exponential and logarithmic maps are given by
 
@@ -286,7 +290,7 @@ manifold_dimension(SE3)
 and its coordinates as
 
 ```{julia}
-vee(LieAlgebra(SE3), gh1)
+vee(LieAlgebra(SE3), Y)
 ```
 
 which actually is component wise again, the first 3 values refer to the rotation part,
