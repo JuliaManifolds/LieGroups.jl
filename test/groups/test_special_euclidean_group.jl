@@ -214,7 +214,7 @@ using LieGroupsTestSuite
     @testset "Test allocation special case" begin
         G = SpecialEuclideanGroup(2)
         g = [1.0 0.0 0.0; 0.0 1.0 0.0; 0.0 0.0 1.0]
-        X = zeros(3,3)
+        X = zeros(3, 3)
         g1 = SpecialEuclideanMatrixPoint(g)
         X1 = SpecialEuclideanMatrixTangentVector(X)
         Xa = LieGroups.allocate_result(G, adjoint, g1, X1)
