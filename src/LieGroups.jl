@@ -21,8 +21,7 @@ using ManifoldsBase: RealNumbers, ComplexNumbers, ℝ, ℂ, internal_value
 # = Compatibility (and a bit of type piracy for now)
 # The following imports are necessary to use Manifolds.jl 0.10 with Lie groups
 # The line is removed when the Groups are removed from possibly 0.11
-import Manifolds:
-    apply, apply!, compose, identity_element, is_identity, hat, hat!, vee, vee!
+import Manifolds: apply, apply!, compose, identity_element, is_identity
 # Both define the following structs, so these for now lead to asking for explicit prefixes
 # Manifolds: Identity, TranslationGroup
 include("documentation_glossary.jl")
@@ -105,6 +104,7 @@ export CompositeManifoldError
 export adjoint, adjoint!, apply, apply!
 export base_lie_group, base_manifold
 export compose, compose!
+export conjugate, conjugate!, diff_conjugate, diff_conjugate!
 export default_left_action,
     default_right_action,
     diff_apply,
@@ -119,13 +119,12 @@ export get_coordinates, get_coordinates!, get_vector, get_vector!
 export hat, hat!
 export inv, inv!, inv_left_compose, inv_left_compose!, inv_right_compose, inv_right_compose!
 export isapprox, is_point, is_vector
-export conjugate, conjugate!, diff_conjugate, diff_conjugate!
 export exp, exp!
 export identity_element, identity_element!, is_identity, inv, inv!, diff_inv, diff_inv!
 export jacobian_conjugate, jacobian_conjugate!
 export lie_bracket, lie_bracket!, log, log!
 export manifold_dimension
-export norm
+export norm, number_of_coordinates
 export injectivity_radius
 export rand, rand!
 export switch

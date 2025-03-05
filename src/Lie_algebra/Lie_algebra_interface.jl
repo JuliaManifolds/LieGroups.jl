@@ -195,16 +195,18 @@ function ManifoldsBase._get_vector!(
     return ManifoldsBase.get_vector!(base_manifold(G), X, identity_element(G, T), c, B)
 end
 
-@inline function get_vector_lie(𝔤::LieAlgebra, c, N)
+@inline function get_vector_lie(𝔤::LieAlgebra, c, B::DefaultLieAlgebraOrthogonalBasis)
     X = zero_vector(𝔤)
-    return get_vector_lie!(𝔤, X, c, N)
+    return get_vector_lie!(𝔤, X, c, B)
 end
-@inline function get_vector_lie(𝔤::LieAlgebra, c, N, T::Type)
+@inline function get_vector_lie(
+    𝔤::LieAlgebra, c, B::DefaultLieAlgebraOrthogonalBasis, T::Type
+)
     X = zero_vector(𝔤, T)
-    return get_vector_lie!(𝔤, X, c, N)
+    return get_vector_lie!(𝔤, X, c, B)
 end
 @inline function get_vector_lie!(
-    𝔤::LieAlgebra, X::T, c, B::DefaultLieAlgebraOrthogonalBasis{𝔽}
+    𝔤::LieAlgebra, X::T, c, ::DefaultLieAlgebraOrthogonalBasis{𝔽}
 ) where {T,𝔽}
     G = base_lie_group(𝔤)
     return get_vector!(
@@ -237,18 +239,16 @@ Technically, `hat` is a specific case of [`get_vector`](@ref) and is implemented
 [`DefaultLieAlgebraOrthogonalBasis`](@ref).
 """
 
-# function hat end
 @doc "$(_doc_hat)"
-function hat(𝔤::LieAlgebra, c)
+function ManifoldsBase.hat(𝔤::LieAlgebra, c)
     return get_vector(𝔤, c, DefaultLieAlgebraOrthogonalBasis())
 end
-function hat(𝔤::LieAlgebra, c, T::Type)
+function ManifoldsBase.hat(𝔤::LieAlgebra, c, T::Type)
     return get_vector(𝔤, c, DefaultLieAlgebraOrthogonalBasis(); tangent_vector_type=T)
 end
 
-# function hat! end
 @doc "$(_doc_hat)"
-function hat!(𝔤::LieAlgebra, X, c)
+function ManifoldsBase.hat!(𝔤::LieAlgebra, X, c)
     get_vector!(𝔤, X, c, DefaultLieAlgebraOrthogonalBasis())
     return X
 end
@@ -376,15 +376,13 @@ Technically, `vee` is a specific case of [`get_coordinates`](@ref) and is implem
 the [`DefaultLieAlgebraOrthogonalBasis`](@ref).
 """
 
-# function vee end
 @doc "$(_doc_vee)"
-function vee(𝔤::LieAlgebra, X)
+function ManifoldsBase.vee(𝔤::LieAlgebra, X)
     return get_coordinates(𝔤, X, DefaultLieAlgebraOrthogonalBasis())
 end
 
-# function vee! end
 @doc "$(_doc_vee)"
-function vee!(𝔤::LieAlgebra, c, X)
+function ManifoldsBase.vee!(𝔤::LieAlgebra, c, X)
     get_coordinates!(𝔤, c, X, DefaultLieAlgebraOrthogonalBasis())
     return c
 end

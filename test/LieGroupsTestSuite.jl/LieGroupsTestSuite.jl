@@ -203,6 +203,36 @@ function test_conjugate(
     return nothing
 end
 
+"""
+    test_copyto(G::LieGroup, g)
+
+Test that `copyto!` works also when copying over an `Identity`.
+
+The point `g` can be any point _but_ the `identity_element`.
+The group has to be a mutating one, that is, not work on isbit types.
+"""
+function test_copyto(G::AbstractLieGroup, g)
+    @testset "copyto!" begin
+        k = copy(G, g)
+        e = Identity(G)
+        copyto!(G, k, e)
+        # also check that this holds both ways
+        @test isapprox(G, k, Identity(G))
+        @test isapprox(G, Identity(G), k)
+        # Test that copying back also works
+        copyto!(G, k, g)
+        @test isapprox(G, k, g)
+        # copy into identity only works if provided the identity
+        @test copyto!(G, e, Identity(G)) == e
+        # but then also always returns e
+        copyto!(G, k, e)
+        @test copyto!(G, e, k) == e
+        # and fails if the point to copy in is not (numerically) e
+        @test_throws DomainError copyto!(G, e, g)
+        return nothing
+    end
+end
+
 #
 #
 # --- D
@@ -346,36 +376,6 @@ function test_diff_right_compose(
         if !ismissing(expected)
             @test isapprox(𝔤, Y1, expected)
         end
-    end
-end
-
-"""
-    test_copyto(G::AbstractLieGroup, g)
-
-Test that `copyto!` works also when copying over an `Identity`.
-
-The point `g` can be any point _but_ the `identity_element`.
-The group has to be a mutating one, that is, not work on isbit types.
-"""
-function test_copyto(G::AbstractLieGroup, g)
-    @testset "copyto!" begin
-        k = copy(G, g)
-        e = Identity(G)
-        copyto!(G, k, e)
-        # also check that this holds both ways
-        @test isapprox(G, k, Identity(G))
-        @test isapprox(G, Identity(G), k)
-        # Test that copying back also works
-        copyto!(G, k, g)
-        @test isapprox(G, k, g)
-        # copy into identity only works if provided the identity
-        @test copyto!(G, e, Identity(G)) == e
-        # but then also always returns e
-        copyto!(G, k, e)
-        @test copyto!(G, e, k) == e
-        # and fails if the point to copy in is not (numerically) e
-        @test_throws DomainError copyto!(G, e, g)
-        return nothing
     end
 end
 
@@ -721,6 +721,42 @@ function test_identity(G::AbstractLieGroup)
     end
     return nothing
 end
+
+#
+#
+# --- J
+"""
+    test_diff_conjugate(A::GroupAction, g, h, B=DefaultLieAlgebraOrthogonalBasis();
+        expected=missing,
+        test_mutating=true,
+        kwargs...
+    )
+
+Test  `jacobian_conjugate`.
+The `kwargs...` are passed down to the `isapprox` check for the expeced value
+"""
+function test_jacobian_conjugate(
+    G::AbstractLieGroup,
+    g,
+    h;
+    basis=DefaultLieAlgebraOrthogonalBasis(),
+    expected=missing,
+    test_mutating::Bool=true,
+    kwargs...,
+)
+    @testset "jacobian_conjugate" begin
+        J = jacobian_conjugate(G, g, h, basis)
+        n = number_of_coordinates(base_manifold(G), basis)
+        @test size(J) == (n, n)
+        if test_mutating
+            J2 = copy(J)
+            jacobian_conjugate!(G, J2, g, h, basis)
+            @test isapprox(J, J2; kwargs...)
+        end
+        !ismissing(expected) && (@test isapprox(J, expected; kwargs...))
+        return nothing
+    end
+end
 #
 #
 # --- L
@@ -997,6 +1033,16 @@ function test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dic
         if (is_identity in functions)
             test_identity(G)
         end
+        #
+        #
+        # --- J
+        if (jacobian_conjugate in functions)
+            v = get(expectations, :jacobian_conjugate, missing)
+            test_jacobian_conjugate(
+                G, points[1], points[2]; expected=v, test_mutating=mutating
+            )
+        end
+
         #
         #
         # --- L

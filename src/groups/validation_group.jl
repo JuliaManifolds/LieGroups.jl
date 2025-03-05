@@ -365,7 +365,7 @@ function ManifoldsBase.exp!(G::ValidationLieGroup, h, g, X; kwargs...)
     return g
 end
 
-function hat(
+function ManifoldsBase.hat(
     𝔤::LieAlgebra{𝔽,O,<:ValidationLieGroup}, c; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
     G = base_lie_group(𝔤).lie_group
@@ -373,7 +373,7 @@ function hat(
     is_point(𝔤, X; widthin=hat, context=(:Output,), kwargs...)
     return ValidationLieAlgebraTangentVector(X)
 end
-function hat(
+function ManifoldsBase.hat(
     𝔤::LieAlgebra{𝔽,O,<:ValidationLieGroup}, c, T::Type; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
     G = base_lie_group(𝔤).lie_group
@@ -381,7 +381,7 @@ function hat(
     is_point(𝔤, X; widthin=hat, context=(:Output,), kwargs...)
     return ValidationLieAlgebraTangentVector(X)
 end
-function hat!(
+function ManifoldsBase.hat!(
     𝔤::LieAlgebra{𝔽,O,<:ValidationLieGroup}, X, c; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
     G = base_lie_group(𝔤).lie_group
@@ -573,7 +573,7 @@ function jacobian_conjugate(
 )
     is_point(G, g; widthin=jacobian_conjugate, context=(:Input,), kwargs...)
     is_point(G, h; widthin=jacobian_conjugate, context=(:Input,), kwargs...)
-    J = jacobian_conjugate(G.lie_group, unwrap_validation(g), unwrap_validation(h), args...)
+    J = jacobian_conjugate(G.lie_group, unwrap_validation(g), unwrap_validation(h))
     return J
 end
 function jacobian_conjugate!(
@@ -586,7 +586,7 @@ function jacobian_conjugate!(
 )
     is_point(G, g; widthin=jacobian_conjugate, context=(:Input,), kwargs...)
     is_point(G, h; widthin=jacobian_conjugate, context=(:Input,), kwargs...)
-    jacobian_conjugate!(G.lie_group, J, unwrap_validation(g), unwrap_validation(h), args...)
+    jacobian_conjugate!(G.lie_group, J, unwrap_validation(g), unwrap_validation(h))
     return J
 end
 
@@ -722,14 +722,14 @@ function Base.show(io::IO, G::ValidationLieGroup)
     return print(io, s)
 end
 
-function vee(
+function ManifoldsBase.vee(
     𝔤::LieAlgebra{𝔽,O,<:ValidationLieGroup}, X; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
     is_point(𝔤, X; widthin=vee, context=(:Input,), kwargs...)
     G = base_lie_group(𝔤).lie_group
     return vee(LieAlgebra(G), unwrap_validation(X))
 end
-function vee!(
+function ManifoldsBase.vee!(
     𝔤::LieAlgebra{𝔽,O,<:ValidationLieGroup}, c, X; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
     is_point(𝔤, X; widthin=vee, context=(:Input,), kwargs...)

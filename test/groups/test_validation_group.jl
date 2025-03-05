@@ -27,6 +27,7 @@ using LieGroupsTestSuite
         inv_right_compose,
         is_identity,
         lie_bracket,
+        jacobian_conjugate,
         log,
         rand,
         show,
