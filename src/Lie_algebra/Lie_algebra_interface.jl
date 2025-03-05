@@ -195,16 +195,18 @@ function ManifoldsBase._get_vector!(
     return ManifoldsBase.get_vector!(base_manifold(G), X, identity_element(G, T), c, B)
 end
 
-@inline function get_vector_lie(𝔤::LieAlgebra, c, N)
+@inline function get_vector_lie(𝔤::LieAlgebra, c, B::DefaultLieAlgebraOrthogonalBasis)
     X = zero_vector(𝔤)
-    return get_vector_lie!(𝔤, X, c, N)
+    return get_vector_lie!(𝔤, X, c, B)
 end
-@inline function get_vector_lie(𝔤::LieAlgebra, c, N, T::Type)
+@inline function get_vector_lie(
+    𝔤::LieAlgebra, c, B::DefaultLieAlgebraOrthogonalBasis, T::Type
+)
     X = zero_vector(𝔤, T)
-    return get_vector_lie!(𝔤, X, c, N)
+    return get_vector_lie!(𝔤, X, c, B)
 end
 @inline function get_vector_lie!(
-    𝔤::LieAlgebra, X::T, c, B::DefaultLieAlgebraOrthogonalBasis{𝔽}
+    𝔤::LieAlgebra, X::T, c, ::DefaultLieAlgebraOrthogonalBasis{𝔽}
 ) where {T,𝔽}
     G = base_lie_group(𝔤)
     return get_vector!(

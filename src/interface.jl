@@ -21,7 +21,7 @@ at the [`identity_element`](@ref) on the [`base_manifold](@ref base_manifold(::A
 
 !!! note
     In order to implement the corresponding [`get_coordinates`](@ref) and [`get_vector`](@ref) functions,
-    define `get_coordinates_lie(::AbstractLieGroup, p, X, B)` and `get_vector_lie(::AbstractLieGroup, p, X, B)`, resp.
+    define `get_coordinates_lie(::AbstractLieAlgebra, X, B)` and `get_vector_lie(::AbstractLieAlgebra, X, B)`, resp.
 """
 struct DefaultLieAlgebraOrthogonalBasis{𝔽} <:
        ManifoldsBase.AbstractOrthogonalBasis{𝔽,ManifoldsBase.TangentSpaceType} end
