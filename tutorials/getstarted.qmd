@@ -33,7 +33,12 @@ can have these matrices in mind as being “locally like the real line”, since
 slightly yields rotation matrices that are “close by” in the sense that they perform nearly the same rotation
 when applied to a point $x ∈ ℝ^2$ by computing $R_αx$.
 Matrix multiplication $R_β = R_{α_1} R_{α_2}$ does yield a new rotation and also fulfills all other
-properties to yield a group operation. Using trigonometric identities we observe that $β = α_1 + α_2$.
+properties to yield a group operation.
+Using trigonometric identities we observe that $R_β = R_{α_1+α_2}$.
+Since the angle of rotation is $2π$-periodic, we also see here, that e.g. for small angles around $0$,
+this behaves like the real line, but globally it differs, since $R_{α} = R_{α+2π}$
+
+
 
 The set of rotation matrices is hence a Lie group and called the [special orthogonal group](../groups/special_orthogonal_group.md) $\mathrm{SO}(2)$. In `LieGroups.jl` we initialise this as
 
