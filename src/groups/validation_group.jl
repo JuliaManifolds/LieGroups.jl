@@ -573,7 +573,7 @@ function jacobian_conjugate(
 )
     is_point(G, g; widthin=jacobian_conjugate, context=(:Input,), kwargs...)
     is_point(G, h; widthin=jacobian_conjugate, context=(:Input,), kwargs...)
-    J = jacobian_conjugate(G.lie_group, unwrap_validation(g), unwrap_validation(h), args...)
+    J = jacobian_conjugate(G.lie_group, unwrap_validation(g), unwrap_validation(h))
     return J
 end
 function jacobian_conjugate!(
@@ -586,7 +586,7 @@ function jacobian_conjugate!(
 )
     is_point(G, g; widthin=jacobian_conjugate, context=(:Input,), kwargs...)
     is_point(G, h; widthin=jacobian_conjugate, context=(:Input,), kwargs...)
-    jacobian_conjugate!(G.lie_group, J, unwrap_validation(g), unwrap_validation(h), args...)
+    jacobian_conjugate!(G.lie_group, J, unwrap_validation(g), unwrap_validation(h))
     return J
 end
 

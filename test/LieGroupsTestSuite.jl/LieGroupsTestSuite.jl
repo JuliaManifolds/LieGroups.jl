@@ -736,7 +736,7 @@ Test  `jacobian_conjugate`.
 The `kwargs...` are passed down to the `isapprox` check for the expeced value
 """
 function test_jacobian_conjugate(
-    G::LieGroup,
+    G::AbstractLieGroup,
     g,
     h;
     basis=DefaultLieAlgebraOrthogonalBasis(),
