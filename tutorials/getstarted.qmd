@@ -224,7 +224,7 @@ from an element of $𝒢_1$. The group operation reads for $(g_1,g_2), (h_1,h_2)
 ### Rigid body motions
 
 We obtain the [special Euclidean group](../groups/special_euclidean_group.md)
-$\mathrm{SE}(3) = \mathrm{SO}(3) ⋉ T(3)`` where the group action is the one discussed as an example before.
+$\mathrm{SE}(3) = \mathrm{SO}(3) ⋉ T(3)$ where the group action is the one discussed as an example before.
 
 ```{julia}
 SE3 = SpecialEuclideanGroup(3)
