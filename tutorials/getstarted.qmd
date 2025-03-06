@@ -159,7 +159,7 @@ This is the default in `LieGroups.jl`.
 
 Alternatively one can start with the right composition and its ``[differential](@ref diff_right_compose(G::AbstractLieGroup, h, g, X))``{=commonmark} to arrive an right-invariant vector fields and a right-invariant metric.
 
-The left-invariant metric is in general not right-invariant, except for compact Lie groups and their direct products with Translations.
+The left-invariant metric is in general not right-invariant, except for compact Lie groups and their direct products with translations, see for example [LatifiToomanian:2013](@cite) for an even more general proof.
 
 With respect to this metric on the manifold the exponential and logarithmic maps are given by
 
