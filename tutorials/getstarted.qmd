@@ -108,7 +108,7 @@ exp(SO3,X)
 ```
 
 The term “exponential” has at least three different meanings throughout Lie groups and Riemannian manifolds.
-To be precise, we call the just introduced one “exponential function”, since it often agrees with the [exponential](https://en.wikipedia.org/wiki/Exponential_function).
+To be precise, we call the just introduced one “exponential function”, since it often agrees with the [matrix exponential](https://en.wikipedia.org/wiki/Matrix_exponential).
 
 Taking a closed look at `X` we see
 
