@@ -394,7 +394,7 @@ _doc_exponential = """
     exp(G::AbstractLieGroup, X::T)
     exp!(G::AbstractLieGroup, g, X)
 
-    Compute the (Lie group) exponential function
+Compute the (Lie group) exponential function
 
 ```math
 $(_tex(:exp))_{$(_math(:G))}: $(_math(:𝔤)) → $(_math(:G)),$(_tex(:qquad)) $(_tex(:exp))_{$(_math(:G))}(X) = γ_X(1),

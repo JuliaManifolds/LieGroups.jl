@@ -93,6 +93,9 @@ if run_quarto || run_on_CI
         run(`quarto render $(tutorials_folder)`)
         return nothing
     end
+else
+    # fallback to at least create empty files for tutorials that are directly linked from the docs
+    touch(joinpath(@__DIR__, "src/tutorials/getstarted.md"))
 end
 
 # (d) load necessary packages for the docs
