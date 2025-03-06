@@ -281,7 +281,7 @@ apply the Lie group exponential
 Y = log(SE3, gh1)
 ```
 
-and look at the manifold dimension, it is the sum of the single ones
+and look at the manifold dimension, it is the sum of dimensions of its components
 
 ```{julia}
 manifold_dimension(SE3)
