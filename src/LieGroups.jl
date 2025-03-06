@@ -36,7 +36,7 @@ include("group_operations/multiplication_operation.jl")
 # Actions
 include("group_actions/group_action_interface.jl")
 include("group_actions/group_operation_action.jl")
-
+include("group_actions/linear_representation.jl")
 # Meta Lie groups
 include("groups/power_group.jl")
 include("groups/product_group.jl")
