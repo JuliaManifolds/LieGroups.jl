@@ -154,6 +154,7 @@ makedocs(;
             "Special Euclidean group" => "groups/special_euclidean_group.md",
             "Special orthogonal group" => "groups/special_orthogonal_group.md",
             "Special unitary group" => "groups/special_unitary_group.md",
+            "Symplectic group" => "groups/symplectic_group.md",
             "Translation group" => "groups/translation_group.md",
             "Unitary group" => "groups/unitary_group.md",
         ],
