@@ -101,6 +101,7 @@ end
 # (d) load necessary packages for the docs
 using Documenter
 using DocumenterCitations, DocumenterInterLinks
+using LinearAlgebra
 using LieGroups
 
 # (e) add contributing.md to docs
@@ -146,7 +147,7 @@ makedocs(;
         "Lie groups" => [
             "List of Lie groups" => "groups/index.md",
             "General Linear" => "groups/general_linear.md",
-            "Heisenberg" => "groups/heisenberg_group.md",
+            "Heisenberg group" => "groups/heisenberg_group.md",
             "Orthogonal group" => "groups/orthogonal_group.md",
             "Power group" => "groups/power_group.md",
             "Product group" => "groups/product_group.md",

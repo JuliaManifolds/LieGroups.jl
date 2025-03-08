@@ -4,10 +4,9 @@
 SymplecticGroup
 ```
 
-# Functions
+## Literature
 
-```@autodocs
-Modules = [LieGroups]
-Pages = ["groups/symplectic_group.jl"]
-Order = [:function]
+```@bibliography
+Pages = ["symplectic_group.md"]
+Canonical=false
 ```

@@ -6,7 +6,7 @@ using LieGroupsTestSuite
 
 @testset "The symplectic group" begin
     G = SymplecticGroup(2)
-    # for this case we need [a c; c b] such that ab-c^2=1
+    # on S(2) points are of the form [a c; c b] such that ab-c^2=1
     g1 = [1.0 2.0; 2.0 5.0]
     g2 = [2.0 3.0; 3.0 5.0]
     g3 = [4.0 5.0; 5.0 6.5]
