@@ -10,7 +10,7 @@ $(_math(:Sp))(2n, ℝ) = $(_tex(:SetDef, "p ∈ ℝ^{2n×2n}", "p^$(_tex(:transp
 
 where ``J_{2n} = $(_tex(:pmatrix, "0_n & I_n", "-I_n & 0_n"))`` denotes the [`SymplecticElement`](@extref `Manifolds.SymplecticElement`).
 
-the corresponding LIe algebra is given by the [`HamiltonianMatrices`](@extref `Manifolds.HamiltonianMatrices`)
+the corresponding Lie algebra is given by the [`HamiltonianMatrices`](@extref `Manifolds.HamiltonianMatrices`)
 
 ```math
 $(_math(:sp))(2n, ℝ) = $(_tex(:SetDef, "X ∈ ℝ^{2n×2n}", "X^+ = -X", "big")),
