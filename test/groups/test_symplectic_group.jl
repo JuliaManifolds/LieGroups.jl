@@ -44,4 +44,7 @@ using LieGroupsTestSuite
         :atols => Dict(rand => 1e-13, log => 1e-13), :repr => "SymplecticGroup(2, ℝ)"
     )
     test_lie_group(G, properties, expectations)
+    # Test second show variant
+    @test repr(SymplecticGroup(2; parameter=:field)) ==
+        "SymplecticGroup(2, ℝ; parameter=:field)"
 end
