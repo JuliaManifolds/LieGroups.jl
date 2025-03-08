@@ -24,7 +24,7 @@ const SymplecticGroup{𝔽,T} = LieGroup{
     𝔽,MatrixMultiplicationGroupOperation,SymplecticMatrices{T,𝔽}
 }
 
-function SymplecticGroup(n, field=ℝ; kwargs...)
+function SymplecticGroup(n::Int, field::AbstractNumbers=ℝ; kwargs...)
     S = Manifolds.SymplecticMatrices(n, field; kwargs...)
     return SymplecticGroup{field,typeof(S).parameters[1]}(
         S, MatrixMultiplicationGroupOperation()
