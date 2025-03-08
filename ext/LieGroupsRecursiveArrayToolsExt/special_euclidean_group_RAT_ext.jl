@@ -1,6 +1,6 @@
 
 # disable affine check
-LieGroups._check_matrix_affine(::ArrayPartition, ::Int; v=1) = nothing
+LieGroups._check_matrix_affine(::ArrayPartition, ::Int; kwargs...) = nothing
 
 #
 # Conversions

@@ -58,7 +58,7 @@ using LinearAlgebra: I
         :Vectors => [Y1, Y2, Y3],
         :Functions => [exp, hat, log, show, vee],
     )
-    expectations2 = Dict(:repr => "OrthogonalGroup(3)", :atols => Dict(:exp => 1e-15))
+    expectations2 = Dict(:repr => "OrthogonalGroup(3)", :atols => Dict(exp => 1e-15))
     test_lie_group(H, properties2, expectations2)
     @testset "O(3) special cases" begin
         @test is_identity(H, exp(H, zeros(3, 3)))
@@ -80,7 +80,7 @@ using LinearAlgebra: I
         :Vectors => [Z1, Z2, Z3],
         :Functions => [exp, hat, log, show, vee],
     )
-    expectations3 = Dict(:repr => "OrthogonalGroup(4)", :atols => Dict(:exp => 1e-15))
+    expectations3 = Dict(:repr => "OrthogonalGroup(4)", :atols => Dict(exp => 1e-15))
     test_lie_group(J, properties3, expectations3)
     @testset "𝔬(4) edge cases" begin
         𝔧 = LieAlgebra(J)

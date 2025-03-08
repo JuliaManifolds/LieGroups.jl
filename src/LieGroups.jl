@@ -41,11 +41,12 @@ include("groups/power_group.jl")
 include("groups/product_group.jl")
 include("groups/semidirect_product_group.jl")
 include("groups/validation_group.jl")
-# Lie groups
 
+# Lie groups
 include("groups/translation_group.jl")
 include("groups/general_linear_group.jl")
 include("groups/heisenberg_group.jl")
+include("groups/symplectic_group.jl")
 
 # includes generic implementations for O(n), U(n), SO(n), SO(n), so we load this first
 include("groups/unitary_group.jl")
@@ -70,7 +71,7 @@ export AbstractGroupOperation, Identity
 export AdditionGroupOperation
 export AbstractMultiplicationGroupOperation
 export MatrixMultiplicationGroupOperation
-export ProductGroupOperation
+export PowerGroupOperation, ProductGroupOperation
 export LeftSemidirectProductGroupOperation, RightSemidirectProductGroupOperation
 
 #
@@ -89,6 +90,7 @@ export GeneralLinearGroup
 export HeisenbergGroup
 export OrthogonalGroup
 export SpecialEuclideanGroup, SpecialOrthogonalGroup, SpecialUnitaryGroup
+export SymplecticGroup
 export TranslationGroup
 export UnitaryGroup
 
