@@ -61,6 +61,12 @@ function ManifoldsBase.exp!(
     return g
 end
 
+function inv!(::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, h, g) where {𝔽}
+    h[] = (typeof(g)<:Number ? g :  g[])
+    return h
+end
+
+
 _doc_identity_element_scalar_mult = """
     identity_element(G::LieGroup{𝔽,ScalarMultiplicationGroupOperation})
     identity_element!(G::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, e)

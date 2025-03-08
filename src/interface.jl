@@ -206,6 +206,7 @@ function get_number_type(x::Ref{<:Number})
     return typeof(x[])
 end
 
+
 function _compose(G::LieGroup{𝔽,O}, g, h) where {𝔽,O<:AbstractGroupOperation}
     if ManifoldsBase.representation_size(G) == ()
         T = promote_type(get_number_type(g), get_number_type(h))
@@ -252,7 +253,16 @@ This can be done in-place of `k`.
 """
 @doc "$(_doc_conjugate)"
 function conjugate(G::LieGroup, g, h)
-    k = ManifoldsBase.allocate_result(G, conjugate, h, g)
+    if ManifoldsBase.representation_size(G) == ()
+        T = promote_type(get_number_type(g), get_number_type(h))
+        if T<:Number
+            k = fill(zero(T)) # Allocate a scalar zero value for representation size ()
+        else
+            throw(ArgumentError("Unsupported type for zero-dimensional array:  " * string(g) * ", "*  string(h)))
+        end
+    else
+        k = ManifoldsBase.allocate_result(G, conjugate, h, g)
+    end
     return conjugate!(G, k, g, h)
 end
 

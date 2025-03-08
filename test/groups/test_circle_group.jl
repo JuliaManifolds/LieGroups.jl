@@ -12,9 +12,11 @@ using LieGroupsTestSuite
 
 
     z1, z2, z3 = 1., 1.0im , -1.0im
+    X1, X2, X3 = 1.0im, 0., -2.0im
     properties = Dict(
         :Name => "Array Points",
-        :Points => [fill(z1), fill(z2), fill(z3)],
+        :Points => [fill(z1), fill(z2), fill(z3)],  
+        :Vectors => [X1, X2, X3],
         :Mutating => true,
         :Rng => Random.MersenneTwister(),
         :Functions => [
@@ -27,7 +29,7 @@ using LieGroupsTestSuite
                 exp,
                 # hat,
                 #
-                # inv,
+                #inv,
                 # inv_left_compose,
                 # inv_right_compose,
                 is_identity,
@@ -41,6 +43,13 @@ using LieGroupsTestSuite
     expectations = Dict(
         :repr => "CircleGroup()"
     )
+    test_lie_group(C1, properties, expectations)
+
+    #add testing for references
+    #properties[:Name] = "Ref Points"
+    #properties[:Mutating] = false
+    #properties[:Points] = [Ref(z1), Ref(z2), Ref(z3)]
+
     test_lie_group(C1, properties, expectations)
 
     @testset "complex" begin

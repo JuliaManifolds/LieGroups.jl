@@ -239,7 +239,7 @@ simplifies to the multiplicative inverse ``g^{-1}``. This can be done in-place o
 Base.inv(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any) where {𝔽}
 
 @doc "$(_doc_inv_mult)"
-function inv!(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, h, g) where {𝔽}
+function inv!(::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, h, g) where {𝔽}
     copyto!(h, inv(g))
     return h
 end
