@@ -1,7 +1,7 @@
 """
     SymplecticGroup{T}
 
-On the set of [real symplectic matrices](@extref `Manifolds.SymplecticMatrices`),
+The manifold of [real symplectic matrices](@extref `Manifolds.SymplecticMatrices`),
 of size ``2n×2n`` for some ``n∈ℕ``
 
 ```math
