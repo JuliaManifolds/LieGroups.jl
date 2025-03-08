@@ -806,38 +806,39 @@ both the random point and the random tangent vector variants are tested.
 function test_rand(
     G::AbstractLieGroup,
     g;
-    test_mutating::Bool=true,
+    atol::Real=0,
     rng::Union{Missing,AbstractRNG}=missing,
+    test_mutating::Bool=true,
 )
     @testset "rand" begin
         g1 = rand(G)
-        @test is_point(G, g1; error=:error)
+        @test is_point(G, g1; error=:error, atol=atol)
         if test_mutating
             g2 = copy(G, g)
             rand!(G, g2)
-            @test is_point(G, g2; error=:error)
+            @test is_point(G, g2; error=:error, atol=atol)
         end
         X1 = rand(G; vector_at=g1)
-        @test is_vector(G, g1, X1; error=:error)
+        @test is_vector(G, g1, X1; error=:error, atol=atol)
         if test_mutating
             X2 = zero_vector(LieAlgebra(G), typeof(g1))
             rand!(G, X2; vector_at=g1)
-            @test is_vector(G, g1, X2; error=:error)
+            @test is_vector(G, g1, X2; error=:error, atol=atol)
         end
         if !ismissing(rng)
             g1 = rand(rng, G)
-            @test is_point(G, g1; error=:error)
+            @test is_point(G, g1; error=:error, atol=atol)
             if test_mutating
                 g2 = copy(G, g)
                 rand!(rng, G, g2)
-                @test is_point(G, g2; error=:error)
+                @test is_point(G, g2; error=:error, atol=atol)
             end
             X1 = rand(rng, G; vector_at=g1)
-            @test is_vector(G, g1, X1; error=:error)
+            @test is_vector(G, g1, X1; error=:error, atol=atol)
             if test_mutating
                 X2 = zero_vector(LieAlgebra(G), typeof(X1))
                 rand!(rng, G, X2; vector_at=g1)
-                @test is_vector(G, g1, X2; error=:error)
+                @test is_vector(G, g1, X2; error=:error, atol=atol)
             end
         end
     end
@@ -918,8 +919,8 @@ function test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dic
         # --- C
         if (compose in functions)
             ti = all(in.([inv, is_identity], Ref(functions)))
-            compose_atol = get(function_atols, :compose, 0.0)
-            identity_atol = get(function_atols, :is_identity, 0.0)
+            compose_atol = get(function_atols, compose, atol)
+            identity_atol = get(function_atols, is_identity, atol)
             local_atol = max(compose_atol, identity_atol, atol)
             test_compose(
                 G,
@@ -975,8 +976,8 @@ function test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dic
         #
         # --- E
         if any(in.([exp, log], Ref(functions)))
-            exp_atol = get(function_atols, :exp, 0.0)
-            log_atol = get(function_atols, :log, 0.0)
+            exp_atol = get(function_atols, exp, atol)
+            log_atol = get(function_atols, log, atol)
             local_atol = max(exp_atol, log_atol, atol)
             test_exp_log(
                 G,
@@ -1056,7 +1057,8 @@ function test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dic
         # --- R
         if (rand in functions)
             v = get(properties, :Rng, missing)
-            test_rand(G, points[1]; rng=v, test_mutating=mutating)
+            rand_atol = get(function_atols, rand, atol)
+            test_rand(G, points[1]; rng=v, test_mutating=mutating, atol=rand_atol)
         end
 
         #
