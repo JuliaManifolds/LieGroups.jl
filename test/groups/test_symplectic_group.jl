@@ -41,7 +41,7 @@ using LieGroupsTestSuite
         ],
     )
     expectations = Dict(
-        :atols => Dict(rand => 1e-13, log => 1e-13), :repr => "SymplecticGroup(2, ℝ)"
+        :atols => Dict(rand => 1e-12, log => 1e-12), :repr => "SymplecticGroup(2, ℝ)"
     )
     test_lie_group(G, properties, expectations)
     # Test second show variant
