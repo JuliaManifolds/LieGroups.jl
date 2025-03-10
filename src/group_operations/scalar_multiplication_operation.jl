@@ -5,32 +5,64 @@ A group operation that is realised by a scalar multiplication.
 """
 struct ScalarMultiplicationGroupOperation <: AbstractMultiplicationGroupOperation end
 
-function _compose!(
+function get_number_type(x::Number)
+    return typeof(x)
+end
+
+function get_number_type(x::Array{<:Number, 0})
+    return typeof(x[])
+end
+
+function get_number_type(x::Ref{<:Number})
+    return typeof(x[])
+end
+
+get_num(x::Number) = identity(x)
+function get_num(x::Array{<:Number, 0})
+    return x[]
+end
+function get_num(x::Ref{<:Number})
+    return x[]
+end
+
+compose(::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, g::Number, h::Number) where{𝔽} = g*h
+compose(::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, g::Union{<:Number, Ref{<:Number}, Array{<:Number, 0}}, h::Union{<:Number,Ref{<:Number}, Array{<:Number, 0}}) where{𝔽} = get_num(g)*get_num(h)
+
+function compose!(
     ::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, k::Union{Ref{T}, Array{T,0}}, g::T1, h::T2
 ) where {𝔽, T1<:Number, T2<:Number, T<:Number}
     k[] = ((k === g || k === h) ? copy(g * h) : g * h)
     return k
 end
 
-function _compose!(
+function compose!(
     ::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, k::Union{Ref{T}, Array{T,0}}, g::Union{Ref{T1}, Array{T1,0}}, h::T2
 ) where {𝔽, T1<:Number, T2<:Number, T<:Number}
     k[] = ((k === g || k === h) ? copy(g[] * h) : g[] * h)
     return k
 end
 
-function _compose!(
+function compose!(
     ::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, k::Union{Ref{T}, Array{T,0}}, g::T1, h::Union{Ref{T2}, Array{T2,0}}
 ) where {𝔽, T1<:Number, T2<:Number, T<:Number}
     k[] = ((k === g || k === h) ? copy(g * h[]) : g * h[])
     return k
 end
 
-function _compose!(
+function compose!(
     ::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, k::Union{Ref{T}, Array{T,0}}, g::Union{Ref{T1}, Array{T1,0}}, h::Union{Ref{T2}, Array{T2,0}}
 ) where {𝔽, T1<:Number, T2<:Number, T<:Number}
     k[] = ((k === g || k === h) ? copy(g[] * h[]) : g[] * h[])
     return k
+end
+
+
+function conjugate(::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, g::Number, h::Number) where{𝔽}
+    return g*h*inv(g)
+end
+
+function conjugate(::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, g::Union{<:Number, Ref{<:Number}, Array{<:Number, 0}}, h::Union{<:Number, Ref{<:Number}, Array{<:Number, 0}}) where{𝔽}
+    return get_num(g)*get_num(h)*inv(get_num(g))
 end
 
 _doc_exp_scalar_mult = """
@@ -61,11 +93,44 @@ function ManifoldsBase.exp!(
     return g
 end
 
-function inv!(::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, h, g) where {𝔽}
-    h[] = (typeof(g)<:Number ? g :  g[])
+Base.inv(::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, g::Number) where {𝔽} = inv(g)
+Base.inv(::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, g::Union{Ref{<:Number}, Array{<:Number, 0}}) where {𝔽} = inv(g[])
+
+function inv!(
+    ::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation},
+    h::Union{Ref{<:Number}, Array{<:Number, 0}},
+    g::Union{<:Number, Ref{<:Number}, Array{<:Number, 0}},
+) where {𝔽}
+    h[] = inv(get_num(h))
     return h
 end
 
+
+inv_left_compose(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, g::Number, h::Number) where {𝔽} = inv(g)*h
+inv_left_compose(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, g::Union{<:Number, Ref{<:Number}, Array{<:Number, 0}}, h::Union{<:Number, Ref{<:Number}, Array{<:Number, 0}}) where {𝔽} = inv(get_num(g))*get_num(h)
+
+function inv_left_compose!(
+    G::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation},
+    k::Union{Ref{<:Number}, Array{<:Number, 0}},
+    g::Union{<:Number, Ref{<:Number}, Array{<:Number, 0}},
+    h::Union{<:Number, Ref{<:Number}, Array{<:Number, 0}},
+) where {𝔽}
+    k[] = inv_left_compose(G, g, h)
+    return k
+end
+
+inv_right_compose(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, g::Number, h::Number) where {𝔽} = g*inv(h)
+inv_right_compose(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, g::Union{<:Number, Ref{<:Number}, Array{<:Number, 0}}, h::Union{<:Number, Ref{<:Number}, Array{<:Number, 0}}) where {𝔽} = get_num(g)*inv(get_num(h))
+
+function inv_right_compose!(
+    G::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation},
+    k::Union{Ref{<:Number}, Array{<:Number, 0}},
+    g::Union{<:Number, Ref{<:Number}, Array{<:Number, 0}},
+    h::Union{<:Number, Ref{<:Number}, Array{<:Number, 0}},
+) where {𝔽}
+    k[] = inv_right_compose(G, g, h)
+    return k
+end
 
 _doc_identity_element_scalar_mult = """
     identity_element(G::LieGroup{𝔽,ScalarMultiplicationGroupOperation})
