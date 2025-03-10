@@ -33,8 +33,8 @@ It it is obtained as a quotient space of the real numbers
 
 ```math
  𝕊¹ := ℝ / 2πℤ = $(_tex(:SetDef, "[x] ∈ ℝ / 2πℤ", "x ∈ [-π,π)", "big")).
-
 ```
+
 It can be identified with the set of complex numbers of absolute value 1, i.e. the one dimensional [`Sphere`](@extref `Manifolds.Sphere`),
 together with the group operation of multiplying two complex numbers. For that construction see [`CircleGroup`](@ref).
 
@@ -59,8 +59,8 @@ function RealCircleGroup()
 end
 
 _doc_exp_real_circ = """
-    exp(::RealCircleGroup, ::Identity{AdditionGroupOperation}, X)
-    exp!(::RealCircleGroup, g, ::Identity{AdditionGroupOperation}, X)
+    exp(::RealCircleGroup, X)
+    exp!(::RealCircleGroup, g, X)
 
 The Lie group exponential on the [`RealCircleGroup`](@ref) is given by the projection into the equivalence class of its defining relation.
 
