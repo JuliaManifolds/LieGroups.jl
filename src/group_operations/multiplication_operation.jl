@@ -313,7 +313,7 @@ end
 
 @doc "$(_doc_log_mult)"
 function ManifoldsBase.log!(
-    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, X, g
+    ::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, X, g
 ) where {𝔽}
     copyto!(X, log(g))
     return X

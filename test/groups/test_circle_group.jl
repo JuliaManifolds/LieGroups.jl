@@ -16,12 +16,12 @@ using LieGroupsTestSuite
     properties = Dict(
         :Name => "Array Points",
         :Points => [fill(z1), fill(z2), fill(z3)],  
-        :Vectors => [X1, X2, X3],
+        :Vectors => [fill(X1), fill(X2), fill(X3)],
         :Mutating => true,
         :Rng => Random.MersenneTwister(),
         :Functions => [
                 compose,
-                # conjugate,
+                conjugate,
                 # diff_conjugate,
                 # diff_inv,
                 # diff_left_compose,
@@ -29,14 +29,14 @@ using LieGroupsTestSuite
                 exp,
                 # hat,
                 #
-                #inv,
-                # inv_left_compose,
-                # inv_right_compose,
+                inv,
+                inv_left_compose,
+                inv_right_compose,
                 is_identity,
                 # lie_bracket,
                 # log,
                 # rand,
-                # show,
+                show,
                 # vee,
             ],
     )
