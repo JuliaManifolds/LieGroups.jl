@@ -138,7 +138,6 @@ define!(
     "[`zero_vector`](@extref `ManifoldsBase.zero_vector-Tuple{AbstractManifold, Any}`)",
 )
 
-
 #
 # ---
 # Mathematics and semantic symbols

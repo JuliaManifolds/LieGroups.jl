@@ -194,7 +194,6 @@ function compose(
     return g
 end
 
-
 function _compose(G::LieGroup{𝔽,O}, g, h) where {𝔽,O<:AbstractGroupOperation}
     k = ManifoldsBase.allocate_result(G, compose, g, h)
     return _compose!(G, k, g, h)
@@ -437,9 +436,9 @@ function identity_element(G::LieGroup)
     e = ManifoldsBase.allocate_result(G, identity_element)
     return identity_element!(G, e)
 end
-function identity_element(G::LieGroup, ::Type)
-    # default, call the other one as well
-    return identity_element(G)
+function identity_element(G::LieGroup, T::Type)
+    e = ManifoldsBase.allocate_result(G, identity_element, T)
+    return identity_element!(G, e)
 end
 
 function identity_element! end

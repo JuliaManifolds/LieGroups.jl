@@ -27,12 +27,12 @@ function Base.:*(
     return e
 end
 function Base.:*(
-    e::Identity{<:AbstractMultiplicationGroupOperation}, ::Identity{AdditionGroupOperation}
+    ::Identity{<:AbstractMultiplicationGroupOperation}, e::Identity{AdditionGroupOperation}
 )
     return e
 end
 function Base.:*(
-    ::Identity{AdditionGroupOperation}, e::Identity{<:AbstractMultiplicationGroupOperation}
+    e::Identity{AdditionGroupOperation}, ::Identity{<:AbstractMultiplicationGroupOperation}
 )
     return e
 end
@@ -84,7 +84,7 @@ Base.inv(e::Identity{<:AbstractMultiplicationGroupOperation}) = e
 
 LinearAlgebra.det(::Identity{<:AbstractMultiplicationGroupOperation}) = true
 
-_doc_diff_conjugate_add = """
+_doc_diff_conjugate_mul = """
     diff_conjugate(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g, h, X)
     diff_conjugate!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, g, h, X)
 
@@ -92,12 +92,12 @@ Compute the differential of the conjugate ``c_g(h) = g$(_math(:∘))h$(_math(:�
 which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``D(c_g(h))[X] = gXg^{-1}``.
 """
 
-@doc "$(_doc_diff_conjugate_add)"
+@doc "$(_doc_diff_conjugate_mul)"
 diff_conjugate(
     ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any
 ) where {𝔽}
 
-@doc "$(_doc_diff_conjugate_add)"
+@doc "$(_doc_diff_conjugate_mul)"
 function diff_conjugate!(
     G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, g, h, X
 ) where {𝔽}

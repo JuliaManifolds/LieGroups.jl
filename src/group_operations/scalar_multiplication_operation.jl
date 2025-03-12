@@ -142,9 +142,14 @@ which for an [`ScalarMultiplicationGroupOperation`](@ref) is the one-element.
 
 @doc "$(_doc_identity_element_scalar_mult)"
 identity_element(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}) where {𝔽} = 1.0
+function identity_element(
+    ::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, e::T
+) where {𝔽,T<:Number}
+    return one(e)
+end
 
 @doc "$(_doc_identity_element_scalar_mult)"
 identity_element!(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, e) where {𝔽}
 function identity_element!(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, e) where {𝔽}
-    return e[] = 1.0
+    return fill!(e, one(e))
 end
