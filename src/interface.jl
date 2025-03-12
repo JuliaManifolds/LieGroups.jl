@@ -437,7 +437,7 @@ function identity_element(G::LieGroup)
     return identity_element!(G, e)
 end
 function identity_element(G::LieGroup, T::Type)
-    e = ManifoldsBase.allocate_result(G, identity_element, T)
+    e = ManifoldsBase.allocate_on(G, T)
     return identity_element!(G, e)
 end
 

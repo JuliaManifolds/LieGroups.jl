@@ -89,13 +89,11 @@ $(_tex(:exp)) ($(_math(:i))t) = $(_tex(:cos))(t) + $(_math(:i))$(_tex(:sin))(t)
 
 """
 
-
 @doc "$(_doc_exp_complex_circ)"
 exp(::CircleGroup, X)
 
 @doc "$(_doc_exp_complex_circ)"
 exp!(M::CircleGroup, g, X)
-
 
 _doc_log_complex_circ = """
     log(::CircleGroup, g)
@@ -114,22 +112,16 @@ ManifoldsBase.log!(M::CircleGroup, X, g)
 function ManifoldsBase.log(::CircleGroup, g::Number)
     return log(g)
 end
-ManifoldsBase.log(
-    ::CircleGroup, 
-    g::Union{Array{<:Number, 0}, Ref{<:Number}}
-) = log(g[])
+ManifoldsBase.log(::CircleGroup, g::Union{Array{<:Number,0},Ref{<:Number}}) = log(g[])
 
 function ManifoldsBase.log!(
-    ::CircleGroup, 
-    X::Union{Array{<:Number, 0}, Ref{<:Number}},
-    g::Union{<:Number, Array{<:Number, 0}, Ref{<:Number}}
-) 
+    ::CircleGroup,
+    X::Union{Array{<:Number,0},Ref{<:Number}},
+    g::Union{<:Number,Array{<:Number,0},Ref{<:Number}},
+)
     X[] = log(G, g)
     return X
 end
-
-
-
 
 function Base.show(io::IO, ::CircleGroup)
     return print(io, "CircleGroup()")
