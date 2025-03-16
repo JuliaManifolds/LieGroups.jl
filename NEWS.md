@@ -21,7 +21,7 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
   * `SpecialOrthogonalGroup` (formerly `SpecialOrthogonal`)
   * `SpecialUnitaryGroup` (formerly `SpecialUnitary`)
   * `OrthogonalGroup` (formerly `Orthogonal`)
-  * `UnitaryGroup` (formerly `Unitary`)
+  * `UnitaryGroup` (formerly `Unitary`) als for quaternions.
   * `GeneralLinearGroup` (formerly `GeneralLinear`)
   * `HeisenbergGroup`
   * `LeftSemidirectProductLieGroup` (formerly `SemidirectProductGroup`)
