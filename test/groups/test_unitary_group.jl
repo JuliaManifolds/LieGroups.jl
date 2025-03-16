@@ -1,4 +1,4 @@
-using LieGroups, ManifoldsBase, Random, Test
+using LieGroups, ManifoldsBase, Quaternions, Random, Test
 using ManifoldsBase: ℝ, ℂ, ℍ
 
 s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
