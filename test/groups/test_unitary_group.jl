@@ -46,7 +46,7 @@ using LieGroupsTestSuite
         expectations2 = Dict(:repr => "UnitaryGroup(2; parameter=:field)")
         test_lie_group(G2, properties, expectations2)
     end
-    @testset "Quaternion Unitary group" begin
+    @testset "Quaternion Unitary group (Numbers)" begin
         G = UnitaryGroup(1, ℍ)
         g1 = quat(1.0)
         g2 = quat(0.0, 1.0, 0.0, 0.0)
@@ -55,9 +55,33 @@ using LieGroupsTestSuite
             :Name => "The quaternion unitary group",
             :Points => [g1, g2, g3],
             :Vectors => [quat(0.0)],
-            :Mutating => false,
+            #            :Mutating => false,
             :Rng => Random.MersenneTwister(),
-            :Functions => [rand, exp, log, show],
+            :Functions => [compose, inv, exp, log, rand, show],
+        )
+        expectations = Dict(:repr => "UnitaryGroup(1, ℍ)")
+        test_lie_group(G, properties, expectations)
+        G2 = UnitaryGroup(1, ℍ; parameter=:field)
+
+        expectations2 = Dict(:repr => "UnitaryGroup(1, ℍ; parameter=:field)")
+        test_lie_group(
+            G2,
+            Dict(:Name => "The quaternion unitary group", :Functions => [show]),
+            expectations2,
+        )
+    end
+    @testset "Quaternion Unitary group (0dim arrays)" begin
+        G = UnitaryGroup(1, ℍ)
+        g1 = fill(quat(1.0))
+        g2 = fill(quat(0.0, 1.0, 0.0, 0.0))
+        g3 = fill(quat(0.0, 0.0, 1.0, 0.0))
+        X1 = fill(quat(0.0))
+        properties = Dict(
+            :Name => "The quaternion unitary group",
+            :Points => [g1, g2, g3],
+            :Vectors => [X1],
+            :Rng => Random.MersenneTwister(),
+            :Functions => [compose, inv, exp, log, rand, show],
         )
         expectations = Dict(:repr => "UnitaryGroup(1, ℍ)")
         test_lie_group(G, properties, expectations)
