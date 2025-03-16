@@ -30,6 +30,7 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
   * `PowerGroupOperation` to internally avoid ambiguities. Since the constructor always expects a Lie group, this is only necessary internally
   * `ProductLieGroup` (formerly `ProductGroup`)
   * `RightSemidirectProductLieGroup`
+  * `SpecialLinearGroup` (formerly `SpecialLinear`)
   * `SymplecticGroup`
   * `⋊` (alias for `RightSemidirectProductGroupOperation` when a `default_right_action(G,H)` is defined for the two groups)
   * a `ValidationLieGroup` verifying input and output of all interface functions, similar to the [`ValidationManifold`](https://juliamanifolds.github.io/ManifoldsBase.jl/stable/manifolds/#A-manifold-for-validation) which can also be used internally.
