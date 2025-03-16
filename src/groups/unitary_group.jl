@@ -5,22 +5,61 @@ The special orthogonal group ``$(_math(:U))(n)`` is the Lie group consisting of 
 manifold of rotations [`UnitaryMatrices`](@extref `Manifolds.GeneralUnitaryMatrices`) with absolute value of the determinant equal to one.
 
 # Constructor
-    UnitaryGroup(n::Int; kwargs...)
+    UnitaryGroup(n::Int, 𝔽::AbstractNumbers=ℂ; kwargs...)
 
 Generate unitary group ``$(_math(:U))(n)``.
 All keyword arguments in `kwargs...` are passed on to [`Rotations`](@extref `Manifolds.Rotations`) as well.
 """
-const UnitaryGroup{T} = LieGroup{
-    ManifoldsBase.ℂ,
-    MatrixMultiplicationGroupOperation,
-    Manifolds.UnitaryMatrices{T,ManifoldsBase.ℂ},
+const UnitaryGroup{𝔽,T} = LieGroup{
+    𝔽,MatrixMultiplicationGroupOperation,Manifolds.UnitaryMatrices{T,𝔽}
 }
 
-function UnitaryGroup(n::Int; kwargs...)
-    U = Manifolds.GeneralUnitaryMatrices(
-        n, ManifoldsBase.ℂ, Manifolds.AbsoluteDeterminantOneMatrices; kwargs...
-    )
-    return UnitaryGroup{typeof(U).parameters[1]}(U, MatrixMultiplicationGroupOperation())
+function UnitaryGroup(n::Int, 𝔽::AbstractNumbers=ManifoldsBase.ℂ; kwargs...)
+    U = Manifolds.UnitaryMatrices(n, 𝔽; kwargs...)
+    return UnitaryGroup{𝔽,typeof(U).parameters[1]}(U, MatrixMultiplicationGroupOperation())
+end
+
+function ManifoldsBase.check_size(
+    ::UnitaryGroup{ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, p::Number
+)
+    return nothing
+end
+function ManifoldsBase.check_size(
+    ::UnitaryGroup{ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, p, X::Number
+)
+    return nothing
+end
+
+function Base.exp(
+    ::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, X::Number
+)
+    return exp(X)
+end
+function Base.exp(
+    ::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}},
+    g::Number,
+    X::Number,
+)
+    return g * exp(X)
+end
+
+function identity_element(
+    ::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}
+)
+    return Quaternions.quat(1.0)
+end
+
+function Base.log(
+    ::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, X::Number
+)
+    return log(X)
+end
+function Base.log(
+    ::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}},
+    g::Number,
+    h::Number,
+)
+    return log(inv(g) * h)
 end
 
 #
@@ -57,7 +96,21 @@ const CommonUnitarySubAlgebra{𝔽,T} = LieAlgebra{
     𝔽,MatrixMultiplicationGroupOperation,<:CommonUnitarySubGroup{𝔽,T}
 }
 
-function Base.show(io::IO, G::UnitaryGroup)
-    size = Manifolds.get_parameter(G.manifold.size)[1]
-    return print(io, "UnitaryGroup($(size))")
+function Base.show(
+    io::IO, ::UnitaryGroup{ManifoldsBase.ℂ,ManifoldsBase.TypeParameter{Tuple{n}}}
+) where {n}
+    return print(io, "UnitaryGroup($(n))")
+end
+function Base.show(io::IO, M::UnitaryGroup{ManifoldsBase.ℂ,Tuple{Int}})
+    n = ManifoldsBase.get_parameter(M.manifold.size)[1]
+    return print(io, "UnitaryGroup($(n); parameter=:field)")
+end
+function Base.show(
+    io::IO, ::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{n}}}
+) where {n}
+    return print(io, "UnitaryGroup($(n), ℍ)")
+end
+function Base.show(io::IO, G::UnitaryGroup{ManifoldsBase.ℍ,Tuple{Int}})
+    n = ManifoldsBase.get_parameter(G.manifold.size)[1]
+    return print(io, "UnitaryGroup($(n), ℍ; parameter=:field)")
 end
