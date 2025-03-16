@@ -90,10 +90,12 @@ $(_tex(:exp)) ($(_math(:i))t) = $(_tex(:cos))(t) + $(_math(:i))$(_tex(:sin))(t)
 """
 
 @doc "$(_doc_exp_complex_circ)"
-exp(::CircleGroup, X)
+ManifoldsBase.exp(::CircleGroup, X)
 
 @doc "$(_doc_exp_complex_circ)"
-exp!(M::CircleGroup, g, X)
+ManifoldsBase.exp!(::CircleGroup, g, X)
+
+identity_element(G::CircleGroup, ::Type{Float64}) = 0.0
 
 _doc_log_complex_circ = """
     log(::CircleGroup, g)
@@ -107,7 +109,7 @@ ordinary complex logarithm.
 ManifoldsBase.log(::CircleGroup, g)
 
 @doc "$(_doc_log_complex_circ)"
-ManifoldsBase.log!(M::CircleGroup, X, g)
+ManifoldsBase.log!(::CircleGroup, X, g)
 
 function ManifoldsBase.log(::CircleGroup, g::Number)
     return log(g)
