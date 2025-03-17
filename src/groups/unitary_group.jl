@@ -39,7 +39,7 @@ end
 function conjugate(
     G::UnitaryGroup{ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, g::Number, h::Number
 )
-    return g * h * inv(G,g)
+    return g * h * inv(G, g)
 end
 
 function Base.exp(
@@ -73,7 +73,6 @@ function identity_element(
 ) where {T<:Quaternion}
     return fill(identity_element(G, T), 1, 1)
 end
-
 
 Base.inv(::UnitaryGroup, g) = adjoint(g)
 Base.inv(::UnitaryGroup, g::Identity{MatrixMultiplicationGroupOperation}) = g
