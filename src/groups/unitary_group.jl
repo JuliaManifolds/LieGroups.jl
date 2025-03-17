@@ -49,19 +49,37 @@ function identity_element(
     return Quaternions.quat(1.0)
 end
 
+Base.inv(::UnitaryGroup, g) = adjoint(g)
+inv!(G::UnitaryGroup, h, g) = copyto!(G, h, adjoint(g))
+function inv!(::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, h, g)
+    h[] = adjoint(g[])
+    return h
+end
+
 function Base.log(
-    ::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, X::Number
+    ::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, g::Number
 )
-    return log(X)
+    return log(g)
 end
 function Base.log(
-    ::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}},
+    G::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}},
     g::Number,
     h::Number,
 )
-    return log(inv(g) * h)
+    return log(inv(G, g) * h)
 end
-
+function ManifoldsBase.log!(
+    ::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, X, g
+)
+    X[] = log(g[])
+    return X
+end
+function ManifoldsBase.log!(
+    G::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, X, g, h
+)
+    X[] = log(inv(G, g) * h)
+    return nothing
+end
 #
 #
 # A common type for all 4 groups: O, SO, SU, U, because they share quite some implementations
