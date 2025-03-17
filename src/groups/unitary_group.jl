@@ -93,6 +93,20 @@ function Base.log(
 )
     return log(inv(G, g) * h)
 end
+function ManifoldsBase.log!(
+    ::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, X, g
+)
+    X .= log.(g)
+    return X
+end
+function ManifoldsBase.log!(
+    G::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}},
+    X,
+    ::Identity{MatrixMultiplicationGroupOperation},
+)
+    X .= quat(0.0)
+    return X
+end
 #
 #
 # A common type for all 4 groups: O, SO, SU, U, because they share quite some implementations
