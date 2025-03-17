@@ -30,7 +30,11 @@ function ManifoldsBase.check_size(
     return nothing
 end
 
-_compose(::UnitaryGroup{ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, g::Number, h::Number) = g*h
+function _compose(
+    ::UnitaryGroup{ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, g::Number, h::Number
+)
+    return g * h
+end
 
 function conjugate(
     G::UnitaryGroup{ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, g::Number, h::Number
