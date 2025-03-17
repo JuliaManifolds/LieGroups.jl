@@ -29,6 +29,28 @@ function ManifoldsBase.check_size(
 )
     return nothing
 end
+function ManifoldsBase.check_size(
+    G::UnitaryGroup{ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, p
+)
+    if size(p) != ()
+        return DomainError(
+            size(p),
+            "The point $(p) can not belong to the manifold $(G), since its size $(size(p)) is not equal to the manifolds representation size for (mutable) Quaternions (()).",
+        )
+    end
+    return nothing
+end
+function ManifoldsBase.check_size(
+    G::UnitaryGroup{ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, p, X
+)
+    if size(X) != ()
+        return DomainError(
+            size(X),
+            "The point $(p) can not belong to the manifold $(G), since its size $(size(X)) is not equal to the manifolds representation size for (mutable) Quaternions (()).",
+        )
+    end
+    return nothing
+end
 
 function Base.exp(
     ::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, X::Number
