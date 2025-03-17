@@ -20,36 +20,22 @@ function UnitaryGroup(n::Int, 𝔽::AbstractNumbers=ManifoldsBase.ℂ; kwargs...
 end
 
 function ManifoldsBase.check_size(
-    ::UnitaryGroup{ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, p::Number
+    ::UnitaryGroup{ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, g::Number
 )
     return nothing
 end
 function ManifoldsBase.check_size(
-    ::UnitaryGroup{ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, p, X::Number
+    ::UnitaryGroup{ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, g, X::Number
 )
     return nothing
 end
-function ManifoldsBase.check_size(
-    G::UnitaryGroup{ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, p
+
+_compose(::UnitaryGroup{ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, g::Number, h::Number) = g*h
+
+function conjugate(
+    G::UnitaryGroup{ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, g::Number, h::Number
 )
-    if size(p) != ()
-        return DomainError(
-            size(p),
-            "The point $(p) can not belong to the manifold $(G), since its size $(size(p)) is not equal to the manifolds representation size for (mutable) Quaternions (()).",
-        )
-    end
-    return nothing
-end
-function ManifoldsBase.check_size(
-    G::UnitaryGroup{ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, p, X
-)
-    if size(X) != ()
-        return DomainError(
-            size(X),
-            "The point $(p) can not belong to the manifold $(G), since its size $(size(X)) is not equal to the manifolds representation size for (mutable) Quaternions (()).",
-        )
-    end
-    return nothing
+    return g * h * inv(G,g)
 end
 
 function Base.exp(
@@ -64,6 +50,12 @@ function Base.exp(
 )
     return g * exp(X)
 end
+function ManifoldsBase.exp!(
+    ::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, g, X
+)
+    g .= exp.(X)
+    return g
+end
 
 function identity_element(
     ::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}
@@ -71,15 +63,19 @@ function identity_element(
     return Quaternions.quat(1.0)
 end
 
+function identity_element(
+    G::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}},
+    ::Type{Matrix{T}},
+) where {T<:Quaternion}
+    return fill(identity_element(G, T), 1, 1)
+end
+
+
 Base.inv(::UnitaryGroup, g) = adjoint(g)
 Base.inv(::UnitaryGroup, g::Identity{MatrixMultiplicationGroupOperation}) = g
 inv!(G::UnitaryGroup, h, g) = copyto!(G, h, adjoint(g))
 function inv!(G::UnitaryGroup, h, ::Identity{MatrixMultiplicationGroupOperation})
     return identity_element!(G, h)
-end
-function inv!(::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, h, g)
-    h[] = adjoint(g[])
-    return h
 end
 
 function Base.log(
@@ -93,18 +89,6 @@ function Base.log(
     h::Number,
 )
     return log(inv(G, g) * h)
-end
-function ManifoldsBase.log!(
-    ::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, X, g
-)
-    X[] = log(g[])
-    return X
-end
-function ManifoldsBase.log!(
-    G::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, X, g, h
-)
-    X[] = log(inv(G, g) * h)
-    return nothing
 end
 #
 #

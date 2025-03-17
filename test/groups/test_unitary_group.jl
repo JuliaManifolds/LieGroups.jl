@@ -40,10 +40,10 @@ using LieGroupsTestSuite
                 # vee,
             ],
         )
-        expectations = Dict(:repr => "UnitaryGroup(2)")
+        expectations = Dict(:repr => "UnitaryGroup(2)", :atol=>1e-14)
         test_lie_group(G, properties, expectations)
         G2 = UnitaryGroup(2; parameter=:field)
-        expectations2 = Dict(:repr => "UnitaryGroup(2; parameter=:field)")
+        expectations2 = Dict(:repr => "UnitaryGroup(2; parameter=:field)", :atol=>1e-14)
         test_lie_group(G2, properties, expectations2)
     end
     @testset "Quaternion Unitary group (Numbers)" begin

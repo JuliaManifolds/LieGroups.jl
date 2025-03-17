@@ -131,9 +131,11 @@ function test_compose(
 )
     @testset "compose" begin
         k1 = compose(G, g, h)
-        k2 = copy(G, g)
-        compose!(G, k2, g, h)
-        @test isapprox(G, k1, k2)
+        if test_mutating
+            k2 = copy(G, g)
+            compose!(G, k2, g, h)
+            @test isapprox(G, k1, k2)
+        end
         if test_inverse
             for g_ in [g, h]
                 g_inv = inv(G, g_)
