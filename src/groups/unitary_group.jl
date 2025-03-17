@@ -72,7 +72,11 @@ function identity_element(
 end
 
 Base.inv(::UnitaryGroup, g) = adjoint(g)
+Base.inv(::UnitaryGroup, g::Identity{MatrixMultiplicationGroupOperation}) = g
 inv!(G::UnitaryGroup, h, g) = copyto!(G, h, adjoint(g))
+function inv!(G::UnitaryGroup, h, ::Identity{MatrixMultiplicationGroupOperation})
+    return identity_element!(G, h)
+end
 function inv!(::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, h, g)
     h[] = adjoint(g[])
     return h

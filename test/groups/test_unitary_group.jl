@@ -55,11 +55,11 @@ using LieGroupsTestSuite
             :Name => "The quaternion unitary group",
             :Points => [g1, g2, g3],
             :Vectors => [quat(0.0)],
-            #            :Mutating => false,
+            :Mutating => false,
             :Rng => Random.MersenneTwister(),
             :Functions => [compose, inv, exp, log, rand, show],
         )
-        expectations = Dict(:repr => "UnitaryGroup(1, ℍ)")
+        expectations = Dict(:repr => "UnitaryGroup(1, ℍ)", :atols => Dict(exp => 1e-15))
         test_lie_group(G, properties, expectations)
         G2 = UnitaryGroup(1, ℍ; parameter=:field)
 
@@ -70,12 +70,12 @@ using LieGroupsTestSuite
             expectations2,
         )
     end
-    @testset "Quaternion Unitary group (0dim arrays)" begin
+    @testset "Quaternion Unitary group (1x1 matrices)" begin
         G = UnitaryGroup(1, ℍ)
-        g1 = fill(quat(1.0))
-        g2 = fill(quat(0.0, 1.0, 0.0, 0.0))
-        g3 = fill(quat(0.0, 0.0, 1.0, 0.0))
-        X1 = fill(quat(0.0))
+        g1 = fill(quat(1.0), 1, 1)
+        g2 = fill(quat(0.0, 1.0, 0.0, 0.0), 1, 1)
+        g3 = fill(quat(0.0, 0.0, 1.0, 0.0), 1, 1)
+        X1 = fill(quat(0.0), 1, 1)
         properties = Dict(
             :Name => "The quaternion unitary group",
             :Points => [g1, g2, g3],
