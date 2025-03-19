@@ -10,12 +10,10 @@ The package is named after the Norwegian mathematician [Marius Sophus Lie](https
 """
 module LieGroups
 
-using LinearAlgebra, ManifoldsBase, Manifolds, StaticArrays, Random
+using LinearAlgebra, ManifoldsBase, Manifolds, Quaternions, StaticArrays, Random
 
 import LinearAlgebra: adjoint, adjoint!
-
 using ManifoldsBase: RealNumbers, ComplexNumbers, ℝ, ℂ, internal_value
-
 #
 #
 # = Compatibility (and a bit of type piracy for now)
