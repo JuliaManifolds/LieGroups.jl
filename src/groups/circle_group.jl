@@ -23,6 +23,79 @@ Generate the complex circle group.
 """
 const CircleGroup = LieGroup{ℂ,ScalarMultiplicationGroupOperation,Manifolds.Circle{ℂ}}
 
+function CircleGroup()
+    circ = Manifolds.Circle(ℂ)
+    return CircleGroup(circ, ScalarMultiplicationGroupOperation())
+end
+
+function diff_left_compose(
+    ::CircleGroup,
+    g::Number, 
+    h::Any, 
+    X::Number
+)
+    return g * X
+end
+
+
+function diff_right_compose(
+    ::CircleGroup,
+    g::Number, 
+    h::Any, 
+    X::Number
+)
+    return X * g
+end
+
+_doc_exp_complex_circ = """
+    exp(::CircleGroup, X)
+    exp!(::CircleGroup, g, X)
+
+Computes the Lie group exponential on the complex [`CircleGroup`](@ref), which coincides with the
+[ordinary complex exponential](https://en.wikipedia.org/wiki/Exponential_map_(Lie_theory)#Examples).
+
+The Lie algebra is precisely the imaginary axis of the complex plane.
+
+This can be computed in-place of `g`.
+```math
+$(_tex(:exp)) ($(_math(:i))t) = $(_tex(:cos))(t) + $(_math(:i))$(_tex(:sin))(t)
+```
+
+"""
+@doc "$(_doc_exp_complex_circ)"
+Base.exp(::CircleGroup, X::Number) = exp(X)
+
+@doc "$(_doc_exp_complex_circ)"
+exp!(M::CircleGroup, g, X)
+
+
+_doc_log_complex_circ = """
+    log(::CircleGroup, g)
+    log!(::CircleGroup, X, g)
+
+Compute the Lie group logarithm on the complex [`CircleGroup`](@ref), which coincides with the
+ordinary complex logarithm.
+
+"""
+@doc "$(_doc_log_complex_circ)"
+ManifoldsBase.log(::CircleGroup, g)
+
+@doc "$(_doc_log_complex_circ)"
+ManifoldsBase.log!(M::CircleGroup, X, g)
+
+function ManifoldsBase.log(::CircleGroup, g::Number)
+    return log(g)
+end
+
+
+function Base.show(io::IO, ::CircleGroup)
+    return print(io, "CircleGroup()")
+end
+function Base.show(io::IO, ::RealCircleGroup)
+    return print(io, "RealCircleGroup()")
+end
+
+
 """
     RealCircleGroup = LieGroup{ℝ, AdditionGroupOperation, Manifolds.Circle{ℝ}}
 
@@ -48,11 +121,6 @@ Generate the real circle group.
 """
 const RealCircleGroup = LieGroup{ℝ,AdditionGroupOperation,Manifolds.Circle{ℝ}}
 
-function CircleGroup()
-    circ = Manifolds.Circle(ℂ)
-    return CircleGroup(circ, ScalarMultiplicationGroupOperation())
-end
-
 function RealCircleGroup()
     circ = Manifolds.Circle(ℝ)
     return RealCircleGroup(circ, AdditionGroupOperation())
@@ -73,61 +141,3 @@ exp(::RealCircleGroup, X)
 @doc "$(_doc_exp_real_circ)"
 exp!(M::RealCircleGroup, g, X)
 
-_doc_exp_complex_circ = """
-    exp(::CircleGroup, X)
-    exp!(::CircleGroup, g, X)
-
-Computes the Lie group exponential on the complex [`CircleGroup`](@ref), which coincides with the
-[ordinary complex exponential](https://en.wikipedia.org/wiki/Exponential_map_(Lie_theory)#Examples).
-
-The Lie algebra is precisely the imaginary axis of the complex plane.
-
-This can be computed in-place of `g`.
-```math
-$(_tex(:exp)) ($(_math(:i))t) = $(_tex(:cos))(t) + $(_math(:i))$(_tex(:sin))(t)
-```
-
-"""
-
-@doc "$(_doc_exp_complex_circ)"
-ManifoldsBase.exp(::CircleGroup, X)
-
-@doc "$(_doc_exp_complex_circ)"
-ManifoldsBase.exp!(::CircleGroup, g, X)
-
-identity_element(G::CircleGroup, ::Type{Float64}) = 0.0
-
-_doc_log_complex_circ = """
-    log(::CircleGroup, g)
-    log!(::CircleGroup, X, g)
-
-Compute the Lie group logarithm on the complex [`CircleGroup`](@ref), which coincides with the
-ordinary complex logarithm.
-
-"""
-@doc "$(_doc_log_complex_circ)"
-ManifoldsBase.log(::CircleGroup, g)
-
-@doc "$(_doc_log_complex_circ)"
-ManifoldsBase.log!(::CircleGroup, X, g)
-
-function ManifoldsBase.log(::CircleGroup, g::Number)
-    return log(g)
-end
-ManifoldsBase.log(::CircleGroup, g::Union{Array{<:Number,0},Ref{<:Number}}) = log(g[])
-
-function ManifoldsBase.log!(
-    ::CircleGroup,
-    X::Union{Array{<:Number,0},Ref{<:Number}},
-    g::Union{<:Number,Array{<:Number,0},Ref{<:Number}},
-)
-    X[] = log(G, g)
-    return X
-end
-
-function Base.show(io::IO, ::CircleGroup)
-    return print(io, "CircleGroup()")
-end
-function Base.show(io::IO, ::RealCircleGroup)
-    return print(io, "RealCircleGroup()")
-end

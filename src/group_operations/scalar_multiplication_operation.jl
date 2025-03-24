@@ -5,183 +5,178 @@ A group operation that is realised by a scalar multiplication.
 """
 struct ScalarMultiplicationGroupOperation <: AbstractMultiplicationGroupOperation end
 
-function get_number_type(x::Number)
-    return typeof(x)
-end
 
-function get_number_type(x::Array{<:Number,0})
-    return typeof(x[])
-end
-
-function get_number_type(x::Ref{<:Number})
-    return typeof(x[])
-end
-
-get_num(x::Number) = identity(x)
-function get_num(x::Array{<:Number,0})
-    return x[]
-end
-function get_num(x::Ref{<:Number})
-    return x[]
-end
-
-function compose(
-    ::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, g::Number, h::Number
-) where {𝔽}
+function compose(::LieGroup{𝔽, <:ScalarMultiplicationGroupOperation} , g::Number, h::Number) where {𝔽}
     return g * h
 end
+
 function compose(
-    ::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation},
-    g::Union{<:Number,Ref{<:Number},Array{<:Number,0}},
-    h::Union{<:Number,Ref{<:Number},Array{<:Number,0}},
+    G::LieGroup{𝔽, <:ScalarMultiplicationGroupOperation},
+    p::AbstractArray{<:Any, 0},
+    q::AbstractArray{<:Any, 0}
 ) where {𝔽}
-    return get_num(g) * get_num(h)
+    return map((pp, qq) -> compose(G, pp, qq), p, q)
 end
 
-function compose!(
-    ::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation},
-    k::Union{Ref{T},Array{T,0}},
-    g::T1,
-    h::T2,
-) where {𝔽,T1<:Number,T2<:Number,T<:Number}
-    k[] = ((k === g || k === h) ? copy(g * h) : g * h)
-    return k
+function compose(
+    G::LieGroup{𝔽, <:ScalarMultiplicationGroupOperation},
+    p::AbstractArray{<:Any, 0},
+    q::Number
+)  where {𝔽}
+    return map(pp -> compose(G, pp, q), p)
 end
 
-function compose!(
-    ::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation},
-    k::Union{Ref{T},Array{T,0}},
-    g::Union{Ref{T1},Array{T1,0}},
-    h::T2,
-) where {𝔽,T1<:Number,T2<:Number,T<:Number}
-    k[] = ((k === g || k === h) ? copy(g[] * h) : g[] * h)
-    return k
-end
-
-function compose!(
-    ::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation},
-    k::Union{Ref{T},Array{T,0}},
-    g::T1,
-    h::Union{Ref{T2},Array{T2,0}},
-) where {𝔽,T1<:Number,T2<:Number,T<:Number}
-    k[] = ((k === g || k === h) ? copy(g * h[]) : g * h[])
-    return k
-end
-
-function compose!(
-    ::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation},
-    k::Union{Ref{T},Array{T,0}},
-    g::Union{Ref{T1},Array{T1,0}},
-    h::Union{Ref{T2},Array{T2,0}},
-) where {𝔽,T1<:Number,T2<:Number,T<:Number}
-    k[] = ((k === g || k === h) ? copy(g[] * h[]) : g[] * h[])
-    return k
-end
-
-function conjugate(
-    ::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, g::Number, h::Number
+function compose(
+    G::LieGroup{𝔽, <:ScalarMultiplicationGroupOperation},
+    p::Number,
+    q::AbstractArray{<:Any, 0}
 ) where {𝔽}
-    return g * h * inv(g)
+    return map(qq -> compose(G, p, qq), q)
 end
 
-function conjugate(
-    ::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation},
-    g::Union{<:Number,Ref{<:Number},Array{<:Number,0}},
-    h::Union{<:Number,Ref{<:Number},Array{<:Number,0}},
-) where {𝔽}
-    return get_num(g) * get_num(h) * inv(get_num(g))
+function _compose!(G::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, k, g, h) where {𝔽}
+    return copyto!(k, compose(G, g, h))
 end
 
-_doc_exp_scalar_mult = """
-    exp(G::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, e::Identity{ScalarMultiplicationGroupOperation}, X, t::Number=1)
-    exp!(G::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, g, e::Identity{ScalarMultiplicationGroupOperation}, X, t::Number=1)
 
-Compute the Lie group exponential on a [`LieGroup`](@ref) with a [`ScalarMultiplicationGroupOperation`](@ref),
-which simplifies to the [ordinary exponential](https://en.wikipedia.org/wiki/Matrix_exponential).
-
-This can be computed in-place of `g`.
-"""
-
-@doc "$(_doc_exp_scalar_mult)"
-ManifoldsBase.exp(
-    ::LieGroup{𝔽,ScalarMultiplicationGroupOperation},
-    X::Union{<:Number,Ref{<:Number},<:Array{<:Number,0}},
-    t::Number=1,
-) where {𝔽} = fill(exp(t * (X isa Number ? X : X[])))
-
-@doc "$(_doc_exp_scalar_mult)"
-function ManifoldsBase.exp!(
-    ::LieGroup{𝔽,ScalarMultiplicationGroupOperation},
-    g::Union{Ref{<:Number},<:Array{<:Number,0}},
-    X::Union{<:Number,Ref{<:Number},<:Array{<:Number,0}},
-    t::Number=1,
-) where {𝔽}
-    g[] = exp(t * (X isa Number ? X : X[]))
+function conjugate(::LieGroup{𝔽, <:ScalarMultiplicationGroupOperation}, g, h) where {𝔽}
     return g
 end
 
-Base.inv(::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, g::Number) where {𝔽} = inv(g)
-function Base.inv(
-    ::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation},
-    g::Union{Ref{<:Number},Array{<:Number,0}},
-) where {𝔽}
-    return inv(g[])
+function conjugate!(::LieGroup{𝔽, <:ScalarMultiplicationGroupOperation}, k::AbstractArray{<:Any, 0}, g, h) where {𝔽}
+    return copyto!(k, g)
 end
 
-function inv!(
-    ::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation},
-    h::Union{Ref{<:Number},Array{<:Number,0}},
-    g::Union{<:Number,Ref{<:Number},Array{<:Number,0}},
-) where {𝔽}
-    h[] = inv(get_num(h))
+
+diff_conjugate(::LieGroup{𝔽, <:ScalarMultiplicationGroupOperation}, ::Any, ::Any, X::Number) where {𝔽} = X
+
+diff_conjugate(
+    G::LieGroup{𝔽, <:ScalarMultiplicationGroupOperation}, 
+    g::AbstractArray{<:Any, 0}, 
+    h, 
+    X::AbstractArray{<:Any, 0}
+) where {𝔽} = map(XX -> diff_conjugate(G, g, h, XX), X)
+
+function diff_conjugate!(G::LieGroup{𝔽, <:ScalarMultiplicationGroupOperation}, Y, g, h, X) where {𝔽}
+    return copyto!(LieAlgebra(G), Y, diff_conjugate(G, g, h, X))
+end
+
+
+diff_inv(::LieGroup{𝔽, <:ScalarMultiplicationGroupOperation}, g, X) where {𝔽} = -X
+
+function diff_inv!(G::LieGroup{𝔽, <:ScalarMultiplicationGroupOperation}, Y, g, X) where {𝔽}
+    return copyto!(LieAlgebra(G), Y, -X)
+end
+
+
+diff_left_compose(
+    G::LieGroup{𝔽, <:ScalarMultiplicationGroupOperation}, 
+    g::AbstractArray{<:Any, 0}, 
+    h::Any, 
+    X::AbstractArray{<:Any, 0}
+) where {𝔽} = map((gg, XX) -> diff_left_compose(G, gg, h, XX), g, X)
+
+function diff_left_compose!(G::LieGroup{𝔽, <:ScalarMultiplicationGroupOperation}, Y, g, h, X) where {𝔽}
+    return copyto!(LieAlgebra(G), Y, diff_left_compose(G, g, h, X))
+end
+
+
+diff_right_compose(
+    G::LieGroup{𝔽, <:ScalarMultiplicationGroupOperation}, 
+    g::AbstractArray{<:Any, 0}, 
+    h::Any, 
+    X::AbstractArray{<:Any, 0}
+) where {𝔽} = map((gg, XX) -> diff_right_compose(G, gg, h, XX), g, X)
+
+function diff_right_compose!(G::LieGroup{𝔽, <:ScalarMultiplicationGroupOperation}, Y, g, h, X) where {𝔽}
+    return copyto!(LieAlgebra(G), Y, diff_right_compose(G, g, h, X))
+end
+
+
+
+
+ManifoldsBase.exp(
+    G::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, 
+    X::AbstractArray{<:Any, 0}
+) where {𝔽} = map(XX -> exp(G, XX), X)
+
+ManifoldsBase.exp(
+    G::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, 
+    g::Number, 
+    X::Number
+) where {𝔽} = g*exp(G, X)
+
+ManifoldsBase.exp(
+    G::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, 
+    g::AbstractArray{<:Any, 0},
+    X::AbstractArray{<:Any, 0}
+) where {𝔽} = map((gg, XX) -> gg*exp(G, XX), g, X)
+
+
+
+function ManifoldsBase.exp!(G::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, g, X) where {𝔽}
+    return copyto!(g, exp(G, X))
+end
+
+function ManifoldsBase.exp!(G::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, h, g, X) where {𝔽}
+    return copyto!(h, exp(G, g, X))
+end 
+
+
+
+
+#diff_right_compose(G::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, g, h, X) where {𝔽} = diff_left_compose(G, g, h, X)
+
+
+Base.inv(::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, g::Number) where {𝔽} = inv(g)
+Base.inv(G::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, g::AbstractArray{<:Any,0}) where {𝔽} = map(gg -> inv(G, gg), g)
+
+function inv!(G::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, h, g) where {𝔽}
+    copyto!(h, inv(G, g))
     return h
 end
 
-function inv_left_compose(
-    ::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, g::Number, h::Number
-) where {𝔽}
-    return inv(g) * h
-end
-function inv_left_compose(
-    ::LieGroup{𝔽,ScalarMultiplicationGroupOperation},
-    g::Union{<:Number,Ref{<:Number},Array{<:Number,0}},
-    h::Union{<:Number,Ref{<:Number},Array{<:Number,0}},
-) where {𝔽}
-    return inv(get_num(g)) * get_num(h)
+function inv!(
+    G::LieGroup{𝔽,O}, g, ::Identity{O}
+) where {𝔽,O<:ScalarMultiplicationGroupOperation}
+    return identity_element!(G, g)
 end
 
-function inv_left_compose!(
-    G::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation},
-    k::Union{Ref{<:Number},Array{<:Number,0}},
-    g::Union{<:Number,Ref{<:Number},Array{<:Number,0}},
-    h::Union{<:Number,Ref{<:Number},Array{<:Number,0}},
-) where {𝔽}
-    k[] = inv_left_compose(G, g, h)
-    return k
+
+
+inv_left_compose(
+    ::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, 
+    g::Number, 
+    h::Number
+) where {𝔽} = inv(g)*h
+
+inv_left_compose(
+    ::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, 
+    g::AbstractArray{<:Any,0}, 
+    h::AbstractArray{<:Any,0}
+) where {𝔽} = map(\, g, h)
+
+function inv_left_compose!(G::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, k, g, h,) where {𝔽}
+    return copyto!(k, inv_left_compose(G, g, h))
 end
 
-function inv_right_compose(
-    ::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, g::Number, h::Number
-) where {𝔽}
-    return g * inv(h)
-end
-function inv_right_compose(
-    ::LieGroup{𝔽,ScalarMultiplicationGroupOperation},
-    g::Union{<:Number,Ref{<:Number},Array{<:Number,0}},
-    h::Union{<:Number,Ref{<:Number},Array{<:Number,0}},
-) where {𝔽}
-    return get_num(g) * inv(get_num(h))
+
+inv_right_compose(
+    ::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, 
+    g::Number, 
+    h::Number
+) where {𝔽} = g*inv(h)
+
+inv_right_compose(
+    ::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, 
+    g::AbstractArray{<:Any,0}, 
+    h::AbstractArray{<:Any,0}
+) where {𝔽} = map(/, g, h)
+
+function inv_right_compose!(G::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, k, g, h,) where {𝔽}
+    return copyto!(k, inv_right_compose(G, g, h))
 end
 
-function inv_right_compose!(
-    G::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation},
-    k::Union{Ref{<:Number},Array{<:Number,0}},
-    g::Union{<:Number,Ref{<:Number},Array{<:Number,0}},
-    h::Union{<:Number,Ref{<:Number},Array{<:Number,0}},
-) where {𝔽}
-    k[] = inv_right_compose(G, g, h)
-    return k
-end
 
 _doc_identity_element_scalar_mult = """
     identity_element(G::LieGroup{𝔽,ScalarMultiplicationGroupOperation})
@@ -193,14 +188,53 @@ which for an [`ScalarMultiplicationGroupOperation`](@ref) is the one-element.
 
 @doc "$(_doc_identity_element_scalar_mult)"
 identity_element(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}) where {𝔽} = 1.0
-function identity_element(
-    ::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, e::T
-) where {𝔽,T<:Number}
+
+function identity_element(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, e::Union{<:Number, Type{<:Number}}) where {𝔽}
     return one(e)
 end
 
 @doc "$(_doc_identity_element_scalar_mult)"
 identity_element!(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, e) where {𝔽}
+
 function identity_element!(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, e) where {𝔽}
-    return fill!(e, 1)
+    return fill!(e, 1.0)
+end
+
+
+lie_bracket(::LieAlgebra{𝔽,ScalarMultiplicationGroupOperation}, X::Any, ::Any) where{𝔽} = zero(X)
+
+lie_bracket!(::LieAlgebra{𝔽,ScalarMultiplicationGroupOperation}, Z, ::Any, ::Any) where{𝔽} = copyto!(Z, zero(Z))
+
+
+
+
+
+
+
+
+ManifoldsBase.log(G::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, g::AbstractArray{<:Any, 0}) where {𝔽} = map(gg -> log(G,gg), g)
+
+function ManifoldsBase.log(G::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, g, h) where {𝔽}
+    return log(G, compose(G, inv(G, g), h))
+end
+
+function ManifoldsBase.log!(G::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, X, g) where {𝔽}
+    return copyto!(X, log(G, g)) 
+end
+
+function ManifoldsBase.log(
+    G::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, ::Identity{ScalarMultiplicationGroupOperation}
+) where {𝔽}
+    return zero_vector(LieAlgebra(G))
+end
+function ManifoldsBase.log(
+    G::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, ::Identity{ScalarMultiplicationGroupOperation}, T::Type
+) where {𝔽}
+    return zero_vector(LieAlgebra(G), T)
+end
+
+function ManifoldsBase.log!(
+    G::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, X, ::Identity{ScalarMultiplicationGroupOperation}
+) where {𝔽}
+    return zero_vector!(LieAlgebra(G), X)
 end

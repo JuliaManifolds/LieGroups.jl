@@ -80,6 +80,7 @@ function _compose!(::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, k, g, 
     return k
 end
 
+
 Base.inv(e::Identity{<:AbstractMultiplicationGroupOperation}) = e
 
 LinearAlgebra.det(::Identity{<:AbstractMultiplicationGroupOperation}) = true
@@ -130,7 +131,7 @@ Then we get ``g^{$(_tex(:transp))}(g^{-1}(gX)g^{-1})`` which simplifies to ``-g^
 diff_inv(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any) where {𝔽}
 
 function diff_inv(
-    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation},
+    ::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation},
     p::AbstractArray{<:Number,0},
     X::AbstractArray{<:Number,0},
 ) where {𝔽}
@@ -139,7 +140,7 @@ function diff_inv(
 end
 
 @doc "$(_doc_diff_inv_mult)"
-function diff_inv!(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, p, X) where {𝔽}
+function diff_inv!(::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, Y, p, X) where {𝔽}
     p_inv = inv(p)
     Z = X * p_inv
     mul!(Y, p', Z)
@@ -157,12 +158,12 @@ which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``Dλ_
 
 @doc "$(_doc_diff_left_compose_mult)"
 diff_left_compose(
-    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any
+    ::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, ::Any, ::Any, ::Any
 ) where {𝔽}
 
 @doc "$(_doc_diff_left_compose_mult)"
 function diff_left_compose!(
-    G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, g, h, X
+    G::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, Y, g, h, X
 ) where {𝔽}
     return copyto!(LieAlgebra(G), Y, g * X)
 end
@@ -177,12 +178,12 @@ which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``Dρ_
 
 @doc "$(_doc_diff_right_compose_mult)"
 diff_right_compose(
-    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any
+    ::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, ::Any, ::Any, ::Any
 ) where {𝔽}
 
 @doc "$(_doc_diff_right_compose_mult)"
 function diff_right_compose!(
-    G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, g, ::Any, X
+    G::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, Y, g, ::Any, X
 ) where {𝔽}
     return copyto!(LieAlgebra(G), Y, X * g)
 end
@@ -239,7 +240,7 @@ simplifies to the multiplicative inverse ``g^{-1}``. This can be done in-place o
 Base.inv(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any) where {𝔽}
 
 @doc "$(_doc_inv_mult)"
-function inv!(::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, h, g) where {𝔽}
+function inv!(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, h, g) where {𝔽}
     copyto!(h, inv(g))
     return h
 end
@@ -313,7 +314,7 @@ end
 
 @doc "$(_doc_log_mult)"
 function ManifoldsBase.log!(
-    ::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, X, g
+    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, X, g
 ) where {𝔽}
     copyto!(X, log(g))
     return X
