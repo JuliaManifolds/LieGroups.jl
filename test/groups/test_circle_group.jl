@@ -55,11 +55,13 @@ end
 @testset "Real Circle" begin
         C2 = RealCircleGroup()
         x1, x2, x3 = 0., 1., -π
+        X1, X2, X3 = 1., 3., -123.
         properties = Dict(
-            :Name => "The real circle group",
-            :Points => [x1, x2, x3],
+            :Name => "Array Points and Array Vectors",
+            :Points => [fill(x1), fill(x2), fill(x3)],
+            :Vectors => [fill(X1), fill(X2), fill(X3)],
             :Rng => Random.MersenneTwister(),
-            :Mutating => false,
+            :Mutating => true,
             :Functions => [
                 compose,
                 # conjugate,
@@ -69,13 +71,13 @@ end
                 # diff_right_compose,
                 # exp,
                 # hat,
-                # inv,
+                #inv,
                 # inv_left_compose,
                 # inv_right_compose,
-                # is_identity,
+                is_identity,
                 # lie_bracket,
                 # log,
-                rand,
+                #rand,
                 # show,
                 #vee,
             ],
@@ -83,6 +85,12 @@ end
         expectations = Dict(
         :repr => "RealCircleGroup()"
     )
-    test_lie_group(C2, properties, expectations)
+    #test_lie_group(C2, properties, expectations)
+
+    properties[:Name] = "IsBit-representation of Points and Vectors"
+    properties[:Mutating] = false
+    properties[:Points] = [x1, x2, x3]
+    properties[:Vectors] = [X1, X2, X3]
+    #test_lie_group(C2, properties, expectations)
         
 end

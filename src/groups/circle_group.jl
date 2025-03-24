@@ -1,7 +1,6 @@
 """
     CircleGroup = LieGroup{ℂ, ScalarMultiplicationGroupOperation, Manifolds.Circle{ℂ}}
 
-
 The complex circle group ``𝕊^1`` is the set of complex numbers ``z ∈ ℂ`` of absolute value ``1``
 
 ```math
@@ -21,7 +20,7 @@ The (complex) circle group is a one dimensional Riemannian manifold and a Lie gr
 
 Generate the complex circle group.
 """
-const CircleGroup = LieGroup{ℂ,ScalarMultiplicationGroupOperation,Manifolds.Circle{ℂ}}
+const CircleGroup = LieGroup{ℂ, ScalarMultiplicationGroupOperation, Manifolds.Circle{ℂ}}
 
 function CircleGroup()
     circ = Manifolds.Circle(ℂ)
@@ -30,18 +29,17 @@ end
 
 function diff_left_compose(
     ::CircleGroup,
-    g::Number, 
-    h::Any, 
+    g::Number,
+    h::Any,
     X::Number
 )
     return g * X
 end
 
-
 function diff_right_compose(
     ::CircleGroup,
-    g::Number, 
-    h::Any, 
+    g::Number,
+    h::Any,
     X::Number
 )
     return X * g
@@ -60,14 +58,13 @@ This can be computed in-place of `g`.
 ```math
 $(_tex(:exp)) ($(_math(:i))t) = $(_tex(:cos))(t) + $(_math(:i))$(_tex(:sin))(t)
 ```
-
 """
+
 @doc "$(_doc_exp_complex_circ)"
 Base.exp(::CircleGroup, X::Number) = exp(X)
 
 @doc "$(_doc_exp_complex_circ)"
 exp!(M::CircleGroup, g, X)
-
 
 _doc_log_complex_circ = """
     log(::CircleGroup, g)
@@ -75,8 +72,8 @@ _doc_log_complex_circ = """
 
 Compute the Lie group logarithm on the complex [`CircleGroup`](@ref), which coincides with the
 ordinary complex logarithm.
-
 """
+
 @doc "$(_doc_log_complex_circ)"
 ManifoldsBase.log(::CircleGroup, g)
 
@@ -87,12 +84,8 @@ function ManifoldsBase.log(::CircleGroup, g::Number)
     return log(g)
 end
 
-
 function Base.show(io::IO, ::CircleGroup)
     return print(io, "CircleGroup()")
-end
-function Base.show(io::IO, ::RealCircleGroup)
-    return print(io, "RealCircleGroup()")
 end
 
 
@@ -119,7 +112,7 @@ The (real) circle group is a one dimensional Riemannian manifold and a Lie group
 
 Generate the real circle group.
 """
-const RealCircleGroup = LieGroup{ℝ,AdditionGroupOperation,Manifolds.Circle{ℝ}}
+const RealCircleGroup = LieGroup{ℝ, AdditionGroupOperation, Manifolds.Circle{ℝ}}
 
 function RealCircleGroup()
     circ = Manifolds.Circle(ℝ)
@@ -135,9 +128,58 @@ The Lie group exponential on the [`RealCircleGroup`](@ref) is given by the proje
 This can be computed in-place of `X`.
 """
 
+@doc raw"""
+    sym_rem(x,[T=π])
+
+Compute symmetric remainder of `x` with respect to the interall 2*`T`, i.e.
+`(x+T)%2T`, where the default for `T` is ``π``
+"""
+function sym_rem(x::N, T=π) where {N<:Number}
+    return (x ≈ T ? convert(N, -T) : rem(x, convert(N, 2 * T), RoundNearest))
+end
+sym_rem(x, T=π) = map(sym_rem, x, Ref(T))
+
+compose(::RealCircleGroup, p, q) = sym_rem(p + q)
+compose(::RealCircleGroup, ::Identity{AdditionGroupOperation}, q) = sym_rem(q)
+compose(::RealCircleGroup, p, ::Identity{AdditionGroupOperation}) = sym_rem(p)
+function compose(
+    ::RealCircleGroup,
+    e::Identity{AdditionGroupOperation},
+    ::Identity{AdditionGroupOperation},
+)
+    return e
+end
+
+compose!(::RealCircleGroup, x, p, q) = copyto!(x, sym_rem(p + q))
+compose!(::RealCircleGroup, x, ::Identity{AdditionGroupOperation}, q) = copyto!(x, sym_rem(q))
+compose!(::RealCircleGroup, x, p, ::Identity{AdditionGroupOperation}) = copyto!(x, sym_rem(p))
+function compose!(
+    ::RealCircleGroup,
+    ::Identity{AdditionGroupOperation},
+    e::Identity{AdditionGroupOperation},
+    ::Identity{AdditionGroupOperation},
+)
+    return e
+end
+
+identity_element(::RealCircleGroup) = 0.0
+identity_element(::RealCircleGroup, p::Union{<:Number, Type{<:Number}}) = zero(p)
+
+Base.inv(G::RealCircleGroup, p::Number) = sym_rem(-p)
+
+Base.inv(G::RealCircleGroup, p::AbstractArray{<:Any,0}) = map(pp -> inv(G, pp), p)
+
+
+
+
 @doc "$(_doc_exp_real_circ)"
 exp(::RealCircleGroup, X)
 
 @doc "$(_doc_exp_real_circ)"
 exp!(M::RealCircleGroup, g, X)
 
+
+
+function Base.show(io::IO, ::RealCircleGroup)
+    return print(io, "RealCircleGroup()")
+end
