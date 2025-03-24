@@ -80,7 +80,6 @@ function _compose!(::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, k, g, 
     return k
 end
 
-
 Base.inv(e::Identity{<:AbstractMultiplicationGroupOperation}) = e
 
 LinearAlgebra.det(::Identity{<:AbstractMultiplicationGroupOperation}) = true

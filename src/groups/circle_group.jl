@@ -20,28 +20,18 @@ The (complex) circle group is a one dimensional Riemannian manifold and a Lie gr
 
 Generate the complex circle group.
 """
-const CircleGroup = LieGroup{ℂ, ScalarMultiplicationGroupOperation, Manifolds.Circle{ℂ}}
+const CircleGroup = LieGroup{ℂ,ScalarMultiplicationGroupOperation,Manifolds.Circle{ℂ}}
 
 function CircleGroup()
     circ = Manifolds.Circle(ℂ)
     return CircleGroup(circ, ScalarMultiplicationGroupOperation())
 end
 
-function diff_left_compose(
-    ::CircleGroup,
-    g::Number,
-    h::Any,
-    X::Number
-)
+function diff_left_compose(::CircleGroup, g::Number, h::Any, X::Number)
     return g * X
 end
 
-function diff_right_compose(
-    ::CircleGroup,
-    g::Number,
-    h::Any,
-    X::Number
-)
+function diff_right_compose(::CircleGroup, g::Number, h::Any, X::Number)
     return X * g
 end
 
@@ -88,7 +78,6 @@ function Base.show(io::IO, ::CircleGroup)
     return print(io, "CircleGroup()")
 end
 
-
 """
     RealCircleGroup = LieGroup{ℝ, AdditionGroupOperation, Manifolds.Circle{ℝ}}
 
@@ -112,7 +101,7 @@ The (real) circle group is a one dimensional Riemannian manifold and a Lie group
 
 Generate the real circle group.
 """
-const RealCircleGroup = LieGroup{ℝ, AdditionGroupOperation, Manifolds.Circle{ℝ}}
+const RealCircleGroup = LieGroup{ℝ,AdditionGroupOperation,Manifolds.Circle{ℝ}}
 
 function RealCircleGroup()
     circ = Manifolds.Circle(ℝ)
@@ -151,8 +140,12 @@ function compose(
 end
 
 compose!(::RealCircleGroup, x, p, q) = copyto!(x, sym_rem(p + q))
-compose!(::RealCircleGroup, x, ::Identity{AdditionGroupOperation}, q) = copyto!(x, sym_rem(q))
-compose!(::RealCircleGroup, x, p, ::Identity{AdditionGroupOperation}) = copyto!(x, sym_rem(p))
+function compose!(::RealCircleGroup, x, ::Identity{AdditionGroupOperation}, q)
+    return copyto!(x, sym_rem(q))
+end
+function compose!(::RealCircleGroup, x, p, ::Identity{AdditionGroupOperation})
+    return copyto!(x, sym_rem(p))
+end
 function compose!(
     ::RealCircleGroup,
     ::Identity{AdditionGroupOperation},
@@ -163,22 +156,17 @@ function compose!(
 end
 
 identity_element(::RealCircleGroup) = 0.0
-identity_element(::RealCircleGroup, p::Union{<:Number, Type{<:Number}}) = zero(p)
+identity_element(::RealCircleGroup, p::Union{<:Number,Type{<:Number}}) = zero(p)
 
 Base.inv(G::RealCircleGroup, p::Number) = sym_rem(-p)
 
 Base.inv(G::RealCircleGroup, p::AbstractArray{<:Any,0}) = map(pp -> inv(G, pp), p)
-
-
-
 
 @doc "$(_doc_exp_real_circ)"
 exp(::RealCircleGroup, X)
 
 @doc "$(_doc_exp_real_circ)"
 exp!(M::RealCircleGroup, g, X)
-
-
 
 function Base.show(io::IO, ::RealCircleGroup)
     return print(io, "RealCircleGroup()")
