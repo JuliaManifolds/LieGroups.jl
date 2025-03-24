@@ -211,6 +211,15 @@ using LieGroupsTestSuite
         @test X2.x[1] == zeros(2)
         @test X2.x[2] == zeros(2, 2)
     end
+    @testset "Test allocation special case" begin
+        G = SpecialEuclideanGroup(2)
+        g = [1.0 0.0 0.0; 0.0 1.0 0.0; 0.0 0.0 1.0]
+        X = zeros(3, 3)
+        g1 = SpecialEuclideanMatrixPoint(g)
+        X1 = SpecialEuclideanMatrixTangentVector(X)
+        Xa = LieGroups.allocate_result(G, adjoint, g1, X1)
+        @test Xa isa SpecialEuclideanMatrixTangentVector
+    end
     @testset "Test special cases in expected failing checks and internals" begin
         G = SpecialEuclideanGroup(2)
         𝔤 = LieAlgebra(G)

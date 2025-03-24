@@ -216,7 +216,7 @@ function ManifoldsBase.exp!(
     return h
 end
 
-function hat!(
+function ManifoldsBase.hat!(
     Po𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, X, c
 ) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
     PoG = Po𝔤.manifold
@@ -343,7 +343,7 @@ function Base.show(
     return print(io, "PowerLieGroup($L, $(join(size, ", ")))")
 end
 
-function vee!(
+function ManifoldsBase.vee!(
     Po𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, c, X
 ) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
     PoG = Po𝔤.manifold

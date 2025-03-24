@@ -5,7 +5,7 @@ All notable Changes to the Julia package `LieGroups.jl` will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.0] – unreleased
+## [0.1.0] unreleased
 
 Everything denoted by “formerly” refers to the previous name in [`Manifolds.jl`](https://juliamanifolds.github.io/Manifolds.jl/stable/).
 
@@ -21,7 +21,7 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
   * `SpecialOrthogonalGroup` (formerly `SpecialOrthogonal`)
   * `SpecialUnitaryGroup` (formerly `SpecialUnitary`)
   * `OrthogonalGroup` (formerly `Orthogonal`)
-  * `UnitaryGroup` (formerly `Unitary`)
+  * `UnitaryGroup` (formerly `Unitary`) also for quaternions.
   * `GeneralLinearGroup` (formerly `GeneralLinear`)
   * `HeisenbergGroup`
   * `LeftSemidirectProductLieGroup` (formerly `SemidirectProductGroup`)
@@ -30,7 +30,9 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
   * `PowerGroupOperation` to internally avoid ambiguities. Since the constructor always expects a Lie group, this is only necessary internally
   * `ProductLieGroup` (formerly `ProductGroup`)
   * `RightSemidirectProductLieGroup`
+  * `SymplecticGroup`
   * `⋊` (alias for `RightSemidirectProductGroupOperation` when a `default_right_action(G,H)` is defined for the two groups)
+  * a `ValidationLieGroup` verifying input and output of all interface functions, similar to the [`ValidationManifold`](https://juliamanifolds.github.io/ManifoldsBase.jl/stable/manifolds/#A-manifold-for-validation) which can also be used internally.
 * `AbstractGroupOperation` as well as its concrete subtypes
   * `AdditionGroupOperation` (formerly `AdditionOperation`)
   * `MatrixMultiplicationGroupOperation` (formerly `MultiplicationOperation`)
