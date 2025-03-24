@@ -5,34 +5,18 @@ A group operation that is realised by a scalar multiplication.
 """
 struct ScalarMultiplicationGroupOperation <: AbstractMultiplicationGroupOperation end
 
-function compose(
+function _compose(
     ::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, g::Number, h::Number
 ) where {𝔽}
     return g * h
 end
 
-function compose(
+function _compose(
     G::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation},
     p::AbstractArray{<:Any,0},
     q::AbstractArray{<:Any,0},
 ) where {𝔽}
     return map((pp, qq) -> compose(G, pp, qq), p, q)
-end
-
-function compose(
-    G::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation},
-    p::AbstractArray{<:Any,0},
-    q::Number,
-) where {𝔽}
-    return map(pp -> compose(G, pp, q), p)
-end
-
-function compose(
-    G::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation},
-    p::Number,
-    q::AbstractArray{<:Any,0},
-) where {𝔽}
-    return map(qq -> compose(G, p, qq), q)
 end
 
 function _compose!(G::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, k, g, h) where {𝔽}
@@ -137,8 +121,6 @@ function ManifoldsBase.exp!(
 ) where {𝔽}
     return copyto!(h, exp(G, g, X))
 end
-
-#diff_right_compose(G::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, g, h, X) where {𝔽} = diff_left_compose(G, g, h, X)
 
 Base.inv(::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, g::Number) where {𝔽} = inv(g)
 function Base.inv(
@@ -258,6 +240,7 @@ function ManifoldsBase.log(
 ) where {𝔽}
     return zero_vector(LieAlgebra(G))
 end
+
 function ManifoldsBase.log(
     G::LieGroup{𝔽,ScalarMultiplicationGroupOperation},
     ::Identity{ScalarMultiplicationGroupOperation},
