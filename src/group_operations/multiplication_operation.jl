@@ -324,7 +324,7 @@ function ManifoldsBase.log!(
     G::LieGroup{𝔽,O}, X, ::Identity{O}
 ) where {𝔽,O<:AbstractMultiplicationGroupOperation}
     zero_vector!(LieAlgebra(G), X)
-    return
+    return X
 end
 
 LinearAlgebra.mul!(q, ::Identity{<:AbstractMultiplicationGroupOperation}, p) = copyto!(q, p)
