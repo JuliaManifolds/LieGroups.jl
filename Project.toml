@@ -4,7 +4,6 @@ authors = ["Seth Axen <seth.axen@gmail.com>", "Mateusz Baran <mateuszbaran89@gma
 version = "0.0.3"
 
 [deps]
-JuliaFormatter = "98e50ef6-434e-11e9-1051-2b60c6c9e899"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Manifolds = "1cead3c2-87b3-11e9-0ccd-23c62b72b94e"
 ManifoldsBase = "3362f125-f0bb-47a3-aa74-596ffd7ef2fb"
@@ -20,7 +19,6 @@ LieGroupsRecursiveArrayToolsExt = "RecursiveArrayTools"
 
 [compat]
 Aqua = "0.8"
-JuliaFormatter = "1.0.62"
 LinearAlgebra = "1.10"
 Manifolds = "0.10.13"
 ManifoldsBase = "1"
