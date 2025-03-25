@@ -64,6 +64,9 @@ Compute the Lie group logarithm on the complex [`CircleGroup`](@ref), which coin
 ordinary complex logarithm.
 """
 
+identity_element(::CircleGroup) = 1.0 + 0.0im
+identity_element(::CircleGroup, p::Union{<:Number,Type{<:Number}}) = one(p)
+
 @doc "$(_doc_log_complex_circ)"
 ManifoldsBase.log(::CircleGroup, g)
 
