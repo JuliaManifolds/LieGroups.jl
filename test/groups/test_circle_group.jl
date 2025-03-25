@@ -24,14 +24,14 @@ using LieGroupsTestSuite
             diff_left_compose,
             diff_right_compose,
             exp,
-            #hat,
+            # hat,
             inv,
             inv_left_compose,
             inv_right_compose,
             is_identity,
             lie_bracket,
             #log,
-            #rand,
+            # rand, # Waiting just for PR Manifolds.jl#789
             show,
             #vee,
         ],
@@ -45,7 +45,6 @@ using LieGroupsTestSuite
     properties[:Vectors] = [X1, X2, X3]
     test_lie_group(C1, properties, expectations)
 end
-
 @testset "Real Circle" begin
     C2 = RealCircleGroup()
     x1, x2, x3 = 0.0, 1.0, -π
@@ -57,7 +56,7 @@ end
         :Rng => Random.MersenneTwister(),
         :Mutating => true,
         :Functions => [
-            compose,
+            # compose,
             # conjugate,
             # diff_conjugate,
             # diff_inv,
@@ -71,18 +70,17 @@ end
             is_identity,
             # lie_bracket,
             # log,
-            #rand,
+            # rand,
             # show,
-            #vee,
+            # vee,
         ],
     )
     expectations = Dict(:repr => "RealCircleGroup()")
-    #test_lie_group(C2, properties, expectations)
+    test_lie_group(C2, properties, expectations)
 
     properties[:Name] = "IsBit-representation of Points and Vectors"
     properties[:Mutating] = false
     properties[:Points] = [x1, x2, x3]
     properties[:Vectors] = [X1, X2, X3]
-    #test_lie_group(C2, properties, expectations)
-
+    test_lie_group(C2, properties, expectations)
 end
