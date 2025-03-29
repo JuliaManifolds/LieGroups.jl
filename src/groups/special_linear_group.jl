@@ -32,7 +32,8 @@ function Base.show(
 ) where {𝔽,n}
     return print(io, "SpecialLinearGroup($n, $(𝔽))")
 end
-function Base.show(io::IO, M::SpecialLinearGroup{𝔽,Tuple{Int}}) where {𝔽}
-    n = get_parameter(M.size)[1]
+function Base.show(io::IO, G::SpecialLinearGroup{𝔽,Tuple{Int}}) where {𝔽}
+    M = base_manifold(G)
+    n = ManifoldsBase.get_parameter(M.size)[1]
     return print(io, "SpecialLinearGroup($n, $(𝔽); parameter=:field)")
 end

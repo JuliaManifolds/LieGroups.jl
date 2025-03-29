@@ -71,4 +71,6 @@ using LieGroupsTestSuite
         expectations = Dict(:repr => "SpecialLinearGroup(2, ℂ)", :atol => 1e-14)
         test_lie_group(G, properties, expectations)
     end
+    @test repr(SpecialLinearGroup(2; parameter=:field)) ===
+        "SpecialLinearGroup(2, ℝ; parameter=:field)"
 end
