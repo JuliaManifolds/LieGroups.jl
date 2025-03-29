@@ -131,9 +131,11 @@ function test_compose(
 )
     @testset "compose" begin
         k1 = compose(G, g, h)
-        k2 = copy(G, g)
-        compose!(G, k2, g, h)
-        @test isapprox(G, k1, k2)
+        if test_mutating
+            k2 = copy(G, g)
+            compose!(G, k2, g, h)
+            @test isapprox(G, k1, k2)
+        end
         if test_inverse
             for g_ in [g, h]
                 g_inv = inv(G, g_)
@@ -471,18 +473,18 @@ function test_exp_log(
             @test norm(𝔤, log(G, h, h)) ≈ 0 atol = atol
             # log
             Y1 = log(G, g, h)
+            @test is_point(𝔤, Y1; error=:error)
+            Y3 = zero_vector(𝔤, typeof(X))
+            @test isapprox(𝔤, Y3, log(G, e, typeof(X)); atol=atol)
             if test_mutating
                 Y2 = zero_vector(𝔤, typeof(X))
                 log!(G, Y2, g, h)
                 @test isapprox(𝔤, Y1, Y2)
                 log!(G, Y2, e, e)
                 @test isapprox(𝔤, Y2, zero_vector(𝔤, typeof(X)))
+                log!(G, Y3, e)
+                @test isapprox(G, e, Y3, log(G, e, typeof(Y3)); atol=atol)
             end
-            @test is_point(𝔤, Y1; error=:error)
-            Y3 = zero_vector(𝔤, typeof(X))
-            @test isapprox(𝔤, Y3, log(G, e, typeof(X)); atol=atol)
-            log!(G, Y3, e)
-            @test isapprox(G, e, Y3, log(G, e, typeof(Y3)); atol=atol)
             @test isapprox(𝔤, log(G, g, g), Y3; atol=atol)
             @test isapprox(𝔤, log(G, h, h), Y3; atol=atol)
         end
