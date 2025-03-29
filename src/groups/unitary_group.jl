@@ -18,7 +18,7 @@ const UnitaryGroup{T} = LieGroup{
 
 function UnitaryGroup(n::Int; kwargs...)
     U = Manifolds.GeneralUnitaryMatrices(
-        n, ManifoldsBase.ℂ, Manifolds.AbsoluteDeterminantOneMatrices; kwargs...
+        n, ManifoldsBase.ℂ, Manifolds.AbsoluteDeterminantOneMatrixType; kwargs...
     )
     return UnitaryGroup{typeof(U).parameters[1]}(U, MatrixMultiplicationGroupOperation())
 end

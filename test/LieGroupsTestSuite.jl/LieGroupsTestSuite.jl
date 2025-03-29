@@ -388,19 +388,19 @@ end
 Test  `diff_conjugate`
 """
 function test_diff_conjugate(
-    G::AbstractLieGroup, g, h, X; expected=missing, test_mutating::Bool=true
+    G::AbstractLieGroup, g, h, X; expected=missing, test_mutating::Bool=true, atol::Real=0
 )
     𝔤 = LieAlgebra(G)
     @testset "diff_conjugate" begin
         Y1 = diff_conjugate(G, g, h, X)
-        @test is_point(𝔤, Y1; error=:error)
+        @test is_point(𝔤, Y1; error=:error, atol=atol)
         if test_mutating
             Y2 = zero_vector(𝔤, typeof(X))
             diff_conjugate!(G, Y2, g, h, X)
-            @test isapprox(𝔤, Y1, Y2)
+            @test isapprox(𝔤, Y1, Y2; atol=atol)
         end
         if !ismissing(expected)
-            @test isapprox(𝔤, Y1, expected)
+            @test isapprox(𝔤, Y1, expected; atol=atol)
         end
         return nothing
     end
@@ -949,7 +949,13 @@ function test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dic
         if (diff_conjugate in functions)
             v = get(expectations, :diff_conjugate, missing)
             test_diff_conjugate(
-                G, points[1], points[2], vectors[1]; expected=v, test_mutating=mutating
+                G,
+                points[1],
+                points[2],
+                vectors[1];
+                expected=v,
+                test_mutating=mutating,
+                atol=atol,
             )
         end
 

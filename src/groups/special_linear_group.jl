@@ -11,23 +11,19 @@ for ``p ∈ $(_math(:SL))(n,𝔽)`` are represented with their corresponding Lie
 
 # Constructor
 
-    GeneralLinearGroup(n::Int; field=ℝ, kwargs...)
+    GeneralLinearGroup(n::Int, field=ℝ; kwargs...)
 
 Generate the general linear group  group on ``𝔽^{n×n}``.
 All keyword arguments in `kwargs...` are passed on to [`InvertibleMatrices`](@extref `Manifolds.GeneralUnitaryMatrices`)`{T, 𝔽,`[`DeterminantOneMatrices`](@extref `Manifolds.DeterminantOneMatrices`)`}`.
 """
 const SpecialLinearGroup{𝔽,T} = LieGroup{
-    𝔽,
-    MatrixMultiplicationGroupOperation,
-    #    ManifoldsMissingInvertibleType{T,𝔽,Manifolds.DeterminantOneMatrices},
+    𝔽,MatrixMultiplicationGroupOperation,DeterminantOneMatrices{𝔽,T}
 }
 
-function SpecialLinearGroup(n::Int; field=ManifoldsBase.ℝ, kwargs...)
-    DOM = Manifolds.GeneralUnitaryMatrices(
-        n, field, Manifolds.DeterminantOneMatrices; kwargs...
-    )
-    return SpecialLinearGroup{typeof(DOM).parameters[2],typeof(DOM).parameters[1]}(
-        DOM, MatrixMultiplicationGroupOperation()
+function SpecialLinearGroup(n::Int, field=ManifoldsBase.ℝ; kwargs...)
+    M = Manifolds.DeterminantOneMatrices(n, field; kwargs...)
+    return SpecialLinearGroup{typeof(M).parameters...}(
+        M, MatrixMultiplicationGroupOperation()
     )
 end
 

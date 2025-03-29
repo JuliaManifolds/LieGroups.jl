@@ -263,7 +263,7 @@ on the [`AbstractLieGroup`](@ref) of `𝔤`
 """
 function ManifoldsBase.is_point(𝔤::LieAlgebra, X::T; kwargs...) where {T}
     return ManifoldsBase.is_vector(
-        base_lie_group(𝔤), identity_element(base_lie_group(𝔤), T), X; kwargs...
+        base_lie_group(𝔤), identity_element(base_lie_group(𝔤), T), X, false; kwargs...
     )
 end
 
