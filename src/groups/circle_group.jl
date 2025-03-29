@@ -56,6 +56,38 @@ Base.exp(::CircleGroup, X::Number) = exp(X)
 @doc "$(_doc_exp_complex_circ)"
 exp!(M::CircleGroup, g, X)
 
+function get_coordinates_lie(
+    𝔤::LieAlgebra{𝔽,Op,CircleGroup}, X, ::DefaultLieAlgebraOrthogonalBasis{𝔾}
+) where {𝔽,Op<:AbstractGroupOperation,𝔾}
+    G = base_lie_group(𝔤)
+    M = base_manifold(G)
+    return get_coordinates(M, identity_element(G), X, DefaultOrthonormalBasis(𝔽))
+end
+function get_coordinates_lie!(
+    𝔤::LieAlgebra{𝔽,Op,CircleGroup}, c, X, ::DefaultLieAlgebraOrthogonalBasis{𝔾}
+) where {𝔽,Op<:AbstractGroupOperation,𝔾}
+    G = base_lie_group(𝔤)
+    M = base_manifold(G)
+    return get_coordinates!(M, c, identity_element(G), X, DefaultOrthonormalBasis(𝔽))
+end
+function get_vector_lie(
+    𝔤::LieAlgebra{𝔽,Op,CircleGroup},
+    c,
+    ::DefaultLieAlgebraOrthogonalBasis{𝔾},
+    T::Type=ComplexF64,
+) where {𝔽,Op<:AbstractGroupOperation,𝔾}
+    G = base_lie_group(𝔤)
+    M = base_manifold(G)
+    return get_vector(M, identity_element(G, T), c, DefaultOrthonormalBasis(𝔽))
+end
+function get_vector_lie!(
+    𝔤::LieAlgebra{𝔽,Op,CircleGroup}, X::T, c, ::DefaultLieAlgebraOrthogonalBasis{𝔾}
+) where {𝔽,Op<:AbstractGroupOperation,T,𝔾}
+    G = base_lie_group(𝔤)
+    M = base_manifold(G)
+    return get_vector!(M, X, identity_element(G, T), c, DefaultOrthonormalBasis(𝔽))
+end
+
 _doc_log_complex_circ = """
     log(::CircleGroup, g)
     log!(::CircleGroup, X, g)
@@ -65,7 +97,9 @@ ordinary complex logarithm.
 """
 
 identity_element(::CircleGroup) = 1.0 + 0.0im
-identity_element(::CircleGroup, p::Union{<:Number,Type{<:Number}}) = one(p)
+identity_element(::CircleGroup, T::Union{<:Number,Type{<:Number}}) = one(T)
+identity_element(::CircleGroup, ::Type{<:SArray{S,T}}) where {S,T} = @SArray fill(one(T))
+identity_element(::CircleGroup, ::Type{<:MArray{S,T}}) where {S,T} = @MArray fill(one(T))
 
 @doc "$(_doc_log_complex_circ)"
 ManifoldsBase.log(::CircleGroup, g)
@@ -156,6 +190,42 @@ function compose!(
     ::Identity{AdditionGroupOperation},
 )
     return e
+end
+
+#
+# This can be combined with the functions above once we only have one circle group const
+#
+function get_coordinates_lie(
+    𝔤::LieAlgebra{𝔽,Op,RealCircleGroup}, X, ::DefaultLieAlgebraOrthogonalBasis{𝔾}
+) where {𝔽,Op<:AbstractGroupOperation,𝔾}
+    G = base_lie_group(𝔤)
+    M = base_manifold(G)
+    return get_coordinates(M, identity_element(G), X, DefaultOrthonormalBasis(𝔽))
+end
+function get_coordinates_lie!(
+    𝔤::LieAlgebra{𝔽,Op,RealCircleGroup}, c, X, ::DefaultLieAlgebraOrthogonalBasis{𝔾}
+) where {𝔽,Op<:AbstractGroupOperation,𝔾}
+    G = base_lie_group(𝔤)
+    M = base_manifold(G)
+    return get_coordinates!(M, c, identity_element(G), X, DefaultOrthonormalBasis(𝔽))
+end
+
+function get_vector_lie(
+    𝔤::LieAlgebra{𝔽,Op,RealCircleGroup},
+    c,
+    ::DefaultLieAlgebraOrthogonalBasis{𝔾},
+    T::Type=Float64,
+) where {𝔽,Op<:AbstractGroupOperation,𝔾}
+    G = base_lie_group(𝔤)
+    M = base_manifold(G)
+    return get_vector(M, identity_element(G, T), c, DefaultOrthonormalBasis(𝔽))
+end
+function get_vector_lie!(
+    𝔤::LieAlgebra{𝔽,Op,RealCircleGroup}, X::T, c, ::DefaultLieAlgebraOrthogonalBasis{𝔾}
+) where {𝔽,Op<:AbstractGroupOperation,T,𝔾}
+    G = base_lie_group(𝔤)
+    M = base_manifold(G)
+    return get_vector!(M, X, identity_element(G, T), c, DefaultOrthonormalBasis(𝔽))
 end
 
 identity_element(::RealCircleGroup) = 0.0
