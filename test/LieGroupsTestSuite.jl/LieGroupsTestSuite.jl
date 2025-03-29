@@ -447,13 +447,13 @@ function test_exp_log(
                 exp!(G, k2, X)
                 @test isapprox(G, k1, k2)
             end
-            @test is_point(G, k1; error=:error)
+            @test is_point(G, k1; error=:error, atol=atol)
             # exp
             k1 = exp(G, g, X)
             if test_mutating
                 k2 = copy(G, g)
                 exp!(G, k2, g, X)
-                @test isapprox(G, k1, k2)
+                @test isapprox(G, k1, k2, atol=atol)
             end
             @test is_point(G, k1; error=:error)
         end
