@@ -24,7 +24,7 @@ using LieGroupsTestSuite
                 diff_left_compose,
                 diff_right_compose,
                 exp,
-                # hat, #check whether there is a nice formula for this, probably vectorize all but diag
+                # hat, # how can we vectorize a matrix and “remove” one dim while keep tr0?
                 inv,
                 inv_left_compose,
                 inv_right_compose,
