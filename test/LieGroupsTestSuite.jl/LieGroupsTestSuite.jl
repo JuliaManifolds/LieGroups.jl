@@ -473,7 +473,7 @@ function test_exp_log(
             @test norm(𝔤, log(G, h, h)) ≈ 0 atol = atol
             # log
             Y1 = log(G, g, h)
-            @test is_point(𝔤, Y1; error=:error)
+            @test is_point(𝔤, Y1; error=:error, atol=atol)
             Y3 = zero_vector(𝔤, typeof(X))
             @test isapprox(𝔤, Y3, log(G, e, typeof(X)); atol=atol)
             if test_mutating

@@ -23,14 +23,14 @@ using LieGroupsTestSuite
                 diff_inv,
                 diff_left_compose,
                 diff_right_compose,
-                # exp,
+                exp,
                 # hat, #check whether there is a nice formula for this, probably vectorize all but diag
                 inv,
                 inv_left_compose,
                 inv_right_compose,
                 is_identity,
                 lie_bracket,
-                # log,
+                log,
                 rand,
                 show,
                 #vee, # see hat
@@ -55,20 +55,20 @@ using LieGroupsTestSuite
                 diff_inv,
                 diff_left_compose,
                 diff_right_compose,
-                # exp,
+                exp,
                 # hat
                 inv,
                 inv_left_compose,
                 inv_right_compose,
                 is_identity,
                 lie_bracket,
-                # log,
+                log,
                 rand,
                 show,
                 # vee,
             ],
         )
-        expectations = Dict(:repr => "SpecialLinearGroup(2, ℂ)")
+        expectations = Dict(:repr => "SpecialLinearGroup(2, ℂ)", :atol => 1e-14)
         test_lie_group(G, properties, expectations)
     end
 end
