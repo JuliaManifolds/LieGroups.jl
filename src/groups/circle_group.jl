@@ -230,6 +230,12 @@ end
 
 identity_element(::RealCircleGroup) = 0.0
 identity_element(::RealCircleGroup, p::Union{<:Number,Type{<:Number}}) = zero(p)
+function identity_element(::RealCircleGroup, ::Type{<:SArray{S,T}}) where {S,T}
+    @SArray fill(one(T))
+end
+function identity_element(::RealCircleGroup, ::Type{<:MArray{S,T}}) where {S,T}
+    @MArray fill(one(T))
+end
 
 Base.inv(G::RealCircleGroup, p::Number) = sym_rem(-p)
 
