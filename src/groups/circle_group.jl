@@ -235,6 +235,10 @@ Base.inv(G::RealCircleGroup, p::Number) = sym_rem(-p)
 
 Base.inv(G::RealCircleGroup, p::AbstractArray{<:Any,0}) = map(pp -> inv(G, pp), p)
 
+function ManifoldsBase.isapprox(M::Union{CircleGroup,RealCircleGroup}, p, X, Y; kwargs...)
+    return isapprox(X[], Y[]; kwargs...)
+end
+
 @doc "$(_doc_exp_real_circ)"
 exp(::RealCircleGroup, X)
 

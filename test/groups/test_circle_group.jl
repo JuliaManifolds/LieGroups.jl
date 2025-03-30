@@ -63,7 +63,7 @@ end
             # diff_left_compose,
             # diff_right_compose,
             # exp,
-            # hat,
+            hat,
             #inv,
             # inv_left_compose,
             # inv_right_compose,
@@ -72,7 +72,7 @@ end
             # log,
             # rand,
             # show,
-            # vee,
+            vee,
         ],
     )
     expectations = Dict(:repr => "RealCircleGroup()")

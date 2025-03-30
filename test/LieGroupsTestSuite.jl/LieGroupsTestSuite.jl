@@ -556,7 +556,7 @@ function test_hat_vee(
         if test_vee
             c1 = vee(𝔤, X)
             if test_mutating
-                c2 = zero(c1)
+                c2 = similar(c1)
                 vee!(𝔤, c2, X)
                 @test c1 ≈ c2
             end
