@@ -115,34 +115,6 @@ function Base.show(io::IO, ::CircleGroup)
     return print(io, "CircleGroup()")
 end
 
-"""
-    RealCircleGroup = LieGroup{ℝ, AdditionGroupOperation, Manifolds.Circle{ℝ}}
 
-The real circle group ``𝕊^1`` is the set of points on the unit circle in ``ℝ^2``, represented by its angles  ``x ∈ [-π,π)``.
-It is equipped with the group operation of adding angles ``$(_tex(:rm, raw"mod\, ")) 2π`` via [`AdditionGroupOperation`](@ref).
-
-It it is obtained as a quotient space of the real numbers
-
-```math
- 𝕊¹ := ℝ / 2πℤ = $(_tex(:SetDef, "[x] ∈ ℝ / 2πℤ", "x ∈ [-π,π)", "big")).
-```
-
-It can be identified with the set of complex numbers of absolute value 1, i.e. the one dimensional [`Sphere`](@extref `Manifolds.Sphere`),
-together with the group operation of multiplying two complex numbers. For that construction see [`CircleGroup`](@ref).
-
-The (real) circle group is a one dimensional Riemannian manifold and a Lie group.
-
-# Constructor
-
-    RealCircleGroup()
-
-Generate the real circle group.
-"""
-const RealCircleGroup = LieGroup{ℝ,AdditionGroupOperation,Manifolds.Circle{ℝ}}
-
-function RealCircleGroup()
-    circ = Manifolds.Circle(ℝ)
-    return RealCircleGroup(circ, AdditionGroupOperation())
-end
 
 

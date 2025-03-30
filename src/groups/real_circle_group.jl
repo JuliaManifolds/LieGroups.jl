@@ -1,3 +1,33 @@
+"""
+    RealCircleGroup = LieGroup{ℝ, AdditionGroupOperation, Manifolds.Circle{ℝ}}
+
+The real circle group ``𝕊^1`` is the set of points on the unit circle in ``ℝ^2``, represented by its angles  ``x ∈ [-π,π)``.
+It is equipped with the group operation of adding angles ``$(_tex(:rm, raw"mod\, ")) 2π`` via [`AdditionGroupOperation`](@ref).
+
+It it is obtained as a quotient space of the real numbers
+
+```math
+ 𝕊¹ := ℝ / 2πℤ = $(_tex(:SetDef, "[x] ∈ ℝ / 2πℤ", "x ∈ [-π,π)", "big")).
+```
+
+It can be identified with the set of complex numbers of absolute value 1, i.e. the one dimensional [`Sphere`](@extref `Manifolds.Sphere`),
+together with the group operation of multiplying two complex numbers. For that construction see [`CircleGroup`](@ref).
+
+The (real) circle group is a one dimensional Riemannian manifold and a Lie group.
+
+# Constructor
+
+    RealCircleGroup()
+
+Generate the real circle group.
+"""
+const RealCircleGroup = LieGroup{ℝ,AdditionGroupOperation,Manifolds.Circle{ℝ}}
+
+function RealCircleGroup()
+    circ = Manifolds.Circle(ℝ)
+    return RealCircleGroup(circ, AdditionGroupOperation())
+end
+
 _doc_sym_rem = """
     sym_rem(x,[T=π])
 
@@ -24,17 +54,13 @@ diff_inv(::RealCircleGroup, g, X) = -X
 diff_inv(G::RealCircleGroup, Y, g, X) = copyto!(LieAlgebra(G), Y, -X)
 
 diff_left_compose(::RealCircleGroup, g, h, X::Number) = X
-diff_left_compose(G::RealCircleGroup, g, h, X) = map((gg, XX) -> diff_left_compose(G, gg, h, XX), g, X)
-diff_left_compose!(G::RealCircleGroup, Y, g, h, X) = copyto!(LieAlgebra(G), Y, diff_left_compose(G, g, h, X))
 
 diff_right_compose(::RealCircleGroup, g, h, X::Number) = X
-diff_right_compose(G::RealCircleGroup, g, h, X) = map((gg, XX) -> diff_right_compose(G, gg, h, XX), g, X)
-diff_right_compose!(G::RealCircleGroup, Y, g, h, X) = copyto!(LieAlgebra(G), Y, diff_right_compose(G, g, h, X))
 
 ManifoldsBase.exp(::RealCircleGroup, X::Number) = sym_rem(X)
-ManifoldsBase.exp(G::RealCircleGroup, X::AbstractArray{<:Any,0}) = map(XX-> exp(G, XX), X)
+ManifoldsBase.exp(G::RealCircleGroup, X) = map(XX-> exp(G, XX), X)
 ManifoldsBase.exp(::RealCircleGroup, g::Number, X::Number) = sym_rem(g + X)
-ManifoldsBase.exp(G::RealCircleGroup, g::AbstractArray{<:Any,0}, X::AbstractArray{<:Any,0}) = map((gg, XX) -> exp(G, gg, XX), g, X)
+ManifoldsBase.exp(G::RealCircleGroup, g, X) = map((gg, XX) -> exp(G, gg, XX), g, X)
 
 ManifoldsBase.exp!(G::RealCircleGroup, g, X) = copyto!(g, exp(G, X))
 ManifoldsBase.exp!(G::RealCircleGroup, h, g, X) = copyto!(h, exp(G, g, X))
@@ -49,19 +75,14 @@ function identity_element(::RealCircleGroup, ::Type{<:MArray{S,T}}) where {S,T}
 end
 
 Base.inv(::RealCircleGroup, p::Number) = sym_rem(-p)
-Base.inv(G::RealCircleGroup, p::AbstractArray{<:Any,0}) = map(pp -> inv(G, pp), p)
 
 inv_left_compose(::RealCircleGroup, g::Number, h::Number) = sym_rem(-g + h)
-#inv_left_compose(G::RealCircleGroup, g::AbstractArray{<:Any,0}, h::AbstractArray{<:Any,0}) = map((gg,hh) -> inv_left_compose(G, gg, hh), g, h)
-#inv_left_compose!(G::RealCircleGroup, x, g, h) = copyto!(x, inv_left_compose(G, g, h))
 
 inv_right_compose(::RealCircleGroup, g::Number, h::Number) = sym_rem(g - h)
-#inv_right_compose(G::RealCircleGroup, g::AbstractArray{<:Any,0}, h::AbstractArray{<:Any,0}) = map((gg,hh) -> inv_right_compose(G, gg, hh), g, h)
-#inv_right_compose!(G::RealCircleGroup, x, g, h) = copyto!(x, inv_right_compose(G, g, h))
 
 
 lie_bracket(::LieAlgebra{ℝ, AdditionGroupOperation, RealCircleGroup}, X::Any, ::Any) = zero(X)
-lie_bracket!(::LieAlgebra{ℝ, AdditionGroupOperation, RealCircleGroup}, Z, X, ::Any) = copyto!(Z, zero(X))
+
 
 
 
