@@ -46,6 +46,7 @@ include("groups/validation_group.jl")
 include("groups/translation_group.jl")
 include("groups/general_linear_group.jl")
 include("groups/circle_group.jl")
+include("groups/real_circle_group.jl")
 include("groups/heisenberg_group.jl")
 include("groups/symplectic_group.jl")
 
@@ -133,6 +134,7 @@ export norm, number_of_coordinates
 export injectivity_radius
 export rand, rand!
 export switch
+export sym_rem
 export vee, vee!
 export zero_vector, zero_vector!
 end # module LieGroups
