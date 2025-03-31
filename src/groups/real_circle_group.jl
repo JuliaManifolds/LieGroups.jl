@@ -65,6 +65,42 @@ ManifoldsBase.exp(G::RealCircleGroup, g, X) = map((gg, XX) -> exp(G, gg, XX), g,
 ManifoldsBase.exp!(G::RealCircleGroup, g, X) = copyto!(g, exp(G, X))
 ManifoldsBase.exp!(G::RealCircleGroup, h, g, X) = copyto!(h, exp(G, g, X))
 
+
+# This can be combined with the functions above once we only have one circle group const
+#
+function get_coordinates_lie(
+    𝔤::LieAlgebra{𝔽,Op,RealCircleGroup}, X, ::DefaultLieAlgebraOrthogonalBasis{𝔾}
+) where {𝔽,Op<:AbstractGroupOperation,𝔾}
+    G = base_lie_group(𝔤)
+    M = base_manifold(G)
+    return get_coordinates(M, identity_element(G), X, DefaultOrthonormalBasis(𝔽))
+end
+function get_coordinates_lie!(
+    𝔤::LieAlgebra{𝔽,Op,RealCircleGroup}, c, X, ::DefaultLieAlgebraOrthogonalBasis{𝔾}
+) where {𝔽,Op<:AbstractGroupOperation,𝔾}
+    G = base_lie_group(𝔤)
+    M = base_manifold(G)
+    return get_coordinates!(M, c, identity_element(G), X, DefaultOrthonormalBasis(𝔽))
+end
+
+function get_vector_lie(
+    𝔤::LieAlgebra{𝔽,Op,RealCircleGroup},
+    c,
+    ::DefaultLieAlgebraOrthogonalBasis{𝔾},
+    T::Type=Float64,
+) where {𝔽,Op<:AbstractGroupOperation,𝔾}
+    G = base_lie_group(𝔤)
+    M = base_manifold(G)
+    return get_vector(M, identity_element(G, T), c, DefaultOrthonormalBasis(𝔽))
+end
+function get_vector_lie!(
+    𝔤::LieAlgebra{𝔽,Op,RealCircleGroup}, X::T, c, ::DefaultLieAlgebraOrthogonalBasis{𝔾}
+) where {𝔽,Op<:AbstractGroupOperation,T,𝔾}
+    G = base_lie_group(𝔤)
+    M = base_manifold(G)
+    return get_vector!(M, X, identity_element(G, T), c, DefaultOrthonormalBasis(𝔽))
+end
+
 identity_element(::RealCircleGroup) = 0.0
 identity_element(::RealCircleGroup, p::Union{<:Number,Type{<:Number}}) = zero(p)
 function identity_element(::RealCircleGroup, ::Type{<:SArray{S,T}}) where {S,T}
@@ -79,7 +115,6 @@ Base.inv(::RealCircleGroup, p::Number) = sym_rem(-p)
 inv_left_compose(::RealCircleGroup, g::Number, h::Number) = sym_rem(-g + h)
 
 inv_right_compose(::RealCircleGroup, g::Number, h::Number) = sym_rem(g - h)
-
 
 lie_bracket(::LieAlgebra{ℝ, AdditionGroupOperation, RealCircleGroup}, X::Any, ::Any) = zero(X)
 
