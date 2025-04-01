@@ -7,8 +7,6 @@ function CircleGroup(M::Manifolds.Circle{ℂ})
     )
 end 
 
-CircleGroup(𝔽::ManifoldsBase.AbstractNumbers=ℂ) = CircleGroup(Circle(𝔽))
-
 function diff_left_compose(::CircleGroup{ℂ, Circle{ℂ}}, g::Number, h::Any, X::Number)
     return g * X
 end

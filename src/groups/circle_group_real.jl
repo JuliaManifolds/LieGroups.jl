@@ -5,7 +5,11 @@ function CircleGroup(M::Manifolds.Circle{ℝ})
     return CircleGroup{ℝ, typeof(M)}(
         M, AdditionGroupOperation()
     )
-end
+end 
+
+#construct CircleGroup(Circle(ℝ)) or CircleGroup(Circle(ℂ)) by just using the field as input, ℂ is the default
+CircleGroup(𝔽::ManifoldsBase.AbstractNumbers=ℂ) = CircleGroup(Circle(𝔽))
+
 _doc_sym_rem = """
     sym_rem(x,[T=π])
 
