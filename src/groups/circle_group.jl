@@ -1,102 +1,80 @@
-#
-#circle group represented by complex numbers, operation: complex multiplication
-#
-function CircleGroup(M::Manifolds.Circle{ℂ})
-    return CircleGroup{ℂ, typeof(M)}(
-        M, ScalarMultiplicationGroupOperation()
-    )
-end 
+"""
+    CircleGroup{𝔽, M}
 
-CircleGroup(𝔽::ManifoldsBase.AbstractNumbers=ℂ) = CircleGroup(Circle(𝔽))
+The circle group ``𝕊^1`` is the multiplicative group of complex numbers 
+``z ∈ ℂ`` of absolute value ``1``. 
+It is  a one dimensional Riemannian manifold and a Lie group. The Lie algebra is precisely the imaginary axis of the complex plane.
+The elements of the circle group can be represented in three different ways.
 
-function diff_left_compose(::CircleGroup{ℂ, Circle{ℂ}}, g::Number, h::Any, X::Number)
-    return g * X
-end
 
-function diff_right_compose(::CircleGroup{ℂ, Circle{ℂ}}, g::Number, h::Any, X::Number)
-    return X * g
-end
+The first way is to represent the elements of the circle group as complex numbers
 
-_doc_exp_complex_circ = """
-    exp(::CircleGroup{ℂ, Circle{ℂ}}, X)
-    exp!(::CircleGroup{ℂ, Circle{ℂ}}, g, X)
-
-Computes the Lie group exponential on the complex [`CircleGroup`](@ref), which coincides with the
-[ordinary complex exponential](https://en.wikipedia.org/wiki/Exponential_map_(Lie_theory)#Examples).
-
-The Lie algebra is precisely the imaginary axis of the complex plane.
-
-This can be computed in-place of `g`.
 ```math
-$(_tex(:exp)) ($(_math(:i))t) = $(_tex(:cos))(t) + $(_math(:i))$(_tex(:sin))(t)
+𝕊¹ = $(_tex(:SetDef, "z ∈ ℂ", "|z| = 1", "big")) = $(_tex(:SetDef, "a + bi ∈ ℂ", "a^2+b^2 = 1", "big")).
 ```
+
+It is equipped with the group operation of complex 
+multiplication [`ScalarMultiplicationGroupOperation`](@ref). 
+That operation is given by
+
+```math
+(a + b*im) ∘ (c + d*im) := (ac - bd) + (ad + bc)*im,
+```
+for complex numbers ``(a + b*im), (c + d*im) ∈ ℂ``.
+
+
+The second way to represent elements of the circle group is by the angle 
+on the unit circle that they correspond to. In that case
+the elements are represented by real numbers ``x ∈ [-π,π)`` and the 
+circle group is identified with a quotient space of the real numbers
+
+```math
+ 𝕊¹ = ℝ / 2πℤ = $(_tex(:SetDef, "[x] ∈ ℝ / 2πℤ", "x ∈ [-π,π)", "big")).
+```
+
+It is equipped with the group operation of adding angles 
+``$(_tex(:rm, raw"mod\, ")) 2π`` via [`AdditionGroupOperation`](@ref).
+
+
+The third way is to represent elements of the circle group as two dimensional 
+real valued vectors. In that case the circle group
+is identified with the unit circle in ``ℝ^2``, i.e. the 
+one dimensional [`Sphere`](@extref `Manifolds.Sphere`).
+
+```math
+𝕊^1 = $(_tex(:SetDef, "(x, y) ∈ ℝ^2", "x^2 + y^2 = 1", "big")).
+```
+
+It is equipped with the group operation of adding the angles 
+of two points on the unit circle which corresponds to the complex 
+multiplication
+
+```math
+(x_1, y_1) ∘ (x_2, y_2) := ((x_1*x_2 - y_1*y_2), (x_1*y_2 + x_2*y_1)),
+```
+for real valued vectors ``(x_1, y_1), (x_2, y_2) ∈ ℂ`` via [`MultiplicationGroupOperation`](@ref).
+
+# Constructor
+    	
+    CircleGroup(Circle(ℂ))
+    CircleGroup(ℂ)
+    CircleGroup()
+
+Generate the circle group represented as complex numbers.
+
+    CircleGroup(Circle(ℝ))
+    CircleGroup(ℝ)
+
+Generate the circle group represented as real valued angles
+``x ∈ [-π, π)``.
+
+    CircleGroup(Sphere(1))
+    CircleGroup(ℝ^2)
+
+Generate the circle group represented as two dimensional real valued vectors.
+
+The default representation is by complex numbers and can be constructed with `CircleGroup()`.
 """
+const CircleGroup{𝔽, M <: AbstractManifold{𝔽}} = LieGroup{𝔽, AbstractGroupOperation, M}
 
-@doc "$(_doc_exp_complex_circ)"
-Base.exp(::CircleGroup{ℂ, Circle{ℂ}}, X::Number) = exp(X)
-
-@doc "$(_doc_exp_complex_circ)"
-exp!(M::CircleGroup{ℂ, Circle{ℂ}}, g, X)
-
-function get_coordinates_lie(
-    𝔤::LieAlgebra{𝔽,Op,CircleGroup}, X, ::DefaultLieAlgebraOrthogonalBasis{𝔾}
-) where {𝔽,Op<:AbstractGroupOperation,𝔾}
-    G = base_lie_group(𝔤)
-    M = base_manifold(G)
-    return get_coordinates(M, identity_element(G), X, DefaultOrthonormalBasis(𝔽))
-end
-function get_coordinates_lie!(
-    𝔤::LieAlgebra{𝔽,Op,CircleGroup}, c, X, ::DefaultLieAlgebraOrthogonalBasis{𝔾}
-) where {𝔽,Op<:AbstractGroupOperation,𝔾}
-    G = base_lie_group(𝔤)
-    M = base_manifold(G)
-    return get_coordinates!(M, c, identity_element(G), X, DefaultOrthonormalBasis(𝔽))
-end
-function get_vector_lie(
-    𝔤::LieAlgebra{𝔽,Op,CircleGroup},
-    c,
-    ::DefaultLieAlgebraOrthogonalBasis{𝔾},
-    T::Type=ComplexF64,
-) where {𝔽,Op<:AbstractGroupOperation,𝔾}
-    G = base_lie_group(𝔤)
-    M = base_manifold(G)
-    return get_vector(M, identity_element(G, T), c, DefaultOrthonormalBasis(𝔽))
-end
-function get_vector_lie!(
-    𝔤::LieAlgebra{𝔽,Op,CircleGroup}, X::T, c, ::DefaultLieAlgebraOrthogonalBasis{𝔾}
-) where {𝔽,Op<:AbstractGroupOperation,T,𝔾}
-    G = base_lie_group(𝔤)
-    M = base_manifold(G)
-    return get_vector!(M, X, identity_element(G, T), c, DefaultOrthonormalBasis(𝔽))
-end
-
-_doc_log_complex_circ = """
-    log(::CircleGroup{ℂ, Circle{ℂ}}, g)
-    log!(::CircleGroup{ℂ, Circle{ℂ}}, X, g)
-
-Compute the Lie group logarithm on the complex [`CircleGroup`](@ref), which coincides with the
-ordinary complex logarithm.
-"""
-
-identity_element(::CircleGroup) = 1.0 + 0.0im
-identity_element(::CircleGroup, T::Union{<:Number,Type{<:Number}}) = one(T)
-identity_element(::CircleGroup, ::Type{<:SArray{S,T}}) where {S,T} = @SArray fill(one(T))
-identity_element(::CircleGroup, ::Type{<:MArray{S,T}}) where {S,T} = @MArray fill(one(T))
-
-@doc "$(_doc_log_complex_circ)"
-ManifoldsBase.log(::CircleGroup{ℂ, Circle{ℂ}}, g)
-
-@doc "$(_doc_log_complex_circ)"
-ManifoldsBase.log!(M::CircleGroup{ℂ, Circle{ℂ}}, X, g)
-
-function ManifoldsBase.log(::CircleGroup{ℂ, Circle{ℂ}}, g::Number)
-    return log(g)
-end
-
-function Base.show(io::IO, ::CircleGroup{ℂ, Circle{ℂ}})
-    return print(io, "CircleGroup()")
-end
-
-
-
-
+#functions for different representations in seperate files
