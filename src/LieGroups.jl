@@ -14,6 +14,7 @@ using LinearAlgebra, ManifoldsBase, Manifolds, Quaternions, StaticArrays, Random
 
 import LinearAlgebra: adjoint, adjoint!
 using ManifoldsBase: RealNumbers, ComplexNumbers, ℝ, ℂ, internal_value
+using StaticArrays
 #
 #
 # = Compatibility (and a bit of type piracy for now)
@@ -135,6 +136,7 @@ export norm, number_of_coordinates
 export injectivity_radius
 export rand, rand!
 export switch
+export sym_rem
 export vee, vee!
 export zero_vector, zero_vector!
 end # module LieGroups

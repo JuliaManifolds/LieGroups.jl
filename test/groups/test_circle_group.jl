@@ -31,8 +31,8 @@ using LieGroupsTestSuite
             inv_right_compose,
             is_identity,
             lie_bracket,
-            #log,
-            #rand,
+            log,
+            # rand, # Waiting just for PR Manifolds.jl#789
             show,
             #vee,
         ],
@@ -46,7 +46,6 @@ using LieGroupsTestSuite
     properties[:Vectors] = [X1, X2, X3]
     test_lie_group(C1, properties, expectations)
 end
-
 @testset "Real Circle" begin
     C2 = CircleGroup(Circle(ℝ))
     x1, x2, x3 = 0.0, 1.0, -π
@@ -59,31 +58,30 @@ end
         :Mutating => true,
         :Functions => [
             compose,
-            # conjugate,
-            # diff_conjugate,
-            # diff_inv,
-            # diff_left_compose,
-            # diff_right_compose,
-            # exp,
-            # hat,
-            #inv,
-            # inv_left_compose,
-            # inv_right_compose,
+            conjugate,
+            diff_conjugate,
+            diff_inv,
+            diff_left_compose,
+            diff_right_compose,
+            exp,
+            #hat,
+            inv,
+            inv_left_compose,
+            inv_right_compose,
             is_identity,
-            # lie_bracket,
-            # log,
-            #rand,
-            # show,
+            lie_bracket,
+            log,
+            rand,
+            show,
             #vee,
         ],
     )
     expectations = Dict(:repr => "CircleGroup(ℝ)")
-    #test_lie_group(C2, properties, expectations)
+    test_lie_group(C2, properties, expectations)
 
     properties[:Name] = "IsBit-representation of Points and Vectors"
     properties[:Mutating] = false
     properties[:Points] = [x1, x2, x3]
     properties[:Vectors] = [X1, X2, X3]
-    #test_lie_group(C2, properties, expectations)
-
+    test_lie_group(C2, properties, expectations)
 end
