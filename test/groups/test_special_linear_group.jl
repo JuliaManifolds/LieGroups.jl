@@ -24,7 +24,7 @@ using LieGroupsTestSuite
                 diff_left_compose,
                 diff_right_compose,
                 exp,
-                # hat, # how can we vectorize a matrix and “remove” one dim while keep tr0?
+                hat,
                 inv,
                 inv_left_compose,
                 inv_right_compose,
@@ -33,7 +33,7 @@ using LieGroupsTestSuite
                 log,
                 rand,
                 show,
-                #vee, # see hat
+                vee,
             ],
         )
         expectations = Dict(:repr => "SpecialLinearGroup(2, ℝ)", :atol => 1e-10)
@@ -56,7 +56,7 @@ using LieGroupsTestSuite
                 diff_left_compose,
                 diff_right_compose,
                 exp,
-                # hat
+                #hat,
                 inv,
                 inv_left_compose,
                 inv_right_compose,
@@ -65,7 +65,7 @@ using LieGroupsTestSuite
                 log,
                 rand,
                 show,
-                # vee,
+                #vee,
             ],
         )
         expectations = Dict(:repr => "SpecialLinearGroup(2, ℂ)", :atol => 1e-14)

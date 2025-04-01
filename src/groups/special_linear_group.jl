@@ -27,6 +27,30 @@ function SpecialLinearGroup(n::Int, field=ManifoldsBase.ℝ; kwargs...)
     )
 end
 
+# TODO: document hat/vee with the corresponding formulae
+
+function get_coordinates_lie!(
+    ::LieAlgebra{ℝ,MatrixMultiplicationGroupOperation,<:SpecialLinearGroup},
+    c,
+    X,
+    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+)
+    c .= X[1:(end - 1)]
+    return c
+end
+
+function get_vector_lie!(
+    𝔤::LieAlgebra{ℝ,MatrixMultiplicationGroupOperation,<:SpecialLinearGroup},
+    X,
+    c,
+    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+)
+    X[1:(end - 1)] .= c
+    X[end] = 0
+    X[end] = -tr(X)
+    return X
+end
+
 function Base.show(
     io::IO, ::SpecialLinearGroup{𝔽,ManifoldsBase.TypeParameter{Tuple{n}}}
 ) where {𝔽,n}
