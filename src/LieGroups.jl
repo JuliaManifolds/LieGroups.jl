@@ -45,6 +45,9 @@ include("groups/validation_group.jl")
 include("groups/translation_group.jl")
 include("groups/general_linear_group.jl")
 include("groups/circle_group.jl")
+include("groups/circle_group_complex.jl")
+include("groups/circle_group_real.jl")
+include("groups/circle_group_sphere.jl")
 include("groups/heisenberg_group.jl")
 include("groups/symplectic_group.jl")
 
@@ -87,7 +90,7 @@ export InverseLeftGroupOperationAction, InverseRightGroupOperationAction
 #
 #
 # Specific groups
-export CircleGroup, RealCircleGroup
+export CircleGroup
 export GeneralLinearGroup
 export HeisenbergGroup
 export OrthogonalGroup

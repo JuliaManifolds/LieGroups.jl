@@ -1,13 +1,14 @@
 using LieGroups, Random, Test
 
 using ManifoldsBase: ℂ
+using Manifolds: Circle
 
 s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 !(s in LOAD_PATH) && (push!(LOAD_PATH, s))
 using LieGroupsTestSuite
 
 @testset "Complex Circle" begin
-    C1 = CircleGroup()
+    C1 = CircleGroup(Circle(ℂ))
     z1, z2, z3 = 1.0, 1.0im, -1.0im
     X1, X2, X3 = 1.0im, 0.0, -2.0im
     properties = Dict(
@@ -47,7 +48,7 @@ using LieGroupsTestSuite
 end
 
 @testset "Real Circle" begin
-    C2 = RealCircleGroup()
+    C2 = CircleGroup(Circle(ℝ))
     x1, x2, x3 = 0.0, 1.0, -π
     X1, X2, X3 = 1.0, 3.0, -123.0
     properties = Dict(
@@ -76,7 +77,7 @@ end
             #vee,
         ],
     )
-    expectations = Dict(:repr => "RealCircleGroup()")
+    expectations = Dict(:repr => "CircleGroup(ℝ)")
     #test_lie_group(C2, properties, expectations)
 
     properties[:Name] = "IsBit-representation of Points and Vectors"
