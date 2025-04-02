@@ -67,13 +67,13 @@ This can be computed in-place of `k`.
 """
 
 @doc "$(_doc_compose_mult)"
-compose(::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, ::Any, ::Any) where {𝔽}
+compose(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any) where {𝔽}
 @doc "$(_doc_compose_mult)"
 compose!(
     ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any
 ) where {𝔽}
 
-function _compose!(::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, k, g, h) where {𝔽}
+function _compose!(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, k, g, h) where {𝔽}
     # perform the multiplication “safe”, that is, even when providing
     # one of the inputs `g,h`` and as output `k`
     (k === g || k === h) ? copyto!(k, g * h) : mul!(k, g, h)
@@ -130,7 +130,7 @@ Then we get ``g^{$(_tex(:transp))}(g^{-1}(gX)g^{-1})`` which simplifies to ``-g^
 diff_inv(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any) where {𝔽}
 
 function diff_inv(
-    ::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation},
+    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation},
     p::AbstractArray{<:Number,0},
     X::AbstractArray{<:Number,0},
 ) where {𝔽}
@@ -139,7 +139,7 @@ function diff_inv(
 end
 
 @doc "$(_doc_diff_inv_mult)"
-function diff_inv!(::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, Y, p, X) where {𝔽}
+function diff_inv!(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, p, X) where {𝔽}
     p_inv = inv(p)
     Z = X * p_inv
     mul!(Y, p', Z)
@@ -157,12 +157,12 @@ which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``Dλ_
 
 @doc "$(_doc_diff_left_compose_mult)"
 diff_left_compose(
-    ::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, ::Any, ::Any, ::Any
+    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any
 ) where {𝔽}
 
 @doc "$(_doc_diff_left_compose_mult)"
 function diff_left_compose!(
-    G::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, Y, g, h, X
+    G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, g, h, X
 ) where {𝔽}
     return copyto!(LieAlgebra(G), Y, g * X)
 end
@@ -177,17 +177,17 @@ which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``Dρ_
 
 @doc "$(_doc_diff_right_compose_mult)"
 diff_right_compose(
-    ::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, ::Any, ::Any, ::Any
+    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any
 ) where {𝔽}
 
 @doc "$(_doc_diff_right_compose_mult)"
 function diff_right_compose!(
-    G::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, Y, g, ::Any, X
+    G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, g, ::Any, X
 ) where {𝔽}
     return copyto!(LieAlgebra(G), Y, X * g)
 end
 
-_doc_exp_matrix_mult = """
+_doc_exp_mult = """
     exp(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, X)
     exp!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g, X)
 
@@ -197,38 +197,38 @@ which simplifies to the [matrix exponential](https://en.wikipedia.org/wiki/Matri
 This can be computed in-place of `g`.
 """
 
-@doc "$(_doc_exp_matrix_mult)"
-ManifoldsBase.exp(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, ::Any) where {𝔽}
+@doc "$(_doc_exp_mult)"
+ManifoldsBase.exp(::LieGroup{𝔽,AbstractMultiplicationGroupOperation}, ::Any) where {𝔽}
 
-@doc "$(_doc_exp_matrix_mult)"
+@doc "$(_doc_exp_mult)"
 function ManifoldsBase.exp!(
-    ::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, g, X
+    ::LieGroup{𝔽,AbstractMultiplicationGroupOperation}, g, X
 ) where {𝔽}
     copyto!(g, exp(X))
     return g
 end
 
-_doc_identity_element_mat_mult = """
-    identity_element(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation})
-    identity_element!(G::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, e)
+_doc_identity_element_mult = """
+    identity_element(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation})
+    identity_element!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, e)
 
 Return the a point representation of the [`Identity`](@ref),
-which for an [`MatrixMultiplicationGroupOperation`](@ref) is the one-element or identity array.
+which for an [`AbstractMultiplicationGroupOperation`](@ref) is the one-element or identity array.
 """
 
-@doc "$(_doc_identity_element_mat_mult)"
-identity_element(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}) where {𝔽}
+@doc "$(_doc_identity_element_mult)"
+identity_element(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}) where {𝔽}
 
-@doc "$(_doc_identity_element_mat_mult)"
-identity_element!(::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, e) where {𝔽}
+@doc "$(_doc_identity_element_mult)"
+identity_element!(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, e) where {𝔽}
 function identity_element!(
-    ::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, e::AbstractMatrix
+    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, e::AbstractMatrix
 ) where {𝔽}
     return copyto!(e, LinearAlgebra.I)
 end
 
 _doc_inv_mult = """
-    inv(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperationroupOperation}, g)
+    inv(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g)
     inv!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, h, g)
 
 Compute the inverse group element ``g^{-1}``, which for an [`AbstractMultiplicationGroupOperation`](@ref)
@@ -251,13 +251,13 @@ end
 
 # Compute g^{-1}h more efficient than inverting g
 function inv_left_compose!(
-    ::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, k, g, h
+    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, k, g, h
 ) where {𝔽}
     return copyto!(k, g \ h)
 end
 # Compute g∘h^{-1} more efficient than inverting h
 function inv_right_compose!(
-    ::LieGroup{𝔽,MatrixMultiplicationGroupOperation}, k, g, h
+    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, k, g, h
 ) where {𝔽}
     return copyto!(k, g / h)
 end
@@ -327,7 +327,7 @@ function ManifoldsBase.log!(
     return X
 end
 
-LinearAlgebra.mul!(q, ::Identity{<:AbstractMultiplicationGroupOperation}, p) = copyto!(q, p)
+LinearAlgebra.mul!(q, ::Identity{MatrixMultiplicationGroupOperation}, p) = copyto!(q, p)
 function LinearAlgebra.mul!(
     q::AbstractMatrix, p::AbstractMatrix, ::Identity{MatrixMultiplicationGroupOperation}
 )
@@ -335,8 +335,8 @@ function LinearAlgebra.mul!(
 end
 function LinearAlgebra.mul!(
     q::Union{AbstractMatrix},
-    ::Identity{<:AbstractMultiplicationGroupOperation},
-    ::Identity{<:AbstractMultiplicationGroupOperation},
+    ::Identity{MatrixMultiplicationGroupOperation},
+    ::Identity{MatrixMultiplicationGroupOperation},
 )
     return copyto!(q, I)
 end
