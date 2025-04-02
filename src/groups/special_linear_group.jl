@@ -66,7 +66,9 @@ This can be computed in-place of `X`.
 """
 
 @doc "$(_doc_hat_special_linear)"
-ManifoldsBase.hat(::LieAlgebra{ℝ,MatrixMultiplicationGroupOperation,<:SpecialLinearGroup}, c)
+ManifoldsBase.hat(
+    ::LieAlgebra{ℝ,MatrixMultiplicationGroupOperation,<:SpecialLinearGroup}, c
+)
 
 @doc "$(_doc_hat_special_linear)"
 ManifoldsBase.hat!(
