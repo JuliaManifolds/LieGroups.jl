@@ -211,7 +211,7 @@ function lie_bracket(
 end
 
 function lie_bracket!(
-    ::LieAlgebra{𝔽,ScalarMultiplicationGroupOperation}, Z, ::Any, ::Any
+    ::LieAlgebra{𝔽,ScalarMultiplicationGroupOperation}, Z, X, Y,
 ) where {𝔽}
     return copyto!(Z, zero(Z))
 end
@@ -219,7 +219,7 @@ end
 function ManifoldsBase.log(
     G::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, g::AbstractArray{<:Any,0}
 ) where {𝔽}
-    return map(gg -> log(G, gg), g)
+    return g[] = log(G, g[]
 end
 
 function ManifoldsBase.log(
