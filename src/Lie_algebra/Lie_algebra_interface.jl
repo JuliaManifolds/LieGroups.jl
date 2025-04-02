@@ -219,7 +219,7 @@ _doc_hat = """
     hat(G::LieAlgebra, c, T::Type)
     hat!(G::LieAlgebra, X::T, c)
 
-Compute the hat map ``(⋅)^̂ : $(_tex(:Cal, "V")) → 𝔤`` that maps a vector of coordinates ``$(_tex(:vec, "c")) ∈ $(_tex(:Cal, "V"))``,
+Compute the hat map ``(⋅)^{\\wedge}: $(_tex(:Cal, "V")) → 𝔤`` that maps a vector of coordinates ``$(_tex(:vec, "c")) ∈ $(_tex(:Cal, "V"))``,
 to a tangent vector ``X ∈ $(_math(:𝔤))``.
 The coefficients are given with respect to a specific basis to a tangent vector in the Lie algebra
 
@@ -360,7 +360,7 @@ _doc_vee = """
     vee(𝔤::LieAlgebra, X)
     vee!(𝔤::LieAlgebra, c, X)
 
-Compute the vee map ``(⋅)^∨: $(_math(:𝔤)) → $(_tex(:Cal, "V"))`` that maps a tangent vector `X`
+Compute the vee map ``(⋅){\\vee}: $(_math(:𝔤)) → $(_tex(:Cal, "V"))`` that maps a tangent vector `X`
 from the [`LieAlgebra`](@ref) $(_math(:𝔤)) to its coordinates with respect to the [`DefaultLieAlgebraOrthogonalBasis`](@ref) basis in the Lie algebra
 
 ```math

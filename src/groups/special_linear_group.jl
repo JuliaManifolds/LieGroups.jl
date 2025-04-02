@@ -55,7 +55,7 @@ _doc_hat_special_linear = """
     X = hat(𝔤::LieAlgebra{ℝ,MatrixMultiplicationGroupOperation,<:SpecialLinearGroup}, c)
     hat!(𝔤::LieAlgebra{ℝ,MatrixMultiplicationGroupOperation,<:SpecialLinearGroup}, X, c)
 
-Compute the hat map ``(⋅)^̂ : ℝ^{n^2-1} → 𝔤`` that turns a vector of coordinates `c``
+Compute the hat map ``(⋅)^{\\wedge} : ℝ^{n^2-1} → 𝔤`` that turns a vector of coordinates `c``
 into a tangent vector in the Lie algebra.
 
 The formula on the Lie algebra ``𝔤`` of the [`SpecialLinearGroup`](@ref)`(n)` is given by
@@ -88,7 +88,7 @@ _doc_vee_special_linear = """
     c = vee(𝔤::LieAlgebra{ℝ,MatrixMultiplicationGroupOperation,<:SpecialLinearGroup}, X)
     vee!(𝔤::LieAlgebra{ℝ,MatrixMultiplicationGroupOperation,<:SpecialLinearGroup}, c, X)
 
-Compute the vee map ``(⋅)^∨: $(_math(:𝔤)) →  ℝ^{n^2-1}`` that maps a tangent vector
+Compute the vee map ``(⋅)^{\\vee}: $(_math(:𝔤)) →  ℝ^{n^2-1}`` that maps a tangent vector
 from the Lie algebra to a vector of coordinates `c``
 
 The formula on the Lie algebra ``𝔤`` of the [`SpecialLinearGroup`](@ref)`(n)` is given by
