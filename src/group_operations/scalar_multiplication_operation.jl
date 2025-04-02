@@ -1,9 +1,9 @@
 """
-    ScalarMultiplicationGroupOperation <: AbstractGroupOperation
+    ScalarMultiplicationGroupOperation <: AbstractMultiplicationGroupOperation
 
 A group operation that is realised by a scalar multiplication.
 """
-struct ScalarMultiplicationGroupOperation <: AbstractGroupOperation end
+struct ScalarMultiplicationGroupOperation <: AbstractMultiplicationGroupOperation end
 
 function _compose(
     ::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, g::Number, h::Number
