@@ -1,6 +1,7 @@
 using LieGroups, Random, Test
 
 using ManifoldsBase: ℂ
+using ManifoldsBase: ℝ
 using Manifolds: Circle
 
 s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")

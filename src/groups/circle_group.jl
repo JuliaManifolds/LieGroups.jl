@@ -75,6 +75,6 @@ Generate the circle group represented as two dimensional real valued vectors.
 
 The default representation is by complex numbers and can be constructed with `CircleGroup()`.
 """
-const CircleGroup{𝔽, M <: AbstractManifold{𝔽}} = LieGroup{𝔽, AbstractGroupOperation, M}
+const CircleGroup{𝔽, Op, M <: AbstractManifold{𝔽}} = LieGroup{𝔽, Op, M}
 
 #functions for different representations in seperate files
