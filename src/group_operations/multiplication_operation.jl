@@ -198,11 +198,11 @@ This can be computed in-place of `g`.
 """
 
 @doc "$(_doc_exp_mult)"
-ManifoldsBase.exp(::LieGroup{𝔽,AbstractMultiplicationGroupOperation}, ::Any) where {𝔽}
+ManifoldsBase.exp(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any) where {𝔽}
 
 @doc "$(_doc_exp_mult)"
 function ManifoldsBase.exp!(
-    ::LieGroup{𝔽,AbstractMultiplicationGroupOperation}, g, X
+    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g, X
 ) where {𝔽}
     copyto!(g, exp(X))
     return g

@@ -450,7 +450,7 @@ function identity_element(G::AbstractLieGroup)
     e = ManifoldsBase.allocate_result(G, identity_element)
     return identity_element!(G, e)
 end
-function identity_element(G::LieGroup, T::Type)
+function identity_element(G::AbstractLieGroup, T::Type)
     e = ManifoldsBase.allocate_on(G, T)
     return identity_element!(G, e)
 end
