@@ -341,9 +341,9 @@ function LinearAlgebra.mul!(
     return copyto!(q, I)
 end
 function LinearAlgebra.mul!(
-    q::Identity{<:AbstractMultiplicationGroupOperation},
-    ::Identity{<:AbstractMultiplicationGroupOperation},
-    ::Identity{<:AbstractMultiplicationGroupOperation},
+    q::Identity{MatrixMultiplicationGroupOperation},
+    ::Identity{MatrixMultiplicationGroupOperation},
+    ::Identity{MatrixMultiplicationGroupOperation},
 )
     return q
 end
