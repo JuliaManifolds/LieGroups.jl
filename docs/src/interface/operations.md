@@ -12,7 +12,7 @@ The following sections collect these.
 
 
 * an [`AdditionGroupOperation`](@ref)
-* a [`ScalarMultiplicationGroupOperation`](@ref) and
+* a [`AbelianMultiplicationGroupOperation`](@ref) and
 * a [`MatrixMultiplicationGroupOperation`](@ref)
 
 
@@ -24,7 +24,7 @@ Pages = ["addition_operation.jl"]
 Order = [:type, :function]
 ```
 
-  
+
 ## [Multiplication group operation](@id multiplication-operation-sec)
 
 ```@autodocs

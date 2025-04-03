@@ -2,12 +2,12 @@
 #circle group represented by complex numbers, operation: complex multiplication
 #
 function CircleGroup(M::Manifolds.Circle{ℂ})
-    return LieGroup{ℂ,ScalarMultiplicationGroupOperation,typeof(M)}(
-        M, ScalarMultiplicationGroupOperation()
+    return LieGroup{ℂ,AbelianMultiplicationGroupOperation,typeof(M)}(
+        M, AbelianMultiplicationGroupOperation()
     )
 end
 
-const _ComplexCircleGroup = LieGroup{ℂ,ScalarMultiplicationGroupOperation,<:Circle{ℂ}}
+const _ComplexCircleGroup = LieGroup{ℂ,AbelianMultiplicationGroupOperation,<:Circle{ℂ}}
 
 function diff_left_compose(::_ComplexCircleGroup, g::Number, h::Any, X::Number)
     return g * X
@@ -18,8 +18,8 @@ function diff_right_compose(::_ComplexCircleGroup, g::Number, h::Any, X::Number)
 end
 
 _doc_exp_complex_circ = """
-    exp(::CircleGroup{ℂ, ScalarMultiplicationGroupOperation, Circle{ℂ}}, X)
-    exp!(::CircleGroup{ℂ, ScalarMultiplicationGroupOperation, Circle{ℂ}}, g, X)
+    exp(::CircleGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, X)
+    exp!(::CircleGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, g, X)
 
 Computes the Lie group exponential on the complex [`CircleGroup`](@ref), which coincides with the
 [ordinary complex exponential](https://en.wikipedia.org/wiki/Exponential_map_(Lie_theory)#Examples).
@@ -39,7 +39,7 @@ Base.exp(::_ComplexCircleGroup, X::Number) = exp(X)
 exp!(M::_ComplexCircleGroup, g, X)
 
 function get_coordinates_lie(
-    𝔤::LieAlgebra{ℂ,ScalarMultiplicationGroupOperation,_ComplexCircleGroup},
+    𝔤::LieAlgebra{ℂ,AbelianMultiplicationGroupOperation,_ComplexCircleGroup},
     X::T,
     ::DefaultLieAlgebraOrthogonalBasis{𝔽},
 ) where {T,𝔽}
@@ -48,7 +48,7 @@ function get_coordinates_lie(
     return get_coordinates(M, identity_element(G, T), X, DefaultOrthonormalBasis(𝔽))
 end
 function get_coordinates_lie!(
-    𝔤::LieAlgebra{ℂ,ScalarMultiplicationGroupOperation,_ComplexCircleGroup},
+    𝔤::LieAlgebra{ℂ,AbelianMultiplicationGroupOperation,_ComplexCircleGroup},
     c,
     X,
     ::DefaultLieAlgebraOrthogonalBasis{𝔽},
@@ -58,7 +58,7 @@ function get_coordinates_lie!(
     return get_coordinates!(M, c, identity_element(G), X, DefaultOrthonormalBasis(𝔽))
 end
 function get_vector_lie(
-    𝔤::LieAlgebra{ℂ,ScalarMultiplicationGroupOperation,_ComplexCircleGroup},
+    𝔤::LieAlgebra{ℂ,AbelianMultiplicationGroupOperation,_ComplexCircleGroup},
     c,
     ::DefaultLieAlgebraOrthogonalBasis{𝔽},
     T::Type=ComplexF64,
@@ -68,7 +68,7 @@ function get_vector_lie(
     return get_vector(M, identity_element(G, T), c, DefaultOrthonormalBasis(𝔽))
 end
 function get_vector_lie!(
-    𝔤::LieAlgebra{ℂ,ScalarMultiplicationGroupOperation,_ComplexCircleGroup},
+    𝔤::LieAlgebra{ℂ,AbelianMultiplicationGroupOperation,_ComplexCircleGroup},
     X::T,
     c,
     ::DefaultLieAlgebraOrthogonalBasis{𝔽},
@@ -87,8 +87,8 @@ function ManifoldsBase.isapprox(::_ComplexCircleGroup, p, X, Y; kwargs...)
 end
 
 _doc_log_complex_circ = """
-    log(::CircleGroup{ℂ, ScalarMultiplicationGroupOperation, Circle{ℂ}}, g)
-    log!(::CircleGroup{ℂ, ScalarMultiplicationGroupOperation, Circle{ℂ}}, X, g)
+    log(::CircleGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, g)
+    log!(::CircleGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, X, g)
 
 Compute the Lie group logarithm on the complex [`CircleGroup`](@ref), which coincides with the
 ordinary complex logarithm.

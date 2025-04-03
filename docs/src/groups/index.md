@@ -4,10 +4,10 @@
 
 | Group | Manifold | ``∘`` | Comment |
 |:------|:---------|:---------:|:------|
-| [`CircleGroup`](@ref) | Complex valued [`Circle`](@extref `Manifolds.Circle`) | [`*`](@ref ScalarMultiplicationGroupOperation) | |
+| [`CircleGroup`](@ref) | Complex valued [`Circle`](@extref `Manifolds.Circle`) | [`*`](@ref AbelianMultiplicationGroupOperation) | |
 | [`GeneralLinearGroup`](@ref) | [`InvertibleMatrices`](@extref `Manifolds.InvertibleMatrices`) | [`*`](@ref MatrixMultiplicationGroupOperation) | |
 | [`HeisenbergGroup`](@ref) | [`HeisenbergMatrices`](@extref `Manifolds.HeisenbergMatrices`) | [`*`](@ref MatrixMultiplicationGroupOperation) | |
-| [`OrthogonalGroup`](@ref) | [`OrthogonalMatrices`](@extref `Manifolds.OrthogonalMatrices`) | [`*`](@ref MatrixMultiplicationGroupOperation) | This can be interpreted as all rotations and reflections. 
+| [`OrthogonalGroup`](@ref) | [`OrthogonalMatrices`](@extref `Manifolds.OrthogonalMatrices`) | [`*`](@ref MatrixMultiplicationGroupOperation) | This can be interpreted as all rotations and reflections.
 | [`PowerLieGroup`](@ref) | [`PowerManifold`](@extref `ManifoldsBase.PowerManifold`) | [`∘`](@ref PowerGroupOperation) | [`^`](@ref PowerLieGroup) is a constructor |
 | [`ProductLieGroup`](@ref) | [`ProductManifold`](@extref `ManifoldsBase.ProductManifold`) | [`∘`](@ref ProductGroupOperation) | [`×`](@ref LinearAlgebra.cross(::AbstractGroupOperation...)) of two Lie groups is a constructor |
 | [`LeftSemidirectProductLieGroup`](@ref) | [`ProductManifold`](@extref `ManifoldsBase.ProductManifold`) | [`∘`](@ref LeftSemidirectProductGroupOperation) | [`⋉`](@ref ⋉(L1::LieGroup, L2::LieGroup)) of 2 Lie groups is a constructor, similarly [`⋊`](@ref ⋊(L1::LieGroup, L2::LieGroup)) for the right variant |

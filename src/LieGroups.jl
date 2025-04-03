@@ -76,7 +76,7 @@ export AbstractGroupOperation, Identity
 export AdditionGroupOperation
 export AbstractMultiplicationGroupOperation
 export MatrixMultiplicationGroupOperation
-export ScalarMultiplicationGroupOperation
+export AbelianMultiplicationGroupOperation
 export PowerGroupOperation, ProductGroupOperation
 export LeftSemidirectProductGroupOperation, RightSemidirectProductGroupOperation
 

@@ -4,8 +4,6 @@
 function CircleGroup(M::Manifolds.Circle{ℝ})
     return LieGroup{ℝ,AdditionGroupOperation,typeof(M)}(M, AdditionGroupOperation())
 end
-
-#construct CircleGroup(Circle(ℝ)) or CircleGroup(Circle(ℂ)) by just using the field as input, ℂ is the default
 CircleGroup(𝔽::ManifoldsBase.AbstractNumbers=ℂ) = CircleGroup(Circle(𝔽))
 
 const _RealCircleGroup = LieGroup{ℝ,AdditionGroupOperation,<:Circle{ℝ}}

@@ -15,7 +15,7 @@ The first way is to represent the elements of the circle group as complex number
 ```
 
 It is equipped with the group operation of complex
-multiplication [`ScalarMultiplicationGroupOperation`](@ref).
+multiplication [`AbelianMultiplicationGroupOperation`](@ref).
 That operation is given by
 
 ```math
