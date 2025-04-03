@@ -10,3 +10,7 @@ end
 function CircleGroup(::Euclidean{ManifoldsBase.TypeParameter{Tuple{2}},ℝ})
     return CircleGroup(Sphere(1))
 end
+
+const _PlaneCircleGroup = LieGroup{
+    ℝ,MatrixMultiplicationGroupOperation,<:Sphere{ManifoldsBase.TypeParameter{Tuple{1}},ℝ}
+}

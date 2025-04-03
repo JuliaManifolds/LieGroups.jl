@@ -2,26 +2,18 @@
 #circle group represented by complex numbers, operation: complex multiplication
 #
 function CircleGroup(M::Manifolds.Circle{ℂ})
-    return CircleGroup{ℂ,ScalarMultiplicationGroupOperation,typeof(M)}(
+    return LieGroup{ℂ,ScalarMultiplicationGroupOperation,typeof(M)}(
         M, ScalarMultiplicationGroupOperation()
     )
 end
 
-function diff_left_compose(
-    ::CircleGroup{ℂ,ScalarMultiplicationGroupOperation,Circle{ℂ}},
-    g::Number,
-    h::Any,
-    X::Number,
-)
+const _ComplexCircleGroup = LieGroup{ℂ,ScalarMultiplicationGroupOperation,<:Circle{ℂ}}
+
+function diff_left_compose(::_ComplexCircleGroup, g::Number, h::Any, X::Number)
     return g * X
 end
 
-function diff_right_compose(
-    ::CircleGroup{ℂ,ScalarMultiplicationGroupOperation,Circle{ℂ}},
-    g::Number,
-    h::Any,
-    X::Number,
-)
+function diff_right_compose(::_ComplexCircleGroup, g::Number, h::Any, X::Number)
     return X * g
 end
 
@@ -41,49 +33,57 @@ $(_tex(:exp)) ($(_math(:i))t) = $(_tex(:cos))(t) + $(_math(:i))$(_tex(:sin))(t)
 """
 
 @doc "$(_doc_exp_complex_circ)"
-Base.exp(::CircleGroup{ℂ,ScalarMultiplicationGroupOperation,Circle{ℂ}}, X::Number) = exp(X)
+Base.exp(::_ComplexCircleGroup, X::Number) = exp(X)
 
 @doc "$(_doc_exp_complex_circ)"
-exp!(M::CircleGroup{ℂ,ScalarMultiplicationGroupOperation,Circle{ℂ}}, g, X)
+exp!(M::_ComplexCircleGroup, g, X)
 
 function get_coordinates_lie(
-    𝔤::LieAlgebra{𝔽,Op,CircleGroup{ℂ,ScalarMultiplicationGroupOperation,Circle{ℂ}}},
-    X,
-    ::DefaultLieAlgebraOrthogonalBasis{𝔾},
-) where {𝔽,Op<:AbstractGroupOperation,𝔾}
+    𝔤::LieAlgebra{ℂ,ScalarMultiplicationGroupOperation,_ComplexCircleGroup},
+    X::T,
+    ::DefaultLieAlgebraOrthogonalBasis{𝔽},
+) where {T,𝔽}
     G = base_lie_group(𝔤)
     M = base_manifold(G)
-    return get_coordinates(M, identity_element(G), X, DefaultOrthonormalBasis(𝔽))
+    return get_coordinates(M, identity_element(G, T), X, DefaultOrthonormalBasis(𝔽))
 end
 function get_coordinates_lie!(
-    𝔤::LieAlgebra{𝔽,Op,CircleGroup{ℂ,ScalarMultiplicationGroupOperation,Circle{ℂ}}},
+    𝔤::LieAlgebra{ℂ,ScalarMultiplicationGroupOperation,_ComplexCircleGroup},
     c,
     X,
-    ::DefaultLieAlgebraOrthogonalBasis{𝔾},
-) where {𝔽,Op<:AbstractGroupOperation,𝔾}
+    ::DefaultLieAlgebraOrthogonalBasis{𝔽},
+) where {𝔽}
     G = base_lie_group(𝔤)
     M = base_manifold(G)
     return get_coordinates!(M, c, identity_element(G), X, DefaultOrthonormalBasis(𝔽))
 end
 function get_vector_lie(
-    𝔤::LieAlgebra{𝔽,Op,CircleGroup{ℂ,ScalarMultiplicationGroupOperation,Circle{ℂ}}},
+    𝔤::LieAlgebra{ℂ,ScalarMultiplicationGroupOperation,_ComplexCircleGroup},
     c,
-    ::DefaultLieAlgebraOrthogonalBasis{𝔾},
+    ::DefaultLieAlgebraOrthogonalBasis{𝔽},
     T::Type=ComplexF64,
-) where {𝔽,Op<:AbstractGroupOperation,𝔾}
+) where {𝔽}
     G = base_lie_group(𝔤)
     M = base_manifold(G)
     return get_vector(M, identity_element(G, T), c, DefaultOrthonormalBasis(𝔽))
 end
 function get_vector_lie!(
-    𝔤::LieAlgebra{𝔽,Op,CircleGroup{ℂ,ScalarMultiplicationGroupOperation,Circle{ℂ}}},
+    𝔤::LieAlgebra{ℂ,ScalarMultiplicationGroupOperation,_ComplexCircleGroup},
     X::T,
     c,
-    ::DefaultLieAlgebraOrthogonalBasis{𝔾},
-) where {𝔽,Op<:AbstractGroupOperation,T,𝔾}
+    ::DefaultLieAlgebraOrthogonalBasis{𝔽},
+) where {T,𝔽}
     G = base_lie_group(𝔤)
     M = base_manifold(G)
     return get_vector!(M, X, identity_element(G, T), c, DefaultOrthonormalBasis(𝔽))
+end
+
+function identity_element(::_ComplexCircleGroup)
+    return 1.0 + 0.0im
+end
+
+function ManifoldsBase.isapprox(::_ComplexCircleGroup, p, X, Y; kwargs...)
+    return isapprox(X[], Y[]; kwargs...)
 end
 
 _doc_log_complex_circ = """
@@ -94,22 +94,16 @@ Compute the Lie group logarithm on the complex [`CircleGroup`](@ref), which coin
 ordinary complex logarithm.
 """
 
-function identity_element(::CircleGroup{ℂ,ScalarMultiplicationGroupOperation,Circle{ℂ}})
-    return 1.0 + 0.0im
-end
+@doc "$(_doc_log_complex_circ)"
+ManifoldsBase.log(::_ComplexCircleGroup, g)
 
 @doc "$(_doc_log_complex_circ)"
-ManifoldsBase.log(::CircleGroup{ℂ,ScalarMultiplicationGroupOperation,Circle{ℂ}}, g)
+ManifoldsBase.log!(M::_ComplexCircleGroup, X, g)
 
-@doc "$(_doc_log_complex_circ)"
-ManifoldsBase.log!(M::CircleGroup{ℂ,ScalarMultiplicationGroupOperation,Circle{ℂ}}, X, g)
-
-function ManifoldsBase.log(
-    ::CircleGroup{ℂ,ScalarMultiplicationGroupOperation,Circle{ℂ}}, g::Number
-)
+function ManifoldsBase.log(::_ComplexCircleGroup, g::Number)
     return log(g)
 end
 
-function Base.show(io::IO, ::CircleGroup{ℂ,ScalarMultiplicationGroupOperation,Circle{ℂ}})
+function Base.show(io::IO, ::_ComplexCircleGroup)
     return print(io, "CircleGroup()")
 end
