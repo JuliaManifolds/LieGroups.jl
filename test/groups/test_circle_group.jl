@@ -74,7 +74,7 @@ end
             log,
             rand,
             show,
-            #vee,
+            vee,
         ],
     )
     expectations = Dict(:repr => "CircleGroup(ℝ)")
