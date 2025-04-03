@@ -127,7 +127,7 @@ Then we get ``g^{$(_tex(:transp))}(g^{-1}(gX)g^{-1})`` which simplifies to ``-g^
 """
 
 @doc "$(_doc_diff_inv_mult)"
-diff_inv(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any) where {𝔽}
+diff_inv(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g, X) where {𝔽} = -X
 
 function diff_inv(
     ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation},
@@ -157,7 +157,7 @@ which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``Dλ_
 
 @doc "$(_doc_diff_left_compose_mult)"
 diff_left_compose(
-    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any
+    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g, h, X
 ) where {𝔽}
 
 @doc "$(_doc_diff_left_compose_mult)"

@@ -54,8 +54,6 @@ function diff_conjugate!(
     return copyto!(LieAlgebra(G), Y, diff_conjugate(G, g, h, X))
 end
 
-diff_inv(::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, g, X) where {𝔽} = -X
-
 function diff_inv!(G::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, Y, g, X) where {𝔽}
     return copyto!(LieAlgebra(G), Y, -X)
 end
@@ -219,7 +217,7 @@ end
 function ManifoldsBase.log(
     G::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, g::AbstractArray{<:Any,0}
 ) where {𝔽}
-    return g[] = log(G, g[]
+    return log(G, g[])
 end
 
 function ManifoldsBase.log(
