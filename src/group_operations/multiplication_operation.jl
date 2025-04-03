@@ -127,7 +127,7 @@ Then we get ``g^{$(_tex(:transp))}(g^{-1}(gX)g^{-1})`` which simplifies to ``-g^
 """
 
 @doc "$(_doc_diff_inv_mult)"
-diff_inv(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g, X) where {𝔽} = -X
+diff_inv(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g, X::Number) where {𝔽} = -X
 
 function diff_inv(
     ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation},
@@ -218,9 +218,9 @@ which for an [`AbstractMultiplicationGroupOperation`](@ref) is the one-element o
 identity_element(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}) where {𝔽}
 
 @doc "$(_doc_identity_element_mult)"
-identity_element!(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, e) where {𝔽}
+identity_element!(::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, e) where {𝔽}
 function identity_element!(
-    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, e::AbstractMatrix
+    ::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, e::AbstractMatrix
 ) where {𝔽}
     return copyto!(e, LinearAlgebra.I)
 end

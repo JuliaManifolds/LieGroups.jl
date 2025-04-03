@@ -75,9 +75,9 @@ Generate the circle group represented as two dimensional real valued vectors.
 
 The default representation is by complex numbers and can be constructed with `CircleGroup()`.
 """
-const CircleGroup{𝔽,Op,M<:Union{Circle{𝔽},AbstractSphere}} = LieGroup{𝔽,Op,M}
+const CircleGroup{𝔽,Op,M<:Union{Sphere{ManifoldsBase.TypeParameter{Tuple{1}},𝔽}, Circle{𝔽}}} = LieGroup{𝔽,Op,M}
 
-function ManifoldsBase.isapprox(M::CircleGroup, p, X, Y; kwargs...)
+function ManifoldsBase.isapprox(::CircleGroup, p, X, Y; kwargs...)
     return isapprox(X[], Y[]; kwargs...)
 end
 
