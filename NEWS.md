@@ -15,8 +15,8 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
 * `LieGroup` (formerly `GroupManifold`) as well as the concrete groups
   * `TranslationGroup`
   * `SpecialEuclideanGroup` (formerly `SpecialEuclidean`) including
-    * `SpecialEuclideanMatrixPoint` and `SpecialEuclideanMatrixTangentVector` when representing thepoints as affine (abstract) matrices
-    * `SpecialEuclideanProductPoint` and `SpecialEuclideanProductTangentVector` when representing them in a product structure, e.g. as an `ArrayPartition` from [`RecursiveArrayTools`](https://github.com/SciML/RecursiveArrayTools.jl).
+    * `SpecialEuclideanMatrixPoint` and `SpecialEuclideanMatrixTangentVector` when representing the points as affine (abstract) matrices
+    * `SpecialEuclideanProductPoint` and `SpecialEuclideanProductTangentVector` when representing them in a product structure, that is as an `ArrayPartition` from [`RecursiveArrayTools`](https://github.com/SciML/RecursiveArrayTools.jl).
     * neither of those types is necessary, besides for conversion between both. The product representation differs for the left and right semidirect product, while the affine matrix variant does not.
   * `SpecialOrthogonalGroup` (formerly `SpecialOrthogonal`)
   * `SpecialUnitaryGroup` (formerly `SpecialUnitary`)
@@ -30,6 +30,7 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
   * `PowerGroupOperation` to internally avoid ambiguities. Since the constructor always expects a Lie group, this is only necessary internally
   * `ProductLieGroup` (formerly `ProductGroup`)
   * `RightSemidirectProductLieGroup`
+  * `SpecialLinearGroup` (formerly `SpecialLinear`)
   * `SymplecticGroup`
   * `⋊` (alias for `RightSemidirectProductGroupOperation` when a `default_right_action(G,H)` is defined for the two groups)
   * a `ValidationLieGroup` verifying input and output of all interface functions, similar to the [`ValidationManifold`](https://juliamanifolds.github.io/ManifoldsBase.jl/stable/manifolds/#A-manifold-for-validation) which can also be used internally.

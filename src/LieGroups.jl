@@ -44,6 +44,7 @@ include("groups/validation_group.jl")
 include("groups/translation_group.jl")
 include("groups/general_linear_group.jl")
 include("groups/heisenberg_group.jl")
+include("groups/special_linear_group.jl")
 include("groups/symplectic_group.jl")
 
 # includes generic implementations for O(n), U(n), SO(n), SO(n), so we load this first
@@ -87,7 +88,8 @@ export InverseLeftGroupOperationAction, InverseRightGroupOperationAction
 export GeneralLinearGroup
 export HeisenbergGroup
 export OrthogonalGroup
-export SpecialEuclideanGroup, SpecialOrthogonalGroup, SpecialUnitaryGroup
+export SpecialEuclideanGroup, SpecialLinearGroup
+export SpecialOrthogonalGroup, SpecialUnitaryGroup
 export SymplecticGroup
 export TranslationGroup
 export UnitaryGroup
