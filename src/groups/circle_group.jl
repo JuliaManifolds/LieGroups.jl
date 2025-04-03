@@ -53,7 +53,7 @@ multiplication
 ```math
 (x_1, y_1) ∘ (x_2, y_2) := ((x_1*x_2 - y_1*y_2), (x_1*y_2 + x_2*y_1)),
 ```
-for real valued vectors ``(x_1, y_1), (x_2, y_2) ∈ ℂ`` via [`MultiplicationGroupOperation`](@ref).
+for real valued vectors ``(x_1, y_1), (x_2, y_2) ∈ ℂ`` via [`AbelianMultiplicationGroupOperation`](@ref).
 
 # Constructor
 

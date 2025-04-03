@@ -4,7 +4,7 @@
 
 | Group | Manifold | ``∘`` | Comment |
 |:------|:---------|:---------:|:------|
-| [`CircleGroup`](@ref) | Complex valued [`Circle`](@extref `Manifolds.Circle`) | [`*`](@ref AbelianMultiplicationGroupOperation) | |
+| [`CircleGroup`](@ref) | real or complex [`Circle`](@extref `Manifolds.Circle`), [`Sphere`](@extref `Manifolds.Sphere`) | [`*`](@ref AbelianMultiplicationGroupOperation) | |
 | [`GeneralLinearGroup`](@ref) | [`InvertibleMatrices`](@extref `Manifolds.InvertibleMatrices`) | [`*`](@ref MatrixMultiplicationGroupOperation) | |
 | [`HeisenbergGroup`](@ref) | [`HeisenbergMatrices`](@extref `Manifolds.HeisenbergMatrices`) | [`*`](@ref MatrixMultiplicationGroupOperation) | |
 | [`OrthogonalGroup`](@ref) | [`OrthogonalMatrices`](@extref `Manifolds.OrthogonalMatrices`) | [`*`](@ref MatrixMultiplicationGroupOperation) | This can be interpreted as all rotations and reflections.
