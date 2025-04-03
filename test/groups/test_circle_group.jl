@@ -41,7 +41,7 @@ using LieGroupsTestSuite
     expectations = Dict(:repr => "CircleGroup()")
     test_lie_group(C1, properties, expectations)
 
-    properties[:Name] = "IsBit-respresentation of Points and Vectors"
+    properties[:Name] = "IsBit-representation of Points and Vectors"
     properties[:Mutating] = false
     properties[:Points] = [z1, z2, z3]
     properties[:Vectors] = [X1, X2, X3]

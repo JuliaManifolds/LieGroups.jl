@@ -77,4 +77,8 @@ The default representation is by complex numbers and can be constructed with `Ci
 """
 const CircleGroup{𝔽,Op,M<:AbstractManifold{𝔽}} = LieGroup{𝔽,Op,M}
 
+function ManifoldsBase.isapprox(M::Union{CircleGroup,RealCircleGroup}, p, X, Y; kwargs...)
+    return isapprox(X[], Y[]; kwargs...)
+end
+
 #functions for different representations in separate files

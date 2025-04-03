@@ -156,9 +156,7 @@ which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``Dλ_
 """
 
 @doc "$(_doc_diff_left_compose_mult)"
-diff_left_compose(
-    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g, h, X
-) where {𝔽}
+diff_left_compose(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g, h, X) where {𝔽}
 
 @doc "$(_doc_diff_left_compose_mult)"
 function diff_left_compose!(

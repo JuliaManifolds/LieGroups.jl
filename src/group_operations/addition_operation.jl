@@ -138,6 +138,20 @@ which for the [`AdditionGroupOperation`](@ref) is the zero element or array.
 @doc "$(_doc_identity_element_add)"
 identity_element(::LieGroup{𝔽,AdditionGroupOperation}) where {𝔽}
 
+function identity_element(
+    ::LieGroup{𝔽,AdditionGroupOperation}, ::Type{T}
+) where {𝔽,T<:Union{Number,AbstractArray{0,<:Number}}}
+    return zero(T)
+end
+function identity_element(
+    ::LieGroup{𝔽,AdditionGroupOperation}, ::Type{Array{T,0}}
+) where {𝔽,T<:Number}
+    return fill(zero(T))
+end
+function identity_element(::LieGroup{𝔽,AdditionGroupOperation}, e::Number) where {𝔽}
+    return zero(e)
+end
+
 @doc "$(_doc_identity_element_add)"
 function identity_element!(::LieGroup{𝔽,AdditionGroupOperation}, e) where {𝔽}
     return fill!(e, 0)

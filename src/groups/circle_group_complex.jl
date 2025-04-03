@@ -97,22 +97,6 @@ ordinary complex logarithm.
 function identity_element(::CircleGroup{ℂ,ScalarMultiplicationGroupOperation,Circle{ℂ}})
     return 1.0 + 0.0im
 end
-function identity_element(
-    ::CircleGroup{ℂ,ScalarMultiplicationGroupOperation,Circle{ℂ}},
-    T::Union{<:Number,Type{<:Number}},
-)
-    return one(T)
-end
-function identity_element(
-    ::CircleGroup{ℂ,ScalarMultiplicationGroupOperation,Circle{ℂ}}, ::Type{<:SArray{S,T}}
-) where {S,T}
-    @SArray fill(one(T))
-end
-function identity_element(
-    ::CircleGroup{ℂ,ScalarMultiplicationGroupOperation,Circle{ℂ}}, ::Type{<:MArray{S,T}}
-) where {S,T}
-    @MArray fill(one(T))
-end
 
 @doc "$(_doc_log_complex_circ)"
 ManifoldsBase.log(::CircleGroup{ℂ,ScalarMultiplicationGroupOperation,Circle{ℂ}}, g)

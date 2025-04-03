@@ -19,6 +19,18 @@ function _compose(
     return map((pp, qq) -> compose(G, pp, qq), p, q)
 end
 
+function _compose(
+    ::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, g::Number, h::AbstractArray{<:Any,0}
+) where {𝔽}
+    return g .* h
+end
+
+function _compose(
+    ::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, g::AbstractArray{<:Any,0}, h::Number
+) where {𝔽}
+    return g .* h
+end
+
 function _compose!(G::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation}, k, g, h) where {𝔽}
     return copyto!(k, compose(G, g, h))
 end
@@ -190,7 +202,17 @@ which for an [`ScalarMultiplicationGroupOperation`](@ref) is the one-element.
 identity_element(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}) where {𝔽} = 1.0
 
 function identity_element(
-    ::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, e::Union{<:Number,Type{<:Number}}
+    ::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, ::Type{T}
+) where {𝔽,T<:Union{Number,AbstractArray{0,<:Number}}}
+    return one(T)
+end
+function identity_element(
+    ::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, ::Type{Array{T,0}}
+) where {𝔽,T<:Number}
+    return fill(one(T))
+end
+function identity_element(
+    ::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, e::Number
 ) where {𝔽}
     return one(e)
 end
@@ -208,9 +230,7 @@ function lie_bracket(
     return zero(X)
 end
 
-function lie_bracket!(
-    ::LieAlgebra{𝔽,ScalarMultiplicationGroupOperation}, Z, X, Y,
-) where {𝔽}
+function lie_bracket!(::LieAlgebra{𝔽,ScalarMultiplicationGroupOperation}, Z, X, Y) where {𝔽}
     return copyto!(Z, zero(Z))
 end
 

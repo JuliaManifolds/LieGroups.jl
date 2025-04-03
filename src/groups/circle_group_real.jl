@@ -30,6 +30,16 @@ function _compose(
 )
     return map((pp, qq) -> compose(G, pp, qq), p, q)
 end
+function _compose(
+    ::CircleGroup{ℝ,AdditionGroupOperation,Circle{ℝ}}, p::Number, q::AbstractArray{<:Any,0}
+)
+    return p .+ q
+end
+function _compose(
+    ::CircleGroup{ℝ,AdditionGroupOperation,Circle{ℝ}}, p::AbstractArray{<:Any,0}, q::Number
+)
+    return p .+ q
+end
 
 function _compose!(G::CircleGroup{ℝ,AdditionGroupOperation,Circle{ℝ}}, x, p, q)
     return copyto!(x, compose(G, p, q))
@@ -113,21 +123,6 @@ function get_vector_lie!(
 end
 
 identity_element(::CircleGroup{ℝ,AdditionGroupOperation,Circle{ℝ}}) = 0.0
-function identity_element(
-    ::CircleGroup{ℝ,AdditionGroupOperation,Circle{ℝ}}, p::Union{<:Number,Type{<:Number}}
-)
-    return zero(p)
-end
-function identity_element(
-    ::CircleGroup{ℝ,AdditionGroupOperation,Circle{ℝ}}, ::Type{<:SArray{S,T}}
-) where {S,T}
-    @SArray fill(one(T))
-end
-function identity_element(
-    ::CircleGroup{ℝ,AdditionGroupOperation,Circle{ℝ}}, ::Type{<:MArray{S,T}}
-) where {S,T}
-    @MArray fill(one(T))
-end
 
 Base.inv(::CircleGroup{ℝ,AdditionGroupOperation,Circle{ℝ}}, p::Number) = sym_rem(-p)
 
