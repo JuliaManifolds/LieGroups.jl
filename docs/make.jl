@@ -147,7 +147,7 @@ makedocs(;
         "Lie groups" => [
             "List of Lie groups" => "groups/index.md",
             "Circle Group" => "groups/circle_group.md",
-            "General Linear" => "groups/general_linear.md",
+            "General linear group" => "groups/general_linear.md",
             "Heisenberg group" => "groups/heisenberg_group.md",
             "Orthogonal group" => "groups/orthogonal_group.md",
             "Power group" => "groups/power_group.md",
@@ -155,6 +155,7 @@ makedocs(;
             "Real Circle Group" => "groups/circle_group.md",
             "Semidirect product group" => "groups/semidirect_product_group.md",
             "Special Euclidean group" => "groups/special_euclidean_group.md",
+            "Special linear" => "groups/special_linear.md",
             "Special orthogonal group" => "groups/special_orthogonal_group.md",
             "Special unitary group" => "groups/special_unitary_group.md",
             "Symplectic group" => "groups/symplectic_group.md",

@@ -35,6 +35,7 @@ end
         include_test("groups/test_heisenberg_group.jl")
         include_test("groups/test_orthogonal_group.jl")
         include_test("groups/test_unitary_group.jl")
+        include_test("groups/test_special_linear_group.jl")
         include_test("groups/test_special_orthogonal_group.jl")
         include_test("groups/test_special_euclidean_group.jl")
         include_test("groups/test_special_unitary_group.jl")

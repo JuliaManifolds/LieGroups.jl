@@ -50,6 +50,7 @@ include("groups/circle_group_complex.jl")
 include("groups/circle_group_real.jl")
 include("groups/circle_group_sphere.jl")
 include("groups/heisenberg_group.jl")
+include("groups/special_linear_group.jl")
 include("groups/symplectic_group.jl")
 
 # includes generic implementations for O(n), U(n), SO(n), SO(n), so we load this first
@@ -95,7 +96,8 @@ export CircleGroup
 export GeneralLinearGroup
 export HeisenbergGroup
 export OrthogonalGroup
-export SpecialEuclideanGroup, SpecialOrthogonalGroup, SpecialUnitaryGroup
+export SpecialEuclideanGroup, SpecialLinearGroup
+export SpecialOrthogonalGroup, SpecialUnitaryGroup
 export SymplecticGroup
 export TranslationGroup
 export UnitaryGroup

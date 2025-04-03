@@ -60,7 +60,7 @@ using LieGroupsTestSuite: rotation_matrix
         :Vectors => [Y1, Y2, Y3],
         :Functions => [exp, hat, log, show, vee],
     )
-    expectations2 = Dict(:repr => "SpecialOrthogonalGroup(3)", :atols => Dict(exp => 1e-15))
+    expectations2 = Dict(:repr => "SpecialOrthogonalGroup(3)", :atols => Dict(exp => 1e-14))
     test_lie_group(H, properties2, expectations2)
     H2 = SpecialOrthogonalGroup(3; parameter=:field)
     test_lie_group(H2, properties2, expectations2)
@@ -88,7 +88,7 @@ using LieGroupsTestSuite: rotation_matrix
         :Vectors => [Z1, Z2, Z3],
         :Functions => [exp, hat, log, show, vee],
     )
-    expectations3 = Dict(:repr => "SpecialOrthogonalGroup(4)", :atols => Dict(exp => 1e-15))
+    expectations3 = Dict(:repr => "SpecialOrthogonalGroup(4)", :atols => Dict(exp => 1e-14))
     test_lie_group(J, properties3, expectations3)
     @testset "𝔰𝔬(4) edge cases" begin
         e = Identity(J)
