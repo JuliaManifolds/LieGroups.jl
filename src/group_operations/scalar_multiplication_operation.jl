@@ -61,7 +61,7 @@ end
 function diff_left_compose(
     G::LieGroup{𝔽,<:ScalarMultiplicationGroupOperation},
     g::AbstractArray{<:Any,0},
-    h::Any,
+    h,
     X::AbstractArray{<:Any,0},
 ) where {𝔽}
     return map((gg, XX) -> diff_left_compose(G, gg, h, XX), g, X)
