@@ -390,7 +390,7 @@ end
 Test  `diff_conjugate`
 """
 function test_diff_conjugate(
-    G::AbstractLieGroup, g, h, X; expected=missing, test_mutating::Bool=true, atol::Real=0
+    G::AbstractLieGroup, g, h, X; expected=missing, test_mutating::Bool=true, atol::Real=sqrt(eps(real(number_eltype(X)))),
 )
     𝔤 = LieAlgebra(G)
     @testset "diff_conjugate" begin
