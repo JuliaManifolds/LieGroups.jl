@@ -220,8 +220,10 @@ end
 @doc "$(_doc_identity_element_scalar_mult)"
 identity_element!(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, e) where {𝔽}
 
-function identity_element!(::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, e) where {𝔽}
-    return fill!(e, 1.0)
+function identity_element!(
+    ::LieGroup{𝔽,ScalarMultiplicationGroupOperation}, e::AbstractArray{<:Number,0}
+) where {𝔽}
+    return fill!(e, 1)
 end
 
 function lie_bracket(
