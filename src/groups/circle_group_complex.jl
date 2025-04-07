@@ -74,7 +74,7 @@ function get_vector_lie(
     return get_vector(M, identity_element(G, T), c, DefaultOrthonormalBasis(𝔽))
 end
 function get_vector_lie!(
-    𝔤::LieAlgebra{ℂ,AbelianMultiplicationGroupOperation,<:_ComplexCircleGroup},
+    𝔤::LieAlgebra{ℝ,AbelianMultiplicationGroupOperation,<:_ComplexCircleGroup},
     X::T,
     c,
     ::DefaultLieAlgebraOrthogonalBasis{𝔽},
@@ -90,6 +90,24 @@ end
 
 function ManifoldsBase.isapprox(::_ComplexCircleGroup, p, X, Y; kwargs...)
     return isapprox(X[], Y[]; kwargs...)
+end
+
+function ManifoldsBase._isapprox(
+    ::LieAlgebra{ℝ,AbelianMultiplicationGroupOperation,<:_ComplexCircleGroup},
+    p,
+    X,
+    Y;
+    kwargs...,
+)
+    return isapprox(X[], Y[]; kwargs...)
+end
+function ManifoldsBase._isapprox(
+    ::LieAlgebra{ℝ,AbelianMultiplicationGroupOperation,<:_ComplexCircleGroup},
+    p,
+    q;
+    kwargs...,
+)
+    return isapprox(p[], q[]; kwargs...)
 end
 
 _doc_log_complex_circ = """
