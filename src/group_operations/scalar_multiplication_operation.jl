@@ -20,13 +20,17 @@ function _compose(
 end
 
 function _compose(
-    ::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, g::Number, h::AbstractArray{<:Any,0}
+    ::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation},
+    g::Number,
+    h::AbstractArray{<:Any,0},
 ) where {𝔽}
     return g .* h
 end
 
 function _compose(
-    ::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, g::AbstractArray{<:Any,0}, h::Number
+    ::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation},
+    g::AbstractArray{<:Any,0},
+    h::Number,
 ) where {𝔽}
     return g .* h
 end
@@ -232,26 +236,16 @@ function lie_bracket(
     return zero(X)
 end
 
-function lie_bracket!(::LieAlgebra{𝔽,AbelianMultiplicationGroupOperation}, Z, X, Y) where {𝔽}
-    return copyto!(Z, zero(Z))
-end
-
-function ManifoldsBase.log(
-    G::LieGroup{𝔽,AbelianMultiplicationGroupOperation}, g::AbstractArray{<:Any,0}
+function lie_bracket!(
+    ::LieAlgebra{𝔽,AbelianMultiplicationGroupOperation}, Z, X, Y
 ) where {𝔽}
-    return log(G, g[])
+    return copyto!(Z, zero(Z))
 end
 
 function ManifoldsBase.log(
     G::LieGroup{𝔽,AbelianMultiplicationGroupOperation}, g, h
 ) where {𝔽}
     return log(G, compose(G, inv(G, g), h))
-end
-
-function ManifoldsBase.log!(
-    G::LieGroup{𝔽,AbelianMultiplicationGroupOperation}, X, g
-) where {𝔽}
-    return copyto!(X, log(G, g))
 end
 
 function ManifoldsBase.log(

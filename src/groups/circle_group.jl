@@ -66,8 +66,7 @@ Generate the circle group represented as complex numbers.
     CircleGroup(Circle(ℝ))
     CircleGroup(ℝ)
 
-Generate the circle group represented as real valued angles
-``x ∈ [-π, π)``.
+Generate the circle group represented as real valued angles ``x ∈ [-π, π)``.
 
     CircleGroup(Sphere(1))
     CircleGroup(ℝ^2)

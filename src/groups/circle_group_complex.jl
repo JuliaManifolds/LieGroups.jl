@@ -9,6 +9,12 @@ end
 
 const _ComplexCircleGroup = LieGroup{ℂ,AbelianMultiplicationGroupOperation,<:Circle{ℂ}}
 
+function LieAlgebra(G::_ComplexCircleGroup)
+    return LieAlgebra{ℝ,AbelianMultiplicationGroupOperation,typeof(G)}(
+        G, Identity(G), ManifoldsBase.TangentSpaceType()
+    )
+end
+
 function diff_left_compose(::_ComplexCircleGroup, g::Number, h::Any, X::Number)
     return g * X
 end
@@ -39,7 +45,7 @@ Base.exp(::_ComplexCircleGroup, X::Number) = exp(X)
 exp!(M::_ComplexCircleGroup, g, X)
 
 function get_coordinates_lie(
-    𝔤::LieAlgebra{ℂ,AbelianMultiplicationGroupOperation,_ComplexCircleGroup},
+    𝔤::LieAlgebra{ℝ,AbelianMultiplicationGroupOperation,<:_ComplexCircleGroup},
     X::T,
     ::DefaultLieAlgebraOrthogonalBasis{𝔽},
 ) where {T,𝔽}
@@ -48,7 +54,7 @@ function get_coordinates_lie(
     return get_coordinates(M, identity_element(G, T), X, DefaultOrthonormalBasis(𝔽))
 end
 function get_coordinates_lie!(
-    𝔤::LieAlgebra{ℂ,AbelianMultiplicationGroupOperation,_ComplexCircleGroup},
+    𝔤::LieAlgebra{ℝ,AbelianMultiplicationGroupOperation,<:_ComplexCircleGroup},
     c,
     X,
     ::DefaultLieAlgebraOrthogonalBasis{𝔽},
@@ -58,7 +64,7 @@ function get_coordinates_lie!(
     return get_coordinates!(M, c, identity_element(G), X, DefaultOrthonormalBasis(𝔽))
 end
 function get_vector_lie(
-    𝔤::LieAlgebra{ℂ,AbelianMultiplicationGroupOperation,_ComplexCircleGroup},
+    𝔤::LieAlgebra{ℝ,AbelianMultiplicationGroupOperation,<:_ComplexCircleGroup},
     c,
     ::DefaultLieAlgebraOrthogonalBasis{𝔽},
     T::Type=ComplexF64,
@@ -68,7 +74,7 @@ function get_vector_lie(
     return get_vector(M, identity_element(G, T), c, DefaultOrthonormalBasis(𝔽))
 end
 function get_vector_lie!(
-    𝔤::LieAlgebra{ℂ,AbelianMultiplicationGroupOperation,_ComplexCircleGroup},
+    𝔤::LieAlgebra{ℂ,AbelianMultiplicationGroupOperation,<:_ComplexCircleGroup},
     X::T,
     c,
     ::DefaultLieAlgebraOrthogonalBasis{𝔽},
@@ -102,6 +108,23 @@ ManifoldsBase.log!(M::_ComplexCircleGroup, X, g)
 
 function ManifoldsBase.log(::_ComplexCircleGroup, g::Number)
     return log(g)
+end
+
+function ManifoldsBase.log!(::_ComplexCircleGroup, X, g)
+    X[] = log(g[])
+    return X
+end
+
+function ManifoldsBase.log!(
+    G::_ComplexCircleGroup, X, ::Identity{AbelianMultiplicationGroupOperation}
+)
+    return zero_vector!(LieAlgebra(G), X)
+end
+
+function ManifoldsBase.manifold_dimension(
+    𝔤::LieAlgebra{ℝ,AbelianMultiplicationGroupOperation,<:_ComplexCircleGroup}
+)
+    return 1
 end
 
 function Base.show(io::IO, ::_ComplexCircleGroup)

@@ -32,7 +32,7 @@ this is internally just a `const` of the corresponding $(_link(:TangentSpace)).
 
 Return the Lie Algebra belonging to the [`AbstractLieGroup`](@ref) `G`.
 """
-const LieAlgebra{𝔽,O<:AbstractGroupOperation,G<:AbstractLieGroup{𝔽,O}} = ManifoldsBase.Fiber{
+const LieAlgebra{𝔽,O<:AbstractGroupOperation,G<:AbstractLieGroup{<:Any,O}} = ManifoldsBase.Fiber{
     𝔽,ManifoldsBase.TangentSpaceType,G,Identity{O}
 }
 

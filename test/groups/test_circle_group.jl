@@ -9,7 +9,7 @@ s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 using LieGroupsTestSuite
 
 @testset "Complex Circle" begin
-    C1 = CircleGroup(Circle(ℂ))
+    C1 = CircleGroup()
     z1, z2, z3 = 1.0, 1.0im, -1.0im
     X1, X2, X3 = 1.0im, 0.0, -2.0im
     properties = Dict(
