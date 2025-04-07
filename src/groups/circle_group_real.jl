@@ -97,7 +97,6 @@ function get_vector_lie(
     ::DefaultLieAlgebraOrthogonalBasis{ℝ},
     T::Type=Float64,
 )
-    println("AAAA")
     G = base_lie_group(𝔤)
     M = base_manifold(G)
     return get_vector(M, identity_element(G, T), c, DefaultOrthonormalBasis(ℝ))
