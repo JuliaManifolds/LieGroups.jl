@@ -231,14 +231,14 @@ function identity_element!(
 end
 
 function lie_bracket(
-    ::LieAlgebra{𝔽,AbelianMultiplicationGroupOperation}, X::Any, ::Any
-) where {𝔽}
+    ::LieAlgebra{𝔽,O,<:LieGroup{𝔾,O}}, X::Number, Y::Number
+) where {𝔽,𝔾,O<:AbelianMultiplicationGroupOperation}
     return zero(X)
 end
 
 function lie_bracket!(
-    ::LieAlgebra{𝔽,AbelianMultiplicationGroupOperation}, Z, X, Y
-) where {𝔽}
+    ::LieAlgebra{𝔽,O,<:LieGroup{𝔾,O}}, Z, X, Y
+) where {𝔽,𝔾,O<:AbelianMultiplicationGroupOperation}
     return copyto!(Z, zero(Z))
 end
 
