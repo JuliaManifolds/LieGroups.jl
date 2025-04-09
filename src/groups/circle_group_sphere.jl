@@ -3,8 +3,7 @@
 #
 function CircleGroup(M::Sphere{ManifoldsBase.TypeParameter{Tuple{1}},ℝ})
     return LieGroup{ℝ,AbelianMultiplicationGroupOperation,typeof(M)}(
-        M,
-        AbelianMultiplicationGroupOperation(),
+        M, AbelianMultiplicationGroupOperation()
     )
 end
 
@@ -13,7 +12,5 @@ function CircleGroup(::Euclidean{ManifoldsBase.TypeParameter{Tuple{2}},ℝ})
 end
 
 const _PlaneCircleGroup = LieGroup{
-    ℝ,
-    AbelianMultiplicationGroupOperation,
-    <:Sphere{ManifoldsBase.TypeParameter{Tuple{1}},ℝ},
+    ℝ,AbelianMultiplicationGroupOperation,<:Sphere{ManifoldsBase.TypeParameter{Tuple{1}},ℝ}
 }

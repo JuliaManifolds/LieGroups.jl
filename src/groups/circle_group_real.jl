@@ -72,7 +72,7 @@ end
 # This can be combined with the functions above once we only have one circle group const
 #
 function get_coordinates_lie(
-    𝔤::LieAlgebra{ℝ,AdditionGroupOperation,_RealCircleGroup},
+    𝔤::LieAlgebra{ℝ,AdditionGroupOperation,<:_RealCircleGroup},
     X::T,
     ::DefaultLieAlgebraOrthogonalBasis{ℝ},
 ) where {T}
@@ -81,7 +81,7 @@ function get_coordinates_lie(
     return get_coordinates(M, identity_element(G, T), X, DefaultOrthonormalBasis(ℝ))
 end
 function get_coordinates_lie!(
-    𝔤::LieAlgebra{ℝ,AdditionGroupOperation,_RealCircleGroup},
+    𝔤::LieAlgebra{ℝ,AdditionGroupOperation,<:_RealCircleGroup},
     c,
     X::T,
     ::DefaultLieAlgebraOrthogonalBasis{ℝ},
@@ -92,7 +92,7 @@ function get_coordinates_lie!(
 end
 
 function get_vector_lie(
-    𝔤::LieAlgebra{ℝ,AdditionGroupOperation,_RealCircleGroup},
+    𝔤::LieAlgebra{ℝ,AdditionGroupOperation,<:_RealCircleGroup},
     c,
     ::DefaultLieAlgebraOrthogonalBasis{ℝ},
     T::Type=Float64,
@@ -102,7 +102,7 @@ function get_vector_lie(
     return get_vector(M, identity_element(G, T), c, DefaultOrthonormalBasis(ℝ))
 end
 function get_vector_lie!(
-    𝔤::LieAlgebra{ℝ,AdditionGroupOperation,_RealCircleGroup},
+    𝔤::LieAlgebra{ℝ,AdditionGroupOperation,<:_RealCircleGroup},
     X::T,
     c,
     ::DefaultLieAlgebraOrthogonalBasis{ℝ},
@@ -128,7 +128,9 @@ function ManifoldsBase.isapprox(::_RealCircleGroup, p, X, Y; kwargs...)
     return isapprox(X[], Y[]; kwargs...)
 end
 
-function lie_bracket(::LieAlgebra{ℝ,AdditionGroupOperation,_RealCircleGroup}, X::Any, ::Any)
+function lie_bracket(
+    ::LieAlgebra{ℝ,AdditionGroupOperation,<:_RealCircleGroup}, X::Any, ::Any
+)
     return zero(X)
 end
 
