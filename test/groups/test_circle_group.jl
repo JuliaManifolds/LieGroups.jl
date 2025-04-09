@@ -3,6 +3,7 @@ using LieGroups, Random, Test
 using ManifoldsBase: ℂ
 using ManifoldsBase: ℝ
 using Manifolds: Circle
+using Manifolds: Sphere
 
 s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 !(s in LOAD_PATH) && (push!(LOAD_PATH, s))

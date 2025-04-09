@@ -8,7 +8,7 @@ to `*` being overloaded, for example
 abstract type AbstractMultiplicationGroupOperation <: AbstractGroupOperation end
 
 """
-    AbstractMultiplicationGroupOperation <: AbstractMultiplicationGroupOperation
+    MatrixMultiplicationGroupOperation <: AbstractMultiplicationGroupOperation
 
 A group operation that is realised by a matrix multiplication.
 """

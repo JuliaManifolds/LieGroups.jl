@@ -2,7 +2,7 @@
 #circle group represented as vectors in ℝ^2, operation: adding angles in the unit circle
 #
 function CircleGroup(M::Sphere{ManifoldsBase.TypeParameter{Tuple{1}},ℝ})
-    return CircleGroup{ℝ,AbelianMultiplicationGroupOperation,typeof(M)}(
+    return LieGroup{ℝ,AbelianMultiplicationGroupOperation,typeof(M)}(
         M,
         AbelianMultiplicationGroupOperation(),
     )

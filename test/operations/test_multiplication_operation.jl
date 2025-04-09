@@ -21,7 +21,7 @@ using LieGroupsTestSuite
         @test inv(e) === e
         @test det(e)
         ea = Identity(AdditionGroupOperation)
-        @test ea * e === ea #Id(Add)*Id(Mul) = Id(Add) or 1*0 = 0
+        @test ea * e === ea #Id(Add)*Id(Mul) = Id(Add) or 0*1 = 0
         @test e * ea === ea
         M = LieGroupsTestSuite.DummyManifold()
         G = LieGroup(M, MatrixMultiplicationGroupOperation())
