@@ -24,8 +24,8 @@ function diff_right_compose(::_ComplexCircleGroup, g::Number, h::Any, X::Number)
 end
 
 _doc_exp_complex_circ = """
-    exp(::CircleGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, X)
-    exp!(::CircleGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, g, X)
+    exp(::LieGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, X)
+    exp!(::LieGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, g, X)
 
 Computes the Lie group exponential on the complex [`CircleGroup`](@ref), which coincides with the
 [ordinary complex exponential](https://en.wikipedia.org/wiki/Exponential_map_(Lie_theory)#Examples).
