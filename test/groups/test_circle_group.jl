@@ -88,4 +88,37 @@ using LieGroupsTestSuite
         properties[:Vectors] = [X1, X2, X3]
         test_lie_group(C2, properties, expectations)
     end
+    @testset "Planar Circle" begin
+        C1 = CircleGroup()
+        z1, z2, z3 = [1.0,0.0], [0.0,1.0], [0.0,-1]
+        X1, X2, X3 = [0.0,1.0], [0.0,0.0], [0.0,-2.0]
+        properties = Dict(
+            :Name => "Planar Circle",
+            :Points => [z1, z2, z3],
+            :Vectors => [X1, X2, X3],
+            :Mutating => true,
+            :Rng => Random.MersenneTwister(),
+            :Functions => [
+                #compose,
+                #conjugate,
+                #diff_conjugate,
+                #diff_inv,
+                #diff_left_compose,
+                #diff_right_compose,
+                #exp,
+                #hat,
+                #inv,
+                #inv_left_compose,
+                #inv_right_compose,
+                #is_identity,
+                #lie_bracket,
+                #log,
+                #rand,
+                #show,
+                #vee,
+            ],
+        )
+        expectations = Dict(:repr => "CircleGroup(Sphere(1))")
+        test_lie_group(C1, properties, expectations)
+    end
 end

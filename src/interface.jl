@@ -507,7 +507,7 @@ function inv_left_compose(G::AbstractLieGroup, g, h)
 end
 
 function inv_left_compose! end
-@doc "$(_doc_compose)"
+@doc "$(_doc_inv_left_compose)"
 function inv_left_compose!(G::AbstractLieGroup, k, g, h)
     inv!(G, k, g) # g^{-1} in-place of k
     compose!(G, k, k, h) # compose `k∘h` in-place of k

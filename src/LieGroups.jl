@@ -30,7 +30,7 @@ include("Lie_algebra/Lie_algebra_interface.jl")
 # Generic Operations
 include("group_operations/addition_operation.jl")
 include("group_operations/multiplication_operation.jl")
-include("group_operations/scalar_multiplication_operation.jl")
+include("group_operations/multiplication_operation_abelian.jl")
 
 # Actions
 include("group_actions/group_action_interface.jl")
