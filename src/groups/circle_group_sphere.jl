@@ -15,9 +15,9 @@ const _PlanarCircleGroup = LieGroup{
     ℝ,AbelianMultiplicationGroupOperation,<:Sphere{ManifoldsBase.TypeParameter{Tuple{1}},ℝ}
 }
 
-identity_element(G::_PlanarCircleGroup) = [1.0,0.0]
-function identity_element(::_PlanarCircleGroup, p::Array{<:Any, 1})
-    p = [1.0,0.0]
+identity_element(G::_PlanarCircleGroup) = [1.0, 0.0]
+function identity_element(::_PlanarCircleGroup, p::Array{<:Any,1})
+    p = [1.0, 0.0]
     return p
 end
 function _compose(::_PlanarCircleGroup, p, q)
@@ -25,7 +25,7 @@ function _compose(::_PlanarCircleGroup, p, q)
     b = p[2]
     c = q[1]
     d = q[2]
-    z = [(a*c - b*d),(a*d + b*c)]
+    z = [(a * c - b * d), (a * d + b * c)]
     return z
 end
 Base.inv(::_PlanarCircleGroup, p) = [p[1], -p[2]]
@@ -55,8 +55,8 @@ $(_tex(:exp)) ($(_math(:i))t) = $(_tex(:cos))(t) + $(_math(:i))$(_tex(:sin))(t)
 """
 
 @doc "$(_doc_exp_planar_circ)"
-function Base.exp(::_PlanarCircleGroup, X) 
-    z=exp(X[1]+X[2]*im)
+function Base.exp(::_PlanarCircleGroup, X)
+    z = exp(X[1] + X[2] * im)
     return [z.re, z.im]
 end
 

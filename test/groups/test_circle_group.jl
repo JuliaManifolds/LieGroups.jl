@@ -89,9 +89,9 @@ using LieGroupsTestSuite
         test_lie_group(C2, properties, expectations)
     end
     @testset "Planar Circle" begin
-        C1 = CircleGroup()
-        z1, z2, z3 = [1.0,0.0], [0.0,1.0], [0.0,-1]
-        X1, X2, X3 = [0.0,1.0], [0.0,0.0], [0.0,-2.0]
+        C1 = CircleGroup(ℝ^2)
+        z1, z2, z3 = [1.0, 0.0], [0.0, 1.0], [0.0, -1]
+        X1, X2, X3 = [0.0, 1.0], [0.0, 0.0], [0.0, -2.0]
         properties = Dict(
             :Name => "Planar Circle",
             :Points => [z1, z2, z3],
@@ -114,7 +114,7 @@ using LieGroupsTestSuite
                 #lie_bracket,
                 #log,
                 #rand,
-                #show,
+                show,
                 #vee,
             ],
         )
