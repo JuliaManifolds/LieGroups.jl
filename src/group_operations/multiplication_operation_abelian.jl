@@ -1,7 +1,7 @@
 """
     AbelianMultiplicationGroupOperation <: AbstractMultiplicationGroupOperation
 
-A group operation that is realised by an abelian multiplication.
+A group operation that is realised by an Abelian multiplication.
 """
 struct AbelianMultiplicationGroupOperation <: AbstractMultiplicationGroupOperation end
 

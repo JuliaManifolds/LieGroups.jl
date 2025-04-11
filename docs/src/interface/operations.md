@@ -33,6 +33,14 @@ Pages = ["multiplication_operation.jl"]
 Order = [:type, :function]
 ```
 
+## [Abelian multiplication group operation](@id multiplication-operationabelian-sec)
+
+```@autodocs
+Modules = [LieGroups]
+Pages = ["multiplication_operation_abelian.jl"]
+Order = [:type, :function]
+```
+
 ## Literature
 
 ```@bibliography

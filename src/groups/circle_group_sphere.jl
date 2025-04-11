@@ -41,8 +41,8 @@ function inv_right_compose(C::_PlanarCircleGroup, g, h)
 end
 
 _doc_exp_planar_circ = """
-    exp(::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Sphere{ManifoldsBase.TypeParameter{Tuple{1}}, ℝ}}, X)
-    exp!(::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Sphere{ManifoldsBase.TypeParameter{Tuple{1}}, ℝ}}, g, X)
+    exp(::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Sphere}, X)
+    exp!(::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Sphere}, g, X)
 
 Computes the Lie group exponential on the [`CircleGroup`](@ref), represented as two dimensional vectors in the real plane.
 It coincides with the [ordinary complex exponential](https://en.wikipedia.org/wiki/Exponential_map_(Lie_theory)#Examples) after
@@ -50,7 +50,7 @@ canonical identification of the real plane with the complex plane.
 
 This can be computed in-place of `g`.
 ```math
-$(_tex(:exp)) ($(_math(:i))t) = $(_tex(:cos))(t) + $(_math(:i))$(_tex(:sin))(t)
+$(_tex(:exp)) (t) = $(_tex(:pmatrix, _tex(:cos)*"(t)", _tex(:sin)*"(t)"))
 ```
 """
 
@@ -60,7 +60,7 @@ function Base.exp(::_PlanarCircleGroup, X)
     return [z.re, z.im]
 end
 
-@doc "$(_doc_exp_complex_circ)"
+@doc "$(_doc_exp_planar_circ)"
 exp!(M::_PlanarCircleGroup, g, X)
 
 function Base.show(io::IO, ::_PlanarCircleGroup)
