@@ -152,7 +152,6 @@ makedocs(;
             "Orthogonal group" => "groups/orthogonal_group.md",
             "Power group" => "groups/power_group.md",
             "Product group" => "groups/product_group.md",
-            "Real Circle Group" => "groups/circle_group.md",
             "Semidirect product group" => "groups/semidirect_product_group.md",
             "Special Euclidean group" => "groups/special_euclidean_group.md",
             "Special linear" => "groups/special_linear.md",
