@@ -1,7 +1,7 @@
 # About LieGroups.jl
 
 the package `LieGroups.jl` in its current form started in 2024 as a “spin-off” from [`Manifolds.jl](@extref Manifolds :std:doc:`index`), where a type `GroupManifolds` was a predecessor of the
-main [`LieGroup`](@ref) type of this package. That approach started around 2021.
+main [`LieGroup`](@ref) type of this package. That approach started around 2021 by [Seth Axen](https://sethaxen.com).
 At about the same, [Yueh-Hua Tu](https://github.com/yuehhua) started a package `LieGroups.jl`,
 which was continued than here with a full rewrite in order to base all Lie groups on a
 manifold from [`Manifolds.jl](@extref Manifolds :std:doc:`index`).
