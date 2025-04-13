@@ -44,13 +44,13 @@ function conjugate(::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, g, h)
 end
 
 function conjugate!(
-    ::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, k::AbstractArray{<:Any,0}, g, h
+    ::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, k, g, h
 ) where {𝔽}
     return copyto!(k, g)
 end
 
 function diff_conjugate(
-    ::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, ::Any, ::Any, X::Number
+    ::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, g, h, X::Number
 ) where {𝔽}
     return X
 end
@@ -111,9 +111,9 @@ function ManifoldsBase.exp(
 end
 
 function ManifoldsBase.exp(
-    G::LieGroup{𝔽,AbelianMultiplicationGroupOperation}, g::Number, X::Number
+    G::LieGroup{𝔽,AbelianMultiplicationGroupOperation}, g, X
 ) where {𝔽}
-    return g * exp(G, X)
+    return compose(G, g, exp(G, X))
 end
 
 function ManifoldsBase.exp(
@@ -142,7 +142,6 @@ function Base.inv(
 ) where {𝔽}
     return map(gg -> inv(G, gg), g)
 end
-
 function inv!(G::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, h, g) where {𝔽}
     copyto!(h, inv(G, g))
     return h
@@ -261,6 +260,12 @@ function ManifoldsBase.log(
     T::Type,
 ) where {𝔽}
     return zero_vector(LieAlgebra(G), T)
+end
+
+function ManifoldsBase.log!(
+    G::LieGroup{𝔽,AbelianMultiplicationGroupOperation}, X, g
+) where {𝔽}
+    return copyto!(X, log(G, g))
 end
 
 function ManifoldsBase.log!(
