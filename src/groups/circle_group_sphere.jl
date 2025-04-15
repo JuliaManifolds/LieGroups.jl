@@ -19,6 +19,10 @@ function diff_conjugate(::_PlanarCircleGroup, g, h, X)
     return X
 end
 
+diff_left_compose(C::_PlanarCircleGroup, g, h, X) = compose(C, g, X)
+
+diff_right_compose(C::_PlanarCircleGroup, g, h, X) = compose(C, X, g)
+
 _doc_exp_planar_circ = """
     exp(::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Sphere}, X)
     exp!(::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Sphere}, g, X)
@@ -68,6 +72,14 @@ function inv_right_compose(C::_PlanarCircleGroup, g, h)
     return compose(C, g, h1)
 end
 
+function ManifoldsBase.log(::_PlanarCircleGroup, g)
+    z = log(g[1] + g[2]*im)
+    return [z.re, z.im]
+end
+
+function ManifoldsBase.log(C::_PlanarCircleGroup, ::Identity{AbelianMultiplicationGroupOperation})
+    return zero_vector(LieAlgebra(C))
+end
 
 function Base.show(io::IO, ::_PlanarCircleGroup)
     return print(io, "CircleGroup(Sphere(1))")
