@@ -80,3 +80,7 @@ CircleGroup(
         ManifoldsBase.AbstractNumbers,Manifolds.Circle,Manifolds.Euclidean,Manifolds.Sphere
     },
 )
+
+#
+#
+# Common definitions

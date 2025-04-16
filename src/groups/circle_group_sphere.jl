@@ -90,14 +90,14 @@ end
 Base.inv(::_PlanarCircleGroup, p) = [p[1], -p[2]]
 Base.inv(::_PlanarCircleGroup, e::Identity{<:AbelianMultiplicationGroupOperation}) = e
 
-function inv_left_compose(C::_PlanarCircleGroup, g, h)
-    g1 = Base.inv(C, g)
-    return compose(C, g1, h)
+function inv_left_compose!(C::_PlanarCircleGroup, k, g, h)
+    inv!(C, k, g)
+    return compose!(C, k, k, h)
 end
 
-function inv_right_compose(C::_PlanarCircleGroup, g, h)
-    h1 = Base.inv(C, h)
-    return compose(C, g, h1)
+function inv_right_compose!(C::_PlanarCircleGroup, k, g, h)
+    inv!(C, k, h)
+    return compose!(C, k, g, k)
 end
 
 _doc_log_planar_circ = """
