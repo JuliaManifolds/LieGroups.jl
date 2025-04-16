@@ -204,8 +204,6 @@ which for an [`AbelianMultiplicationGroupOperation`](@ref) is the one-element.
 """
 
 @doc "$(_doc_identity_element_abelian_mult)"
-identity_element(::LieGroup{𝔽,AbelianMultiplicationGroupOperation}) where {𝔽} = 1.0
-
 function identity_element(
     ::LieGroup{𝔽,AbelianMultiplicationGroupOperation}, ::Type{T}
 ) where {𝔽,T<:Union{Number,AbstractArray{0,<:Number}}}
