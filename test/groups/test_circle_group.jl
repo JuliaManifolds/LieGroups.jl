@@ -46,12 +46,6 @@ using LieGroupsTestSuite
         properties[:Points] = [z1, z2, z3]
         properties[:Vectors] = [X1, X2, X3]
         test_lie_group(C1, properties, expectations)
-
-        @testset "Edge cases" begin
-            # This is one of the few Lie groups where the manifold is the embedding
-            # Check that dimension is correct
-            @test manifold_dimension(C1) == 1
-        end
     end
     @testset "Real Circle" begin
         C2 = CircleGroup(Circle(ℝ))

@@ -123,12 +123,6 @@ function ManifoldsBase.log!(
     return zero_vector!(LieAlgebra(G), X)
 end
 
-function ManifoldsBase.manifold_dimension(
-    𝔤::LieAlgebra{ℝ,AbelianMultiplicationGroupOperation,<:_ComplexCircleGroup}
-)
-    return 1
-end
-
 function Base.show(io::IO, ::_ComplexCircleGroup)
     return print(io, "CircleGroup()")
 end
