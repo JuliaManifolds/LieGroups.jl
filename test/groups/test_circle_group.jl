@@ -1,9 +1,7 @@
 using LieGroups, Random, Test
 
-using ManifoldsBase: ℂ
-using ManifoldsBase: ℝ
-using Manifolds: Circle
-using Manifolds: Sphere
+using ManifoldsBase: ℂ, ℝ
+using Manifolds: Circle, Sphere
 
 s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 !(s in LOAD_PATH) && (push!(LOAD_PATH, s))
@@ -87,6 +85,12 @@ using LieGroupsTestSuite
         properties[:Points] = [x1, x2, x3]
         properties[:Vectors] = [X1, X2, X3]
         test_lie_group(C2, properties, expectations)
+
+        @testset "Edge cases" begin
+            @test compose(C2, 1.0, fill(1.0)) == 2.0
+            @test compose(C2, fill(1.0), 1.0) == 2.0
+            @test LieGroups.sym_rem(fill(Float64(π))) == fill(Float64(-π))
+        end
     end
     @testset "Planar Circle" begin
         C1 = CircleGroup(ℝ^2)
