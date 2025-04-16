@@ -43,7 +43,7 @@ conjugate!(::_RealCircleGroup, k, g, ::Any) = copyto!(k, g)
 diff_conjugate(::_RealCircleGroup, g, h, X::Number) = X
 
 diff_inv(::_RealCircleGroup, g, X) = -X
-function diff_inv(G::_RealCircleGroup, Y, g, X)
+function diff_inv!(G::_RealCircleGroup, Y, g, X)
     return copyto!(LieAlgebra(G), Y, -X)
 end
 

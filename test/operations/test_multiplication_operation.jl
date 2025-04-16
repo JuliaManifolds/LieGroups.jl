@@ -47,4 +47,10 @@ using LieGroupsTestSuite
         @test mul!(e, e, e) === e
         @test one(e) === e
     end
+    @testset "Abelian Multiplication edge cases" begin
+        G = LieGroup(
+            LieGroupsTestSuite.DummyManifold(), AbelianMultiplicationGroupOperation()
+        )
+        @test identity_element(G, 0.0) == 1.0
+    end
 end
