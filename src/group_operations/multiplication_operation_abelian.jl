@@ -56,14 +56,18 @@ end
 function diff_conjugate(
     G::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation},
     g::AbstractArray{<:Any,0},
-    h,
+    h::AbstractArray{<:Any,0},
     X::AbstractArray{<:Any,0},
 ) where {𝔽}
     return map(XX -> diff_conjugate(G, g, h, XX), X)
 end
 
 function diff_conjugate!(
-    G::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, Y, g, h, X
+    G::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation},
+    Y::AbstractArray{<:Any,0},
+    g::AbstractArray{<:Any,0},
+    h::AbstractArray{<:Any,0},
+    X::AbstractArray{<:Any,0},
 ) where {𝔽}
     return copyto!(LieAlgebra(G), Y, diff_conjugate(G, g, h, X))
 end

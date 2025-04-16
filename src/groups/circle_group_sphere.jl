@@ -15,10 +15,11 @@ const _PlanarCircleGroup = LieGroup{
     ℝ,AbelianMultiplicationGroupOperation,<:Sphere{ManifoldsBase.TypeParameter{Tuple{1}},ℝ}
 }
 
-function diff_conjugate(::_PlanarCircleGroup, g, h, X)
+#=
+function diff_conjugate!(::_PlanarCircleGroup, g, h, X)
     return X
 end
-
+=#
 _doc_diff_left_compose_mult_planar_circ = """
     diff_left_compose(G::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Sphere}, g, h, X)
     diff_left_compose!(G::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Sphere}, Y, g, h, X)
