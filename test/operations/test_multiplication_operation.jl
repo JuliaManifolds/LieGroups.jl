@@ -51,6 +51,10 @@ using LieGroupsTestSuite
         G = LieGroup(
             LieGroupsTestSuite.DummyManifold(), AbelianMultiplicationGroupOperation()
         )
+        # Edge case: Number element
         @test identity_element(G, 0.0) == 1.0
+        # Edge case: Mixed compose
+        @test compose(G, fill(1.0), 1.0) == 1.0
+        @test compose(G, 1.0, fill(1.0)) == 1.0
     end
 end
