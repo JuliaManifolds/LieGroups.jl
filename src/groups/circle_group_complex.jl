@@ -92,24 +92,6 @@ function ManifoldsBase.isapprox(::_ComplexCircleGroup, p, X, Y; kwargs...)
     return isapprox(X[], Y[]; kwargs...)
 end
 
-function ManifoldsBase._isapprox(
-    ::LieAlgebra{ℝ,AbelianMultiplicationGroupOperation,<:_ComplexCircleGroup},
-    p,
-    X,
-    Y;
-    kwargs...,
-)
-    return isapprox(X[], Y[]; kwargs...)
-end
-function ManifoldsBase._isapprox(
-    ::LieAlgebra{ℝ,AbelianMultiplicationGroupOperation,<:_ComplexCircleGroup},
-    p,
-    q;
-    kwargs...,
-)
-    return isapprox(p[], q[]; kwargs...)
-end
-
 _doc_log_complex_circ = """
     log(::CircleGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, g)
     log!(::CircleGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, X, g)
