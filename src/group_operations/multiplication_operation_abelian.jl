@@ -43,9 +43,7 @@ function conjugate(::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, g, h)
     return g
 end
 
-function conjugate!(
-    ::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, k, g, h
-) where {𝔽}
+function conjugate!(::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, k, g, h) where {𝔽}
     return copyto!(k, g)
 end
 

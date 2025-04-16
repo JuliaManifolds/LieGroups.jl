@@ -71,13 +71,14 @@ end
 @doc "$(_doc_exp_planar_circ)"
 ManifoldsBase.exp!(G::_PlanarCircleGroup, g, X) = copyto!(g, exp(G, X))
 
-function _compose(::_PlanarCircleGroup, p, q)
-    a = p[1]
-    b = p[2]
-    c = q[1]
-    d = q[2]
-    z = [(a * c - b * d), (a * d + b * c)]
-    return z
+function _compose!(::_PlanarCircleGroup, k, g, h)
+    a = g[1]
+    b = g[2]
+    c = h[1]
+    d = h[2]
+    k[1] = a * c - b * d
+    k[2] = a * d + b * c
+    return k
 end
 
 identity_element(::_PlanarCircleGroup) = [1.0, 0.0]
@@ -116,11 +117,13 @@ ManifoldsBase.log(::_PlanarCircleGroup, g)
 ManifoldsBase.log!(M::_PlanarCircleGroup, X, g)
 
 function ManifoldsBase.log(::_PlanarCircleGroup, g)
-    z = log(g[1] + g[2]*im)
+    z = log(g[1] + g[2] * im)
     return [z.re, z.im]
 end
 
-function ManifoldsBase.log(C::_PlanarCircleGroup, ::Identity{AbelianMultiplicationGroupOperation})
+function ManifoldsBase.log(
+    C::_PlanarCircleGroup, ::Identity{AbelianMultiplicationGroupOperation}
+)
     return zero_vector(LieAlgebra(C))
 end
 
