@@ -33,7 +33,7 @@ of the real plane with the complex plane.
 """
 
 @doc "$(_doc_diff_left_compose_mult_planar_circ)"
-diff_left_compose(C::_PlanarCircleGroup, g, h, X) = compose(C, g, X)
+diff_left_compose!(C::_PlanarCircleGroup, Y, g, h, X) = compose!(C, Y, g, X)
 
 _doc_diff_right_compose_mult_planar_circ = """
     diff_right_compose(G::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Sphere}, g, h, X)
@@ -48,7 +48,7 @@ of the real plane with the complex plane.
 """
 
 @doc "$(_doc_diff_right_compose_mult_planar_circ)"
-diff_right_compose(C::_PlanarCircleGroup, g, h, X) = compose(C, X, g)
+diff_right_compose!(C::_PlanarCircleGroup, Y, g, h, X) = compose!(C, Y, X, g)
 
 _doc_exp_planar_circ = """
     exp(::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Sphere}, X)
@@ -64,13 +64,12 @@ $(_tex(:exp)) (t) = $(_tex(:pmatrix, _tex(:cos)*"(t)", _tex(:sin)*"(t)"))
 ```
 """
 @doc "$(_doc_exp_planar_circ)"
-function Base.exp(::_PlanarCircleGroup, X)
+function ManifoldsBase.exp!(::_PlanarCircleGroup, g, X)
     z = exp(X[1] + X[2] * im)
-    return [z.re, z.im]
+    g[1] = real(z)
+    g[2] = imag(z)
+    return nothing
 end
-
-@doc "$(_doc_exp_planar_circ)"
-ManifoldsBase.exp!(G::_PlanarCircleGroup, g, X) = copyto!(g, exp(G, X))
 
 function _compose!(::_PlanarCircleGroup, k, g, h)
     a = g[1]
