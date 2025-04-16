@@ -87,8 +87,17 @@ function identity_element!(::_PlanarCircleGroup, p::Array{<:Any,1})
     return p
 end
 
-Base.inv(::_PlanarCircleGroup, p) = [p[1], -p[2]]
-Base.inv(::_PlanarCircleGroup, e::Identity{<:AbelianMultiplicationGroupOperation}) = e
+function inv!(::_PlanarCircleGroup, q, p)
+    q[1] = p[1]
+    q[2] = -p[2]
+    return q
+end
+
+function inv!(
+    G::PG, q, ::Identity{AbelianMultiplicationGroupOperation}
+) where {PG<:_PlanarCircleGroup}
+    return identity_element!(G, q)
+end
 
 function inv_left_compose!(C::_PlanarCircleGroup, k, g, h)
     inv!(C, k, g)
