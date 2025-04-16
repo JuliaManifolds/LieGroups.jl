@@ -164,8 +164,8 @@ end
 
 Return the manifold stored within the [`AbstractLieGroup`](@ref) `G`.
 """
-Manifolds.base_manifold(G::AbstractLieGroup)
-Manifolds.base_manifold(G::LieGroup) = G.manifold
+ManifoldsBase.base_manifold(G::AbstractLieGroup)
+ManifoldsBase.base_manifold(G::LieGroup) = G.manifold
 
 # Since we dispatch per point here, identity is already checked on the `is_point` level.
 function ManifoldsBase.check_point(

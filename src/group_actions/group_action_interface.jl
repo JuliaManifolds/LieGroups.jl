@@ -192,7 +192,7 @@ where for a left group action we have ``σ_g(p) = σ(g,p)``, for a right action 
 function diff_apply end
 @doc "$(_doc_diff_apply)"
 function diff_apply(A::GroupAction, g, p, X)
-    Y = allocate_result(base_manifold(A), apply_diff_group, p, g, X)
+    Y = allocate_result(base_manifold(A), diff_apply, p, g, X)
     diff_apply!(A, Y, g, p, X)
     return Y
 end

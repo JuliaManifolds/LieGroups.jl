@@ -10,10 +10,37 @@ The package is named after the Norwegian mathematician [Marius Sophus Lie](https
 """
 module LieGroups
 
-using LinearAlgebra, ManifoldsBase, Manifolds, Quaternions, StaticArrays, Random
+using LinearAlgebra, ManifoldsBase, Quaternions, StaticArrays, Random
+
+#
+#
+# For the intermediate time be a bit more careful with Manifolds.jl and really only import
+# what we need.
+using Manifolds:
+    Circle,
+    DeterminantOneMatrices,
+    Euclidean,
+    GeneralUnitaryMatrices,
+    InvertibleMatrices,
+    HeisenbergMatrices,
+    OrthogonalMatrices,
+    ProductManifold,
+    Rotations,
+    Sphere,
+    SymplecticMatrices,
+    UnitaryMatrices
+using Manifolds: DeterminantOneMatrixType
+using Manifolds: base_manifold
 
 import LinearAlgebra: adjoint, adjoint!
-using ManifoldsBase: RealNumbers, ComplexNumbers, ℝ, ℂ, internal_value
+using ManifoldsBase:
+    AbstractBasis, AbstractNumbers, RealNumbers, ComplexNumbers, QuaternionNumbers, ℍ, ℝ, ℂ
+using ManifoldsBase:
+    allocate_result,
+    get_parameter,
+    internal_value,
+    submanifold_component,
+    submanifold_components
 using StaticArrays
 #
 #

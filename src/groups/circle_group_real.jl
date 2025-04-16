@@ -1,10 +1,10 @@
 #
 #circle group represented in ℝ mod 2π = [-π, π), operation: addition mod 2π
 #
-function CircleGroup(M::Manifolds.Circle{ℝ})
+function CircleGroup(M::Circle{ℝ})
     return LieGroup{ℝ,AdditionGroupOperation,typeof(M)}(M, AdditionGroupOperation())
 end
-CircleGroup(𝔽::ManifoldsBase.AbstractNumbers=ℂ) = CircleGroup(Circle(𝔽))
+CircleGroup(𝔽::AbstractNumbers=ℂ) = CircleGroup(Circle(𝔽))
 
 const _RealCircleGroup = LieGroup{ℝ,AdditionGroupOperation,<:Circle{ℝ}}
 

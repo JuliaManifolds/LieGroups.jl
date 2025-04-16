@@ -1,7 +1,7 @@
 #
 #circle group represented by complex numbers, operation: complex multiplication
 #
-function CircleGroup(M::Manifolds.Circle{ℂ})
+function CircleGroup(M::Circle{ℂ})
     return LieGroup{ℂ,AbelianMultiplicationGroupOperation,typeof(M)}(
         M, AbelianMultiplicationGroupOperation()
     )

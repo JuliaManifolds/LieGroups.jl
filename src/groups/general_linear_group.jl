@@ -21,11 +21,11 @@ Generate the general linear group on ``𝔽^{n×n}``.
 All keyword arguments in `kwargs...` are passed on to [`InvertibleMatrices`](@extref `Manifolds.InvertibleMatrices`).
 """
 const GeneralLinearGroup{𝔽,T} = LieGroup{
-    𝔽,MatrixMultiplicationGroupOperation,Manifolds.InvertibleMatrices{𝔽,T}
+    𝔽,MatrixMultiplicationGroupOperation,InvertibleMatrices{𝔽,T}
 }
 
 function GeneralLinearGroup(n::Int; field=ManifoldsBase.ℝ, kwargs...)
-    Im = Manifolds.InvertibleMatrices(n, field; kwargs...)
+    Im = InvertibleMatrices(n, field; kwargs...)
     return GeneralLinearGroup{typeof(Im).parameters...}(
         Im, MatrixMultiplicationGroupOperation()
     )
@@ -52,6 +52,6 @@ ManifoldsBase.exp(::GeneralLinearGroup, X)
 ManifoldsBase.exp!(::GeneralLinearGroup, g, X)
 
 function Base.show(io::IO, G::GeneralLinearGroup{𝔽}) where {𝔽}
-    n = Manifolds.get_parameter(G.manifold.size)[1]
+    n = ManifoldsBase.get_parameter(G.manifold.size)[1]
     return print(io, "GeneralLinearGroup($n; field=$(𝔽))")
 end
