@@ -307,9 +307,9 @@ function identity_element(
     return one(e)
 end
 
+@doc "$(_doc_identity_element_abelian_mult)"
 identity_element!(::LieGroup{𝔽,AbelianMultiplicationGroupOperation}, e) where {𝔽}
 
-@doc "$(_doc_identity_element_abelian_mult)"
 function identity_element!(
     ::LieGroup{𝔽,AbelianMultiplicationGroupOperation}, e::AbstractArray{<:Number,0}
 ) where {𝔽}
