@@ -27,7 +27,7 @@ const SymplecticGroup{𝔽,T} = LieGroup{
 }
 
 function SymplecticGroup(n::Int, field::AbstractNumbers=ℝ; kwargs...)
-    S = Manifolds.SymplecticMatrices(n, field; kwargs...)
+    S = SymplecticMatrices(n, field; kwargs...)
     return SymplecticGroup{field,typeof(S).parameters[1]}(
         S, MatrixMultiplicationGroupOperation()
     )
@@ -39,6 +39,6 @@ function Base.show(
     return print(io, "SymplecticGroup($(2*n), $(𝔽))")
 end
 function Base.show(io::IO, G::SymplecticGroup{𝔽,Tuple{Int}}) where {𝔽}
-    size = Manifolds.get_parameter(G.manifold.size)[1]
+    size = get_parameter(G.manifold.size)[1]
     return print(io, "SymplecticGroup($(2*size), $(𝔽); parameter=:field)")
 end

@@ -198,7 +198,7 @@ function adjoint!(G::ValidationLieGroup, Y, g, X; kwargs...)
     return Y
 end
 
-Manifolds.base_manifold(G::ValidationLieGroup) = base_manifold(G.lie_group)
+ManifoldsBase.base_manifold(G::ValidationLieGroup) = base_manifold(G.lie_group)
 
 function _compose(G::ValidationLieGroup, g, h; kwargs...)
     is_point(G, g; widthin=compose, context=(:Input,), kwargs...)

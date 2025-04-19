@@ -29,11 +29,11 @@ $(_tex(:pmatrix,
 where additionally ``Z_n`` denotes the ``n×n`` zero matrix.
 """
 const HeisenbergGroup{T} = LieGroup{
-    ℝ,MatrixMultiplicationGroupOperation,Manifolds.HeisenbergMatrices{T}
+    ℝ,MatrixMultiplicationGroupOperation,HeisenbergMatrices{T}
 }
 
 function HeisenbergGroup(n::Int; parameter::Symbol=:type)
-    Hm = Manifolds.HeisenbergMatrices(n; parameter=parameter)
+    Hm = HeisenbergMatrices(n; parameter=parameter)
     return HeisenbergGroup{typeof(Hm).parameters...}(
         Hm, MatrixMultiplicationGroupOperation()
     )

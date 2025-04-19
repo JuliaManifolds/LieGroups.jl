@@ -1,9 +1,14 @@
+Baran
+Bergmann
 [jJ]ulia
 LieGroups.jl
 Lie algebra
 Lie algebras
 Lie group
 Lie groups
+Mateusz
 Riemannian
 Schur
+Schreiter
 semidirect
+Verdier

@@ -11,11 +11,11 @@ Generate  special orthogonal group ``$(_math(:SO))(n)``.
 All keyword arguments in `kwargs...` are passed on to [`Rotations`](@extref `Manifolds.Rotations`) as well.
 """
 const SpecialOrthogonalGroup{T} = LieGroup{
-    ManifoldsBase.ℝ,MatrixMultiplicationGroupOperation,Manifolds.Rotations{T}
+    ManifoldsBase.ℝ,MatrixMultiplicationGroupOperation,Rotations{T}
 }
 
 function SpecialOrthogonalGroup(n::Int; kwargs...)
-    R = Manifolds.Rotations(n; kwargs...)
+    R = Rotations(n; kwargs...)
     return SpecialOrthogonalGroup{typeof(R).parameters[1]}(
         R, MatrixMultiplicationGroupOperation()
     )
@@ -96,6 +96,6 @@ ManifoldsBase.log(::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}
 ManifoldsBase.log!(::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, X, g)
 
 function Base.show(io::IO, G::SpecialOrthogonalGroup)
-    size = Manifolds.get_parameter(G.manifold.size)[1]
+    size = get_parameter(G.manifold.size)[1]
     return print(io, "SpecialOrthogonalGroup($(size))")
 end

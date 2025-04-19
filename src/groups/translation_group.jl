@@ -13,14 +13,14 @@ are passed on to [`Euclidean`](@extref `Manifolds.Euclidean`) as well
 
 We denote the Lie algebra of ``$(_math(:T))(n)`` by ``$(_math(:t))(n)``.
 """
-const TranslationGroup{𝔽,T} = LieGroup{𝔽,AdditionGroupOperation,Manifolds.Euclidean{T,𝔽}}
+const TranslationGroup{𝔽,T} = LieGroup{𝔽,AdditionGroupOperation,Euclidean{T,𝔽}}
 
 function TranslationGroup(n::Int...; kwargs...)
-    Rn = Manifolds.Euclidean(n...; kwargs...)
+    Rn = Euclidean(n...; kwargs...)
     return TranslationGroup{typeof(Rn).parameters[[2, 1]]...}(Rn, AdditionGroupOperation())
 end
 
 function Base.show(io::IO, G::TranslationGroup{𝔽}) where {𝔽}
-    size = Manifolds.get_parameter(G.manifold.size)
+    size = get_parameter(G.manifold.size)
     return print(io, "TranslationGroup($(join(size, ", ")); field=$(𝔽))")
 end

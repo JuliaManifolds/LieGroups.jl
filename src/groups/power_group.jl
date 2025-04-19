@@ -339,7 +339,7 @@ function Base.show(
     PM = G.manifold
     POp = G.op
     L = LieGroup(PM.manifold, POp.op)
-    size = Manifolds.get_parameter(G.manifold.size)
+    size = get_parameter(G.manifold.size)
     return print(io, "PowerLieGroup($L, $(join(size, ", ")))")
 end
 
