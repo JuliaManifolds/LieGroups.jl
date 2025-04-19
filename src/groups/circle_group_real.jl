@@ -12,7 +12,7 @@ _doc_sym_rem = """
     sym_rem(x,[T=π])
 
 Compute symmetric remainder of `x` with respect to the interall 2*`T`, i.e.
-`(x+T)%2T`, where the default for `T` is ``π``
+`(x+T)%2T`, where the default for `T` is ``π``.
 """
 @doc "$(_doc_sym_rem)"
 function sym_rem(x::N, T=π) where {N<:Number}
@@ -39,12 +39,54 @@ function _compose!(G::_RealCircleGroup, x, p, q)
     return copyto!(x, compose(G, p, q))
 end
 
+_doc_conjugate_real_circle = """
+    conjugate(::LieGroup{ℝ, AdditionGroupOperation, Circle{ℝ}}, g, h)
+    conjugate(::LieGroup{ℝ, AdditionGroupOperation, Circle{ℝ}}, k, g, h)
+
+Compute the conjugation map ``c_g: $(_math(:G)) → $(_math(:G))`` given by ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1} = g``.
+
+This can be done in-place of `k` if `k` is `mutable`.
+"""
+
+@doc "$(_doc_conjugate_real_circle)"
 conjugate(::_RealCircleGroup, g, h) = g
+
+@doc "$(_doc_conjugate_real_circle)"
 conjugate!(::_RealCircleGroup, k, g, ::Any) = copyto!(k, g)
 
+_doc_diff_conjugate_real_circle = """
+    diff_conjugate(G::LieGroup{ℝ, AdditionGroupOperation, Circle{ℝ}}, g, h, X)
+    diff_conjugate!(G::LieGroup{ℝ, AdditionGroupOperation, Circle{ℝ}}, Y, g, h, X)
+
+Compute the differential of the [`conjugate`](@ref) ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1}``.
+On the circle group represented as [part of the real line](@ref circle-group-real), this simplifies to ``D(c_g(h))[X] = X``.
+
+The operation can be performed in-place of `Y` if `Y` is `mutable`.
+"""
+
+@doc "$(_doc_diff_conjugate_real_circle)"
 diff_conjugate(::_RealCircleGroup, g, h, X::Number) = X
 
+_doc_diff_inv_real_circle = """
+    diff_inv(G::LieGroup{ℝ, AdditionGroupOperation, Circle{ℝ}}, g, X)
+    diff_inv!(G::LieGroup{ℝ, AdditionGroupOperation, Circle{ℝ}}, Y, g, X)
+
+Compute the value of the differential ``Dι_{$(_math(:G))}([g])[X]`` of the inversion ``ι_{$(_math(:G))}([g]) := [g]^{-1} = [-g]`` at ``X ∈ 𝔤``
+in the [`LieAlgebra`](@ref) ``𝔤`` of the [real `CircleGroup`](@ref circle-group-real) `G`.
+
+The computation simplifies due to commutativity to
+
+```math
+Dι_{$(_math(:G))}([g])[X] = -X.
+```
+
+This can be computed in-place of `Y` if `Y` is `mutable`.
+"""
+
+@doc "$(_doc_diff_inv_real_circle)"
 diff_inv(::_RealCircleGroup, g, X) = -X
+
+@doc "$(_doc_diff_inv_real_circle)"
 function diff_inv!(G::_RealCircleGroup, Y, g, X)
     return copyto!(LieAlgebra(G), Y, -X)
 end
@@ -53,17 +95,33 @@ diff_left_compose(::_RealCircleGroup, g, h, X::Number) = X
 
 diff_right_compose(::_RealCircleGroup, g, h, X::Number) = X
 
+_doc_exp_real_circ = """
+    exp(::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Circle{ℝ}}, X)
+    exp!(::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Circle{ℝ}}, g, X)
+
+Computes the exponential map for a vector `X` of the [`LieAlgebra`](@ref), which can be canonically identified with the real number line.
+Therefore, the exponential map coincides with the projection of ``X∈ℝ`` to its equivalence class of its defining relation, the symmetric remainder ``$(_tex(:rm, raw"mod\, ")) 2π``:
+```math
+    $(_tex(:exp))(X) = [X].
+```
+"""
+
+@doc "$(_doc_exp_real_circ)"
 ManifoldsBase.exp(::_RealCircleGroup, X::Number) = sym_rem(X)
+
 function ManifoldsBase.exp(G::_RealCircleGroup, X)
     return map(XX -> exp(G, XX), X)
 end
+
 function ManifoldsBase.exp(::_RealCircleGroup, g::Number, X::Number)
     return sym_rem(g + X)
 end
+
 function ManifoldsBase.exp(G::_RealCircleGroup, g, X)
     return map((gg, XX) -> exp(G, gg, XX), g, X)
 end
 
+@doc "$(_doc_exp_real_circ)"
 function ManifoldsBase.exp!(G::_RealCircleGroup, g, X)
     return copyto!(g, exp(G, X))
 end
@@ -114,6 +172,7 @@ function get_vector_lie!(
     return get_vector!(M, X, identity_element(G, T), c, DefaultOrthonormalBasis(ℝ))
 end
 
+
 identity_element(::_RealCircleGroup) = 0.0
 
 Base.inv(::_RealCircleGroup, p::Number) = sym_rem(-p)
@@ -136,16 +195,35 @@ function lie_bracket(
     return zero(X)
 end
 
+
+_doc_log_real_circ = """
+    log(::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Sphere}, g)
+    log!(::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Sphere}, X, g)
+
+Compute the Lie group logarithm on the [`CircleGroup`](@ref circle-group-real), represented as ``ℝ / 2πℤ``.
+Since the [`LieAlgebra`](@ref) can canonically be identified with ``ℝ`` and [`exp`](@ref) with the canonical projection, it coincides with the identity.
+
+Formally ``$(_tex(:log))`` promotes an equivalence class ``[X]`` to a representative ``X∈ℝ``.
+
+This can be computed in-place of `X`.
+"""
+
+@doc "$(_doc_log_real_circ)"
 ManifoldsBase.log(::_RealCircleGroup, g::Number) = g
+
 function ManifoldsBase.log(G::_RealCircleGroup, g)
     return map(gg -> log(G, gg), g)
 end
+
 function ManifoldsBase.log(G::_RealCircleGroup, g, h)
     return log(G, compose(G, inv(G, g), h))
 end
+
+@doc "$(_doc_log_real_circ)"
 function ManifoldsBase.log!(G::_RealCircleGroup, X, g)
     return copyto!(X, log(G, g))
 end
+
 function ManifoldsBase.log!(G::_RealCircleGroup, X, g, h)
     return copyto!(X, log(G, g, h))
 end
@@ -162,14 +240,6 @@ function ManifoldsBase.log!(G::_RealCircleGroup, X, ::Identity{AdditionGroupOper
     return zero_vector!(LieAlgebra(G), X)
 end
 
-_doc_exp_real_circ = """
-    exp(::CircleGroup{ℝ, AdditionGroupOperation, Circle{ℝ}}, X)
-    exp!(::CircleGroup{ℝ, AdditionGroupOperation, Circle{ℝ}}, g, X)
-
-The Lie group exponential on the [`CircleGroup`](@ref) represented in ℝ is given by the projection into the equivalence class of its defining relation.
-
-This can be computed in-place of `X`.
-"""
 
 function Base.show(io::IO, ::_RealCircleGroup)
     return print(io, "CircleGroup(ℝ)")

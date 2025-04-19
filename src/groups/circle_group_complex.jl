@@ -15,10 +15,38 @@ function LieAlgebra(G::_ComplexCircleGroup)
     )
 end
 
+_doc_diff_left_compose_complex_circ = """
+    diff_left_compose(::LieGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, g, h, X)
+    diff_left_compose(::LieGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, Y, g, h, X)
+
+Compute the differential of the left group multiplication ``λ_g(h) = g$(_math(:∘))h``.
+On the complex circle the differential simplifies to the ordinary complex multiplication
+```math
+    λ_g(h) = g ⋅ X.
+```
+
+This can be computed in-place of `Y` if `Y` is `mutable` due to the wrapper defined in the [`AbelianMultiplicationGroupOperation`](@ref).    
+"""
+
+@doc "$(_doc_diff_left_compose_complex_circ)"
 function diff_left_compose(::_ComplexCircleGroup, g::Number, h::Any, X::Number)
     return g * X
 end
 
+_doc_diff_right_compose_complex_circ = """
+    diff_right_compose(::LieGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, g, h, X)
+    diff_right_compose(::LieGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, Y, g, h, X)
+
+Compute the differential of the right group multiplication ``ρ_g(h) = h$(_math(:∘))g``.
+On the complex circle the differential simplifies to the ordinary complex multiplication
+```math
+    ρ_g(h) = X ⋅ g.
+```
+
+This can be computed in-place of `Y` if `Y` is `mutable` due to the wrapper defined in the [`AbelianMultiplicationGroupOperation`](@ref).    
+"""
+
+@doc "$(_doc_diff_right_compose_complex_circ)"
 function diff_right_compose(::_ComplexCircleGroup, g::Number, h::Any, X::Number)
     return X * g
 end
