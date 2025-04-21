@@ -65,7 +65,7 @@ canonical identification of the real plane with the complex plane.
 
 This can be computed in-place of `g`.
 ```math
-$(_tex(:exp)) (t) = $(_tex(:pmatrix, _tex(:cos)*"(t)", _tex(:sin)*"(t)"))
+$(_tex(:exp)) $(_tex(:pmatrix, 0, "t")) = $(_tex(:pmatrix, _tex(:cos)*"(t)", _tex(:sin)*"(t)"))
 ```
 """
 @doc "$(_doc_exp_planar_circ)"
