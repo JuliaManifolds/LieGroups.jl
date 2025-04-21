@@ -12,7 +12,7 @@ The following sections collect these.
 
 
 * an [`AdditionGroupOperation`](@ref)
-* a [`AbelianMultiplicationGroupOperation`](@ref) and
+* an [`AbelianMultiplicationGroupOperation`](@ref) and
 * a [`MatrixMultiplicationGroupOperation`](@ref)
 
 
