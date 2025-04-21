@@ -34,7 +34,9 @@ Order = [:type, :function]
 ```
 
 ## [Abelian multiplication group operation](@id multiplication-operationabelian-sec)
-Since the commutativity of some Lie groups leads to a significant simplification of computations on those groups, the [`abelian multiplication group operation`](@ref multiplication-operationabelian-sec) optimizes these cases. Additionally, it provides an interface for the abelian Lie groups that can be represented in one dimension, and therefore also as scalar `isbits`-types. These require a separate evaluation because `isbits` values are passed by copy and cannot be mutated and handled by the [usual multiplication interface](@ref multiplication-operation-sec).
+Since the commutativity of some Lie groups leads to a significant simplification of computations on those groups, the [`abelian multiplication group operation`](@ref multiplication-operationabelian-sec) optimizes these cases.
+Additionally, it provides an interface for the abelian Lie groups. Some of these can are represented by `isbits`-types,
+which don't have mutating variants of the functions.
 
 ```@autodocs
 Modules = [LieGroups]

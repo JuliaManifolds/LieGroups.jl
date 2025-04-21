@@ -43,11 +43,11 @@ _doc_conjugate_circle_group = """
     conjugate(CircleGroup, g, h)
     conjugate!(CircleGroup, k, g, h)
 
-Compute the conjugation map ``c_g: $(_math(:G)) → $(_math(:G))`` given by 
+Compute the conjugation map ``c_g: $(_math(:G)) → $(_math(:G))`` given by
 ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1} = h``.
 It simplifies to the identity since the group operation on the circle group is abelian.
 
-This can be done in-place of `k` if `k` is `mutable`.
+This can be computed in-place of `k` if `k` is `mutable`.
 """
 
 @doc "$(_doc_conjugate_circle_group)"
@@ -63,7 +63,7 @@ _doc_diff_conjugate_real_circle = """
 Compute the differential of the [conjugation map](@ref conjugate) ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1}=h``.
 On the circle group represented as [part of the real line](@ref circle-group-real), this simplifies to ``D(c_g(h))[X] = X``.
 
-This can be done in-place of `Y` if `Y` is `mutable`.
+This can be computed in-place of `Y` if `Y` is `mutable`.
 """
 
 @doc "$(_doc_diff_conjugate_real_circle)"
@@ -82,7 +82,7 @@ The computation simplifies due to commutativity to
 Dι_{$(_math(:G))}([g])[X] = -X.
 ```
 
-This can be done in-place of `Y` if `Y` is `mutable`.
+This can be computed in-place of `Y` if `Y` is `mutable`.
 """
 
 @doc "$(_doc_diff_inv_real_circle)"
@@ -101,7 +101,7 @@ _doc_exp_real_circ = """
     exp(::LieGroup{ℝ, AdditionGroupOperation, Circle{ℝ}}, X)
     exp!(::LieGroup{ℝ, AdditionGroupOperation, Circle{ℝ}}, g, X)
 
-Compute the Lie group exponential of a vector `X` of the [`LieAlgebra`](@ref) 
+Compute the Lie group exponential of a vector `X` of the [`LieAlgebra`](@ref)
 of the circle group, represented as angles in ``[-π, π)``.
 In that case, the Lie algebra is the real line and the Lie group exponential of
 a vector ``X ∈ ℝ`` is its equivalence class
@@ -109,7 +109,7 @@ a vector ``X ∈ ℝ`` is its equivalence class
     $(_tex(:exp))(X) = [X] ∈ $(_tex(:SetDef, "[x] ∈ ℝ / 2πℤ", "x ∈ [-π,π)", "big")).
 ```
 
-This can be done in-place of `g`.
+This can be computed in-place of `g`.
 """
 
 @doc "$(_doc_exp_real_circ)"
@@ -211,7 +211,7 @@ The [`LieAlgebra`](@ref) is the real line and ``$(_tex(:log))`` is given by the 
 
 Formally ``$(_tex(:log))`` promotes an equivalence class ``[X]`` to a representative ``X∈ℝ``.
 
-This can be done in-place of `X`.
+This can be computed in-place of `X`.
 """
 
 @doc "$(_doc_log_real_circ)"

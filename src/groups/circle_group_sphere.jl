@@ -31,7 +31,7 @@ It simplifies for the [`AbelianMultiplicationGroupOperation`](@ref) to ``Dλ_g(h
 where the multiplication corresponds to the complex multiplication after canonical identification
 of the real plane with the complex plane.
 
-This can be done in-place of `Y`.
+This can be computed in-place of `Y`.
 """
 
 @doc "$(_doc_diff_left_compose_mult_planar_circ)"

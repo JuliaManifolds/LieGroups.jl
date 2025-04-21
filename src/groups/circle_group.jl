@@ -2,7 +2,7 @@ function CircleGroup end
 """
     CircleGroup
 
-The circle group ``𝕊^1`` is the unit circle together with 
+The circle group ``𝕊^1`` is the unit circle together with
 composing points on the circle by adding angles.
 The circle itself is a one dimensional Riemannian manifold.
 Hence the Lie algebra is the real line.
@@ -24,7 +24,7 @@ multiplication [`AbelianMultiplicationGroupOperation`](@ref).
 That operation is given by
 
 ```math
-(a + b$(_math(:i))) ∘ (c + d$(_math(:i))) := (ac - bd) + (ad + bc)*$(_math(:i)),
+(a + b$(_math(:i))) ∘ (c + d$(_math(:i))) := (ac - bd) + (ad + bc)$(_math(:i)),
 ```
 
 for complex numbers ``a + b$(_math(:i)), c + d$(_math(:i)) ∈ ℂ``.
@@ -59,7 +59,7 @@ of two points on the unit circle which corresponds to complex
 multiplication
 
 ```math
-(x_1, y_1) ∘ (x_2, y_2) := ((x_1*x_2 - y_1*y_2), (x_1*y_2 + x_2*y_1)),
+(x_1, y_1) ∘ (x_2, y_2) := ( x_1x_2 - y_1y_2, x_1y_2 + x_2y_1),
 ```
 for real valued vectors ``(x_1, y_1)^$(_tex(:transp)), (x_2, y_2)^$(_tex(:transp)) ∈ ℝ^2`` via [`AbelianMultiplicationGroupOperation`](@ref).
 

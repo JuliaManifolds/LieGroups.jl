@@ -25,7 +25,7 @@ On the complex circle the differential simplifies to the ordinary complex multip
     λ_g(h) = g ⋅ X.
 ```
 
-This can be computed in-place of `Y` if `Y` is `mutable` due to the wrapper defined in the [`AbelianMultiplicationGroupOperation`](@ref).    
+This can be computed in-place of `Y` if `Y` is `mutable`.
 """
 
 @doc "$(_doc_diff_left_compose_complex_circ)"
@@ -43,7 +43,7 @@ On the complex circle the differential simplifies to the ordinary complex multip
     ρ_g(h) = X ⋅ g.
 ```
 
-This can be computed in-place of `Y` if `Y` is `mutable` due to the wrapper defined in the [`AbelianMultiplicationGroupOperation`](@ref).    
+This can be computed in-place of `Y` if `Y` is `mutable` due to the wrapper defined in the [`AbelianMultiplicationGroupOperation`](@ref).
 """
 
 @doc "$(_doc_diff_right_compose_complex_circ)"
