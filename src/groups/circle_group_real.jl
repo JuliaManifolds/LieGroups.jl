@@ -39,29 +39,31 @@ function _compose!(G::_RealCircleGroup, x, p, q)
     return copyto!(x, compose(G, p, q))
 end
 
-_doc_conjugate_real_circle = """
-    conjugate(::LieGroup{ℝ, AdditionGroupOperation, Circle{ℝ}}, g, h)
-    conjugate(::LieGroup{ℝ, AdditionGroupOperation, Circle{ℝ}}, k, g, h)
+_doc_conjugate_circle_group = """
+    conjugate(CircleGroup, g, h)
+    conjugate!(CircleGroup, k, g, h)
 
-Compute the conjugation map ``c_g: $(_math(:G)) → $(_math(:G))`` given by ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1} = g``.
+Compute the conjugation map ``c_g: $(_math(:G)) → $(_math(:G))`` given by 
+``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1} = h``.
+It simplifies to the identity since the group operation on the circle group is abelian.
 
 This can be done in-place of `k` if `k` is `mutable`.
 """
 
-@doc "$(_doc_conjugate_real_circle)"
+@doc "$(_doc_conjugate_circle_group)"
 conjugate(::_RealCircleGroup, g, h) = g
 
-@doc "$(_doc_conjugate_real_circle)"
+@doc "$(_doc_conjugate_circle_group)"
 conjugate!(::_RealCircleGroup, k, g, ::Any) = copyto!(k, g)
 
 _doc_diff_conjugate_real_circle = """
     diff_conjugate(G::LieGroup{ℝ, AdditionGroupOperation, Circle{ℝ}}, g, h, X)
     diff_conjugate!(G::LieGroup{ℝ, AdditionGroupOperation, Circle{ℝ}}, Y, g, h, X)
 
-Compute the differential of the [`conjugate`](@ref) ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1}``.
+Compute the differential of the [conjugation map](@ref conjugate) ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1}=h``.
 On the circle group represented as [part of the real line](@ref circle-group-real), this simplifies to ``D(c_g(h))[X] = X``.
 
-The operation can be performed in-place of `Y` if `Y` is `mutable`.
+This can be done in-place of `Y` if `Y` is `mutable`.
 """
 
 @doc "$(_doc_diff_conjugate_real_circle)"
@@ -71,8 +73,8 @@ _doc_diff_inv_real_circle = """
     diff_inv(G::LieGroup{ℝ, AdditionGroupOperation, Circle{ℝ}}, g, X)
     diff_inv!(G::LieGroup{ℝ, AdditionGroupOperation, Circle{ℝ}}, Y, g, X)
 
-Compute the value of the differential ``Dι_{$(_math(:G))}([g])[X]`` of the inversion ``ι_{$(_math(:G))}([g]) := [g]^{-1} = [-g]`` at ``X ∈ 𝔤``
-in the [`LieAlgebra`](@ref) ``𝔤`` of the [real `CircleGroup`](@ref circle-group-real) `G`.
+Compute the the differential ``Dι_{$(_math(:G))}([g])[X]`` of the inversion ``ι_{$(_math(:G))}([g]) := [g]^{-1} = [-g]`` at ``X ∈ 𝔤``
+in the [`LieAlgebra`](@ref) ``𝔤`` of the [real `CircleGroup`](@ref circle-group-real) `G` ``=$(_math(:G))``.
 
 The computation simplifies due to commutativity to
 
@@ -80,7 +82,7 @@ The computation simplifies due to commutativity to
 Dι_{$(_math(:G))}([g])[X] = -X.
 ```
 
-This can be computed in-place of `Y` if `Y` is `mutable`.
+This can be done in-place of `Y` if `Y` is `mutable`.
 """
 
 @doc "$(_doc_diff_inv_real_circle)"
@@ -96,14 +98,18 @@ diff_left_compose(::_RealCircleGroup, g, h, X::Number) = X
 diff_right_compose(::_RealCircleGroup, g, h, X::Number) = X
 
 _doc_exp_real_circ = """
-    exp(::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Circle{ℝ}}, X)
-    exp!(::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Circle{ℝ}}, g, X)
+    exp(::LieGroup{ℝ, AdditionGroupOperation, Circle{ℝ}}, X)
+    exp!(::LieGroup{ℝ, AdditionGroupOperation, Circle{ℝ}}, g, X)
 
-Computes the exponential map for a vector `X` of the [`LieAlgebra`](@ref), which can be canonically identified with the real number line.
-Therefore, the exponential map coincides with the projection of ``X∈ℝ`` to its equivalence class of its defining relation, the symmetric remainder ``$(_tex(:rm, raw"mod\, ")) 2π``:
+Compute the Lie group exponential of a vector `X` of the [`LieAlgebra`](@ref) 
+of the circle group, represented as angles in ``[-π, π)``.
+In that case, the Lie algebra is the real line and the Lie group exponential of
+a vector ``X ∈ ℝ`` is its equivalence class
 ```math
-    $(_tex(:exp))(X) = [X].
+    $(_tex(:exp))(X) = [X] ∈ $(_tex(:SetDef, "[x] ∈ ℝ / 2πℤ", "x ∈ [-π,π)", "big")).
 ```
+
+This can be done in-place of `g`.
 """
 
 @doc "$(_doc_exp_real_circ)"
@@ -197,15 +203,15 @@ end
 
 
 _doc_log_real_circ = """
-    log(::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Sphere}, g)
-    log!(::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Sphere}, X, g)
+    log(::LieGroup{ℝ, AdditionGroupOperation, Circle{ℝ}}, g)
+    log!(::LieGroup{ℝ, AdditionGroupOperation, Circle{ℝ}}, X, g)
 
-Compute the Lie group logarithm on the [`CircleGroup`](@ref circle-group-real), represented as ``ℝ / 2πℤ``.
-Since the [`LieAlgebra`](@ref) can canonically be identified with ``ℝ`` and [`exp`](@ref) with the canonical projection, it coincides with the identity.
+Compute the Lie group logarithm on the [`CircleGroup`](@ref circle-group-real), represented as angles in ``[-π,π)``.
+The [`LieAlgebra`](@ref) is the real line and ``$(_tex(:log))`` is given by the identity map.
 
 Formally ``$(_tex(:log))`` promotes an equivalence class ``[X]`` to a representative ``X∈ℝ``.
 
-This can be computed in-place of `X`.
+This can be done in-place of `X`.
 """
 
 @doc "$(_doc_log_real_circ)"

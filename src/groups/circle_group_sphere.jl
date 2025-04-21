@@ -27,13 +27,18 @@ _doc_diff_left_compose_mult_planar_circ = """
 Compute the differential of the left group multiplication ``λ_g(h) = g$(_math(:∘))h`` of the Circle Group,
 represented as two dimensional vectors in ``ℝ^2``.
 
-It simplifies for the [`AbelianMultiplicationGroupOperation`](@ref) to ``Dλ_g(h)[X] = gX``,
+It simplifies for the [`AbelianMultiplicationGroupOperation`](@ref) to ``Dλ_g(h)[X] = g*X``,
 where the multiplication corresponds to the complex multiplication after canonical identification
 of the real plane with the complex plane.
+
+This can be done in-place of `Y`.
 """
 
 @doc "$(_doc_diff_left_compose_mult_planar_circ)"
 diff_left_compose!(C::_PlanarCircleGroup, Y, g, h, X) = compose!(C, Y, g, X)
+
+@doc "$(_doc_diff_left_compose_mult_planar_circ)"
+diff_left_compose(_PlanarCircleGroup, g, h, X)
 
 _doc_diff_right_compose_mult_planar_circ = """
     diff_right_compose(G::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Sphere}, g, h, X)
@@ -42,7 +47,7 @@ _doc_diff_right_compose_mult_planar_circ = """
 Compute the differential of the right group multiplication ``λ_g(h) = g$(_math(:∘))h`` of the Circle Group,
 represented as two dimensional vectors in ``ℝ^2``.
 
-It simplifies for the [`AbelianMultiplicationGroupOperation`](@ref) to ``Dλ_g(h)[X] = Xg``,
+It simplifies for the [`AbelianMultiplicationGroupOperation`](@ref) to ``Dλ_g(h)[X] = X*g``,
 where the multiplication corresponds to the complex multiplication after canonical identification
 of the real plane with the complex plane.
 """
@@ -54,7 +59,7 @@ _doc_exp_planar_circ = """
     exp(::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Sphere}, X)
     exp!(::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Sphere}, g, X)
 
-Computes the Lie group exponential on the [`CircleGroup`](@ref), represented as two dimensional vectors in the real plane.
+Compute the Lie group exponential on the [`CircleGroup`](@ref), represented as two dimensional vectors in the real plane.
 It coincides with the [ordinary complex exponential](https://en.wikipedia.org/wiki/Exponential_map_(Lie_theory)#Examples) after
 canonical identification of the real plane with the complex plane.
 
@@ -63,6 +68,9 @@ This can be computed in-place of `g`.
 $(_tex(:exp)) (t) = $(_tex(:pmatrix, _tex(:cos)*"(t)", _tex(:sin)*"(t)"))
 ```
 """
+@doc "$(_doc_exp_planar_circ)"
+ManifoldsBase.exp(::_PlanarCircleGroup, X)
+
 @doc "$(_doc_exp_planar_circ)"
 function ManifoldsBase.exp!(::_PlanarCircleGroup, g, X)
     z = exp(X[1] + X[2] * im)
@@ -113,7 +121,7 @@ _doc_log_planar_circ = """
     log(::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Sphere}, g)
     log!(::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Sphere}, X, g)
 
-Compute the Lie group logarithm on the [`CircleGroup`](@ref), , represented as two dimensional vectors in the real plane.
+Compute the Lie group logarithm on the [`CircleGroup`](@ref), represented as two dimensional vectors in the real plane.
 It coincides with the ordinary complex logarithm after canonical identification of the real plane with the complex plane.
 
 This can be computed in-place of `X`.
