@@ -76,7 +76,7 @@ function ManifoldsBase.exp!(::_PlanarCircleGroup, g, X)
     z = exp(X[1] + X[2] * im)
     g[1] = real(z)
     g[2] = imag(z)
-    return nothing
+    return g
 end
 
 function _compose!(::_PlanarCircleGroup, k, g, h)

@@ -341,7 +341,7 @@ end
 function lie_bracket!(
     ::LieAlgebra{𝔽,O,<:LieGroup{𝔾,O}}, Z, X, Y
 ) where {𝔽,𝔾,O<:AbelianMultiplicationGroupOperation}
-    return copyto!(Z, zero(Z))
+    return fill!(Z, 0)
 end
 
 
