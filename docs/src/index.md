@@ -10,7 +10,7 @@ CurrentModule = LieGroups
 LieGroups.LieGroups
 ```
 
-The implemented [Lie groups](https://en.wikipedia.org/wiki/Lie_group) are implemented using the interface for manifolds in [`ManifoldsBase.jl`](@extref ManifoldsBase :doc:`index`) together with additional interfaces [for Lie groups](interface/group.md) and [Lie algebras](interface/algebra.md) as well as internally using the manifolds implemented in [`Manifolds.jl`](@extref Manifolds :doc:`index`).
+The implemented [Lie groups](https://en.wikipedia.org/wiki/Lie_group) use the interface for manifolds in [`ManifoldsBase.jl`](@extref ManifoldsBase :doc:`index`) together with an [interface for Lie groups](interface/group.md) and [Lie algebras](interface/algebra.md) as well as internally using the manifolds implemented in [`Manifolds.jl`](@extref Manifolds :doc:`index`).
 
 For more general information about the history of and contributions to the package see the [About](about.md) page.
 

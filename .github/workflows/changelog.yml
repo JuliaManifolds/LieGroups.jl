@@ -1,10 +1,10 @@
-name: Check Changelog
+name: Check News entry
 on:
   pull_request:
 
 jobs:
   Check-Changelog:
-    name: Check Changelog Action
+    name: Check that the News.md was updated
     runs-on: ubuntu-latest
     steps:
       - uses: tarides/changelog-check-action@v3

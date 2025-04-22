@@ -32,6 +32,7 @@ Everything denoted by “formerly” refers to the previous name in [`Manifolds.
   * `RightSemidirectProductLieGroup`
   * `SpecialLinearGroup` (formerly `SpecialLinear`)
   * `SymplecticGroup`
+  * `CircleGroup` now with even three representations: Real line (mod 2π), Complex and plane circle
   * `⋊` (alias for `RightSemidirectProductGroupOperation` when a `default_right_action(G,H)` is defined for the two groups)
   * a `ValidationLieGroup` verifying input and output of all interface functions, similar to the [`ValidationManifold`](https://juliamanifolds.github.io/ManifoldsBase.jl/stable/manifolds/#A-manifold-for-validation) which can also be used internally.
 * `AbstractGroupOperation` as well as its concrete subtypes

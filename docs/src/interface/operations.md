@@ -12,6 +12,9 @@ The following sections collect these.
 
 
 * an [`AdditionGroupOperation`](@ref)
+* an [`AbelianMultiplicationGroupOperation`](@ref) and
+* a [`MatrixMultiplicationGroupOperation`](@ref)
+
 
 ## [Additive group operation](@id addition-operation-sec)
 
@@ -21,11 +24,23 @@ Pages = ["addition_operation.jl"]
 Order = [:type, :function]
 ```
 
+
 ## [Multiplication group operation](@id multiplication-operation-sec)
 
 ```@autodocs
 Modules = [LieGroups]
 Pages = ["multiplication_operation.jl"]
+Order = [:type, :function]
+```
+
+## [Abelian multiplication group operation](@id multiplication-operationabelian-sec)
+Since the commutativity of some Lie groups leads to a significant simplification of computations on those groups, the [`abelian multiplication group operation`](@ref multiplication-operationabelian-sec) optimizes these cases.
+Additionally, it provides an interface for the abelian Lie groups. Some of these can are represented by `isbits`-types,
+which don't have mutating variants of the functions.
+
+```@autodocs
+Modules = [LieGroups]
+Pages = ["multiplication_operation_abelian.jl"]
 Order = [:type, :function]
 ```
 

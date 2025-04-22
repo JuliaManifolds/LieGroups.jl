@@ -6,9 +6,7 @@ const LeftSpecialEuclideanGroupOperation = LeftSemidirectProductGroupOperation{
 const LeftSpecialEuclideanGroup{T} = LieGroup{
     ℝ,
     <:LeftSpecialEuclideanGroupOperation,
-    <:Manifolds.ProductManifold{
-        ℝ,Tuple{<:Manifolds.Rotations{T},<:Manifolds.Euclidean{T,ℝ}}
-    },
+    <:ProductManifold{ℝ,Tuple{<:Rotations{T},<:Euclidean{T,ℝ}}},
 }
 
 # for (t, g)
@@ -18,9 +16,7 @@ const RightSpecialEuclideanGroupOperation = RightSemidirectProductGroupOperation
 const RightSpecialEuclideanGroup{T} = LieGroup{
     ℝ,
     <:RightSpecialEuclideanGroupOperation,
-    <:Manifolds.ProductManifold{
-        ℝ,Tuple{<:Manifolds.Euclidean{T,ℝ},<:Manifolds.Rotations{T}}
-    },
+    <:ProductManifold{ℝ,Tuple{<:Euclidean{T,ℝ},<:Rotations{T}}},
 }
 
 """
@@ -521,7 +517,7 @@ Per default for other representations, this function does not change entries for
 
 @doc "$(_doc_init_constants)"
 function init_constants!(G::SpecialEuclideanGroup, g::AbstractMatrix)
-    n = Manifolds.get_parameter(G.manifold[1].size)[1]
+    n = get_parameter(G.manifold[1].size)[1]
     g[(n + 1), 1:n] .= 0
     g[n + 1, n + 1] = 1
     return g
@@ -532,7 +528,7 @@ function init_constants!(
     G::LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup},
     X::AbstractMatrix,
 )
-    n = Manifolds.get_parameter(G.manifold.manifold[1].size)[1]
+    n = get_parameter(G.manifold.manifold[1].size)[1]
     X[(n + 1), :] .= 0
     return X
 end
@@ -723,7 +719,7 @@ function ManifoldsBase.log!(::SpecialEuclideanGroup, X::AbstractMatrix, g::Abstr
 end
 
 function ManifoldsBase.representation_size(G::SpecialEuclideanGroup)
-    s = Manifolds.get_parameter(G.manifold[1].size)[1]
+    s = get_parameter(G.manifold[1].size)[1]
     return (s + 1, s + 1)
 end
 
@@ -788,11 +784,11 @@ function _SOn_and_Tn(G::RightSpecialEuclideanGroup)
 end
 
 function Base.show(io::IO, G::SpecialEuclideanGroup)
-    size = Manifolds.get_parameter(G.manifold[1].size)[1]
+    size = get_parameter(G.manifold[1].size)[1]
     return print(io, "SpecialEuclideanGroup($(size))")
 end
 function Base.show(io::IO, G::RightSpecialEuclideanGroup)
-    size = Manifolds.get_parameter(G.manifold[1].size)[1]
+    size = get_parameter(G.manifold[1].size)[1]
     return print(io, "SpecialEuclideanGroup($(size); variant=:right)")
 end
 
@@ -894,7 +890,7 @@ function ManifoldsBase.zero_vector(
     ::Type{<:AbstractMatrix{T}}=AbstractMatrix{Float64},
 ) where {T}
     G = 𝔤.manifold
-    n = Manifolds.get_parameter(G.manifold[1].size)[1]
+    n = get_parameter(G.manifold[1].size)[1]
     return zeros(T, n + 1, n + 1)
 end
 
@@ -903,7 +899,7 @@ function ManifoldsBase.zero_vector(
     ::Type{SpecialEuclideanMatrixTangentVector{Matrix{T}}},
 ) where {T}
     G = 𝔤.manifold
-    n = Manifolds.get_parameter(G.manifold[1].size)[1]
+    n = get_parameter(G.manifold[1].size)[1]
     return SpecialEuclideanMatrixTangentVector(zeros(T, n + 1, n + 1))
 end
 function ManifoldsBase.zero_vector!(

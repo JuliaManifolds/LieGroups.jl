@@ -21,7 +21,7 @@ const SpecialLinearGroup{𝔽,T} = LieGroup{
 }
 
 function SpecialLinearGroup(n::Int, field=ManifoldsBase.ℝ; kwargs...)
-    M = Manifolds.DeterminantOneMatrices(n, field; kwargs...)
+    M = DeterminantOneMatrices(n, field; kwargs...)
     return SpecialLinearGroup{typeof(M).parameters...}(
         M, MatrixMultiplicationGroupOperation()
     )

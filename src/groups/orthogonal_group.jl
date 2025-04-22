@@ -11,20 +11,18 @@ Generate  orthogonal group ``$(_math(:O))(n)``.
 All keyword arguments in `kwargs...` are passed on to [`OrthogonalMatrices`](@extref `Manifolds.OrthogonalMatrices`) as well.
 """
 const OrthogonalGroup{T} = LieGroup{
-    ManifoldsBase.ℝ,MatrixMultiplicationGroupOperation,Manifolds.OrthogonalMatrices{T}
+    ℝ,MatrixMultiplicationGroupOperation,OrthogonalMatrices{T}
 }
 
 function OrthogonalGroup(n::Int; kwargs...)
-    R = Manifolds.OrthogonalMatrices(n; kwargs...)
+    R = OrthogonalMatrices(n; kwargs...)
     return OrthogonalGroup{typeof(R).parameters[1]}(R, MatrixMultiplicationGroupOperation())
 end
 
 const OrthogonalLieAlgebra{T} = LieAlgebra{
-    ManifoldsBase.ℝ,
+    ℝ,
     MatrixMultiplicationGroupOperation,
-    LieGroup{
-        ManifoldsBase.ℝ,MatrixMultiplicationGroupOperation,Manifolds.OrthogonalMatrices{T}
-    },
+    LieGroup{ℝ,MatrixMultiplicationGroupOperation,OrthogonalMatrices{T}},
 }
 
 #
@@ -526,6 +524,6 @@ function ManifoldsBase.log!(
 end
 
 function Base.show(io::IO, G::OrthogonalGroup)
-    size = Manifolds.get_parameter(G.manifold.size)[1]
+    size = get_parameter(G.manifold.size)[1]
     return print(io, "OrthogonalGroup($(size))")
 end

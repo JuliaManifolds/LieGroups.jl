@@ -10,10 +10,38 @@ The package is named after the Norwegian mathematician [Marius Sophus Lie](https
 """
 module LieGroups
 
-using LinearAlgebra, ManifoldsBase, Manifolds, Quaternions, StaticArrays, Random
+using LinearAlgebra, ManifoldsBase, Quaternions, StaticArrays, Random
+
+#
+#
+# For the intermediate time be a bit more careful with Manifolds.jl and really only import
+# what we need.
+using Manifolds:
+    Circle,
+    DeterminantOneMatrices,
+    Euclidean,
+    GeneralUnitaryMatrices,
+    InvertibleMatrices,
+    HeisenbergMatrices,
+    OrthogonalMatrices,
+    ProductManifold,
+    Rotations,
+    Sphere,
+    SymplecticMatrices,
+    UnitaryMatrices
+using Manifolds: DeterminantOneMatrixType
+using Manifolds: base_manifold
 
 import LinearAlgebra: adjoint, adjoint!
-using ManifoldsBase: RealNumbers, ComplexNumbers, ℝ, ℂ, internal_value
+using ManifoldsBase:
+    AbstractBasis, AbstractNumbers, RealNumbers, ComplexNumbers, QuaternionNumbers, ℍ, ℝ, ℂ
+using ManifoldsBase:
+    allocate_result,
+    get_parameter,
+    internal_value,
+    submanifold_component,
+    submanifold_components
+using StaticArrays
 #
 #
 # = Compatibility (and a bit of type piracy for now)
@@ -29,6 +57,7 @@ include("Lie_algebra/Lie_algebra_interface.jl")
 # Generic Operations
 include("group_operations/addition_operation.jl")
 include("group_operations/multiplication_operation.jl")
+include("group_operations/multiplication_operation_abelian.jl")
 
 # Actions
 include("group_actions/group_action_interface.jl")
@@ -43,6 +72,10 @@ include("groups/validation_group.jl")
 # Lie groups
 include("groups/translation_group.jl")
 include("groups/general_linear_group.jl")
+include("groups/circle_group_complex.jl")
+include("groups/circle_group_real.jl")
+include("groups/circle_group_sphere.jl")
+include("groups/circle_group.jl")
 include("groups/heisenberg_group.jl")
 include("groups/special_linear_group.jl")
 include("groups/symplectic_group.jl")
@@ -70,11 +103,12 @@ export AbstractGroupOperation, Identity
 export AdditionGroupOperation
 export AbstractMultiplicationGroupOperation
 export MatrixMultiplicationGroupOperation
+export AbelianMultiplicationGroupOperation
 export PowerGroupOperation, ProductGroupOperation
 export LeftSemidirectProductGroupOperation, RightSemidirectProductGroupOperation
 
 #
-#
+#1,
 # Group Actions
 export AbstractGroupActionType
 export AbstractLeftGroupActionType, AbstractRightGroupActionType
@@ -85,6 +119,7 @@ export InverseLeftGroupOperationAction, InverseRightGroupOperationAction
 #
 #
 # Specific groups
+export CircleGroup
 export GeneralLinearGroup
 export HeisenbergGroup
 export OrthogonalGroup
@@ -130,6 +165,7 @@ export norm, number_of_coordinates
 export injectivity_radius
 export rand, rand!
 export switch
+export sym_rem
 export vee, vee!
 export zero_vector, zero_vector!
 end # module LieGroups
