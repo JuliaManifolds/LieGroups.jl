@@ -5,9 +5,10 @@ All notable Changes to the Julia package `LieGroups.jl` will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.0] unreleased
+## [0.1.0] 2025-04-22
 
 Everything denoted by “formerly” refers to the previous name in [`Manifolds.jl`](https://juliamanifolds.github.io/Manifolds.jl/stable/).
+Several structs have been changed from the pre-release, so these are breaking.
 
 ### Added
 
@@ -78,7 +79,7 @@ Compared to `Manifolds.jl`
 * all `translate` functions are not implemented here, since you can just use `compose`. The differentials are implemented as listed above with respect to both left and right argument of compose
 * all `inverse_apply` functions are not implemented here, since it is recommended to use `apply(inv(A), g, p)` as a replacement.
 
-## [0.0.3] – unreleased
+## [0.0.3] – 2025-02-19
 
 
 ### Added
