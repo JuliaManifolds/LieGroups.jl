@@ -433,6 +433,21 @@ end
 @doc "$(_doc_exponential)"
 ManifoldsBase.exp!(G::AbstractLieGroup, ::Any, ::Any)
 
+function ManifoldsBase.get_coordinates(G::AbstractLieGroup, g, X, B::AbstractBasis)
+    return get_coordinates(LieAlgebra(G), X, B)
+end
+function ManifoldsBase.get_coordinates!(G::AbstractLieGroup, c, g, X, B::AbstractBasis)
+    get_coordinates!(LieAlgebra(G), c, X, B)
+    return c
+end
+
+function ManifoldsBase.get_vector(G::AbstractLieGroup, g, c, B::AbstractBasis)
+    return get_vector(LieAlgebra(G), c, B)
+end
+function ManifoldsBase.get_vector!(G::AbstractLieGroup, X, g, c, B::AbstractBasis)
+    return get_vector!(LieAlgebra(G), X, c, B)
+end
+
 _doc_identity_element = """
     identity_element(G::AbstractLieGroup)
     identity_element(G::AbstractLieGroup, T)
