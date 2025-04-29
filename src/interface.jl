@@ -280,6 +280,9 @@ function ManifoldsBase.copyto!(
         ),
     )
 end
+
+ManifoldsBase.default_basis(::AbstractLieGroup) = DefaultLieAlgebraOrthogonalBasis()
+
 _doc_diff_conjugate = """
     diff_conjugate(G::AbstractLieGroup, g, h, X)
     diff_conjugate!(G::AbstractLieGroup, Y, g, h, X)
