@@ -433,7 +433,9 @@ end
 @doc "$(_doc_exponential)"
 ManifoldsBase.exp!(G::AbstractLieGroup, ::Any, ::Any)
 
-function ManifoldsBase.get_coordinates(G::AbstractLieGroup, g, X, B::AbstractBasis{<:Any,TangentSpaceType})
+function ManifoldsBase.get_coordinates(
+    G::AbstractLieGroup, g, X, B::AbstractBasis{<:Any,TangentSpaceType}
+)
     return get_coordinates(LieAlgebra(G), X, B)
 end
 function ManifoldsBase.get_coordinates!(G::AbstractLieGroup, c, g, X, B::AbstractBasis)
