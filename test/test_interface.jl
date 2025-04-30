@@ -71,6 +71,7 @@ end
         # coordinates and vector on 𝔤 are here the same as the ones on M at 0
         # Similarly: on G they are the same even for p
         X = [1.0, 0.0]
+        @test default_basis(G) == DefaultLieAlgebraOrthogonalBasis()
         @test get_coordinates(𝔤, X, B) == get_coordinates(M, q, X, B)
         @test get_coordinates(G, p, X, B) == get_coordinates(M, q, X, B)
         Y = copy(X)
