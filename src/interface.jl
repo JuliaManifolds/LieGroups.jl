@@ -438,15 +438,21 @@ function ManifoldsBase.get_coordinates(
 )
     return get_coordinates(LieAlgebra(G), X, B)
 end
-function ManifoldsBase.get_coordinates!(G::AbstractLieGroup, c, g, X, B::AbstractBasis)
+function ManifoldsBase.get_coordinates!(
+    G::AbstractLieGroup, c, g, X, B::AbstractBasis{<:Any,TangentSpaceType}
+)
     get_coordinates!(LieAlgebra(G), c, X, B)
     return c
 end
 
-function ManifoldsBase.get_vector(G::AbstractLieGroup, g, c, B::AbstractBasis)
+function ManifoldsBase.get_vector(
+    G::AbstractLieGroup, g, c, B::AbstractBasis{<:Any,TangentSpaceType}
+)
     return get_vector(LieAlgebra(G), c, B)
 end
-function ManifoldsBase.get_vector!(G::AbstractLieGroup, X, g, c, B::AbstractBasis)
+function ManifoldsBase.get_vector!(
+    G::AbstractLieGroup, X, g, c, B::AbstractBasis{<:Any,TangentSpaceType}
+)
     return get_vector!(LieAlgebra(G), X, c, B)
 end
 
