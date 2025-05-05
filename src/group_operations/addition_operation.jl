@@ -140,7 +140,7 @@ identity_element(::LieGroup{𝔽,AdditionGroupOperation}) where {𝔽}
 
 function identity_element(
     ::LieGroup{𝔽,AdditionGroupOperation}, ::Type{T}
-) where {𝔽,T<:Union{Number,AbstractArray{0,<:Number}}}
+) where {𝔽,T<:Union{Number,AbstractArray{<:Number,0}}}
     return zero(T)
 end
 function identity_element(
@@ -148,8 +148,10 @@ function identity_element(
 ) where {𝔽,T<:Number}
     return fill(zero(T))
 end
-function identity_element(::LieGroup{𝔽,AdditionGroupOperation}, e::Number) where {𝔽}
-    return zero(e)
+function identity_element(
+    ::LieGroup{𝔽,AdditionGroupOperation}, T::Type{<:StaticArray}
+) where {𝔽}
+    return zero(T)
 end
 
 @doc "$(_doc_identity_element_add)"
