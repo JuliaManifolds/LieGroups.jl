@@ -344,7 +344,6 @@ function lie_bracket!(
     return fill!(Z, 0)
 end
 
-
 _doc_log_abelmult = """
     log(G::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, h)
     log(G::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, g, h)
