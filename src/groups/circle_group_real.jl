@@ -178,7 +178,6 @@ function get_vector_lie!(
     return get_vector!(M, X, identity_element(G, T), c, DefaultOrthonormalBasis(ℝ))
 end
 
-
 identity_element(::_RealCircleGroup) = 0.0
 
 Base.inv(::_RealCircleGroup, p::Number) = sym_rem(-p)
@@ -200,7 +199,6 @@ function lie_bracket(
 )
     return zero(X)
 end
-
 
 _doc_log_real_circ = """
     log(::LieGroup{ℝ, AdditionGroupOperation, Circle{ℝ}}, g)
@@ -245,7 +243,6 @@ end
 function ManifoldsBase.log!(G::_RealCircleGroup, X, ::Identity{AdditionGroupOperation})
     return zero_vector!(LieAlgebra(G), X)
 end
-
 
 function Base.show(io::IO, ::_RealCircleGroup)
     return print(io, "CircleGroup(ℝ)")
