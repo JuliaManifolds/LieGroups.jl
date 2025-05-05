@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 * `identity_element` on `TranslationGroup` supports now `StaticArrays.jl` types.
+* introduce `get_vector` in legacy form to work on Lie groups, but they pass on to their Lie algebra.
+* adapt to the new `default_basis` from ManifoldsBase.jl 1.1.
 
 ### Changed
 

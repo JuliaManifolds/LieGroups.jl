@@ -280,6 +280,9 @@ function ManifoldsBase.copyto!(
         ),
     )
 end
+
+ManifoldsBase.default_basis(::AbstractLieGroup) = DefaultLieAlgebraOrthogonalBasis()
+
 _doc_diff_conjugate = """
     diff_conjugate(G::AbstractLieGroup, g, h, X)
     diff_conjugate!(G::AbstractLieGroup, Y, g, h, X)
@@ -429,6 +432,29 @@ end
 
 @doc "$(_doc_exponential)"
 ManifoldsBase.exp!(G::AbstractLieGroup, ::Any, ::Any)
+
+function ManifoldsBase.get_coordinates(
+    G::AbstractLieGroup, g, X, B::AbstractBasis{<:Any,TangentSpaceType}
+)
+    return get_coordinates(LieAlgebra(G), X, B)
+end
+function ManifoldsBase.get_coordinates!(
+    G::AbstractLieGroup, c, g, X, B::AbstractBasis{<:Any,TangentSpaceType}
+)
+    get_coordinates!(LieAlgebra(G), c, X, B)
+    return c
+end
+
+function ManifoldsBase.get_vector(
+    G::AbstractLieGroup, g, c, B::AbstractBasis{<:Any,TangentSpaceType}
+)
+    return get_vector(LieAlgebra(G), c, B)
+end
+function ManifoldsBase.get_vector!(
+    G::AbstractLieGroup, X, g, c, B::AbstractBasis{<:Any,TangentSpaceType}
+)
+    return get_vector!(LieAlgebra(G), X, c, B)
+end
 
 _doc_identity_element = """
     identity_element(G::AbstractLieGroup)

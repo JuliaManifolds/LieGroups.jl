@@ -69,17 +69,25 @@ end
         p = [1.0, 2.0]
         q = [0.0, 0.0]
         # coordinates and vector on 𝔤 are here the same as the ones on M at 0
+        # Similarly: on G they are the same even for p
         X = [1.0, 0.0]
+        @test default_basis(G) == DefaultLieAlgebraOrthogonalBasis()
         @test get_coordinates(𝔤, X, B) == get_coordinates(M, q, X, B)
+        @test get_coordinates(G, p, X, B) == get_coordinates(M, q, X, B)
         Y = copy(X)
         @test get_coordinates!(𝔤, Y, X, B) == get_coordinates!(M, Y, q, X, B)
         @test X == Y
+        @test get_coordinates!(G, Y, p, X, B) == get_coordinates!(M, Y, q, X, B)
+        @test X == Y
         c = [0.0, 1.0]
         @test get_vector(𝔤, c, B) == get_vector(M, q, c, B)
+        @test get_vector(G, p, c, B) == get_vector(M, q, c, B)
         @test get_vector(𝔤, c, B; tangent_vector_type=Vector{Float64}) ==
             get_vector(M, q, c, B)
         d = copy(c)
         @test get_vector!(𝔤, d, c, B) == get_vector!(M, d, q, c, B)
+        @test c == d
+        @test get_vector!(G, d, p, c, B) == get_vector!(M, d, q, c, B)
         @test c == d
         @test project(G, p) == project(M, p)
         @test project(𝔤, X) == project(M, p, X)
