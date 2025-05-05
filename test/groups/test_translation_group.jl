@@ -1,4 +1,4 @@
-using LieGroups, Random, Test
+using LieGroups, Random, Test, StaticArrays
 
 s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 !(s in LOAD_PATH) && (push!(LOAD_PATH, s))
@@ -68,5 +68,10 @@ begin
             expectations2[:repr] = "GroupOperationAction($t, $G)"
             test_group_action(A, properties2, expectations2)
         end
+    end
+
+    @testset "StaticArrays" begin
+        @test identity_element(G, SVector{3,Float64}) === zero(SVector{3,Float64})
+        @test identity_element(G, MVector{3,Float64}) == zero(MVector{3,Float64})
     end
 end
