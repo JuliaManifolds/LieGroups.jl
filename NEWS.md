@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * `identity_element` on `TranslationGroup` supports now `StaticArrays.jl` types.
 
+### Changed
+
+* the tutorials are now rendered with `quarto` using the [`QuartoNotebookRunner.jl`](https://github.com/PumasAI/QuartoNotebookRunner.jl) and are hence purely julia based.
+
 ### Fixed
 
 * `identity_element` on `TranslationGroup` no longer accepts a number as a second argument (it accepts number type instead).
