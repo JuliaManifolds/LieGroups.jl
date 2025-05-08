@@ -1,4 +1,4 @@
-using LieGroups, Random, Test, RecursiveArrayTools
+using LieGroups, ManifoldsBase, Random, Test, RecursiveArrayTools
 
 s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 !(s in LOAD_PATH) && (push!(LOAD_PATH, s))
@@ -6,7 +6,20 @@ using LieGroupsTestSuite
 
 @testset "Special Euclidean" begin
     𝔰 = sqrt(2)
-    fcts = [compose, exp, hat, identity_element, inv, is_identity, log, rand, show, vee]
+    fcts = [
+        compose,
+        exp,
+        get_vector,
+        hat,
+        identity_element,
+        inv,
+        is_flat,
+        is_identity,
+        log,
+        rand,
+        show,
+        vee,
+    ]
     #
     # ===
     # SE(2) in 4 variants, left semidirect
@@ -41,7 +54,9 @@ using LieGroupsTestSuite
                 :Rng => Random.MersenneTwister(),
                 :Functions => fcts,
             )
-            expectations = Dict(:repr => "SpecialEuclideanGroup(2)", :atol => 1e-14)
+            expectations = Dict(
+                :repr => "SpecialEuclideanGroup(2)", :atol => 1e-14, :is_flat => true
+            )
             test_lie_group(G, properties, expectations)
         end
         #
@@ -111,7 +126,9 @@ using LieGroupsTestSuite
                 :Rng => Random.MersenneTwister(),
                 :Functions => fcts,
             )
-            expectations = Dict(:repr => "SpecialEuclideanGroup(3)", :atol => 1e-14)
+            expectations = Dict(
+                :repr => "SpecialEuclideanGroup(3)", :atol => 1e-14, :is_flat => false
+            )
             test_lie_group(G, properties, expectations)
         end
     end

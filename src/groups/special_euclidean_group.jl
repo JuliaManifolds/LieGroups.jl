@@ -586,6 +586,11 @@ function ManifoldsBase.isapprox(
     return isapprox(g, h; kwargs...)
 end
 
+function ManifoldsBase.is_flat(G::SpecialEuclideanGroup)
+    size = get_parameter(G.manifold[1].size)[1]
+    return size <= 2
+end
+
 function is_identity(G::SpecialEuclideanGroup, g::AbstractMatrix; kwargs...)
     return isapprox(g, identity_element(G); kwargs...)
 end
