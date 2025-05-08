@@ -28,9 +28,10 @@ The list is alphabetical, but first lists types, then functions
 | `GroupManifold(M, op)` | [`LieGroup`](@ref)`(M, op)` | |
 | `PowerGroup(M)` | [`PowerLieGroup`](@ref)`(G,n)` | The main change is, that the constructor now requires a Lie group to build the power Lie group; This also allows for `G^n`. The other two former constructors for nested and nested-replacing are no longer necessary. `PowerLieGroup` behaves exactly the same as [`PowerManifold`](@extref `ManifoldsBase.PowerManifold`). |
 | `ProductGroup(M)` | [`ProductLieGroup`](@ref)`(G, H)` | The main change is, that the constructor now requires two Lie groups to build their product. This also allows for the short hand `G×H` to generate this product. |
-| `SemidirectProductGroup(G, H, a)` | [`LeftSemidirectProductLieGroup`](@ref)`(G, H, a)` | While this staid the same, there is now also the [`default_left_action`](@ref)`(G,H)`. When this agrees with `a` you can use the short hand `G⋉H` to generate this semidirect product. Analogously there now also exists the [`RightSemidirectProductLieGroup`](@ref)`(G,H)` with[`default_left_action`](@ref)`(G,H)` that allows for the short cut `G⋊H` |
 | `RightBackwardAction` | [`RightGroupOperationAction`](@ref) | |
 | `RightForwardAction` | [`InverseLeftGroupOperationAction`](@ref) | note that this is an [`AbstractRightGroupActionType`](@ref) |
+| `SemidirectProductGroup(G, H, a)` | [`LeftSemidirectProductLieGroup`](@ref)`(G, H, a)` | While this staid the same, there is now also the [`default_left_action`](@ref)`(G,H)`. When this agrees with `a` you can use the short hand `G⋉H` to generate this semidirect product. Analogously there now also exists the [`RightSemidirectProductLieGroup`](@ref)`(G,H)` with[`default_left_action`](@ref)`(G,H)` that allows for the short cut `G⋊H` |
+| `SpecialEuclidean(n)` | `SpecialEuclideanGroup(n; variant=:right)` | |
 | `adjoint_action` | [`adjoint`](@ref) | now implemented with a default, when you provide [`diff_conjugate!`](@ref).
 | `apply_diff` | [`diff_apply`](@ref) | modifiers (diff) come first, consistent with [`ManifoldsDiff.jl`](https://juliamanifolds.github.io/ManifoldDiff.jl/stable/) |
 | `apply_diff_group` | [`diff_group_apply`](@ref) | modifiers (diff/group) come first, consistent with [`ManifoldsDiff.jl`](https://juliamanifolds.github.io/ManifoldDiff.jl/stable/) |
