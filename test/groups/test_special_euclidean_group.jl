@@ -138,6 +138,8 @@ using LieGroupsTestSuite
     @testset "SE(4)" begin
         G4 = SpecialEuclideanGroup(4)
         g = identity_element(G4)
+
+        @test identity_element(G4, ArrayPartition) isa ArrayPartition
         h = copy(g)
         h[1:2, 1:2] .= 1 / sqrt(2) .* [1.0 1.0; -1.0 1.0]
         h[1, 5] = 1.0
@@ -153,7 +155,7 @@ using LieGroupsTestSuite
     #
     #
     # Conversions
-    @testset "Conversions between representations and incexinv" begin
+    @testset "Conversions between representations and indexing" begin
         G2l = SpecialEuclideanGroup(2)
         g1 = 1 / 𝔰 .* [1.0 1.0 𝔰; -1.0 1.0 0.0; 0.0 0.0 𝔰]
         g2 = ArrayPartition(1 / 𝔰 * [1.0 1.0; -1.0 1.0], [1.0, 0.0])
