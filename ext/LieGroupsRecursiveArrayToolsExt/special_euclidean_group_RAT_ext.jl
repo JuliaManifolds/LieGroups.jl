@@ -135,6 +135,12 @@ function ManifoldsBase.exp!(
 end
 
 function LieGroups.identity_element(
+    G::LieGroups.LeftSpecialEuclideanGroup, ::Type{ArrayPartition}
+)
+    SOn, Tn = LieGroups._SOn_and_Tn(G)
+    return ArrayPartition(identity_element(SOn), identity_element(Tn))
+end
+function LieGroups.identity_element(
     G::LieGroups.LeftSpecialEuclideanGroup, ::Type{<:ArrayPartition{T,Tuple{A,B}}}
 ) where {T,A,B}
     SOn, Tn = LieGroups._SOn_and_Tn(G)

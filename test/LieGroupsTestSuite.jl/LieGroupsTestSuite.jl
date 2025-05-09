@@ -13,6 +13,7 @@ The following functions are expected to be available, since their defaults just 
 """
 module LieGroupsTestSuite
 using LieGroups
+using ManifoldsBase
 using Test, Random
 using LinearAlgebra: I
 
@@ -611,6 +612,26 @@ function test_injectivity_radius(G::AbstractLieGroup; expected=missing)
 end
 
 """
+    test_is_flat(G::AbstractLieGroup; kwargs...)
+
+Test the function `is_flat`.
+
+# Keyword arguments
+
+* `expected=missing`: expected value for flatness.
+"""
+function test_is_flat(G::AbstractLieGroup; expected=missing)
+    @testset "is_flat" begin
+        if ismissing(expected)
+            @test is_flat(G) isa Bool
+        else
+            @test is_flat(G) == expected
+        end
+    end
+    return nothing
+end
+
+"""
     test_inv_compose(G::AbstractLieGroup, g, h, X; kwargs...)
 
 Test the special functions combining inv and compose, `inv_left_compose` and `inv_right_compose`.
@@ -1044,6 +1065,10 @@ function test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dic
         end
         if (inv in functions)
             test_inv(G, points[1]; test_mutating=mutating)
+        end
+        if (is_flat in functions)
+            isf = get(expectations, :is_flat, missing)
+            test_is_flat(G; expected=isf)
         end
         if (is_identity in functions)
             test_identity(G)
