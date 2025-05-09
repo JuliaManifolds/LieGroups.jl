@@ -445,19 +445,14 @@ function ManifoldsBase.get_coordinates!(
     return c
 end
 
-"""
-    point_type_to_vector_type(M::AbstractManifold, TP)
-
-Change point type `TP` that represents point on manifold `M` to matching type for
-representing tangent vectors.
-"""
-point_type_to_vector_type(::AbstractManifold, TP) = TP
-
 function ManifoldsBase.get_vector(
     G::AbstractLieGroup, g, c, B::AbstractBasis{<:Any,TangentSpaceType}
 )
     return get_vector(
-        LieAlgebra(G), c, B; tangent_vector_type=point_type_to_vector_type(G, typeof(g))
+        LieAlgebra(G),
+        c,
+        B;
+        tangent_vector_type=ManifoldsBase.tangent_vector_type(G, typeof(g)),
     )
 end
 function ManifoldsBase.get_vector!(

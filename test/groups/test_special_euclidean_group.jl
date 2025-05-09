@@ -58,6 +58,11 @@ using LieGroupsTestSuite
                 :repr => "SpecialEuclideanGroup(2)", :atol => 1e-14, :is_flat => true
             )
             test_lie_group(G, properties, expectations)
+            @test ManifoldsBase.tangent_vector_type(G, typeof(pts[1])) == typeof(vec[1])
+            @test ManifoldsBase.tangent_vector_type(G, SpecialEuclideanMatrixPoint) ==
+                SpecialEuclideanMatrixTangentVector
+            @test ManifoldsBase.tangent_vector_type(G, SpecialEuclideanProductPoint) ==
+                SpecialEuclideanProductTangentVector
         end
         #
         # Right variant – exchange product cases
