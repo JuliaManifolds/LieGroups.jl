@@ -129,6 +129,17 @@ ManifoldsBase.@default_manifold_fallbacks RightSpecialEuclideanGroup SpecialEucl
 ManifoldsBase.internal_value(semp::SpecialEuclideanMatrixPoint) = semp.value
 ManifoldsBase.internal_value(semtv::SpecialEuclideanMatrixTangentVector) = semtv.value
 
+function ManifoldsBase.tangent_vector_type(
+    ::SpecialEuclideanGroup, ::Type{SpecialEuclideanMatrixPoint}
+)
+    return SpecialEuclideanMatrixTangentVector
+end
+function ManifoldsBase.tangent_vector_type(
+    ::SpecialEuclideanGroup, ::Type{SpecialEuclideanMatrixPoint{T}}
+) where {T}
+    return SpecialEuclideanMatrixTangentVector{T}
+end
+
 """
     SpecialEuclideanProductPoint <: AbstractLieGroupPoint
 
@@ -160,6 +171,18 @@ ManifoldsBase.@default_manifold_fallbacks RightSpecialEuclideanGroup SpecialEucl
 
 ManifoldsBase.internal_value(sepp::SpecialEuclideanProductPoint) = sepp.value
 ManifoldsBase.internal_value(septv::SpecialEuclideanProductTangentVector) = septv.value
+
+function ManifoldsBase.tangent_vector_type(
+    ::SpecialEuclideanGroup, ::Type{SpecialEuclideanProductPoint}
+)
+    return SpecialEuclideanProductTangentVector
+end
+function ManifoldsBase.tangent_vector_type(
+    ::SpecialEuclideanGroup, ::Type{SpecialEuclideanProductPoint{T}}
+) where {T}
+    return SpecialEuclideanProductTangentVector{T}
+end
+
 # This union we can also use for the matrix case where we do not care
 
 function SpecialEuclideanGroup(n::Int; variant::Symbol=:left, kwargs...)
@@ -584,6 +607,11 @@ function ManifoldsBase.isapprox(
     G::SpecialEuclideanGroup, g::AbstractMatrix, h::AbstractMatrix; kwargs...
 )
     return isapprox(g, h; kwargs...)
+end
+
+function ManifoldsBase.is_flat(G::SpecialEuclideanGroup)
+    size = get_parameter(G.manifold[1].size)[1]
+    return size <= 2
 end
 
 function is_identity(G::SpecialEuclideanGroup, g::AbstractMatrix; kwargs...)

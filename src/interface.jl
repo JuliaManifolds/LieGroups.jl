@@ -448,7 +448,12 @@ end
 function ManifoldsBase.get_vector(
     G::AbstractLieGroup, g, c, B::AbstractBasis{<:Any,TangentSpaceType}
 )
-    return get_vector(LieAlgebra(G), c, B)
+    return get_vector(
+        LieAlgebra(G),
+        c,
+        B;
+        tangent_vector_type=ManifoldsBase.tangent_vector_type(G, typeof(g)),
+    )
 end
 function ManifoldsBase.get_vector!(
     G::AbstractLieGroup, X, g, c, B::AbstractBasis{<:Any,TangentSpaceType}

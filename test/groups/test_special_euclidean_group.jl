@@ -1,4 +1,4 @@
-using LieGroups, Random, Test, RecursiveArrayTools
+using LieGroups, ManifoldsBase, Random, Test, RecursiveArrayTools
 
 s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 !(s in LOAD_PATH) && (push!(LOAD_PATH, s))
@@ -6,7 +6,20 @@ using LieGroupsTestSuite
 
 @testset "Special Euclidean" begin
     𝔰 = sqrt(2)
-    fcts = [compose, exp, hat, identity_element, inv, is_identity, log, rand, show, vee]
+    fcts = [
+        compose,
+        exp,
+        get_vector,
+        hat,
+        identity_element,
+        inv,
+        is_flat,
+        is_identity,
+        log,
+        rand,
+        show,
+        vee,
+    ]
     #
     # ===
     # SE(2) in 4 variants, left semidirect
@@ -41,8 +54,15 @@ using LieGroupsTestSuite
                 :Rng => Random.MersenneTwister(),
                 :Functions => fcts,
             )
-            expectations = Dict(:repr => "SpecialEuclideanGroup(2)", :atol => 1e-14)
+            expectations = Dict(
+                :repr => "SpecialEuclideanGroup(2)", :atol => 1e-14, :is_flat => true
+            )
             test_lie_group(G, properties, expectations)
+            @test ManifoldsBase.tangent_vector_type(G, typeof(pts[1])) == typeof(vec[1])
+            @test ManifoldsBase.tangent_vector_type(G, SpecialEuclideanMatrixPoint) ==
+                SpecialEuclideanMatrixTangentVector
+            @test ManifoldsBase.tangent_vector_type(G, SpecialEuclideanProductPoint) ==
+                SpecialEuclideanProductTangentVector
         end
         #
         # Right variant – exchange product cases
@@ -111,7 +131,9 @@ using LieGroupsTestSuite
                 :Rng => Random.MersenneTwister(),
                 :Functions => fcts,
             )
-            expectations = Dict(:repr => "SpecialEuclideanGroup(3)", :atol => 1e-14)
+            expectations = Dict(
+                :repr => "SpecialEuclideanGroup(3)", :atol => 1e-14, :is_flat => false
+            )
             test_lie_group(G, properties, expectations)
         end
     end
@@ -121,6 +143,8 @@ using LieGroupsTestSuite
     @testset "SE(4)" begin
         G4 = SpecialEuclideanGroup(4)
         g = identity_element(G4)
+
+        @test identity_element(G4, ArrayPartition) isa ArrayPartition
         h = copy(g)
         h[1:2, 1:2] .= 1 / sqrt(2) .* [1.0 1.0; -1.0 1.0]
         h[1, 5] = 1.0
@@ -136,7 +160,7 @@ using LieGroupsTestSuite
     #
     #
     # Conversions
-    @testset "Conversions between representations and incexinv" begin
+    @testset "Conversions between representations and indexing" begin
         G2l = SpecialEuclideanGroup(2)
         g1 = 1 / 𝔰 .* [1.0 1.0 𝔰; -1.0 1.0 0.0; 0.0 0.0 𝔰]
         g2 = ArrayPartition(1 / 𝔰 * [1.0 1.0; -1.0 1.0], [1.0, 0.0])
