@@ -490,7 +490,7 @@ function identity_element! end
 @doc "$(_doc_identity_element)"
 identity_element!(G::AbstractLieGroup, e)
 
-ManifoldsBase.inner(G::AbstractlieGroup, g, X, Y) = inner(LieAlgebra(G), X, Y)
+ManifoldsBase.inner(G::AbstractLieGroup, g, X, Y) = inner(LieAlgebra(G), X, Y)
 
 _doc_inv = """
     inv(G::AbstractLieGroup, g)
@@ -812,7 +812,7 @@ end
 
 ManifoldsBase.manifold_dimension(G::AbstractLieGroup) = manifold_dimension(base_manifold(G))
 
-ManifoldsBase.norm(G::AbstractlieGroup, g, X) = norm(LieAlgebra(G), X)
+ManifoldsBase.norm(G::AbstractLieGroup, g, X) = norm(LieAlgebra(G), X)
 
 _doc_rand = """
     rand(::AbstractLieGroup; vector_at=nothing, σ::Real=1.0, kwargs...)

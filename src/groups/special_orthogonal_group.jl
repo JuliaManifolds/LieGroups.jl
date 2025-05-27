@@ -70,6 +70,12 @@ ManifoldsBase.get_vector!(
     ::DefaultLieAlgebraOrthogonalBasis,
 )
 
+function ManifoldsBase.inner(
+    G::LieAlgebra{𝔽,MatrixMultiplicationGroupOperation,<:SpecialOrthogonalGroup}, X, Y
+) where {𝔽}
+    return dot(X, Y)
+end
+
 inv!(G::SpecialOrthogonalGroup, k, g) = copyto!(G, k, transpose(g))
 function inv!(
     G::SpecialOrthogonalGroup, q, ::Identity{O}

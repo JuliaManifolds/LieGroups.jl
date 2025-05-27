@@ -259,11 +259,12 @@ end
 Compute the inner product ``⟨⋅,⋅⟩: $(_math(:𝔤))×$(_math(:𝔤)) → ℝ`` on the Lie algebra ``𝔤``.
 By default this uses the inner product on the underlying manifold of the
 [`AbstractLieGroup`](@ref) of `𝔤` at the [`identity_element`](@ref)`(G)`.
+Note that this method allocates an appropriate identity element.
 """
-function ManifoldsBase.inner(𝔤::LieAlgebra, X::T, Y::T) where {T}
+function ManifoldsBase.inner(𝔤::LieAlgebra, X, Y)
     G = base_lie_group(𝔤)
     return ManifoldsBase.inner(
-        base_manifold(G), identity_element(G, point_type(G, T)), X, Y
+        base_manifold(G), identity_element(G, point_type(G, typeof(X))), X, Y
     )
 end
 

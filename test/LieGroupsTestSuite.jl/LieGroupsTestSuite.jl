@@ -769,15 +769,9 @@ function test_inner(
     @testset "inner" begin
         𝔤 = LieAlgebra(G)
         v = inner(𝔤, X, Y)
-        if test_base_manifold
-            v2 = inner(
-                base_manifold(G),
-                identity_element(G, LieGroups.point_type(G, typeof(X))),
-                X,
-                Y,
-            )
-            @test isapprox(v, v2)
-        end
+        # Passthrough
+        v2 = inner(G, g, X, Y)
+        @test isapprox(v, v2)
         @test inner(𝔤, X, X) ≥ 0
         @test inner(𝔤, Y, Y) ≥ 0
         if !ismissing(expected)

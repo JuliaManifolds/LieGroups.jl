@@ -20,6 +20,12 @@ function TranslationGroup(n::Int...; kwargs...)
     return TranslationGroup{typeof(Rn).parameters[[2, 1]]...}(Rn, AdditionGroupOperation())
 end
 
+function ManifoldsBase.inner(
+    G::LieAlgebra{𝔽,AdditionGroupOperation,<:TranslationGroup}, X, Y
+) where {𝔽}
+    return dot(X, Y)
+end
+
 function Base.show(io::IO, G::TranslationGroup{𝔽}) where {𝔽}
     size = get_parameter(G.manifold.size)
     return print(io, "TranslationGroup($(join(size, ", ")); field=$(𝔽))")

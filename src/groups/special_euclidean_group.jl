@@ -140,6 +140,15 @@ function ManifoldsBase.tangent_vector_type(
     return SpecialEuclideanMatrixTangentVector{T}
 end
 
+function point_type(::SpecialEuclideanGroup, ::Type{SpecialEuclideanMatrixTangentVector})
+    return SpecialEuclideanMatrixPoint
+end
+function point_type(
+    ::SpecialEuclideanGroup, ::Type{SpecialEuclideanMatrixTangentVector{T}}
+) where {T}
+    return SpecialEuclideanMatrixPoint{T}
+end
+
 """
     SpecialEuclideanProductPoint <: AbstractLieGroupPoint
 
@@ -570,9 +579,7 @@ init_constants!(::AbstractManifold, gX) = gX
 
 #overwrite default inner since here the access is a bit tricky.
 function ManifoldsBase.inner(
-    𝔤::LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup},
-    X::AbstractMatrix,
-    Y::AbstractMatrix,
+    𝔤::LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup}, X, Y
 )
     G = base_lie_group(𝔤)
     SOn, Tn = _SOn_and_Tn(G)

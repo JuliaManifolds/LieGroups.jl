@@ -24,6 +24,7 @@ begin
             exp,
             hat,
             identity_element,
+            inner,
             inv,
             inv_left_compose,
             inv_right_compose,
