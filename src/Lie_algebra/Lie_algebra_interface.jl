@@ -262,7 +262,9 @@ By default this uses the inner product on the underlying manifold of the
 """
 function ManifoldsBase.inner(𝔤::LieAlgebra, X::T, Y::T) where {T}
     G = base_lie_group(𝔤)
-    return ManifoldsBase.inner(base_manifold(G), identity_element(G, T), X, Y)
+    return ManifoldsBase.inner(
+        base_manifold(G), identity_element(G, point_type(G, T)), X, Y
+    )
 end
 
 """
@@ -352,6 +354,7 @@ end
 function Random.rand(rng::AbstractRNG, 𝔤::LieAlgebra, T::Type; vector_at=nothing, kwargs...)
     X = allocate_on(base_lie_group(𝔤), TangentSpaceType(), T)
     G = base_lie_group(𝔤)
+    # Here we also have to turn T into a point type P for the identity.
     rand!(rng, 𝔤, X; vector_at=identity_element(G), kwargs...)
     return X
 end

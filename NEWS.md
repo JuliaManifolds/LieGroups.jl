@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 * `is_flat` for `SpecialEuclideanGroup`
+* `inner` for `LieAlgebra` to compute the inner product on the Lie algebra.
+* `point_type(G, T)` to return the type of a point when working with tangent vectors of type `T` on a Lie group `G`.
 
 ### Fixed
 

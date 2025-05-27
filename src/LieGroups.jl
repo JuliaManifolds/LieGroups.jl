@@ -50,6 +50,10 @@ using StaticArrays
 import Manifolds: apply, apply!, compose, identity_element, is_identity
 # Both define the following structs, so these for now lead to asking for explicit prefixes
 # Manifolds: Identity, TranslationGroup
+#
+# Maybe move to ManifoldsBase?
+point_type(::AbstractManifold, tangent_vector_type::Type) = tangent_vector_type
+
 include("documentation_glossary.jl")
 include("utils.jl")
 include("interface.jl")

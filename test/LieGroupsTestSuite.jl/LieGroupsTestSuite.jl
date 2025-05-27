@@ -761,13 +761,25 @@ Test  `inner`.
   if not provided, nonnegativity of inner products of vectors with themselves is tested
   as well as consistency with the inner product at the identity element called on the
   manifold.
+* `test_base_manifold=false`: test that the result agrees with the inner product on the base manifold at the identity.
 """
-function test_inner(G::AbstractLieGroup, g, X, Y; expected=missing)
+function test_inner(
+    G::AbstractLieGroup, g, X, Y; expected=missing, test_base_manifold=false
+)
     @testset "inner" begin
         𝔤 = LieAlgebra(G)
         v = inner(𝔤, X, Y)
-        v2 = inner(base_manifold(G), identity_element(G), X, Y)
-        @test isapprox(v, v2)
+        if test_base_manifold
+            v2 = inner(
+                base_manifold(G),
+                identity_element(G, LieGroups.point_type(G, typeof(X))),
+                X,
+                Y,
+            )
+            @test isapprox(v, v2)
+        end
+        @test inner(𝔤, X, X) ≥ 0
+        @test inner(𝔤, Y, Y) ≥ 0
         if !ismissing(expected)
             @test isapprox(v, expected)
         end
