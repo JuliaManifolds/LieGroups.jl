@@ -27,6 +27,7 @@ using LieGroupsTestSuite
                 diff_right_compose,
                 exp,
                 hat,
+                inner,
                 inv,
                 inv_left_compose,
                 inv_right_compose,

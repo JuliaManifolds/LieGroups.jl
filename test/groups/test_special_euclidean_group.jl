@@ -12,6 +12,7 @@ using LieGroupsTestSuite
         get_vector,
         hat,
         identity_element,
+        inner,
         inv,
         is_flat,
         is_identity,

@@ -157,7 +157,8 @@ export hat, hat!
 export inv, inv!, inv_left_compose, inv_left_compose!, inv_right_compose, inv_right_compose!
 export isapprox, is_point, is_vector
 export exp, exp!
-export identity_element, identity_element!, is_identity, inv, inv!, diff_inv, diff_inv!
+export identity_element, identity_element!, is_identity, inner
+export inv, inv!, diff_inv, diff_inv!
 export jacobian_conjugate, jacobian_conjugate!
 export lie_bracket, lie_bracket!, log, log!
 export manifold_dimension

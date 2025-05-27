@@ -751,6 +751,29 @@ function test_identity(G::AbstractLieGroup)
     return nothing
 end
 
+"""
+    test_inner(G::AbstractLieGroup, g, X, Y; expected=missing)
+
+Test  `inner`.
+
+# Keyword arguments
+* `expected=missing`: the result of the lie bracket
+  if not provided, nonnegativity of inner products of vectors with themselves is tested
+  as well as consistency with the inner product at the identity element called on the
+  manifold.
+"""
+function test_inner(G::AbstractLieGroup, g, X, Y; expected=missing)
+    @testset "inner" begin
+        𝔤 = LieAlgebra(G)
+        v = inner(𝔤, X, Y)
+        v2 = inner(base_manifold(G), identity_element(G), X, Y)
+        @test isapprox(v, v2)
+        if !ismissing(expected)
+            @test isapprox(v, expected)
+        end
+    end
+end
+
 #
 #
 # --- J
@@ -1062,6 +1085,10 @@ function test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dic
         if (injectivity_radius in functions)
             ir = get(expectations, :injectivity_radius, missing)
             test_injectivity_radius(G; expected=ir)
+        end
+        if (inner in functions)
+            v = get(expectations, :inner, missing)
+            test_inner(G, points[1], vectors[1], vectors[2]; expected=v)
         end
         if (inv in functions)
             test_inv(G, points[1]; test_mutating=mutating)

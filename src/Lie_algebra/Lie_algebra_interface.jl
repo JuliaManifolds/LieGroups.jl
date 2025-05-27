@@ -254,6 +254,18 @@ function ManifoldsBase.hat!(𝔤::LieAlgebra, X, c)
 end
 
 """
+    inner(𝔤::LieAlgebra, X, Y)
+
+Compute the inner product ``⟨⋅,⋅⟩: $(_math(:𝔤))×$(_math(:𝔤)) → ℝ`` on the Lie algebra ``𝔤``.
+By default this uses the inner product on the underlying manifold of the
+[`AbstractLieGroup`](@ref) of `𝔤` at the [`identity_element`](@ref)`(G)`.
+"""
+function ManifoldsBase.inner(𝔤::LieAlgebra, X::T, Y::T) where {T}
+    G = base_lie_group(𝔤)
+    return ManifoldsBase.inner(base_manifold(G), identity_element(G, T), X, Y)
+end
+
+"""
     is_point(𝔤::LieAlgebra, X; kwargs...)
 
 Check whether `X` is a valid point on the Lie Algebra `𝔤`.
