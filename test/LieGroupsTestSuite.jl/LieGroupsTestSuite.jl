@@ -921,6 +921,22 @@ function test_show(G::Union{GroupAction,AbstractLieGroup}, repr_string::Abstract
     return nothing
 end
 
+#
+#
+# --- T
+"""
+    test_types(G::AbstractLieGroup, g::P, X::T)
+
+Test that the types of point `g` and vector `X` are the ones also returned by
+[`point_type`](@ref)(G,T)` and [`tangent_vector_type`](@ref)`(G,P)`.
+"""
+function test_types(G::AbstractLieGroup, ::P, ::T) where {P,T}
+    @testset "point_type & tangent_vector_type" begin
+        @test LieGroups.point_type(G, T) == P
+        @test LieGroups.tangent_vector_type(G, P) == T
+    end
+    return nothing
+end
 # The global test function for a Lie group
 #
 #
@@ -1138,6 +1154,13 @@ function test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dic
         # --- S
         if (any(in.([show, repr], Ref(functions)))) && haskey(expectations, :repr)
             test_show(G, expectations[:repr])
+        end
+
+        #
+        #
+        # --- T
+        if (any(in.([LieGroups.point_type, LieGroups.tangent_vector_type], Ref(functions))))
+            test_types(G, points[1], vectors[1])
         end
     end
 end

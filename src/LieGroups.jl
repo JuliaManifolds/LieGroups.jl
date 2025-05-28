@@ -40,7 +40,8 @@ using ManifoldsBase:
     get_parameter,
     internal_value,
     submanifold_component,
-    submanifold_components
+    submanifold_components,
+    tangent_vector_type
 using StaticArrays
 #
 #
