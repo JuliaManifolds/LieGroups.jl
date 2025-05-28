@@ -66,9 +66,9 @@ using LieGroupsTestSuite
                 SpecialEuclideanMatrixTangentVector
             @test ManifoldsBase.tangent_vector_type(G, SpecialEuclideanProductPoint) ==
                 SpecialEuclideanProductTangentVector
-            @test ManifoldsBase.point_type(G, SpecialEuclideanMatrixTangentVector) ==
+            @test LieGroups.point_type(G, SpecialEuclideanMatrixTangentVector) ==
                 SpecialEuclideanMatrixPoint
-            @test ManifoldsBase.point_type(G, SpecialEuclideanProductTangentVector) ==
+            @test LieGroups.point_type(G, SpecialEuclideanProductTangentVector) ==
                 SpecialEuclideanProductPoint
         end
         #
