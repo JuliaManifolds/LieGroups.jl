@@ -157,6 +157,12 @@ function LieGroups.identity_element(
 ) where {A<:ArrayPartition}
     return SpecialEuclideanProductPoint(identity_element(G, A))
 end
+function LieGroups.identity_element(
+    G::SpecialEuclideanGroup, ::Type{<:SpecialEuclideanProductPoint}
+)
+    return SpecialEuclideanProductPoint(identity_element(G, ArrayPartition))
+end
+
 function LieGroups.identity_element!(G::LieGroups.SpecialEuclideanGroup, g::ArrayPartition)
     SOn, Tn = LieGroups._SOn_and_Tn(G)
     identity_element!(SOn, ManifoldsBase.submanifold_component(G, g, :Rotation))

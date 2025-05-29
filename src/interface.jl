@@ -481,10 +481,6 @@ function identity_element(G::AbstractLieGroup)
     e = ManifoldsBase.allocate_result(G, identity_element)
     return identity_element!(G, e)
 end
-# Fallback over to default
-function identity_element(G::AbstractLieGroup, ::Type)
-    return identity_element(G)
-end
 
 function identity_element! end
 @doc "$(_doc_identity_element)"
