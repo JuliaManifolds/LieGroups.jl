@@ -262,7 +262,7 @@ ManifoldsBase.copyto!(G::AbstractLieGroup, h, g) = copyto!(base_manifold(G), h, 
 function ManifoldsBase.copyto!(
     G::AbstractLieGroup{𝔽,O}, h::P, ::Identity{O}
 ) where {𝔽,O<:AbstractGroupOperation,P}
-    return ManifoldsBase.copyto!(base_manifold(G), h, identity_element(G, P))
+    return identity_element!(G, h)
 end
 function ManifoldsBase.copyto!(
     ::AbstractLieGroup{𝔽,O}, h::Identity{O}, ::Identity{O}
