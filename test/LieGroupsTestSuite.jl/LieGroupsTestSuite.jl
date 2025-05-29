@@ -761,11 +761,8 @@ Test  `inner`.
   if not provided, nonnegativity of inner products of vectors with themselves is tested
   as well as consistency with the inner product at the identity element called on the
   manifold.
-* `test_base_manifold=false`: test that the result agrees with the inner product on the base manifold at the identity.
 """
-function test_inner(
-    G::AbstractLieGroup, g, X, Y; expected=missing, test_base_manifold=false
-)
+function test_inner(G::AbstractLieGroup, g, X, Y; expected=missing)
     @testset "inner" begin
         𝔤 = LieAlgebra(G)
         v = inner(𝔤, X, Y)
@@ -774,9 +771,7 @@ function test_inner(
         @test isapprox(v, v2)
         @test inner(𝔤, X, X) ≥ 0
         @test inner(𝔤, Y, Y) ≥ 0
-        if !ismissing(expected)
-            @test isapprox(v, expected)
-        end
+        !ismissing(expected) && (@test isapprox(v, expected))
     end
 end
 
@@ -845,6 +840,33 @@ function test_lie_bracket(
     end
 end
 
+#
+#
+# --- N
+"""
+    test_norm(G::AbstractLieGroup, g, X; expected=missing)
+
+Test  `norm` on the LIe Algebra and the pass-through from the LIe group.
+
+# Keyword arguments
+
+* `expected=missing`: the result of the lie bracket
+  if not provided, nonnegativity of inner products of vectors with themselves is tested
+  as well as consistency with the inner product at the identity element called on the
+  manifold.
+
+"""
+function test_norm(G::AbstractLieGroup, g, X; expected=missing)
+    @testset "norm" begin
+        𝔤 = LieAlgebra(G)
+        v = norm(𝔤, X)
+        # Passthrough
+        v2 = norm(G, g, X)
+        @test isapprox(v, v2)
+        @test v ≥ 0
+        !ismissing(expected) && (@test isapprox(v, expected))
+    end
+end
 #
 #
 # --- R
@@ -1138,6 +1160,14 @@ function test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dic
         if (lie_bracket in functions)
             v = get(expectations, :lie_bracket, missing)
             test_lie_bracket(G, vectors[1], vectors[2]; expected=v, test_mutating=mutating)
+        end
+
+        #
+        #
+        # --- N
+        if (norm in functions)
+            v = get(expectations, :inner, missing)
+            test_norm(G, points[1], vectors[1]; expected=v)
         end
 
         #

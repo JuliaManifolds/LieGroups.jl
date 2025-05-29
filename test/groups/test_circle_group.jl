@@ -34,6 +34,7 @@ using LieGroupsTestSuite
                 is_identity,
                 lie_bracket,
                 log,
+                norm,
                 rand,
                 show,
                 vee,

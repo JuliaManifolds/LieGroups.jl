@@ -305,7 +305,7 @@ function lie_bracket! end
 lie_bracket!(𝔤::LieAlgebra, Z, X, Y)
 
 function LinearAlgebra.norm(𝔤::LieAlgebra, X)
-    return norm(base_manifold(𝔤), identity_element(base_lie_group(𝔤)), X)
+    return sqrt(inner(𝔤, X, X))
 end
 # Avoid an ambiguity
 function LinearAlgebra.norm(𝔤::LA, X::Real) where {LA<:LieAlgebra}

@@ -17,6 +17,7 @@ using LieGroupsTestSuite
         is_flat,
         is_identity,
         log,
+        norm,
         LieGroups.point_type,
         rand,
         show,

@@ -28,9 +28,11 @@ using LieGroupsTestSuite
                 inv,
                 inv_left_compose,
                 inv_right_compose,
+                inner,
                 is_identity,
                 lie_bracket,
                 log,
+                norm,
                 rand,
                 show,
                 #vee, # requires a fix in Manifolds.jl to have an ONB on invertible matrices

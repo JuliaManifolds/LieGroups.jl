@@ -244,6 +244,22 @@ function identity_element!(
     return e
 end
 
+function ManifoldsBase.inner(
+    Po𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, X, Y
+) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
+    v = PoG = Po𝔤.manifold
+    PM = PoG.manifold
+    𝔤 = LieAlgebra(LieGroup(PM.manifold, PoG.op.op))
+    rep_size = representation_size(PM.manifold)
+    return sum(
+        inner(
+            𝔤,
+            ManifoldsBase._read(PM, rep_size, X, i),
+            ManifoldsBase._read(PM, rep_size, Y, i),
+        ) for i in ManifoldsBase.get_iterator(PM)
+    )
+end
+
 function inv!(
     PoG::LieGroup{𝔽,Op,M}, h, g
 ) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}
