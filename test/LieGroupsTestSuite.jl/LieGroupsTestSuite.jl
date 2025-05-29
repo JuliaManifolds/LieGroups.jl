@@ -846,7 +846,7 @@ end
 """
     test_norm(G::AbstractLieGroup, g, X; expected=missing)
 
-Test  `norm` on the LIe Algebra and the pass-through from the LIe group.
+Test  `norm` on the Lie Algebra and the pass-through from the Lie group.
 
 # Keyword arguments
 
