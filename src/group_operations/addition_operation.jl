@@ -159,6 +159,10 @@ function identity_element!(::LieGroup{𝔽,AdditionGroupOperation}, e) where {�
     return fill!(e, 0)
 end
 
+function ManifoldsBase.inner(::LieAlgebra{ℝ,AdditionGroupOperation}, X, Y)
+    return dot(X, Y)
+end
+
 _doc_inv_add = """
     inv(G::LieGroup{𝔽,AdditionGroupOperation}, g)
     inv!(G::LieGroup{𝔽,AdditionGroupOperation}, h, g)

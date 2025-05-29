@@ -180,12 +180,6 @@ end
 
 identity_element(::_RealCircleGroup) = 0.0
 
-function ManifoldsBase.inner(
-    ::LieAlgebra{ℝ,AdditionGroupOperation,<:_RealCircleGroup}, X, Y
-)
-    return dot(X, Y)
-end
-
 Base.inv(::_RealCircleGroup, p::Number) = sym_rem(-p)
 
 function inv_left_compose(::_RealCircleGroup, g::Number, h::Number)

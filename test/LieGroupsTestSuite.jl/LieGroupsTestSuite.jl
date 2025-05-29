@@ -769,8 +769,8 @@ function test_inner(G::AbstractLieGroup, g, X, Y; expected=missing)
         # Passthrough
         v2 = inner(G, g, X, Y)
         @test isapprox(v, v2)
-        @test inner(𝔤, X, X) ≥ 0
-        @test inner(𝔤, Y, Y) ≥ 0
+        @test real(inner(𝔤, X, X)) ≥ 0
+        @test real(inner(𝔤, Y, Y)) ≥ 0
         !ismissing(expected) && (@test isapprox(v, expected))
     end
 end

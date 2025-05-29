@@ -226,7 +226,7 @@ function identity_element!(
 end
 
 function ManifoldsBase.inner(
-    G::LieAlgebra{𝔽,MatrixMultiplicationGroupOperation}, X, Y
+    G::LieAlgebra{𝔽,<:AbstractMultiplicationGroupOperation}, X, Y
 ) where {𝔽}
     return dot(X, Y)
 end
