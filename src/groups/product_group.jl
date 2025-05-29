@@ -257,6 +257,21 @@ function identity_element!(
     return e
 end
 
+function ManifoldsBase.inner(
+    Pr𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, X, Y
+) where {𝔽,Op<:AbstractProductGroupOperation,M<:ProductManifold}
+    PrG = Pr𝔤.manifold # The product Lie group
+    PrM = PrG.manifold # The product manifold
+    return sum(
+        map(
+            inner,
+            LieAlgebra.(map(LieGroup, PrM.manifolds, PrG.op.operations)),
+            submanifold_components(PrM, X),
+            submanifold_components(PrM, Y),
+        ),
+    )
+end
+
 function inv!(
     PrG::LieGroup{𝔽,Op,M}, h, g
 ) where {𝔽,Op<:ProductGroupOperation,M<:ProductManifold}

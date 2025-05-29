@@ -751,6 +751,30 @@ function test_identity(G::AbstractLieGroup)
     return nothing
 end
 
+"""
+    test_inner(G::AbstractLieGroup, g, X, Y; expected=missing)
+
+Test  `inner`.
+
+# Keyword arguments
+* `expected=missing`: the result of the lie bracket
+  if not provided, nonnegativity of inner products of vectors with themselves is tested
+  as well as consistency with the inner product at the identity element called on the
+  manifold.
+"""
+function test_inner(G::AbstractLieGroup, g, X, Y; expected=missing)
+    @testset "inner" begin
+        𝔤 = LieAlgebra(G)
+        v = inner(𝔤, X, Y)
+        # Passthrough
+        v2 = inner(G, g, X, Y)
+        @test isapprox(v, v2)
+        @test real(inner(𝔤, X, X)) ≥ 0
+        @test real(inner(𝔤, Y, Y)) ≥ 0
+        !ismissing(expected) && (@test isapprox(v, expected))
+    end
+end
+
 #
 #
 # --- J
@@ -816,6 +840,33 @@ function test_lie_bracket(
     end
 end
 
+#
+#
+# --- N
+"""
+    test_norm(G::AbstractLieGroup, g, X; expected=missing)
+
+Test  `norm` on the Lie Algebra and the pass-through from the Lie group.
+
+# Keyword arguments
+
+* `expected=missing`: the result of the lie bracket
+  if not provided, nonnegativity of inner products of vectors with themselves is tested
+  as well as consistency with the inner product at the identity element called on the
+  manifold.
+
+"""
+function test_norm(G::AbstractLieGroup, g, X; expected=missing)
+    @testset "norm" begin
+        𝔤 = LieAlgebra(G)
+        v = norm(𝔤, X)
+        # Passthrough
+        v2 = norm(G, g, X)
+        @test isapprox(v, v2)
+        @test v ≥ 0
+        !ismissing(expected) && (@test isapprox(v, expected))
+    end
+end
 #
 #
 # --- R
@@ -1063,6 +1114,10 @@ function test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dic
             ir = get(expectations, :injectivity_radius, missing)
             test_injectivity_radius(G; expected=ir)
         end
+        if (inner in functions)
+            v = get(expectations, :inner, missing)
+            test_inner(G, points[1], vectors[1], vectors[2]; expected=v)
+        end
         if (inv in functions)
             test_inv(G, points[1]; test_mutating=mutating)
         end
@@ -1089,6 +1144,14 @@ function test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dic
         if (lie_bracket in functions)
             v = get(expectations, :lie_bracket, missing)
             test_lie_bracket(G, vectors[1], vectors[2]; expected=v, test_mutating=mutating)
+        end
+
+        #
+        #
+        # --- N
+        if (norm in functions)
+            v = get(expectations, :inner, missing)
+            test_norm(G, points[1], vectors[1]; expected=v)
         end
 
         #

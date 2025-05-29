@@ -559,6 +559,25 @@ end
 # default: Do nothing
 init_constants!(::AbstractManifold, gX) = gX
 
+#overwrite default inner since here the access is a bit tricky.
+function ManifoldsBase.inner(
+    𝔤::LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup}, X, Y
+)
+    G = base_lie_group(𝔤)
+    SOn, Tn = _SOn_and_Tn(G)
+    i1 = inner(
+        LieAlgebra(SOn),
+        submanifold_component(𝔤, X, :Rotation),
+        submanifold_component(𝔤, Y, :Rotation),
+    )
+    i2 = inner(
+        LieAlgebra(Tn),
+        submanifold_component(𝔤, X, :Translation),
+        submanifold_component(𝔤, Y, :Translation),
+    )
+    return i1 + i2
+end
+
 _doc_inv_SEn = """
     inv(G::SpecialEuclideanGroup, g)
     inv(G::SpecialEuclideanGroup, h, g)

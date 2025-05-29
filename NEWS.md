@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 * `is_flat` for `SpecialEuclideanGroup`
+* `inner` and `norm` for `LieAlgebra` to compute the inner product and norm on the Lie algebra.
 
 ### Fixed
 

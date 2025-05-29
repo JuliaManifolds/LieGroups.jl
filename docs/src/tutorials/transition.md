@@ -40,12 +40,14 @@ The list is alphabetical, but first lists types, then functions
 | `exp(G, g, X)` | `exp(`[`base_manifold`](@ref base_manifold(G::LieGroup))`(G), g, X)` | the previous defaults whenever not agreeing with the Riemannian one can now be accessed on the internal manifold |
 | `exp_inv(G, g, X)` | [`exp`](@ref exp(G::LieGroup, g, X))`(G, g, X)`  | the exponential map invariant to the group operation is the default on Lie groups here |
 | `exp_lie(G, X)` | [`exp`](@ref exp(G::LieGroup, X))`(G, X)` | the (matrix/Lie group) exponential |
+| `inner(G, g, X, Y)` | [`inner`](@ref)`(`[`LieAlgebra`](@ref)`(G), X, Y)` | the inner product on the Lie Algebra. The old variant still calls the new one.|
 | `inverse_translate(G, g, h, c)` | [`inv_left_compose`](@ref)`(G, g, h)`, [`inv_right_compose`](@ref)`(G, g, h)` | compute ``g^{-1}∘h`` and ``g∘h^{-1}``, resp. |
 | `inverse_translate_diff(G, g, h, X, LeftForwardAction())` | - | discontinued, use `diff_left_compose(G, inv(G,g), h)` |
 | `inverse_translate_diff(G, g, h, X, RightBackwardAction())` | - | discontinued, use `diff_left_compose(G, h, inv(G,g))` |
 | `log(G, g, h)` | `log(`[`base_manifold`](@ref base_manifold(G::LieGroup))`(G), g, h)` | you can now access the previous defaults on the internal manifold whenever they do not agree with the invariant one |
 | `log_inv(G, g, h)` | [`log`](@ref log(G::LieGroup, g, h))`(G, g, h)` | the logarithmic map invariant to the group operation is the default on Lie groups here |
 | `log_lie(G, g)` | [`log`](@ref log(G::LieGroup, g))`(G, g)` | the (matrix/Lie group) logarithm |
+| `norm(G, p, X)` | [`norm`](@extref ManifoldsBase :jl:function:`LinearAlgebra.norm`)`(`[`LieAlgebra`](@ref)`(G), X)` | the norm product on the Lie Algebra. The old variant still calls the new one. |
 | `switch_direction(A)` | [`inv`](@ref inv(::GroupAction))`(A)` | switches from an action to its inverse action (formerly the direction forward/backward, sometimes even left/right, do not confuse with the side left/right). |
 | `switch_side(A)` | [`switch`](@ref switch(::GroupAction))`(A)` | switches from a left action to its corresponding right action. |
 | `translate(G, g, h)` | [`compose`](@ref)`(G, g, h)` | unified to `compose` |

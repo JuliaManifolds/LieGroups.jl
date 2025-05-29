@@ -12,10 +12,12 @@ using LieGroupsTestSuite
         get_vector,
         hat,
         identity_element,
+        inner,
         inv,
         is_flat,
         is_identity,
         log,
+        norm,
         rand,
         show,
         vee,
@@ -59,6 +61,10 @@ using LieGroupsTestSuite
             )
             test_lie_group(G, properties, expectations)
             @test ManifoldsBase.tangent_vector_type(G, typeof(pts[1])) == typeof(vec[1])
+            @test ManifoldsBase.tangent_vector_type(G, SpecialEuclideanMatrixPoint) ==
+                SpecialEuclideanMatrixTangentVector
+            @test ManifoldsBase.tangent_vector_type(G, SpecialEuclideanProductPoint) ==
+                SpecialEuclideanProductTangentVector
             @test ManifoldsBase.tangent_vector_type(G, SpecialEuclideanMatrixPoint) ==
                 SpecialEuclideanMatrixTangentVector
             @test ManifoldsBase.tangent_vector_type(G, SpecialEuclideanProductPoint) ==

@@ -225,6 +225,12 @@ function identity_element!(
     return copyto!(e, LinearAlgebra.I)
 end
 
+function ManifoldsBase.inner(
+    G::LieAlgebra{𝔽,<:AbstractMultiplicationGroupOperation}, X, Y
+) where {𝔽}
+    return dot(X, Y)
+end
+
 _doc_inv_mult = """
     inv(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g)
     inv!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, h, g)

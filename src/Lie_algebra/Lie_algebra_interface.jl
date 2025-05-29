@@ -254,6 +254,16 @@ function ManifoldsBase.hat!(𝔤::LieAlgebra, X, c)
 end
 
 """
+    inner(𝔤::LieAlgebra, X, Y)
+
+Compute the inner product ``⟨⋅,⋅⟩: $(_math(:𝔤))×$(_math(:𝔤)) → ℝ`` on the Lie algebra ``𝔤``.
+By default this uses the inner product on the underlying manifold of the
+[`AbstractLieGroup`](@ref) of `𝔤` at the [`identity_element`](@ref)`(G)`.
+Note that this method allocates an appropriate identity element.
+"""
+ManifoldsBase.inner(𝔤::LieAlgebra, X, Y)
+
+"""
     is_point(𝔤::LieAlgebra, X; kwargs...)
 
 Check whether `X` is a valid point on the Lie Algebra `𝔤`.
@@ -290,7 +300,7 @@ function lie_bracket! end
 lie_bracket!(𝔤::LieAlgebra, Z, X, Y)
 
 function LinearAlgebra.norm(𝔤::LieAlgebra, X)
-    return norm(base_manifold(𝔤), identity_element(base_lie_group(𝔤)), X)
+    return sqrt(real(inner(𝔤, X, X)))
 end
 # Avoid an ambiguity
 function LinearAlgebra.norm(𝔤::LA, X::Real) where {LA<:LieAlgebra}
@@ -340,6 +350,7 @@ end
 function Random.rand(rng::AbstractRNG, 𝔤::LieAlgebra, T::Type; vector_at=nothing, kwargs...)
     X = allocate_on(base_lie_group(𝔤), TangentSpaceType(), T)
     G = base_lie_group(𝔤)
+    # Here we also have to turn T into a point type P for the identity.
     rand!(rng, 𝔤, X; vector_at=identity_element(G), kwargs...)
     return X
 end
