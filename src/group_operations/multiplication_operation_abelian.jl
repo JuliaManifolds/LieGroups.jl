@@ -113,7 +113,7 @@ Compute the differential of the left group multiplication ``λ_g(h) = g$(_math(:
 
 Due to differences in the representation of some abelian Lie groups, this method wraps a concrete implementation of a specific abelian LieGroup with inputs of type `AbstractArray{<:Any,0}` and supports in-place computation.
 
-This can be computed in-place of `Y` if `Y` is `mutable`.    
+This can be computed in-place of `Y` if `Y` is `mutable`.
 """#
 
 @doc "$(_doc_diff_left_compose_abelmult)"
@@ -141,7 +141,7 @@ Compute the differential of the right group multiplication ``ρ_g(h) = h$(_math(
 
 Due to differences in the representation of some abelian Lie groups, this method wraps a concrete implementation of a specific abelian LieGroup with inputs of type `AbstractArray{<:Any,0}` and supports in-place computation.
 
-This can be computed in-place of `Y` if `Y` is `mutable`.    
+This can be computed in-place of `Y` if `Y` is `mutable`.
 """#
 
 @doc "$(_doc_diff_right_compose_abelmult)"
@@ -301,11 +301,6 @@ function identity_element(
 ) where {𝔽,T<:Number}
     return fill(one(T))
 end
-function identity_element(
-    ::LieGroup{𝔽,AbelianMultiplicationGroupOperation}, e::Number
-) where {𝔽}
-    return one(e)
-end
 
 @doc "$(_doc_identity_element_abelian_mult)"
 identity_element!(::LieGroup{𝔽,AbelianMultiplicationGroupOperation}, e) where {𝔽}
@@ -321,7 +316,7 @@ _doc_lie_bracket_abelmult = """
     lie_bracket!(::LieAlgebra{𝔽,AbelianMultiplicationGroupOperation}, Z, X, Y)
 
 Compute the Lie bracket ``[⋅,⋅]: $(_math(:𝔤))×$(_math(:𝔤)) → $(_math(:𝔤))``,
-which for the for the [`AbelianMultiplicationGroupOperation`](@ref) yields the zero vector of the [`LieAlgebra`](@ref) due to commutativity. 
+which for the for the [`AbelianMultiplicationGroupOperation`](@ref) yields the zero vector of the [`LieAlgebra`](@ref) due to commutativity.
 
 ```math
 [X, Y] = XY-YX = 0

@@ -262,7 +262,7 @@ ManifoldsBase.copyto!(G::AbstractLieGroup, h, g) = copyto!(base_manifold(G), h, 
 function ManifoldsBase.copyto!(
     G::AbstractLieGroup{𝔽,O}, h::P, ::Identity{O}
 ) where {𝔽,O<:AbstractGroupOperation,P}
-    return ManifoldsBase.copyto!(base_manifold(G), h, identity_element(G, P))
+    return identity_element!(G, h)
 end
 function ManifoldsBase.copyto!(
     ::AbstractLieGroup{𝔽,O}, h::Identity{O}, ::Identity{O}
@@ -480,10 +480,6 @@ This can be performed in-place of `e`.
 function identity_element(G::AbstractLieGroup)
     e = ManifoldsBase.allocate_result(G, identity_element)
     return identity_element!(G, e)
-end
-# Fallback over to default
-function identity_element(G::AbstractLieGroup, ::Type)
-    return identity_element(G)
 end
 
 function identity_element! end
