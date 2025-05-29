@@ -261,12 +261,7 @@ By default this uses the inner product on the underlying manifold of the
 [`AbstractLieGroup`](@ref) of `𝔤` at the [`identity_element`](@ref)`(G)`.
 Note that this method allocates an appropriate identity element.
 """
-function ManifoldsBase.inner(𝔤::LieAlgebra, X, Y)
-    G = base_lie_group(𝔤)
-    return ManifoldsBase.inner(
-        base_manifold(G), identity_element(G, point_type(G, typeof(X))), X, Y
-    )
-end
+ManifoldsBase.inner(𝔤::LieAlgebra, X, Y)
 
 """
     is_point(𝔤::LieAlgebra, X; kwargs...)
