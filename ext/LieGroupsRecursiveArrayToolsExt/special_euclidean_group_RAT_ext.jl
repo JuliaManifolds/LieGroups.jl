@@ -141,6 +141,12 @@ function LieGroups.identity_element(
     return ArrayPartition(identity_element(SOn), identity_element(Tn))
 end
 function LieGroups.identity_element(
+    G::LieGroups.RightSpecialEuclideanGroup, ::Type{ArrayPartition}
+)
+    SOn, Tn = LieGroups._SOn_and_Tn(G)
+    return ArrayPartition(identity_element(Tn), identity_element(SOn))
+end
+function LieGroups.identity_element(
     G::LieGroups.LeftSpecialEuclideanGroup, ::Type{<:ArrayPartition{T,Tuple{A,B}}}
 ) where {T,A,B}
     SOn, Tn = LieGroups._SOn_and_Tn(G)
@@ -157,12 +163,6 @@ function LieGroups.identity_element(
 ) where {A<:ArrayPartition}
     return SpecialEuclideanProductPoint(identity_element(G, A))
 end
-function LieGroups.identity_element(
-    G::SpecialEuclideanGroup, ::Type{<:SpecialEuclideanProductPoint}
-)
-    return SpecialEuclideanProductPoint(identity_element(G, ArrayPartition))
-end
-
 function LieGroups.identity_element!(G::LieGroups.SpecialEuclideanGroup, g::ArrayPartition)
     SOn, Tn = LieGroups._SOn_and_Tn(G)
     identity_element!(SOn, ManifoldsBase.submanifold_component(G, g, :Rotation))
