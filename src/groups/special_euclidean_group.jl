@@ -140,15 +140,6 @@ function ManifoldsBase.tangent_vector_type(
     return SpecialEuclideanMatrixTangentVector{T}
 end
 
-function point_type(::SpecialEuclideanGroup, ::Type{SpecialEuclideanMatrixTangentVector})
-    return SpecialEuclideanMatrixPoint
-end
-function point_type(
-    ::SpecialEuclideanGroup, ::Type{SpecialEuclideanMatrixTangentVector{T}}
-) where {T}
-    return SpecialEuclideanMatrixPoint{T}
-end
-
 """
     SpecialEuclideanProductPoint <: AbstractLieGroupPoint
 
@@ -190,15 +181,6 @@ function ManifoldsBase.tangent_vector_type(
     ::SpecialEuclideanGroup, ::Type{SpecialEuclideanProductPoint{T}}
 ) where {T}
     return SpecialEuclideanProductTangentVector{T}
-end
-
-function point_type(::SpecialEuclideanGroup, ::Type{SpecialEuclideanProductTangentVector})
-    return SpecialEuclideanProductPoint
-end
-function point_type(
-    ::SpecialEuclideanGroup, ::Type{SpecialEuclideanProductTangentVector{T}}
-) where {T}
-    return SpecialEuclideanProductPoint{T}
 end
 
 # This union we can also use for the matrix case where we do not care
