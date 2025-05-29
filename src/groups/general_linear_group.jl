@@ -51,12 +51,6 @@ ManifoldsBase.exp(::GeneralLinearGroup, X)
 @doc "$(_doc_exp_GLn)"
 ManifoldsBase.exp!(::GeneralLinearGroup, g, X)
 
-function ManifoldsBase.inner(
-    ::LieAlgebra{𝔽,MatrixMultiplicationGroupOperation,GeneralLinearGroup}, X, Y
-) where {𝔽}
-    return dot(X, Y)
-end
-
 function Base.show(io::IO, G::GeneralLinearGroup{𝔽}) where {𝔽}
     n = ManifoldsBase.get_parameter(G.manifold.size)[1]
     return print(io, "GeneralLinearGroup($n; field=$(𝔽))")
