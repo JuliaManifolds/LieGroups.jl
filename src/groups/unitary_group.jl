@@ -62,9 +62,10 @@ function ManifoldsBase.exp!(
 end
 
 function identity_element(
-    ::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}
-)
-    return Quaternions.quat(1.0)
+    ::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}},
+    ::Type{<:Quaternion{T}},
+) where {T}
+    return Quaternions.quat(one(T))
 end
 
 function identity_element(

@@ -218,10 +218,10 @@ which for an [`AbstractMultiplicationGroupOperation`](@ref) is the one-element o
 identity_element(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}) where {𝔽}
 
 function identity_element(
-    G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Type{T}
-) where {𝔽,T<:AbstractArray}
+    G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Type{<:AbstractArray{T,2}}
+) where {𝔽,T}
     (N, M) = representation_size(G.manifold)
-    return Matrix{Float64}(I(N))
+    return Matrix{T}(I(N))
 end
 
 @doc "$(_doc_identity_element_mult)"
