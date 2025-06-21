@@ -66,7 +66,7 @@ Test  `adjoint` function for a given Lie group element `g` and a Lie Algebra vec
 function test_adjoint(G::AbstractLieGroup, g, X; expected=missing, test_mutating::Bool=true)
     @testset "adjoint" begin
         v = if ismissing(expected)
-            diff_conjugate(G, g, identity_element(G, typeof(X)), X)
+            diff_conjugate(G, g, identity_element(G, typeof(g)), X)
         else
             expected
         end
@@ -308,7 +308,7 @@ function test_diff_inv(
     @testset "diff_inv" begin
         𝔤 = LieAlgebra(G)
         # Check that at identity it is in the Lie algebra
-        Ye = diff_inv(G, identity_element(G, typeof(X)), X)
+        Ye = diff_inv(G, identity_element(G, typeof(g)), X)
         @test is_point(𝔤, Ye; error=:error)
         Y1 = diff_inv(G, g, X)
         if test_mutating
@@ -337,7 +337,7 @@ function test_diff_left_compose(
 )
     @testset "diff_left_compose" begin
         𝔤 = LieAlgebra(G)
-        Ye = diff_left_compose(G, identity_element(G, typeof(X)), h, X)
+        Ye = diff_left_compose(G, identity_element(G, typeof(g)), h, X)
         @test is_point(𝔤, Ye; error=:error)
         # check that in-place and allocating agree
         Y1 = diff_left_compose(G, g, h, X)
@@ -367,7 +367,7 @@ function test_diff_right_compose(
 )
     @testset "diff_right_compose" begin
         𝔤 = LieAlgebra(G)
-        Ye = diff_right_compose(G, identity_element(G, typeof(X)), h, X)
+        Ye = diff_right_compose(G, identity_element(G, typeof(g)), h, X)
         @test is_point(𝔤, Ye; error=:error)
         # check that in-place and allocating agree
         Y1 = diff_right_compose(G, g, h, X)

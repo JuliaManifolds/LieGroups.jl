@@ -390,12 +390,20 @@ function ManifoldsBase.hat!(
     return X
 end
 
-function identity_element(G::ValidationLieGroup; kwargs...)
-    g = identity_element(G.lie_group)
+function identity_element(G::ValidationLieGroup, ::Type{T}; kwargs...) where {T}
+    g = identity_element(G.lie_group, T)
     is_point(G, g; widthin=identity_element, context=(:Output,), kwargs...)
     return ValidationMPoint(g)
 end
-
+function identity_element(
+    G::ValidationLieGroup,
+    ::Type{<:ValidationMPoint{T}};
+    kwargs...,
+) where {T}
+    g = identity_element(G.lie_group, T)
+    is_point(G, g; widthin=identity_element, context=(:Output,), kwargs...)
+    return ValidationMPoint(g)
+end
 function identity_element!(G::ValidationLieGroup, g; kwargs...)
     identity_element!(G.lie_group, unwrap_validation(g))
     is_point(G, g; widthin=identity_element, context=(:Output,), kwargs...)
@@ -627,13 +635,22 @@ function Base.log(
     return ValidationLieAlgebraTangentVector(X)
 end
 function Base.log(
-    G::ValidationLieGroup{𝔽,O}, e::Identity{O}, T::Type; kwargs...
-) where {𝔽,O<:AbstractGroupOperation}
+    G::ValidationLieGroup{𝔽,O}, e::Identity{O}, ::Type{T}; kwargs...
+) where {𝔽,O<:AbstractGroupOperation,T}
     X = log(G.lie_group, e, T)
     is_point(LieAlgebra(G), X; widthin=log, context=(:Output,), kwargs...)
     return ValidationLieAlgebraTangentVector(X)
 end
-
+function Base.log(
+    G::ValidationLieGroup{𝔽,O},
+    e::Identity{O},
+    ::Type{<:ValidationLieAlgebraTangentVector{T}};
+    kwargs...,
+) where {𝔽,O<:AbstractGroupOperation,T}
+    X = log(G.lie_group, e, T)
+    is_point(LieAlgebra(G), X; widthin=log, context=(:Output,), kwargs...)
+    return ValidationLieAlgebraTangentVector(X)
+end
 function ManifoldsBase.log!(G::ValidationLieGroup, X, g; kwargs...)
     is_point(G, g; widthin=log, context=(:Input,), kwargs...)
     log!(G.lie_group, unwrap_validation(X), unwrap_validation(g))
