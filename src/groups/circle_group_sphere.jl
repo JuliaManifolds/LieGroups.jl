@@ -89,9 +89,12 @@ function _compose!(::_PlanarCircleGroup, k, g, h)
     return k
 end
 
-identity_element(::_PlanarCircleGroup) = [1.0, 0.0]
-function identity_element!(::_PlanarCircleGroup, p::Array{<:Any,1})
-    p = [1.0, 0.0]
+identity_element(::_PlanarCircleGroup, ::Type{<:AbstractVector}) = [1.0, 0.0]
+function identity_element(::_PlanarCircleGroup, ::Type{<:AbstractVector{T}}) where {T}
+    return [one(T), zero(T)]
+end
+function identity_element!(::_PlanarCircleGroup, p::V) where {T,V<:AbstractVector{T}}
+    p .= [one(T), zero(T)]
     return p
 end
 
