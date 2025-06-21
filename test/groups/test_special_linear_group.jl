@@ -42,7 +42,7 @@ using LieGroupsTestSuite
     @testset "Complex SL(2)" begin
         G = SpecialLinearGroup(2, ℂ)
         g1, g2, g3 = [1.0im 0.0; 0.0 -1.0im], [1.25 0.5; 0.5 1.0], [1.0 1.0; 3.0 4.0]
-        X1, X2, X3 = [0.0 -1.0; 0.0 0.0], [0.0 0.5; 0.5 0.0], [-1.0 0.0; 0.0 1.0]
+        X1, X2, X3 = [0.0im -1.0; 0.0 0.0], [0.0im 0.5; 0.5 0.0], [-1.0 0.0im; 0.0 1.0]
         properties = Dict(
             :Name => "The complex special linear group",
             :Points => [g1, g2, g3],

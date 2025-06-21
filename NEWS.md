@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 * `get_vector` on `SpecialEuclideanGroup` with `ArrayPartition` point type.
+* `identity_element` and `zero_vector` are now all useing a type as second argument and
+  respect this type more thoroughly.
 
 ## [0.1.1] 2025-05-05
 

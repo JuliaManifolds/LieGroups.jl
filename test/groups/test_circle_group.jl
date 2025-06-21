@@ -126,5 +126,6 @@ using LieGroupsTestSuite
         )
         expectations = Dict(:repr => "CircleGroup(Sphere(1))")
         test_lie_group(C1, properties, expectations)
+        @test identity_element(C1) == [1.0, 0.0]
     end
 end

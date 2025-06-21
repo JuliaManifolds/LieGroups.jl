@@ -135,24 +135,6 @@ function ManifoldsBase.exp!(
 end
 
 function LieGroups.identity_element(
-    G::LieGroups.LeftSpecialEuclideanGroup, ::Type{ArrayPartition}
-)
-    SOn, Tn = LieGroups._SOn_and_Tn(G)
-    return ArrayPartition(identity_element(SOn), identity_element(Tn))
-end
-function LieGroups.identity_element(
-    G::LieGroups.LeftSpecialEuclideanGroup, ::Type{<:ArrayPartition{T,Tuple{A,B}}}
-) where {T,A,B}
-    SOn, Tn = LieGroups._SOn_and_Tn(G)
-    return ArrayPartition(identity_element(SOn, A), identity_element(Tn, B))
-end
-function LieGroups.identity_element(
-    G::LieGroups.RightSpecialEuclideanGroup, ::Type{<:ArrayPartition{T,Tuple{A,B}}}
-) where {T,A,B}
-    SOn, Tn = LieGroups._SOn_and_Tn(G)
-    return ArrayPartition(identity_element(Tn, A), identity_element(SOn, B))
-end
-function LieGroups.identity_element(
     G::SpecialEuclideanGroup, ::Type{<:SpecialEuclideanProductPoint{A}}
 ) where {A<:ArrayPartition}
     return SpecialEuclideanProductPoint(identity_element(G, A))
