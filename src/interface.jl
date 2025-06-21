@@ -834,6 +834,17 @@ function ManifoldsBase.project!(G::AbstractLieGroup, g, p)
     return ManifoldsBase.project!(base_manifold(G), g, p)
 end
 
+# TODO: Move to ManifoldsBase at some point
+"""
+    point_type(G::AbstractLieGroup, tangent_vector_type::Type)
+
+Change `tangent_vector_type` that is a type of tangent vector type on Lie group `G`
+to its matching type for representing points.
+
+By default both these types are assumed to be identical.
+"""
+point_type(::AbstractLieGroup, tangent_vector_type::Type) = tangent_vector_type
+
 @doc "$(_doc_rand)"
 Random.rand(::AbstractLieGroup; kwargs...)
 

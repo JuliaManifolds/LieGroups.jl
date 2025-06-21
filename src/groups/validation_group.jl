@@ -94,6 +94,10 @@ unwrap_validation(v) = v
 unwrap_validation(vTV::ValidationLieAlgebraTangentVector) = vTV.value
 unwrap_validation(vP::ValidationMPoint) = vP.value
 
+unwrap_validation_type(v) = v
+unwrap_validation_type(::Type{<:ValidationLieAlgebraTangentVector{T}}) where {T} = T
+unwrap_validation_type(::Type{<:ValidationMPoint{<:P}}) where {P} = P
+
 #
 #
 # An access helper function
@@ -377,7 +381,7 @@ function ManifoldsBase.hat(
     𝔤::LieAlgebra{𝔽,O,<:ValidationLieGroup}, c, T::Type; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
     G = base_lie_group(𝔤).lie_group
-    X = hat(LieAlgebra(G), c, T)
+    X = hat(LieAlgebra(G), c, unwrap_validation_type(T))
     is_point(𝔤, X; widthin=hat, context=(:Output,), kwargs...)
     return ValidationLieAlgebraTangentVector(X)
 end
@@ -391,16 +395,7 @@ function ManifoldsBase.hat!(
 end
 
 function identity_element(G::ValidationLieGroup, ::Type{T}; kwargs...) where {T}
-    g = identity_element(G.lie_group, T)
-    is_point(G, g; widthin=identity_element, context=(:Output,), kwargs...)
-    return ValidationMPoint(g)
-end
-function identity_element(
-    G::ValidationLieGroup,
-    ::Type{<:ValidationMPoint{T}};
-    kwargs...,
-) where {T}
-    g = identity_element(G.lie_group, T)
+    g = identity_element(G.lie_group, unwrap_validation_type(T))
     is_point(G, g; widthin=identity_element, context=(:Output,), kwargs...)
     return ValidationMPoint(g)
 end

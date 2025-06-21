@@ -413,7 +413,9 @@ ManifoldsBase.zero_vector(G::LieGroup{𝔽,<:O}, T::Type) where {𝔽,O<:Abstrac
 
 function ManifoldsBase.zero_vector(𝔤::LieAlgebra, T::Type)
     G = base_lie_group(𝔤) # access manifold twice -> pass to manifold directly
-    return ManifoldsBase.zero_vector(base_manifold(G), identity_element(G, T))
+    return ManifoldsBase.zero_vector(
+        base_manifold(G), identity_element(G, point_type(G, T))
+    )
 end
 function ManifoldsBase.zero_vector(𝔤::LieAlgebra)
     G = base_lie_group(𝔤) # access manifold twice -> pass to manifold directly
