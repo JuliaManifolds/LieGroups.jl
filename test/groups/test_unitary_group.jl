@@ -69,6 +69,7 @@ using LieGroupsTestSuite
             Dict(:Name => "The quaternion unitary group", :Functions => [show]),
             expectations2,
         )
+        @test identity_element(G, QuaternionF64) == Quaternions.quat(1.0)
     end
     @testset "Quaternion Unitary group (1x1 matrices)" begin
         G = UnitaryGroup(1, ℍ)
@@ -93,5 +94,7 @@ using LieGroupsTestSuite
             Dict(:Name => "The quaternion unitary group", :Functions => [show]),
             expectations2,
         )
+
+        @test identity_element(G) isa Matrix{QuaternionF64}
     end
 end

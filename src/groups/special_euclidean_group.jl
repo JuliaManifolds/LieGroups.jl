@@ -510,6 +510,9 @@ function identity_element(G::SpecialEuclideanGroup, ::Type{<:AbstractMatrix{T}})
     q = zeros(T, ManifoldsBase.representation_size(G)...)
     return identity_element!(G, q)
 end
+function identity_element(G::SpecialEuclideanGroup, ::Type{<:SpecialEuclideanMatrixPoint})
+    return SpecialEuclideanMatrixPoint(identity_element(G, AbstractMatrix{Float64}))
+end
 function identity_element(
     G::SpecialEuclideanGroup, ::Type{<:SpecialEuclideanMatrixPoint{<:AbstractMatrix{T}}}
 ) where {T}
@@ -682,15 +685,18 @@ function _log_SE2!(G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}
     t = submanifold_component(G, g, :Translation)
     Y = submanifold_component(G, X, :Rotation)
     v = submanifold_component(G, X, :Translation)
+    @assert size(v) == (2,)
+
     SO2, T2 = _SOn_and_Tn(G)
     log!(SO2, Y, R)
-    α = norm(Y) / sqrt(2) # skew symmetric, so the norm counts everything “twice” in the sqrt.
-    if α ≈ 0
-        copyto!(T2, v, t) # U(α) is the identity, copy over t
-    else
-        β = α / 2 * sin(α) / (1 - cos(α))
-        v[1] = β * t[1] + α / 2 * t[2]
-        v[2] = -α / 2 * t[1] + β * t[2]
+
+    @inbounds θ = Y[2]
+    β = θ / 2
+    α = θ ≈ 0 ? 1 - β^2 / 3 : β * cot(β)
+
+    @inbounds begin
+        v[1] = α * t[1] + β * t[2]
+        v[2] = α * t[2] - β * t[1]
     end
     return X
 end
@@ -736,16 +742,27 @@ function _log_SE3!(G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}
     t = submanifold_component(G, g, :Translation)
     Y = submanifold_component(G, X, :Rotation)
     v = submanifold_component(G, X, :Translation)
-    SO3, T3 = _SOn_and_Tn(G)
-    log!(SO3, Y, Identity(SO3), R)
-    α = norm(Y) / sqrt(2) # skew symmetric, so the norm counts everything “twice” in the sqrt.
-    if α ≈ 0
-        copyto!(T3, v, t) # U(α) is the identity
+
+    @assert size(Y) == (3, 3)
+    @assert size(v) == (3,)
+
+    trR = tr(R)
+    cosθ = (trR - 1) / 2
+    θ = acos(clamp(cosθ, -1, 1))
+    θ² = θ^2
+    if θ ≈ 0
+        α = 1 / 2 + θ² / 12
+        β = 1 / 12 + θ² / 720
     else
-        β = 1 / α^2 - (1 + cos(α)) / (2 * α * sin(α))
-        Vα = LinearAlgebra.I - Y ./ 2 .+ β .* Y^2
-        mul!(v, Vα, t)
+        sinθ = sin(θ)
+        α = θ / sinθ / 2
+        β = 1 / θ² - (1 + cosθ) / 2 / θ / sinθ
     end
+
+    Y .= (R .- transpose(R)) .* α
+    Jₗ⁻¹ = I - Y ./ 2 .+ β .* Y^2
+    mul!(v, Jₗ⁻¹, t)
+
     return X
 end
 
@@ -770,6 +787,18 @@ function ManifoldsBase.representation_size(G::SpecialEuclideanGroup)
     return (s + 1, s + 1)
 end
 
+function Random.rand(
+    rng::AbstractRNG, G::SEG, T::Type=Matrix{Float64}; kwargs...
+) where {SEG<:SpecialEuclideanGroup}
+    g = identity_element(G, T)
+    return rand!(rng, G, g; kwargs...)
+end
+function Random.rand(
+    G::SEG, T::Type=Matrix{Float64}; kwargs...
+) where {SEG<:SpecialEuclideanGroup}
+    g = identity_element(G, T)
+    return rand!(G, g; kwargs...)
+end
 # this is always with vector_at=nothing
 function Random.rand!(
     rng::AbstractRNG,

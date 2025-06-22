@@ -228,6 +228,11 @@ using LieGroupsTestSuite
 
             @test norm(LieAlgebra(G2l), X4) == norm(X1)
         end
+        @testset "Identity element special cases" begin
+            @test identity_element(G2l) == one(zeros(3, 3))
+            g = identity_element(G2l, SpecialEuclideanMatrixPoint)
+            @test g == SpecialEuclideanMatrixPoint(one(zeros(3, 3)))
+        end
     end
     @testset "Zero vector special types" begin
         G2l = SpecialEuclideanGroup(2)
@@ -322,5 +327,17 @@ using LieGroupsTestSuite
         @test er[Gr, :Rotation] == eO
         @test er[Gr, :Translation] == eT
         @test er[G, :] == (eO, eT)
+    end
+
+    @testset "Small angle cases" begin
+        G = SpecialEuclideanGroup(2)
+        X = hat(LieAlgebra(G), [1e-8, 1, 0])
+        p = exp(G, X)
+        @test X ≈ log(G, p)
+
+        G = SpecialEuclideanGroup(3)
+        X = hat(LieAlgebra(G), [1e-8, 0, 0, 1, 0, 0])
+        p = exp(G, X)
+        @test X ≈ log(G, p)
     end
 end
