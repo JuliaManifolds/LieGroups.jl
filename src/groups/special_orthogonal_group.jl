@@ -70,6 +70,14 @@ ManifoldsBase.get_vector!(
     ::DefaultLieAlgebraOrthogonalBasis,
 )
 
+function identity_element(G::SpecialOrthogonalGroup)
+    return identity_element(G, AbstractMatrix{Float64})
+end
+function identity_element(G::SpecialOrthogonalGroup, ::Type{<:AbstractMatrix{T}}) where {T}
+    e = zeros(T, ManifoldsBase.representation_size(G)...)
+    return identity_element!(G, e)
+end
+
 inv!(G::SpecialOrthogonalGroup, k, g) = copyto!(G, k, transpose(g))
 function inv!(
     G::SpecialOrthogonalGroup, q, ::Identity{O}

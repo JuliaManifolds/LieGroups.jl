@@ -510,6 +510,9 @@ function identity_element(G::SpecialEuclideanGroup, ::Type{<:AbstractMatrix{T}})
     q = zeros(T, ManifoldsBase.representation_size(G)...)
     return identity_element!(G, q)
 end
+function identity_element(G::SpecialEuclideanGroup, ::Type{<:SpecialEuclideanMatrixPoint})
+    return SpecialEuclideanMatrixPoint(identity_element(G, AbstractMatrix{Float64}))
+end
 function identity_element(
     G::SpecialEuclideanGroup, ::Type{<:SpecialEuclideanMatrixPoint{<:AbstractMatrix{T}}}
 ) where {T}
@@ -784,6 +787,18 @@ function ManifoldsBase.representation_size(G::SpecialEuclideanGroup)
     return (s + 1, s + 1)
 end
 
+function Random.rand(
+    rng::AbstractRNG, G::SEG, T::Type=Matrix{Float64}; kwargs...
+) where {SEG<:SpecialEuclideanGroup}
+    g = identity_element(G, T)
+    return rand!(rng, G, g; kwargs...)
+end
+function Random.rand(
+    G::SEG, T::Type=Matrix{Float64}; kwargs...
+) where {SEG<:SpecialEuclideanGroup}
+    g = identity_element(G, T)
+    return rand!(G, g; kwargs...)
+end
 # this is always with vector_at=nothing
 function Random.rand!(
     rng::AbstractRNG,

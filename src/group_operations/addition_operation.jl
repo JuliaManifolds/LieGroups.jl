@@ -139,6 +139,11 @@ which for the [`AdditionGroupOperation`](@ref) is the zero element or array.
 identity_element(::LieGroup{𝔽,AdditionGroupOperation}) where {𝔽}
 
 function identity_element(
+    G::LieGroup{𝔽,AdditionGroupOperation}, ::Type{T}
+) where {𝔽,T<:AbstractArray}
+    return zeros(representation_size(G.manifold))
+end
+function identity_element(
     ::LieGroup{𝔽,AdditionGroupOperation}, ::Type{T}
 ) where {𝔽,T<:Union{Number,AbstractArray{<:Number,0}}}
     return zero(T)
