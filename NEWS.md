@@ -5,7 +5,7 @@ All notable Changes to the Julia package `LieGroups.jl` will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.2] unreleased
+## [0.1.2] 2025-06-22
 
 ### Added
 
@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * `get_vector` on `SpecialEuclideanGroup` with `ArrayPartition` point type.
 * `identity_element` and `zero_vector` are now all using a type as second argument and
   respect this type more thoroughly.
+* Issue #44 (accuracy of `log` on SE(2) and SE(3) for small angles).
 
 ## [0.1.1] 2025-05-05
 

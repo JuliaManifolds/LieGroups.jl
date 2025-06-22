@@ -328,4 +328,16 @@ using LieGroupsTestSuite
         @test er[Gr, :Translation] == eT
         @test er[G, :] == (eO, eT)
     end
+
+    @testset "Small angle cases" begin
+        G = SpecialEuclideanGroup(2)
+        X = hat(LieAlgebra(G), [1e-8, 1, 0])
+        p = exp(G, X)
+        @test X ≈ log(G, p)
+
+        G = SpecialEuclideanGroup(3)
+        X = hat(LieAlgebra(G), [1e-8, 0, 0, 1, 0, 0])
+        p = exp(G, X)
+        @test X ≈ log(G, p)
+    end
 end
