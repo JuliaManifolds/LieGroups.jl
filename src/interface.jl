@@ -262,7 +262,7 @@ ManifoldsBase.copyto!(G::AbstractLieGroup, h, g) = copyto!(base_manifold(G), h, 
 function ManifoldsBase.copyto!(
     G::AbstractLieGroup{𝔽,O}, h::P, ::Identity{O}
 ) where {𝔽,O<:AbstractGroupOperation,P}
-    return ManifoldsBase.copyto!(base_manifold(G), h, identity_element(G, P))
+    return identity_element!(G, h)
 end
 function ManifoldsBase.copyto!(
     ::AbstractLieGroup{𝔽,O}, h::Identity{O}, ::Identity{O}
@@ -480,10 +480,6 @@ This can be performed in-place of `e`.
 function identity_element(G::AbstractLieGroup)
     e = ManifoldsBase.allocate_result(G, identity_element)
     return identity_element!(G, e)
-end
-# Fallback over to default
-function identity_element(G::AbstractLieGroup, ::Type)
-    return identity_element(G)
 end
 
 function identity_element! end
@@ -837,6 +833,17 @@ For the in-place variants the type is inferred from `pX´ and `X`, respectively.
 function ManifoldsBase.project!(G::AbstractLieGroup, g, p)
     return ManifoldsBase.project!(base_manifold(G), g, p)
 end
+
+# TODO: Move to ManifoldsBase at some point
+"""
+    point_type(G::AbstractLieGroup, tangent_vector_type::Type)
+
+Change `tangent_vector_type` that is a type of tangent vector type on Lie group `G`
+to its matching type for representing points.
+
+By default both these types are assumed to be identical.
+"""
+point_type(::AbstractLieGroup, tangent_vector_type::Type) = tangent_vector_type
 
 @doc "$(_doc_rand)"
 Random.rand(::AbstractLieGroup; kwargs...)

@@ -232,6 +232,14 @@ function ManifoldsBase.hat!(
     return X
 end
 
+function LieGroups.identity_element(
+    PoG::LieGroup{𝔽,Op,M}, ::Type{Vector{T}}
+) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold,T}
+    PM = PoG.manifold
+    G = LieGroup(PM.manifold, PoG.op.op)
+    return [identity_element(G, T) for _ in ManifoldsBase.get_iterator(PM)]
+end
+
 function identity_element!(
     PoG::LieGroup{𝔽,Op,M}, e
 ) where {𝔽,Op<:PowerGroupOperation,M<:ManifoldsBase.AbstractPowerManifold}

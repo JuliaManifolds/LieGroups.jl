@@ -228,6 +228,11 @@ using LieGroupsTestSuite
 
             @test norm(LieAlgebra(G2l), X4) == norm(X1)
         end
+        @testset "Identity element special cases" begin
+            @test identity_element(G2l) == one(zeros(3, 3))
+            g = identity_element(G2l, SpecialEuclideanMatrixPoint)
+            @test g == SpecialEuclideanMatrixPoint(one(zeros(3, 3)))
+        end
     end
     @testset "Zero vector special types" begin
         G2l = SpecialEuclideanGroup(2)
