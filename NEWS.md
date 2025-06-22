@@ -12,10 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * `is_flat` for `SpecialEuclideanGroup`
 * `inner` and `norm` for `LieAlgebra` to compute the inner product and norm on the Lie algebra.
 
+### Changed
+
+* `identity_element` on `UnitaryGroup(1, ℍ)` now returns by default a 1x1 `Matrix` instead of a number to be consistent with higher-dimensional unitary quaternionic groups. Use `identity_element(UnitaryGroup(1, ℍ), QuaternionF64)` to get a number corresponding to the identity.
+
 ### Fixed
 
 * `get_vector` on `SpecialEuclideanGroup` with `ArrayPartition` point type.
-* `identity_element` and `zero_vector` are now all useing a type as second argument and
+* `identity_element` and `zero_vector` are now all using a type as second argument and
   respect this type more thoroughly.
 
 ## [0.1.1] 2025-05-05
