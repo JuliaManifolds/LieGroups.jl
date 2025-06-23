@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * New StaticArrays.jl specializations for multiple functions, including:
   * `exp` on the orthogonal and special orthogonal group in 2 and 3 dimensions.
+  * `get_coordinates` on the orthogonal and special orthogonal group in 2 and 3 dimensions.
 
 ## [0.1.2] 2025-06-22
 

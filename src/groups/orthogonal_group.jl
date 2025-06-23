@@ -194,9 +194,9 @@ function ManifoldsBase.exp(
 end
 function ManifoldsBase.exp(
     G::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
-    X::SMatrix,
-)
-    θ = get_coordinates(M, X)[1]
+    X::SMatrix{2,2,T},
+) where {T}
+    θ = X[2] * sqrt(T(2))
     sinθ, cosθ = sincos(θ)
     return SA[cosθ -sinθ; sinθ cosθ]
 end
@@ -212,6 +212,15 @@ function ManifoldsBase.exp(
     X::SMatrix,
 )
     return exp(G.manifold, SMatrix{3,3,eltype(X)}(I), X)
+end
+
+function ManifoldsBase.exp_fused(
+    M::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
+    p::SMatrix,
+    X::SMatrix,
+    t::Real,
+)
+    return exp(M, p, t * X)
 end
 
 _doc_get_coordinates_On = """
@@ -292,6 +301,24 @@ function _get_coordinates_lie_On!(c, X)
         end
     end
     return c
+end
+
+function ManifoldsBase.get_coordinates(
+    ::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
+    p::SMatrix,
+    X::SMatrix,
+    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+)
+    return SA[X[2]]
+end
+
+function ManifoldsBase.get_coordinates(
+    ::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
+    p::SMatrix,
+    X::SMatrix,
+    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+)
+    return SA[X[3, 2], X[1, 3], X[2, 1]]
 end
 
 _doc_get_vector_On = """

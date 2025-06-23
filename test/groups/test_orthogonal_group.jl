@@ -6,6 +6,7 @@ using LieGroupsTestSuite
 using LieGroupsTestSuite: rotation_matrix
 using LinearAlgebra: I
 
+using ManifoldsBase
 using StaticArrays
 
 @testset "The Orthogonal Group" begin
@@ -43,9 +44,10 @@ using StaticArrays
     expectations = Dict(:repr => "OrthogonalGroup(2)")
     test_lie_group(G, properties, expectations)
 
-    @testset "StaticArrays specializations" begin
+    @testset "StaticArrays specializations for O(2)" begin
         ps = SMatrix{2,2,Float64}(I)
-        qs = exp(G, ps, SA[0.0 2.0; -2.0 0.0])
+        Xs = SA[0.0 2.0; -2.0 0.0]
+        qs = exp(G, ps, Xs)
 
         q_ref = SA[
             -0.9513631281258474 0.30807174236304485
@@ -53,6 +55,19 @@ using StaticArrays
         ]
         @test qs isa SMatrix{2,2,Float64}
         @test qs === q_ref
+
+        qs = exp(G, Xs)
+        @test qs isa SMatrix{2,2,Float64}
+        @test qs === q_ref
+
+        qs = ManifoldsBase.exp_fused(G, ps, Xs, 1.5)
+        @test qs isa SMatrix{2,2,Float64}
+        @test qs === SA[
+            -0.45266185729235203 -0.8916822544789362
+            0.8916822544789362 -0.45266185729235203
+        ]
+
+        @test get_coordinates(G, ps, Xs, DefaultLieAlgebraOrthogonalBasis()) isa SVector{1}
     end
 
     #
@@ -76,6 +91,26 @@ using StaticArrays
     test_lie_group(H, properties2, expectations2)
     @testset "O(3) special cases" begin
         @test is_identity(H, exp(H, zeros(3, 3)))
+    end
+
+    @testset "StaticArrays specializations for O(3)" begin
+        ps = SMatrix{3,3,Float64}(I)
+        Xs = SA[0.0 0.1 0.0; -0.1 0.0 0.0; 0.0 0.0 0.0]
+        qs = exp(H, ps, Xs)
+
+        q_ref = SA[
+            0.9950041652780258 0.09983341664682815 0.0
+            -0.09983341664682815 0.9950041652780258 0.0
+            0.0 0.0 1.0
+        ]
+        @test qs isa SMatrix{3,3,Float64}
+        @test qs === q_ref
+
+        qs = exp(H, Xs)
+        @test qs isa SMatrix{3,3,Float64}
+        @test qs === q_ref
+
+        @test get_coordinates(H, ps, Xs, DefaultLieAlgebraOrthogonalBasis()) isa SVector{3}
     end
     #
     #
