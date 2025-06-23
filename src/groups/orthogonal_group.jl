@@ -351,6 +351,16 @@ get_vector(𝔤::OrthogonalLieAlgebra, X, ::DefaultLieAlgebraOrthogonalBasis)
 @doc "$(_doc_get_vector_On)"
 get_vector!(𝔤::OrthogonalLieAlgebra, c, X::DefaultLieAlgebraOrthogonalBasis)
 
+function get_vector_lie(
+    ::CommonUnitarySubAlgebra{ManifoldsBase.ℝ,<:ManifoldsBase.TypeParameter{Tuple{2}}},
+    c,
+    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+    ::Type{<:SMatrix{2,2,T}},
+) where {T}
+    @assert size(c) == (1,)
+    return SMatrix{2,2,T}(0, c[1], -c[1], 0)
+end
+
 function get_vector_lie!(
     ::CommonUnitarySubAlgebra{ManifoldsBase.ℝ,<:ManifoldsBase.TypeParameter{Tuple{2}}},
     X,
@@ -418,6 +428,23 @@ function _get_vector_lie_On!(X, c)
         end
     end
     return X
+end
+
+function ManifoldsBase.get_vector(
+    ::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
+    p::SMatrix,
+    Xⁱ,
+    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+)
+    return @SMatrix [0 -Xⁱ[]; Xⁱ[] 0]
+end
+function ManifoldsBase.get_vector(
+    ::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
+    p::SMatrix,
+    Xⁱ,
+    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+)
+    return @SMatrix [0 -Xⁱ[3] Xⁱ[2]; Xⁱ[3] 0 -Xⁱ[1]; -Xⁱ[2] Xⁱ[1] 0]
 end
 
 _doc_log_O2_id = """

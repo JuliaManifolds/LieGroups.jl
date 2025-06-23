@@ -68,6 +68,8 @@ using StaticArrays
         ]
 
         @test get_coordinates(G, ps, Xs, DefaultLieAlgebraOrthogonalBasis()) isa SVector{1}
+        @test get_vector(G, ps, SA[1.0], DefaultLieAlgebraOrthogonalBasis()) ===
+            SA[0.0 -1.0; 1.0 0.0]
     end
 
     #
@@ -111,6 +113,8 @@ using StaticArrays
         @test qs === q_ref
 
         @test get_coordinates(H, ps, Xs, DefaultLieAlgebraOrthogonalBasis()) isa SVector{3}
+        @test get_vector(H, ps, SA[1.0, 2.0, 3.0], DefaultLieAlgebraOrthogonalBasis()) ===
+            SA[0.0 -3.0 2.0; 3.0 0.0 -1.0; -2.0 1.0 0.0]
     end
     #
     #
