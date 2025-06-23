@@ -5,6 +5,13 @@ All notable Changes to the Julia package `LieGroups.jl` will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3] unreleased
+
+### Added
+
+* New StaticArrays.jl specializations for multiple functions, including:
+  * `exp` on the orthogonal and special orthogonal group in 2 and 3 dimensions.
+
 ## [0.1.2] 2025-06-22
 
 ### Added

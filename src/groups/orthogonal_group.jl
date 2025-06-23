@@ -183,6 +183,37 @@ function ManifoldsBase.exp!(
     return g
 end
 
+function ManifoldsBase.exp(
+    G::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
+    p::SMatrix,
+    X::SMatrix,
+)
+    θ = get_coordinates(G, p, X)[1]
+    sinθ, cosθ = sincos(θ)
+    return p * SA[cosθ -sinθ; sinθ cosθ]
+end
+function ManifoldsBase.exp(
+    G::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
+    X::SMatrix,
+)
+    θ = get_coordinates(M, X)[1]
+    sinθ, cosθ = sincos(θ)
+    return SA[cosθ -sinθ; sinθ cosθ]
+end
+function ManifoldsBase.exp(
+    G::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
+    p::SMatrix,
+    X::SMatrix,
+)
+    return exp(G.manifold, p, X)
+end
+function ManifoldsBase.exp(
+    G::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
+    X::SMatrix,
+)
+    return exp(G.manifold, SMatrix{3,3,eltype(X)}(I), X)
+end
+
 _doc_get_coordinates_On = """
     get_coordinates(𝔤::OrthogonalLieAlgebra, X, ::DefaultLieAlgebraOrthogonalBasis)
     get_coordinates(G::SpecialOrthogonalLieAlgebra, X, ::DefaultLieAlgebraOrthogonalBasis)

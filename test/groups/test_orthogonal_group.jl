@@ -6,7 +6,9 @@ using LieGroupsTestSuite
 using LieGroupsTestSuite: rotation_matrix
 using LinearAlgebra: I
 
-@testset "The Orhogonal Group" begin
+using StaticArrays
+
+@testset "The Orthogonal Group" begin
     G = OrthogonalGroup(2)
     g1 = 1 / sqrt(2) * [1.0 1.0; -1.0 1.0]
     g2 = [0.0 -1.0; 1.0 0.0]
@@ -40,6 +42,18 @@ using LinearAlgebra: I
     )
     expectations = Dict(:repr => "OrthogonalGroup(2)")
     test_lie_group(G, properties, expectations)
+
+    @testset "StaticArrays specializations" begin
+        ps = SMatrix{2,2,Float64}(I)
+        qs = exp(G, ps, SA[0.0 2.0; -2.0 0.0])
+
+        q_ref = SA[
+            -0.9513631281258474 0.30807174236304485
+            -0.30807174236304485 -0.9513631281258474
+        ]
+        @test qs isa SMatrix{2,2,Float64}
+        @test qs === q_ref
+    end
 
     #
     #
