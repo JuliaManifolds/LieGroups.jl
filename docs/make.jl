@@ -101,7 +101,9 @@ using LieGroups
 
 # (e) add contributing.md and changelog.md to the docs – and link to releases and issues
 
-function add_links(line::String, url::String="https://github.com/JuliaManifolds/Liegroups.jl")
+function add_links(
+    line::String, url::String="https://github.com/JuliaManifolds/Liegroups.jl"
+)
     # replace issues (#XXXX) -> ([#XXXX](url/issue/XXXX))
     while (m = match(r"\(\#([0-9]+)\)", line)) !== nothing
         id = m.captures[1]
