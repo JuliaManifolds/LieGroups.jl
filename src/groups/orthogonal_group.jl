@@ -536,6 +536,12 @@ Note the logarithmic map is only locally around the identity uniquely determined
 @doc "$(_doc_log_O4_id)"
 ManifoldsBase.log(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, g)
 
+function ManifoldsBase.log(
+    M::CommonUnitarySubGroup{ManifoldsBase.ℝ}, p::SMatrix, q::SMatrix
+)
+    return log(M.manifold, p, q)
+end
+
 @doc "$(_doc_log_O4_id)"
 ManifoldsBase.log!(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, X, g)
 
