@@ -283,6 +283,27 @@ end
 
 ManifoldsBase.default_basis(::AbstractLieGroup) = DefaultLieAlgebraOrthogonalBasis()
 
+"""
+TODO
+"""
+function ManifoldsBase.default_inverse_retraction_method(G::AbstractLieGroup)
+    return default_inverse_retraction_method(base_manifold(G))
+end
+
+"""
+TODO
+"""
+function ManifoldsBase.default_retraction_method(G::AbstractLieGroup)
+    return default_retraction_method(base_manifold(G))
+end
+
+"""
+TODO
+"""
+function ManifoldsBase.default_vector_transport_method(G::AbstractLieGroup)
+    return default_vector_transport_method(base_manifold(G))
+end
+
 _doc_diff_conjugate = """
     diff_conjugate(G::AbstractLieGroup, g, h, X)
     diff_conjugate!(G::AbstractLieGroup, Y, g, h, X)
@@ -563,6 +584,45 @@ function inv_right_compose!(G::AbstractLieGroup, k, h, g)
     inv!(G, k, g) # g^{-1} in-place of k
     compose!(G, k, h, k) # compose `h∘k` in-place of k
     return k
+end
+
+@doc raw"""
+    BaseManifoldInverseRetraction{IRM<:AbstractInverseRetractionMethod} <: AbstractInverseRetractionMethod
+
+Compute an inverse retraction by using the inverse retraction of type `IRM` on the base manifold of
+a [`LieGroup`](@ref).
+
+# Constructor
+
+    BaseManifoldInverseRetraction(irm::AbstractInverseRetractionMethod)
+
+Generate the inverse retraction with inverse retraction `rm` to use on the base manifold.
+"""
+struct BaseManifoldInverseRetraction{IRM<:AbstractInverseRetractionMethod} <:
+       AbstractInverseRetractionMethod
+    inverse_retraction::IRM
+end
+
+"""
+TODO
+"""
+ManifoldsBase.inverse_retract(G::AbstractLieGroup, g, h, m::BaseManifoldInverseRetraction)
+
+# Layer 3
+function ManifoldsBase._inverse_retract!(
+    G::AbstractLieGroup, X, g, h, m::BaseManifoldInverseRetraction
+)
+    return inverse_retract_base_manifold!(G, X, g, h, m)
+end
+function inverse_retract_base_manifold!(
+    G::AbstractLieGroup, X, g, h, m::BaseManifoldInverseRetraction
+)
+    inverse_retract!(base_manifold(G), X, g, h, m)
+    # X is in TgM so we still ave to pull it back to TeM using
+    # the left group opp diff.
+    e = identity_element(G, typeof(g))
+    diff_left_compose!(G, X, inv(G, g), e, X)
+    return X
 end
 
 function is_identity end
@@ -898,12 +958,83 @@ function Random.rand!(
     end
 end
 
+@doc raw"""
+    BaseManifoldRetraction{RM<:AbstractRetractionMethod} <: AbstractRetractionMethod
+
+Compute a retraction by using the retraction of type `RM` on the base manifold of
+a [`LieGroup`](@ref).
+
+# Constructor
+
+    BaseManifoldRetraction(rm::AbstractRetractionMethod)
+
+Generate the retraction with retraction `rm` to use on the base manifold.
+"""
+struct BaseManifoldRetraction{RM<:AbstractRetractionMethod} <: AbstractRetractionMethod
+    retraction::RM
+end
+
+"""
+TODO
+"""
+ManifoldsBase.retract(::LieGroup, p, X, m::BaseManifoldRetraction)
+
+# Layer 2
+function ManifoldsBase._retract!(G::AbstractLieGroup, h, g, X, m::BaseManifoldRetraction)
+    return retract_base_manifold!(G, h, g, X, m)
+end
+function retract_base_manifold!(G, h, g, X, m::BaseManifoldRetraction)
+    # X is in TeM so we first push it to TpM using
+    # the left group opp diff.
+    identity_element!(G, h)
+    Y = diff_left_compose(G, h, g, X)
+    # now we can use the retraction on the base manifold
+    retract!(base_manifold(G), q, p, X, m.retraction)
+    return q
+end
+
 function ManifoldsBase.representation_size(G::AbstractLieGroup)
     return representation_size(base_manifold(G))
 end
 
 function Base.show(io::IO, G::LieGroup)
     return print(io, "LieGroup($(base_manifold(G)), $(G.op))")
+end
+
+"""
+
+"""
+struct BaseManifoldVectorTransportMethod{VTM<:AbstractVectorTransportMethod} <:
+       AbstractVectorTransportMethod
+    vector_transport_method::VTM
+end
+
+"""
+TODO
+"""
+ManifoldsBase.vector_transport_to(
+    G::AbstractLieGroup, g, X, h, m::BaseManifoldVectorTransportMethod
+)
+
+function ManifoldsBase._vector_transport_to!(
+    G::AbstractLieGroup, Y, g, X, h, m::BaseManifoldVectorTransportMethod
+)
+    return _vector_transport_to_basemanifold!(G, Y, g, X, h, m)
+end
+
+function _vector_transport_to_basemanifold!(
+    G::AbstractLieGroup, Y, g, X, h, m::BaseManifoldVectorTransportMethod
+)
+    # (a) we have to push forward X from TeG to TgG
+    # we can do this in-place of Y
+    e = identity_element(G, typeof(g))
+    diff_left_compose!(G, Y, g, e, X)
+    # then we do the vector transport purely in place of Y
+    vector_transport_to!(base_manifold(G), Y, g, Y, h, m.vector_transport_method)
+    # now Y is in ThM so we still ave to pull it back to TeM using
+    # the left group opp diff.
+    diff_left_compose!(G, X, inv(G, h), e, X)
+    return Y
 end
 
 #
