@@ -14,12 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * `get_coordinates` and `get_vector` on the orthogonal and special orthogonal group in 2 and 3 dimensions, for `LieAlgebraOrthogonalBasis`.
 * More generic implementation of non-mutating `get_vector_lie` on `AbstractProductGroupOperation` groups.
 
-## [0.1.2] 2025-06-22
+## [0.1.2] 2025-06-23
 
 ### Added
 
 * `is_flat` for `SpecialEuclideanGroup`
 * `inner` and `norm` for `LieAlgebra` to compute the inner product and norm on the Lie algebra.
+* a test suite function for `identity_element`.
 
 ### Changed
 
@@ -30,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * `get_vector` on `SpecialEuclideanGroup` with `ArrayPartition` point type.
 * `identity_element` and `zero_vector` are now all using a type as second argument and
   respect this type more thoroughly.
-* Issue #44 (accuracy of `log` on SE(2) and SE(3) for small angles).
+* fixes (#44) (accuracy of `log` on SE(2) and SE(3) for small angles).
 
 ## [0.1.1] 2025-05-05
 
