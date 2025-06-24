@@ -5,6 +5,8 @@ s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 using LieGroupsTestSuite
 using LieGroupsTestSuite: rotation_matrix
 
+using StaticArrays
+
 @testset "Special Orthogonal Group" begin
     G = SpecialOrthogonalGroup(2)
     g1 = 1 / sqrt(2) * [1.0 1.0; -1.0 1.0]
@@ -109,5 +111,14 @@ using LieGroupsTestSuite: rotation_matrix
                 @test isapprox(J, p, p2; atol=1e-6)
             end
         end
+    end
+
+    @testset "StaticArrays.jl specializations" begin
+        G = SpecialOrthogonalGroup(3)
+        g1 = SMatrix{3,3}(rotation_matrix(3, 2, 1, π / 8) * rotation_matrix(3, 3, 1, π / 4))
+        g2 = SMatrix{3,3}(rotation_matrix(3, 3, 1, π / 4) * rotation_matrix(3, 3, 2, π / 8))
+        X = log(G, g1, g2)
+        @test X isa SMatrix{3,3,Float64,9}
+        @test X ≈ log(G.manifold, g1, g2)
     end
 end

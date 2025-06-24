@@ -161,6 +161,14 @@ function get_vector_lie(
     𝔤::LieAlgebra{ℝ,AdditionGroupOperation,<:_RealCircleGroup},
     c,
     ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+    ::Type{<:SArray},
+)
+    return SVector{1}(c[])
+end
+function get_vector_lie(
+    𝔤::LieAlgebra{ℝ,AdditionGroupOperation,<:_RealCircleGroup},
+    c,
+    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
     T::Type=Float64,
 )
     G = base_lie_group(𝔤)

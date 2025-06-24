@@ -3,6 +3,8 @@ using LieGroups, Random, Test
 using ManifoldsBase: ℂ, ℝ
 using Manifolds: Circle, Sphere
 
+using StaticArrays
+
 s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 !(s in LOAD_PATH) && (push!(LOAD_PATH, s))
 using LieGroupsTestSuite
@@ -127,5 +129,13 @@ using LieGroupsTestSuite
         expectations = Dict(:repr => "CircleGroup(Sphere(1))")
         test_lie_group(C1, properties, expectations)
         @test identity_element(C1) == [1.0, 0.0]
+    end
+
+    @testset "StaticArrays.jl specializations" begin
+        C = CircleGroup(Circle(ℝ))
+        a = LieGroups.get_vector_lie(
+            LieAlgebra(C), SA[2.0], DefaultLieAlgebraOrthogonalBasis(), SVector{1}
+        )
+        @test a === SA[2.0]
     end
 end

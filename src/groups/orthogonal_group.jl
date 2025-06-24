@@ -183,6 +183,46 @@ function ManifoldsBase.exp!(
     return g
 end
 
+function ManifoldsBase.exp(
+    G::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
+    p::SMatrix,
+    X::SMatrix,
+)
+    θ = get_coordinates(G, p, X)[1]
+    sinθ, cosθ = sincos(θ)
+    return p * SA[cosθ -sinθ; sinθ cosθ]
+end
+function ManifoldsBase.exp(
+    G::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
+    X::SMatrix{2,2,T},
+) where {T}
+    θ = X[2] * sqrt(T(2))
+    sinθ, cosθ = sincos(θ)
+    return SA[cosθ -sinθ; sinθ cosθ]
+end
+function ManifoldsBase.exp(
+    G::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
+    p::SMatrix,
+    X::SMatrix,
+)
+    return exp(G.manifold, p, X)
+end
+function ManifoldsBase.exp(
+    G::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
+    X::SMatrix,
+)
+    return exp(G.manifold, SMatrix{3,3,eltype(X)}(I), X)
+end
+
+function ManifoldsBase.exp_fused(
+    M::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
+    p::SMatrix,
+    X::SMatrix,
+    t::Real,
+)
+    return exp(M, p, t * X)
+end
+
 _doc_get_coordinates_On = """
     get_coordinates(𝔤::OrthogonalLieAlgebra, X, ::DefaultLieAlgebraOrthogonalBasis)
     get_coordinates(G::SpecialOrthogonalLieAlgebra, X, ::DefaultLieAlgebraOrthogonalBasis)
@@ -263,6 +303,24 @@ function _get_coordinates_lie_On!(c, X)
     return c
 end
 
+function ManifoldsBase.get_coordinates(
+    ::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
+    p::SMatrix,
+    X::SMatrix,
+    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+)
+    return SA[X[2]]
+end
+
+function ManifoldsBase.get_coordinates(
+    ::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
+    p::SMatrix,
+    X::SMatrix,
+    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+)
+    return SA[X[3, 2], X[1, 3], X[2, 1]]
+end
+
 _doc_get_vector_On = """
     get_vector(G::OrthogonalLieAlgebra, e, c, ::DefaultLieAlgebraOrthogonalBasis)
     get_vector(G::SpecialOrthogonalLieAlgebra, e, c, ::DefaultLieAlgebraOrthogonalBasis)
@@ -292,6 +350,16 @@ get_vector(𝔤::OrthogonalLieAlgebra, X, ::DefaultLieAlgebraOrthogonalBasis)
 
 @doc "$(_doc_get_vector_On)"
 get_vector!(𝔤::OrthogonalLieAlgebra, c, X::DefaultLieAlgebraOrthogonalBasis)
+
+function get_vector_lie(
+    ::CommonUnitarySubAlgebra{ManifoldsBase.ℝ,<:ManifoldsBase.TypeParameter{Tuple{2}}},
+    c,
+    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+    ::Type{<:SMatrix{2,2,T}},
+) where {T}
+    @assert size(c) == (1,)
+    return SMatrix{2,2,T}(0, c[1], -c[1], 0)
+end
 
 function get_vector_lie!(
     ::CommonUnitarySubAlgebra{ManifoldsBase.ℝ,<:ManifoldsBase.TypeParameter{Tuple{2}}},
@@ -360,6 +428,23 @@ function _get_vector_lie_On!(X, c)
         end
     end
     return X
+end
+
+function ManifoldsBase.get_vector(
+    ::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
+    p::SMatrix,
+    Xⁱ,
+    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+)
+    return @SMatrix [0 -Xⁱ[]; Xⁱ[] 0]
+end
+function ManifoldsBase.get_vector(
+    ::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
+    p::SMatrix,
+    Xⁱ,
+    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+)
+    return @SMatrix [0 -Xⁱ[3] Xⁱ[2]; Xⁱ[3] 0 -Xⁱ[1]; -Xⁱ[2] Xⁱ[1] 0]
 end
 
 _doc_log_O2_id = """
@@ -450,6 +535,12 @@ Note the logarithmic map is only locally around the identity uniquely determined
 
 @doc "$(_doc_log_O4_id)"
 ManifoldsBase.log(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, g)
+
+function ManifoldsBase.log(
+    M::CommonUnitarySubGroup{ManifoldsBase.ℝ}, p::SMatrix, q::SMatrix
+)
+    return log(M.manifold, p, q)
+end
 
 @doc "$(_doc_log_O4_id)"
 ManifoldsBase.log!(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, X, g)
