@@ -348,5 +348,8 @@ using StaticArrays
         T = ArrayPartition{Float64,Tuple{SMatrix{2,2,Float64},SVector{2,Float64}}}
         X = hat(LieAlgebra(G), SA[1, 0, 0.01], T)
         @test X isa ArrayPartition{Float64,Tuple{SMatrix{2,2,Float64,4},SVector{2,Float64}}}
+
+        X = hat(LieAlgebra(G), SA[1, 0, 0.01], ArrayPartition)
+        @test X isa ArrayPartition{Float64,Tuple{Matrix{Float64},Vector{Float64}}}
     end
 end
