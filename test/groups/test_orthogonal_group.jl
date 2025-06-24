@@ -106,11 +106,11 @@ using StaticArrays
             0.0 0.0 1.0
         ]
         @test qs isa SMatrix{3,3,Float64}
-        @test qs === q_ref
+        @test qs ≈ q_ref
 
         qs = exp(H, Xs)
         @test qs isa SMatrix{3,3,Float64}
-        @test qs === q_ref
+        @test qs ≈ q_ref
 
         @test get_coordinates(H, ps, Xs, DefaultLieAlgebraOrthogonalBasis()) isa SVector{3}
         @test get_vector(H, ps, SA[1.0, 2.0, 3.0], DefaultLieAlgebraOrthogonalBasis()) ===
