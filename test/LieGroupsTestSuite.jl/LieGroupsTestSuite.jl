@@ -591,6 +591,42 @@ end
 # --- `I`
 
 """
+    test_identity_element(G::AbstractLieGroup; kwargs...)
+
+Test the function `identity_element(G)` or `identity_element(G, T)`.
+
+# Keyword arguments
+
+* `expected_value=missing`: the expected value of the call to `identity_element`
+* `identity_type=missing`; provide a type `T? to test `identity_element(G, T)`
+  the case of `nothing` calls the one-parameter version
+* `test_mutating::Bool=true`: test the mutating functions
+"""
+function test_identity_element(
+    G::AbstractLieGroup;
+    expected_value=missing,
+    identity_type=missing,
+    test_mutating::Bool=true,
+)
+    @testset "identity element" begin
+        if ismissing(identity_type)
+            e = identity_element(G)
+        else
+            e = identity_element(G, identity_type)
+        end
+        if !ismissing(expected_value)
+            @test injectivity_radius(G) == expected_value
+        end
+        if test_mutating
+            e2 = copy(G, e)
+            identity_element!(G, e2)
+            @test e == e2
+        end
+    end
+    return nothing
+end
+
+"""
     test_injectivity_radius(G::AbstractLieGroup; kwargs...)
 
 Test the function `injectivity_radius`.
@@ -1096,6 +1132,20 @@ function test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dic
         #
         #
         # --- `I`
+        if (identity_element in functions)
+            # test default / empty
+            test_identity_element(G; test_mutating=mutating)
+            # check this points type
+            if length(points) > 0
+                expected_e = get(expectations, :identity_element, missing)
+                test_identity_element(
+                    G;
+                    expected_value=expected_e,
+                    identity_type=typeof(points[1]),
+                    test_mutating=mutating,
+                )
+            end
+        end
         if any(in.([inv_left_compose, inv_right_compose], Ref(functions)))
             vl = get(expectations, :inv_left_compose, missing)
             vr = get(expectations, :inv_right_compose, missing)

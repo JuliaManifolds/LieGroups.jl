@@ -127,6 +127,15 @@ function ManifoldsBase.exp!(::LieGroup{𝔽,AdditionGroupOperation}, g, X) where
     return g
 end
 
+@inline function get_vector_lie(
+    ::LieAlgebra{ℝ,AdditionGroupOperation},
+    c,
+    B::DefaultLieAlgebraOrthogonalBasis{ℝ},
+    T::Type{<:SArray},
+)
+    return convert(T, c)
+end
+
 _doc_identity_element_add = """
     identity_element(G::LieGroup{𝔽,AdditionGroupOperation})
     identity_element!(G::LieGroup{𝔽,AdditionGroupOperation}, e)

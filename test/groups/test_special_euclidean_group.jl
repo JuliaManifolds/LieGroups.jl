@@ -4,6 +4,8 @@ s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 !(s in LOAD_PATH) && (push!(LOAD_PATH, s))
 using LieGroupsTestSuite
 
+using StaticArrays
+
 @testset "Special Euclidean" begin
     𝔰 = sqrt(2)
     fcts = [
@@ -339,5 +341,15 @@ using LieGroupsTestSuite
         X = hat(LieAlgebra(G), [1e-8, 0, 0, 1, 0, 0])
         p = exp(G, X)
         @test X ≈ log(G, p)
+    end
+
+    @testset "StaticArrays.jl specializations on SE(2)" begin
+        G = SpecialEuclideanGroup(2)
+        T = ArrayPartition{Float64,Tuple{SMatrix{2,2,Float64},SVector{2,Float64}}}
+        X = hat(LieAlgebra(G), SA[1, 0, 0.01], T)
+        @test X isa ArrayPartition{Float64,Tuple{SMatrix{2,2,Float64,4},SVector{2,Float64}}}
+
+        X = hat(LieAlgebra(G), SA[1, 0, 0.01], ArrayPartition)
+        @test X isa ArrayPartition{Float64,Tuple{Matrix{Float64},Vector{Float64}}}
     end
 end
