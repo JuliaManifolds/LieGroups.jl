@@ -10,6 +10,39 @@ on elements of a Lie group ``$(_math(:G))``.
 """
 abstract type AbstractGroupOperation end
 
+@doc raw"""
+    BaseManifoldInverseRetraction{IRM<:AbstractInverseRetractionMethod} <: AbstractInverseRetractionMethod
+
+Compute an inverse retraction by using the inverse retraction of type `IRM` on the base manifold of
+a [`LieGroup`](@ref).
+
+# Constructor
+
+    BaseManifoldInverseRetraction(irm::AbstractInverseRetractionMethod)
+
+Generate the inverse retraction with inverse retraction `rm` to use on the base manifold.
+"""
+struct BaseManifoldInverseRetraction{IRM<:AbstractInverseRetractionMethod} <:
+       AbstractInverseRetractionMethod
+    inverse_retraction::IRM
+end
+
+@doc raw"""
+    BaseManifoldRetraction{RM<:AbstractRetractionMethod} <: AbstractRetractionMethod
+
+Compute a retraction by using the retraction of type `RM` on the base manifold of
+a [`LieGroup`](@ref).
+
+# Constructor
+
+    BaseManifoldRetraction(rm::AbstractRetractionMethod)
+
+Generate the retraction with retraction `rm` to use on the base manifold.
+"""
+struct BaseManifoldRetraction{RM<:AbstractRetractionMethod} <: AbstractRetractionMethod
+    retraction::RM
+end
+
 """
     DefaultLieAlgebraOrthogonalBasis{𝔽} <: ManifoldsBase.AbstractOrthogonalBasis{𝔽,ManifoldsBase.TangentSpaceType}
 
@@ -586,23 +619,6 @@ function inv_right_compose!(G::AbstractLieGroup, k, h, g)
     return k
 end
 
-@doc raw"""
-    BaseManifoldInverseRetraction{IRM<:AbstractInverseRetractionMethod} <: AbstractInverseRetractionMethod
-
-Compute an inverse retraction by using the inverse retraction of type `IRM` on the base manifold of
-a [`LieGroup`](@ref).
-
-# Constructor
-
-    BaseManifoldInverseRetraction(irm::AbstractInverseRetractionMethod)
-
-Generate the inverse retraction with inverse retraction `rm` to use on the base manifold.
-"""
-struct BaseManifoldInverseRetraction{IRM<:AbstractInverseRetractionMethod} <:
-       AbstractInverseRetractionMethod
-    inverse_retraction::IRM
-end
-
 """
 TODO
 """
@@ -620,8 +636,7 @@ function inverse_retract_base_manifold!(
     inverse_retract!(base_manifold(G), X, g, h, m)
     # X is in TgM so we still ave to pull it back to TeM using
     # the left group opp diff.
-    e = identity_element(G, typeof(g))
-    diff_left_compose!(G, X, inv(G, g), e, X)
+    pull_back_tangent!(G, X, g, X)
     return X
 end
 
@@ -895,7 +910,7 @@ function ManifoldsBase.project!(G::AbstractLieGroup, g, p)
 end
 
 # TODO: Move to ManifoldsBase at some point
-"""
+@doc """
     point_type(G::AbstractLieGroup, tangent_vector_type::Type)
 
 Change `tangent_vector_type` that is a type of tangent vector type on Lie group `G`
@@ -904,6 +919,72 @@ to its matching type for representing points.
 By default both these types are assumed to be identical.
 """
 point_type(::AbstractLieGroup, tangent_vector_type::Type) = tangent_vector_type
+
+_doc_pull_back_t = """
+    pull_back_tangent(G::AnstractLieGroup, g, X; kwargs...)
+    pull_back_tangent!(G::AbstractLiegroup, Y, g, X; kwargs...)
+
+Given a tangent vector `X` on the tangent space at `g` interpreted as the one on the manifold,
+this function pulls it back to the [`LieAlgebra`](@ref).
+
+By default this function falls back to calling [`diff_left_compose`](@ref), but compared to
+that function, this function also takes care about the change of representation.
+
+For example if a default representation for tangent vectors on a manifold is also the Lie algebra,
+then this function simplifies to the identity. This is for example the case for the
+[`SpecialOrthogonalGroup`](@ref) and its [`Rotations`](@extref `Manifolds.Rotations`) manifold.
+
+# Keyword argument
+* `e = identity_element(G, typeof(g))` – if you have a memory available to store an identity point in,
+  you can pass that memory here.
+"""
+
+@doc "$(_doc_pull_back_t)"
+function pull_back_tangent(G::AbstractLieGroup, g, X; e=identity_element(G, typeof(g)))
+    Y = zero_vector(LieAlgebra(G), typeof(X))
+    return pull_back_tangent!(G, Y, g, X)
+end
+
+@doc "$(_doc_pull_back_t)"
+function pull_back_tangent!(G::AbstractLieGroup, Y, g, X; e=identity_element(G, typeof(g)))
+    identity_element!(G, e)
+    diff_left_compose!(G, X, inv(G, g), e, X)
+    return Y
+end
+
+_doc_push_fwd_t = """
+    push_forward_tangent(G::AnstractLieGroup, g, X)
+    push_forward_tangent!(G::AbstractLiegroup, Y, g, X)
+
+Given a Lie algebra vector `X` on the [`LieAlgebra`](@ref), this function pushes
+the vector forward to the tangent space at `g` interpreted as the one on the manifold.
+
+By default this function falls back to calling [`diff_left_compose`](@ref), but compared to
+that function, this function also takes care about the change of representation.
+
+For example if a default representation for tangent vectors on a manifold is also the Lie algebra,
+then this function simplifies to the identity. This is for example the case for the
+[`SpecialOrthogonalGroup`](@ref) and its [`Rotations`](@extref `Manifolds.Rotations`) manifold.
+
+# Keyword argument
+* `e = identity_element(G, typeof(g))` – if you have a memory available to store an identity point in,
+  you can pass that memory here.
+"""
+
+@doc "$(_doc_push_fwd_t)"
+function push_forward_tangent(G::AbstractLieGroup, g, X; e=identity_element(G, typeof(g)))
+    Y = zero_vector(LieAlgebra(G), typeof(X))
+    return push_forward_tangent!(G, Y, g, X; e=e)
+end
+
+@doc "$(_doc_push_fwd_t)"
+function push_forward_tangent!(
+    G::AbstractLieGroup, Y, g, X; e=identity_element(G, typeof(g))
+)
+    identity_element!(G, e)
+    diff_left_compose!(G, Y, e, g, X)
+    return Y
+end
 
 @doc "$(_doc_rand)"
 Random.rand(::AbstractLieGroup; kwargs...)
@@ -958,22 +1039,6 @@ function Random.rand!(
     end
 end
 
-@doc raw"""
-    BaseManifoldRetraction{RM<:AbstractRetractionMethod} <: AbstractRetractionMethod
-
-Compute a retraction by using the retraction of type `RM` on the base manifold of
-a [`LieGroup`](@ref).
-
-# Constructor
-
-    BaseManifoldRetraction(rm::AbstractRetractionMethod)
-
-Generate the retraction with retraction `rm` to use on the base manifold.
-"""
-struct BaseManifoldRetraction{RM<:AbstractRetractionMethod} <: AbstractRetractionMethod
-    retraction::RM
-end
-
 """
 TODO
 """
@@ -985,11 +1050,9 @@ function ManifoldsBase._retract!(G::AbstractLieGroup, h, g, X, m::BaseManifoldRe
 end
 function retract_base_manifold!(G, h, g, X, m::BaseManifoldRetraction)
     # X is in TeM so we first push it to TpM using
-    # the left group opp diff.
-    identity_element!(G, h)
-    Y = diff_left_compose(G, h, g, X)
+    Y = push_forward_tangent(G, g, X)
     # now we can use the retraction on the base manifold
-    retract!(base_manifold(G), q, p, X, m.retraction)
+    retract!(base_manifold(G), q, p, Y, m.retraction)
     return q
 end
 
@@ -1027,13 +1090,12 @@ function _vector_transport_to_basemanifold!(
 )
     # (a) we have to push forward X from TeG to TgG
     # we can do this in-place of Y
-    e = identity_element(G, typeof(g))
-    diff_left_compose!(G, Y, g, e, X)
+    push_forward_tangent!(G, Y, g, X)
     # then we do the vector transport purely in place of Y
     vector_transport_to!(base_manifold(G), Y, g, Y, h, m.vector_transport_method)
     # now Y is in ThM so we still ave to pull it back to TeM using
     # the left group opp diff.
-    diff_left_compose!(G, X, inv(G, h), e, X)
+    pull_back_tangent!(G, Y, g, X)
     return Y
 end
 
