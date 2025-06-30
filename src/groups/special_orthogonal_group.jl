@@ -103,6 +103,9 @@ ManifoldsBase.log(::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}
 @doc "$(_doc_log_O4_id)"
 ManifoldsBase.log!(::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, X, g)
 
+pull_back_tangent!(::SpecialOrthogonalGroup, Y, g, X) = (Y .= X)
+push_forward_tangent!(::SpecialOrthogonalGroup, Y, g, X) = (Y .= X)
+
 function Base.show(io::IO, G::SpecialOrthogonalGroup)
     size = get_parameter(G.manifold.size)[1]
     return print(io, "SpecialOrthogonalGroup($(size))")

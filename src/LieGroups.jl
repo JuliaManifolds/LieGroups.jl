@@ -137,6 +137,8 @@ export SpecialEuclideanMatrixPoint, SpecialEuclideanMatrixTangentVector
 export SpecialEuclideanProductPoint, SpecialEuclideanProductTangentVector
 export ValidationMPoint, ValidationLieAlgebraTangentVector
 
+export BaseManifoldInverseRetraction,
+    BaseManifoldRetraction, BaseManifoldVectorTransportMethod
 # Errors
 export CompositeManifoldError
 # Functions
