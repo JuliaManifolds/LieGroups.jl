@@ -903,6 +903,65 @@ function test_norm(G::AbstractLieGroup, g, X; expected=missing)
         !ismissing(expected) && (@test isapprox(v, expected))
     end
 end
+
+#
+#
+# --- P
+"""
+    test_push_pull_tangent(G::AbstractLieGroup, g, X; expected=missing, atol=0)
+
+Test [`push_forward_tangent`](@ref) and [`pull_back_tangent`](@ref).
+
+# Keyword arguments
+
+* `atol=0`: the absolute tolerance for the tests of zero-vectors
+* `test_mutating::Bool=true`: test the mutating functions
+* `test_pull_back::Bool=true`: test the pull-back of a tangent vector.
+    If only this is set, a zero vector is pulled-back.
+* `test_push_forward::Bool=true`: test the push-forward of a tangent vector.
+    If only this is set, `X` is pushed forward and has to be a valid tangent vector.
+"""
+function test_push_pull_tangent(
+    G::AbstractLieGroup,
+    g,
+    X;
+    atol::Real=0,
+    test_mutating::Bool=true,
+    test_pull_back::Bool=true,
+    test_push_forward::Bool=true,
+)
+    M = base_manifold(G)
+    𝔤 = LieAlgebra(G)
+    @testset "push_forward_tangent & pull_back_tangent" begin
+        # (a) push forward
+        Y1 = zero_vector(M, g)
+        if test_push_forward
+            Y1 = push_forward_tangent(G, g, X)
+            @test is_vector(M, g, Y1; error=:error, atol=atol)
+            if test_mutating
+                Y2 = zero_vector(M, g)
+                push_forward_tangent!(G, Y2, g, X)
+                @test isapprox(M, g, Y1, Y2; atol=atol)
+            end
+        end
+        # (b) pull back
+        if test_pull_back
+            Z1 = pull_back_tangent(G, g, Y1)
+            @test is_point(𝔤, Z1; error=:error, atol=atol)
+            if test_mutating
+                Z2 = zero_vector(𝔤, typeof(Z1))
+                pull_back_tangent!(G, Z2, g, Y1)
+                @test isapprox(𝔤, Z1, Z2; atol=atol)
+            end
+        end
+        # (c) if we did both (a) _and_ (b), check that we get back `X`.
+        if test_push_forward && test_pull_back
+            @test isapprox(𝔤, X, Z1; atol=atol)
+        end
+    end
+    return nothing
+end
+
 #
 #
 # --- R
@@ -1204,6 +1263,23 @@ function test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dic
             test_norm(G, points[1], vectors[1]; expected=v)
         end
 
+        #
+        #
+        # --- P
+        if (push_forward_tangent in functions) || (pull_back_tangent in functions)
+            push_atol = get(function_atols, push_forward_tangent, atol)
+            pull_atol = get(function_atols, pull_back_tangent, atol)
+            local_atol = max(push_atol, pull_atol, atol)
+            test_push_pull_tangent(
+                G,
+                points[1],
+                vectors[1];
+                atol=local_atol,
+                test_push_forward=(push_forward_tangent in functions),
+                test_pull_back=(pull_back_tangent in functions),
+                test_mutating=mutating,
+            )
+        end
         #
         #
         # --- R
