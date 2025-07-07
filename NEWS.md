@@ -5,6 +5,13 @@ All notable Changes to the Julia package `LieGroups.jl` will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3] unreleased
+
+### Added
+
+* introduce `push_forward_tangent` and `pull_back_tangent` to combine the differential of left compose and its inverse to “move” from the Lie algebra to a certain tangent space and back, but also takes care of adapting the representation, for the case where the representation on the manifold is different from the one on the Lie group / Lie algebra.
+* introduce a `BaseManifoldRetraction` to be able to use retractions on the underlying manifold also as a retraction on the Lie group, cf. (#43) and (#47)
+
 ## [0.1.2] 2025-06-24
 
 ### Added

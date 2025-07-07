@@ -316,27 +316,6 @@ end
 
 ManifoldsBase.default_basis(::AbstractLieGroup) = DefaultLieAlgebraOrthogonalBasis()
 
-"""
-TODO
-"""
-function ManifoldsBase.default_inverse_retraction_method(G::AbstractLieGroup)
-    return default_inverse_retraction_method(base_manifold(G))
-end
-
-"""
-TODO
-"""
-function ManifoldsBase.default_retraction_method(G::AbstractLieGroup)
-    return default_retraction_method(base_manifold(G))
-end
-
-"""
-TODO
-"""
-function ManifoldsBase.default_vector_transport_method(G::AbstractLieGroup)
-    return default_vector_transport_method(base_manifold(G))
-end
-
 _doc_diff_conjugate = """
     diff_conjugate(G::AbstractLieGroup, g, h, X)
     diff_conjugate!(G::AbstractLieGroup, Y, g, h, X)
@@ -620,7 +599,10 @@ function inv_right_compose!(G::AbstractLieGroup, k, h, g)
 end
 
 """
-TODO
+    inverse_retract(G::AbstractLieGroup, g, h, m::BaseManifoldInverseRetraction)
+
+Compute the inverse retraction of `g` and `h` on the [`AbstractLieGroup`](@ref) `G`
+by using an inverse retraction on the underlying manifold and pulling the result back to the Lie algebra.
 """
 ManifoldsBase.inverse_retract(G::AbstractLieGroup, g, h, m::BaseManifoldInverseRetraction)
 
@@ -1040,7 +1022,10 @@ function Random.rand!(
 end
 
 """
-TODO
+    retract(G::AbstractLieGroup, g, h, m::BaseManifoldRetraction)
+
+Compute the retraction of `g` and `X` on the [`AbstractLieGroup`](@ref) `G`
+by pushing `X` forward to the tangent space at `g` and using a retraction on the underlying manifold.
 """
 ManifoldsBase.retract(::LieGroup, p, X, m::BaseManifoldRetraction)
 
@@ -1073,7 +1058,16 @@ struct BaseManifoldVectorTransportMethod{VTM<:AbstractVectorTransportMethod} <:
 end
 
 """
-TODO
+    vector_transport_to(G::AbstractLieGroup, g, X, h, m::BaseManifoldVectorTransportMethod)
+
+Compute the vector transport of a Lie algebra `X` from  `g` to `h` using a vector transport
+on the underlying manifold. This is done by pushing `X` forward to the tangent space at `g`,
+then performing the vector transport on the base manifold, and finally pulling the resulting
+tangent vector back to the Lie algebra.
+
+This method merely exists for experimental reasons, since the parallel transport on Lie groups,
+where all tangent vectors are represented in the Lie algebra is the identity.
+Hence any of the methods performed here are more costly than plain parallel transport.
 """
 ManifoldsBase.vector_transport_to(
     G::AbstractLieGroup, g, X, h, m::BaseManifoldVectorTransportMethod
