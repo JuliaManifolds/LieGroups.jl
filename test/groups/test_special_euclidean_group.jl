@@ -330,7 +330,6 @@ using StaticArrays
         @test er[Gr, :Translation] == eT
         @test er[G, :] == (eO, eT)
     end
-
     @testset "Small angle cases" begin
         G = SpecialEuclideanGroup(2)
         X = hat(LieAlgebra(G), [1e-8, 1, 0])
@@ -342,7 +341,6 @@ using StaticArrays
         p = exp(G, X)
         @test X ≈ log(G, p)
     end
-
     @testset "StaticArrays.jl specializations on SE(2)" begin
         G = SpecialEuclideanGroup(2)
         T = ArrayPartition{Float64,Tuple{SMatrix{2,2,Float64},SVector{2,Float64}}}
@@ -351,5 +349,26 @@ using StaticArrays
 
         X = hat(LieAlgebra(G), SA[1, 0, 0.01], ArrayPartition)
         @test X isa ArrayPartition{Float64,Tuple{Matrix{Float64},Vector{Float64}}}
+    end
+    @testset "Retraction and vector transport passthrough" begin
+        G = SpecialEuclideanGroup(2)
+        𝔤 = LieAlgebra(G)
+        g = 1 / 𝔰 .* [1.0 1.0 𝔰; -1.0 1.0 0.0; 0.0 0.0 𝔰]
+        X = [0.0 -0.23 0.0; 0.23 0.0 1.0; 0.0 0.0 0.0]
+        h = [0.0 -1.0 0.0; 1.0 0.0 1.0; 0.0 0.0 1.0]
+        drm = BaseManifoldRetraction(default_retraction_method(base_manifold(G)))
+        dirm = BaseManifoldInverseRetraction(
+            default_inverse_retraction_method(base_manifold(G))
+        )
+        dvm = BaseManifoldVectorTransportMethod(
+            default_vector_transport_method(base_manifold(G))
+        )
+        k = retract(G, g, X, drm)
+        @test is_point(G, k)
+        Y = inverse_retract(G, k, h, dirm)
+        @test is_point(𝔤, Y)
+        @test isapprox(𝔤, X, Y)
+        Z = vector_transport_to(G, g, X, h, dvm)
+        @test is_point(𝔤, Z)
     end
 end
