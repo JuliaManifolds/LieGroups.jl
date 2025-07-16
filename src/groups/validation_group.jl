@@ -188,51 +188,51 @@ end
 # Implement all of the interface but include checks
 
 function Base.adjoint(G::ValidationLieGroup, g, X; kwargs...)
-    is_point(G, g; widthin=adjoint, context=(:Input,), kwargs...)
-    is_point(LieAlgebra(G), X; widthin=adjoint, context=(:Input,), kwargs...)
+    is_point(G, g; within=adjoint, context=(:Input,), kwargs...)
+    is_point(LieAlgebra(G), X; within=adjoint, context=(:Input,), kwargs...)
     Y = adjoint(G.lie_group, unwrap_validation(g), unwrap_validation(X))
-    is_point(LieAlgebra(G), Y; widthin=adjoint, context=(:Output,), kwargs...)
+    is_point(LieAlgebra(G), Y; within=adjoint, context=(:Output,), kwargs...)
     return ValidationLieAlgebraTangentVector(Y)
 end
 function adjoint!(G::ValidationLieGroup, Y, g, X; kwargs...)
-    is_point(G, g; widthin=adjoint, context=(:Input,), kwargs...)
-    is_point(LieAlgebra(G), X; widthin=adjoint, context=(:Input,), kwargs...)
+    is_point(G, g; within=adjoint, context=(:Input,), kwargs...)
+    is_point(LieAlgebra(G), X; within=adjoint, context=(:Input,), kwargs...)
     adjoint!(G.lie_group, unwrap_validation(Y), unwrap_validation(g), unwrap_validation(X))
-    is_point(LieAlgebra(G), Y; widthin=adjoint, context=(:Output,), kwargs...)
+    is_point(LieAlgebra(G), Y; within=adjoint, context=(:Output,), kwargs...)
     return Y
 end
 
 ManifoldsBase.base_manifold(G::ValidationLieGroup) = base_manifold(G.lie_group)
 
 function _compose(G::ValidationLieGroup, g, h; kwargs...)
-    is_point(G, g; widthin=compose, context=(:Input,), kwargs...)
-    is_point(G, h; widthin=compose, context=(:Input,), kwargs...)
+    is_point(G, g; within=compose, context=(:Input,), kwargs...)
+    is_point(G, h; within=compose, context=(:Input,), kwargs...)
     k = compose(G.lie_group, unwrap_validation(g), unwrap_validation(h))
-    is_point(G, k; widthin=compose, context=(:Output,), kwargs...)
+    is_point(G, k; within=compose, context=(:Output,), kwargs...)
     return ValidationMPoint(k)
 end
 function _compose!(G::ValidationLieGroup, k, g, h; kwargs...)
-    is_point(G, g; widthin=compose, context=(:Input,), kwargs...)
-    is_point(G, h; widthin=compose, context=(:Input,), kwargs...)
+    is_point(G, g; within=compose, context=(:Input,), kwargs...)
+    is_point(G, h; within=compose, context=(:Input,), kwargs...)
     compose!(G.lie_group, unwrap_validation(k), unwrap_validation(g), unwrap_validation(h))
-    is_point(G, k; widthin=compose, context=(:Output,), kwargs...)
+    is_point(G, k; within=compose, context=(:Output,), kwargs...)
     return k
 end
 
 function conjugate(G::ValidationLieGroup, g, h; kwargs...)
-    is_point(G, g; widthin=conjugate, context=(:Input,), kwargs...)
-    is_point(G, h; widthin=conjugate, context=(:Input,), kwargs...)
+    is_point(G, g; within=conjugate, context=(:Input,), kwargs...)
+    is_point(G, h; within=conjugate, context=(:Input,), kwargs...)
     k = conjugate(G.lie_group, unwrap_validation(g), unwrap_validation(h))
-    is_point(G, k; widthin=conjugate, context=(:Output,), kwargs...)
+    is_point(G, k; within=conjugate, context=(:Output,), kwargs...)
     return ValidationMPoint(k)
 end
 function conjugate!(G::ValidationLieGroup, k, g, h; kwargs...)
-    is_point(G, g; widthin=conjugate, context=(:Input,), kwargs...)
-    is_point(G, h; widthin=conjugate, context=(:Input,), kwargs...)
+    is_point(G, g; within=conjugate, context=(:Input,), kwargs...)
+    is_point(G, h; within=conjugate, context=(:Input,), kwargs...)
     conjugate!(
         G.lie_group, unwrap_validation(k), unwrap_validation(g), unwrap_validation(h)
     )
-    is_point(G, k; widthin=conjugate, context=(:Output,), kwargs...)
+    is_point(G, k; within=conjugate, context=(:Output,), kwargs...)
     return k
 end
 
@@ -259,19 +259,19 @@ function Base.copyto!(
 end
 
 function diff_conjugate(G::ValidationLieGroup, g, h, X; kwargs...)
-    is_point(G, g; widthin=diff_conjugate, context=(:Input,), kwargs...)
-    is_point(G, h; widthin=diff_conjugate, context=(:Input,), kwargs...)
-    is_point(LieAlgebra(G), X; widthin=diff_conjugate, context=(:Input,), kwargs...)
+    is_point(G, g; within=diff_conjugate, context=(:Input,), kwargs...)
+    is_point(G, h; within=diff_conjugate, context=(:Input,), kwargs...)
+    is_point(LieAlgebra(G), X; within=diff_conjugate, context=(:Input,), kwargs...)
     Y = diff_conjugate(
         G.lie_group, unwrap_validation(g), unwrap_validation(h), unwrap_validation(X)
     )
-    is_point(LieAlgebra(G), Y; widthin=diff_conjugate, context=(:Output,), kwargs...)
+    is_point(LieAlgebra(G), Y; within=diff_conjugate, context=(:Output,), kwargs...)
     return ValidationLieAlgebraTangentVector(Y)
 end
 function diff_conjugate!(G::ValidationLieGroup, Y, g, h, X; kwargs...)
-    is_point(G, g; widthin=diff_conjugate, context=(:Input,), kwargs...)
-    is_point(G, h; widthin=diff_conjugate, context=(:Input,), kwargs...)
-    is_point(LieAlgebra(G), X; widthin=diff_conjugate, context=(:Input,), kwargs...)
+    is_point(G, g; within=diff_conjugate, context=(:Input,), kwargs...)
+    is_point(G, h; within=diff_conjugate, context=(:Input,), kwargs...)
+    is_point(LieAlgebra(G), X; within=diff_conjugate, context=(:Input,), kwargs...)
     diff_conjugate!(
         G.lie_group,
         unwrap_validation(Y),
@@ -279,32 +279,32 @@ function diff_conjugate!(G::ValidationLieGroup, Y, g, h, X; kwargs...)
         unwrap_validation(h),
         unwrap_validation(X),
     )
-    is_point(LieAlgebra(G), Y; widthin=diff_conjugate, context=(:Output,), kwargs...)
+    is_point(LieAlgebra(G), Y; within=diff_conjugate, context=(:Output,), kwargs...)
     return Y
 end
 
 function diff_inv!(G::ValidationLieGroup, Y, g, X; kwargs...)
-    is_point(G, g; widthin=diff_inv, context=(:Input,), kwargs...)
-    is_point(LieAlgebra(G), X; widthin=diff_inv, context=(:Input,), kwargs...)
+    is_point(G, g; within=diff_inv, context=(:Input,), kwargs...)
+    is_point(LieAlgebra(G), X; within=diff_inv, context=(:Input,), kwargs...)
     diff_inv!(G.lie_group, unwrap_validation(Y), unwrap_validation(g), unwrap_validation(X))
-    is_point(LieAlgebra(G), Y; widthin=diff_inv, context=(:Output,), kwargs...)
+    is_point(LieAlgebra(G), Y; within=diff_inv, context=(:Output,), kwargs...)
     return Y
 end
 
 function diff_left_compose(G::ValidationLieGroup, g, h, X; kwargs...)
-    is_point(G, g; widthin=diff_left_compose, context=(:Input,), kwargs...)
-    is_point(G, h; widthin=diff_left_compose, context=(:Input,), kwargs...)
-    is_point(LieAlgebra(G), X; widthin=diff_left_compose, context=(:Input,), kwargs...)
+    is_point(G, g; within=diff_left_compose, context=(:Input,), kwargs...)
+    is_point(G, h; within=diff_left_compose, context=(:Input,), kwargs...)
+    is_point(LieAlgebra(G), X; within=diff_left_compose, context=(:Input,), kwargs...)
     Y = diff_left_compose(
         G.lie_group, unwrap_validation(g), unwrap_validation(h), unwrap_validation(X)
     )
-    is_point(LieAlgebra(G), Y; widthin=diff_left_compose, context=(:Output,), kwargs...)
+    is_point(LieAlgebra(G), Y; within=diff_left_compose, context=(:Output,), kwargs...)
     return ValidationLieAlgebraTangentVector(Y)
 end
 function diff_left_compose!(G::ValidationLieGroup, Y, g, h, X; kwargs...)
-    is_point(G, g; widthin=diff_left_compose, context=(:Input,), kwargs...)
-    is_point(G, h; widthin=diff_left_compose, context=(:Input,), kwargs...)
-    is_point(LieAlgebra(G), X; widthin=diff_left_compose, context=(:Input,), kwargs...)
+    is_point(G, g; within=diff_left_compose, context=(:Input,), kwargs...)
+    is_point(G, h; within=diff_left_compose, context=(:Input,), kwargs...)
+    is_point(LieAlgebra(G), X; within=diff_left_compose, context=(:Input,), kwargs...)
     diff_left_compose!(
         G.lie_group,
         unwrap_validation(Y),
@@ -312,24 +312,24 @@ function diff_left_compose!(G::ValidationLieGroup, Y, g, h, X; kwargs...)
         unwrap_validation(h),
         unwrap_validation(X),
     )
-    is_point(LieAlgebra(G), Y; widthin=diff_left_compose, context=(:Output,), kwargs...)
+    is_point(LieAlgebra(G), Y; within=diff_left_compose, context=(:Output,), kwargs...)
     return Y
 end
 
 function diff_right_compose(G::ValidationLieGroup, g, h, X; kwargs...)
-    is_point(G, g; widthin=diff_right_compose, context=(:Input,), kwargs...)
-    is_point(G, h; widthin=diff_right_compose, context=(:Input,), kwargs...)
-    is_point(LieAlgebra(G), X; widthin=diff_right_compose, context=(:Input,), kwargs...)
+    is_point(G, g; within=diff_right_compose, context=(:Input,), kwargs...)
+    is_point(G, h; within=diff_right_compose, context=(:Input,), kwargs...)
+    is_point(LieAlgebra(G), X; within=diff_right_compose, context=(:Input,), kwargs...)
     Y = diff_right_compose(
         G.lie_group, unwrap_validation(g), unwrap_validation(h), unwrap_validation(X)
     )
-    is_point(LieAlgebra(G), Y; widthin=diff_right_compose, context=(:Output,), kwargs...)
+    is_point(LieAlgebra(G), Y; within=diff_right_compose, context=(:Output,), kwargs...)
     return ValidationLieAlgebraTangentVector(Y)
 end
 function diff_right_compose!(G::ValidationLieGroup, Y, g, h, X; kwargs...)
-    is_point(G, g; widthin=diff_right_compose, context=(:Input,), kwargs...)
-    is_point(G, h; widthin=diff_right_compose, context=(:Input,), kwargs...)
-    is_point(LieAlgebra(G), X; widthin=diff_right_compose, context=(:Input,), kwargs...)
+    is_point(G, g; within=diff_right_compose, context=(:Input,), kwargs...)
+    is_point(G, h; within=diff_right_compose, context=(:Input,), kwargs...)
+    is_point(LieAlgebra(G), X; within=diff_right_compose, context=(:Input,), kwargs...)
     diff_right_compose!(
         G.lie_group,
         unwrap_validation(Y),
@@ -337,35 +337,35 @@ function diff_right_compose!(G::ValidationLieGroup, Y, g, h, X; kwargs...)
         unwrap_validation(h),
         unwrap_validation(X),
     )
-    is_point(LieAlgebra(G), Y; widthin=diff_right_compose, context=(:Output,), kwargs...)
+    is_point(LieAlgebra(G), Y; within=diff_right_compose, context=(:Output,), kwargs...)
     return Y
 end
 
 function Base.exp(G::ValidationLieGroup, X; kwargs...)
-    is_point(LieAlgebra(G), X; widthin=exp, context=(:Input,), kwargs...)
+    is_point(LieAlgebra(G), X; within=exp, context=(:Input,), kwargs...)
     g = exp(G.lie_group, unwrap_validation(X))
-    is_point(G, g; widthin=exp, context=(:Output,), kwargs...)
+    is_point(G, g; within=exp, context=(:Output,), kwargs...)
     return ValidationMPoint(g)
 end
 function ManifoldsBase.exp!(G::ValidationLieGroup, g, X; kwargs...)
-    is_point(LieAlgebra(G), X; widthin=exp, context=(:Input,), kwargs...)
+    is_point(LieAlgebra(G), X; within=exp, context=(:Input,), kwargs...)
     exp!(G.lie_group, unwrap_validation(g), unwrap_validation(X))
-    is_point(G, g; widthin=exp, context=(:Output,), kwargs...)
+    is_point(G, g; within=exp, context=(:Output,), kwargs...)
     return g
 end
 
 function Base.exp(G::ValidationLieGroup, g, X; kwargs...)
-    is_point(G, g; widthin=exp, context=(:Input,), kwargs...)
-    is_point(LieAlgebra(G), X; widthin=exp, context=(:Input,), kwargs...)
+    is_point(G, g; within=exp, context=(:Input,), kwargs...)
+    is_point(LieAlgebra(G), X; within=exp, context=(:Input,), kwargs...)
     h = exp(G.lie_group, unwrap_validation(g), unwrap_validation(X))
-    is_point(G, h; widthin=exp, context=(:Output,), kwargs...)
+    is_point(G, h; within=exp, context=(:Output,), kwargs...)
     return ValidationMPoint(h)
 end
 function ManifoldsBase.exp!(G::ValidationLieGroup, h, g, X; kwargs...)
-    is_point(G, g; widthin=exp, context=(:Input,), kwargs...)
-    is_point(LieAlgebra(G), X; widthin=exp, context=(:Input,), kwargs...)
+    is_point(G, g; within=exp, context=(:Input,), kwargs...)
+    is_point(LieAlgebra(G), X; within=exp, context=(:Input,), kwargs...)
     exp!(G.lie_group, unwrap_validation(h), unwrap_validation(g), unwrap_validation(X))
-    is_point(G, h; widthin=exp, context=(:Output,), kwargs...)
+    is_point(G, h; within=exp, context=(:Output,), kwargs...)
     return g
 end
 
@@ -374,7 +374,7 @@ function ManifoldsBase.hat(
 ) where {𝔽,O<:AbstractGroupOperation}
     G = base_lie_group(𝔤).lie_group
     X = hat(LieAlgebra(G), c)
-    is_point(𝔤, X; widthin=hat, context=(:Output,), kwargs...)
+    is_point(𝔤, X; within=hat, context=(:Output,), kwargs...)
     return ValidationLieAlgebraTangentVector(X)
 end
 function ManifoldsBase.hat(
@@ -382,7 +382,7 @@ function ManifoldsBase.hat(
 ) where {𝔽,O<:AbstractGroupOperation}
     G = base_lie_group(𝔤).lie_group
     X = hat(LieAlgebra(G), c, unwrap_validation_type(T))
-    is_point(𝔤, X; widthin=hat, context=(:Output,), kwargs...)
+    is_point(𝔤, X; within=hat, context=(:Output,), kwargs...)
     return ValidationLieAlgebraTangentVector(X)
 end
 function ManifoldsBase.hat!(
@@ -390,25 +390,25 @@ function ManifoldsBase.hat!(
 ) where {𝔽,O<:AbstractGroupOperation}
     G = base_lie_group(𝔤).lie_group
     hat!(LieAlgebra(G), unwrap_validation(X), c)
-    is_point(𝔤, X; widthin=hat, context=(:Output,), kwargs...)
+    is_point(𝔤, X; within=hat, context=(:Output,), kwargs...)
     return X
 end
 
 function identity_element(G::ValidationLieGroup, ::Type{T}; kwargs...) where {T}
     g = identity_element(G.lie_group, unwrap_validation_type(T))
-    is_point(G, g; widthin=identity_element, context=(:Output,), kwargs...)
+    is_point(G, g; within=identity_element, context=(:Output,), kwargs...)
     return ValidationMPoint(g)
 end
 function identity_element!(G::ValidationLieGroup, g; kwargs...)
     identity_element!(G.lie_group, unwrap_validation(g))
-    is_point(G, g; widthin=identity_element, context=(:Output,), kwargs...)
+    is_point(G, g; within=identity_element, context=(:Output,), kwargs...)
     return g
 end
 
 function Base.inv(G::ValidationLieGroup, g; kwargs...)
-    is_point(G, g; widthin=inv, context=(:Input,), kwargs...)
+    is_point(G, g; within=inv, context=(:Input,), kwargs...)
     h = inv(G.lie_group, unwrap_validation(g))
-    is_point(G, h; widthin=inv, context=(:Output,), kwargs...)
+    is_point(G, h; within=inv, context=(:Output,), kwargs...)
     return ValidationMPoint(h)
 end
 function Base.inv(
@@ -418,9 +418,9 @@ function Base.inv(
     return inv(G.lie_group, e)
 end
 function inv!(G::ValidationLieGroup, h, g; kwargs...)
-    is_point(G, g; widthin=inv, context=(:Input,), kwargs...)
+    is_point(G, g; within=inv, context=(:Input,), kwargs...)
     inv!(G.lie_group, unwrap_validation(h), unwrap_validation(g))
-    is_point(G, h; widthin=inv, context=(:Output,), kwargs...)
+    is_point(G, h; within=inv, context=(:Output,), kwargs...)
     return h
 end
 function inv!(
@@ -428,41 +428,41 @@ function inv!(
 ) where {𝔽,O<:AbstractGroupOperation}
     is_identity(G.lie_group, e; kwargs...)
     inv!(G.lie_group, unwrap_validation(h), e)
-    is_point(G, h; widthin=inv, context=(:Output,), kwargs...)
+    is_point(G, h; within=inv, context=(:Output,), kwargs...)
     return h
 end
 
 function inv_left_compose(G::ValidationLieGroup, g, h; kwargs...)
-    is_point(G, g; widthin=inv_left_compose, context=(:Input,), kwargs...)
-    is_point(G, h; widthin=inv_left_compose, context=(:Input,), kwargs...)
+    is_point(G, g; within=inv_left_compose, context=(:Input,), kwargs...)
+    is_point(G, h; within=inv_left_compose, context=(:Input,), kwargs...)
     k = inv_left_compose(G.lie_group, unwrap_validation(g), unwrap_validation(h))
-    is_point(G, k; widthin=inv_left_compose, context=(:Output,), kwargs...)
+    is_point(G, k; within=inv_left_compose, context=(:Output,), kwargs...)
     return ValidationMPoint(k)
 end
 function inv_left_compose!(G::ValidationLieGroup, k, g, h; kwargs...)
-    is_point(G, g; widthin=inv_left_compose, context=(:Input,), kwargs...)
-    is_point(G, h; widthin=inv_left_compose, context=(:Input,), kwargs...)
+    is_point(G, g; within=inv_left_compose, context=(:Input,), kwargs...)
+    is_point(G, h; within=inv_left_compose, context=(:Input,), kwargs...)
     inv_left_compose!(
         G.lie_group, unwrap_validation(k), unwrap_validation(g), unwrap_validation(h)
     )
-    is_point(G, k; widthin=inv_left_compose, context=(:Output,), kwargs...)
+    is_point(G, k; within=inv_left_compose, context=(:Output,), kwargs...)
     return k
 end
 
 function inv_right_compose(G::ValidationLieGroup, g, h; kwargs...)
-    is_point(G, g; widthin=inv_right_compose, context=(:Input,), kwargs...)
-    is_point(G, h; widthin=inv_right_compose, context=(:Input,), kwargs...)
+    is_point(G, g; within=inv_right_compose, context=(:Input,), kwargs...)
+    is_point(G, h; within=inv_right_compose, context=(:Input,), kwargs...)
     k = inv_right_compose(G.lie_group, unwrap_validation(g), unwrap_validation(h))
-    is_point(G, k; widthin=inv_right_compose, context=(:Output,), kwargs...)
+    is_point(G, k; within=inv_right_compose, context=(:Output,), kwargs...)
     return ValidationMPoint(k)
 end
 function inv_right_compose!(G::ValidationLieGroup, k, g, h; kwargs...)
-    is_point(G, g; widthin=inv_right_compose, context=(:Input,), kwargs...)
-    is_point(G, h; widthin=inv_right_compose, context=(:Input,), kwargs...)
+    is_point(G, g; within=inv_right_compose, context=(:Input,), kwargs...)
+    is_point(G, h; within=inv_right_compose, context=(:Input,), kwargs...)
     inv_right_compose!(
         G.lie_group, unwrap_validation(k), unwrap_validation(g), unwrap_validation(h)
     )
-    is_point(G, k; widthin=inv_right_compose, context=(:Output,), kwargs...)
+    is_point(G, k; within=inv_right_compose, context=(:Output,), kwargs...)
     return k
 end
 
@@ -574,8 +574,8 @@ function jacobian_conjugate(
     B::AbstractBasis=DefaultLieAlgebraOrthogonalBasis();
     kwargs...,
 )
-    is_point(G, g; widthin=jacobian_conjugate, context=(:Input,), kwargs...)
-    is_point(G, h; widthin=jacobian_conjugate, context=(:Input,), kwargs...)
+    is_point(G, g; within=jacobian_conjugate, context=(:Input,), kwargs...)
+    is_point(G, h; within=jacobian_conjugate, context=(:Input,), kwargs...)
     J = jacobian_conjugate(G.lie_group, unwrap_validation(g), unwrap_validation(h))
     return J
 end
@@ -587,8 +587,8 @@ function jacobian_conjugate!(
     B::AbstractBasis=DefaultLieAlgebraOrthogonalBasis();
     kwargs...,
 )
-    is_point(G, g; widthin=jacobian_conjugate, context=(:Input,), kwargs...)
-    is_point(G, h; widthin=jacobian_conjugate, context=(:Input,), kwargs...)
+    is_point(G, g; within=jacobian_conjugate, context=(:Input,), kwargs...)
+    is_point(G, h; within=jacobian_conjugate, context=(:Input,), kwargs...)
     jacobian_conjugate!(G.lie_group, J, unwrap_validation(g), unwrap_validation(h))
     return J
 end
@@ -597,43 +597,43 @@ function lie_bracket(
     𝔤::LieAlgebra{𝔽,O,<:ValidationLieGroup}, X, Y; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
     G = base_lie_group(𝔤).lie_group
-    is_point(𝔤, X; widthin=lie_bracket, context=(:Input,), kwargs...)
-    is_point(𝔤, X; widthin=lie_bracket, context=(:Input,), kwargs...)
+    is_point(𝔤, X; within=lie_bracket, context=(:Input,), kwargs...)
+    is_point(𝔤, X; within=lie_bracket, context=(:Input,), kwargs...)
     Z = lie_bracket(LieAlgebra(G), unwrap_validation(X), unwrap_validation(Y))
-    is_point(𝔤, Z; widthin=lie_bracket, context=(:Output,), kwargs...)
+    is_point(𝔤, Z; within=lie_bracket, context=(:Output,), kwargs...)
     return ValidationLieAlgebraTangentVector(Z)
 end
 function lie_bracket!(
     𝔤::LieAlgebra{𝔽,O,<:ValidationLieGroup}, Z, X, Y; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
     G = base_lie_group(𝔤).lie_group
-    is_point(𝔤, X; widthin=lie_bracket, context=(:Input,), kwargs...)
-    is_point(𝔤, X; widthin=lie_bracket, context=(:Input,), kwargs...)
+    is_point(𝔤, X; within=lie_bracket, context=(:Input,), kwargs...)
+    is_point(𝔤, X; within=lie_bracket, context=(:Input,), kwargs...)
     lie_bracket!(
         LieAlgebra(G), unwrap_validation(Z), unwrap_validation(X), unwrap_validation(Y)
     )
-    is_point(𝔤, X; widthin=lie_bracket, context=(:Output,), kwargs...)
+    is_point(𝔤, X; within=lie_bracket, context=(:Output,), kwargs...)
     return Z
 end
 
 function Base.log(G::ValidationLieGroup, g; kwargs...)
-    is_point(G, g; widthin=log, context=(:Input,), kwargs...)
+    is_point(G, g; within=log, context=(:Input,), kwargs...)
     X = log(G.lie_group, unwrap_validation(g))
-    is_point(LieAlgebra(G), X; widthin=log, context=(:Output,), kwargs...)
+    is_point(LieAlgebra(G), X; within=log, context=(:Output,), kwargs...)
     return ValidationLieAlgebraTangentVector(X)
 end
 function Base.log(
     G::ValidationLieGroup{𝔽,O}, e::Identity{O}; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
     X = log(G.lie_group, e)
-    is_point(LieAlgebra(G), X; widthin=log, context=(:Output,), kwargs...)
+    is_point(LieAlgebra(G), X; within=log, context=(:Output,), kwargs...)
     return ValidationLieAlgebraTangentVector(X)
 end
 function Base.log(
     G::ValidationLieGroup{𝔽,O}, e::Identity{O}, ::Type{T}; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation,T}
     X = log(G.lie_group, e, T)
-    is_point(LieAlgebra(G), X; widthin=log, context=(:Output,), kwargs...)
+    is_point(LieAlgebra(G), X; within=log, context=(:Output,), kwargs...)
     return ValidationLieAlgebraTangentVector(X)
 end
 function Base.log(
@@ -643,27 +643,27 @@ function Base.log(
     kwargs...,
 ) where {𝔽,O<:AbstractGroupOperation,T}
     X = log(G.lie_group, e, T)
-    is_point(LieAlgebra(G), X; widthin=log, context=(:Output,), kwargs...)
+    is_point(LieAlgebra(G), X; within=log, context=(:Output,), kwargs...)
     return ValidationLieAlgebraTangentVector(X)
 end
 function ManifoldsBase.log!(G::ValidationLieGroup, X, g; kwargs...)
-    is_point(G, g; widthin=log, context=(:Input,), kwargs...)
+    is_point(G, g; within=log, context=(:Input,), kwargs...)
     log!(G.lie_group, unwrap_validation(X), unwrap_validation(g))
-    is_point(LieAlgebra(G), X; widthin=log, context=(:Input,), kwargs...)
+    is_point(LieAlgebra(G), X; within=log, context=(:Input,), kwargs...)
     return X
 end
 function ManifoldsBase.log!(
     G::ValidationLieGroup{𝔽,O}, X, e::Identity{O}; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
     log!(G.lie_group, X, e)
-    is_point(LieAlgebra(G), X; widthin=log, context=(:Output,), kwargs...)
+    is_point(LieAlgebra(G), X; within=log, context=(:Output,), kwargs...)
     return ValidationLieAlgebraTangentVector(X)
 end
 function ManifoldsBase.log!(G::ValidationLieGroup, X, g, h; kwargs...)
-    is_point(G, g; widthin=log, context=(:Input,), kwargs...)
-    is_point(G, h; widthin=log, context=(:Input,), kwargs...)
+    is_point(G, g; within=log, context=(:Input,), kwargs...)
+    is_point(G, h; within=log, context=(:Input,), kwargs...)
     log!(G.lie_group, unwrap_validation(X), unwrap_validation(g), unwrap_validation(h))
-    is_point(LieAlgebra(G), X; widthin=log, context=(:Input,), kwargs...)
+    is_point(LieAlgebra(G), X; within=log, context=(:Input,), kwargs...)
     return X
 end
 
@@ -737,14 +737,14 @@ end
 function ManifoldsBase.vee(
     𝔤::LieAlgebra{𝔽,O,<:ValidationLieGroup}, X; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
-    is_point(𝔤, X; widthin=vee, context=(:Input,), kwargs...)
+    is_point(𝔤, X; within=vee, context=(:Input,), kwargs...)
     G = base_lie_group(𝔤).lie_group
     return vee(LieAlgebra(G), unwrap_validation(X))
 end
 function ManifoldsBase.vee!(
     𝔤::LieAlgebra{𝔽,O,<:ValidationLieGroup}, c, X; kwargs...
 ) where {𝔽,O<:AbstractGroupOperation}
-    is_point(𝔤, X; widthin=vee, context=(:Input,), kwargs...)
+    is_point(𝔤, X; within=vee, context=(:Input,), kwargs...)
     G = base_lie_group(𝔤).lie_group
     vee!(LieAlgebra(G), unwrap_validation(c), unwrap_validation(X))
     return X
