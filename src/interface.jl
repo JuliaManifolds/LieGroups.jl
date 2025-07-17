@@ -281,7 +281,14 @@ function ManifoldsBase.copyto!(
     )
 end
 
-ManifoldsBase.default_basis(::AbstractLieGroup) = DefaultLieAlgebraOrthogonalBasis()
+function ManifoldsBase.default_basis(
+    ::AbstractLieGroup, ::Type{T}; field::AbstractNumbers=ℝ
+) where {T}
+    return DefaultLieAlgebraOrthogonalBasis(field)
+end
+function ManifoldsBase.default_basis(::AbstractLieGroup; field::AbstractNumbers=ℝ)
+    return DefaultLieAlgebraOrthogonalBasis(field)
+end
 
 _doc_diff_conjugate = """
     diff_conjugate(G::AbstractLieGroup, g, h, X)
