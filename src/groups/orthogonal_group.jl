@@ -186,9 +186,10 @@ end
 function ManifoldsBase.exp(
     G::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
     p::SMatrix,
-    X::SMatrix,
-)
-    θ = get_coordinates(G, p, X)[1]
+    X::SMatrix{2,2,T},
+) where {T}
+    # Use the default orthogonal basis and not vee
+    θ = X[2] * sqrt(T(2))
     sinθ, cosθ = sincos(θ)
     return p * SA[cosθ -sinθ; sinθ cosθ]
 end
