@@ -40,8 +40,9 @@ The list is alphabetical, but first lists types, then functions
 | `exp(G, g, X)` | `exp(`[`base_manifold`](@ref base_manifold(G::LieGroup))`(G), g, X)` | the previous defaults whenever not agreeing with the Riemannian one can now be accessed on the internal manifold |
 | `exp_inv(G, g, X)` | [`exp`](@ref exp(G::LieGroup, g, X))`(G, g, X)`  | the exponential map invariant to the group operation is the default on Lie groups here |
 | `exp_lie(G, X)` | [`exp`](@ref exp(G::LieGroup, X))`(G, X)` | the (matrix/Lie group) exponential |
-| `get_vector(G, p, c)` | [`get_vector`](@ref hat(G::Algebra, c))`(`[`LieAlgebra`](@ref)`(G), c[, T])` | moved to using the new [`LieAlgebra`](@ref). The old format should still work. `T` indicates the type of tangent vector. |
-| `hat(G, p, c)` | [`hat`](@ref hat(G::Algebra, c))`(`[`LieAlgebra`](@ref)`(G), p, c[, T])` | hat/vee moved to using the new [`LieAlgebra`](@ref). The old format should still work. `T`indicates the type of tangent vector . |
+| `get_coordinates(G, p, X)` | [`get_coordinates`](@ref get_coordinates(G::LieAlgebra))`(`[`LieAlgebra`](@ref)`(G), X)` | hat/vee moved to using the new [`LieAlgebra`](@ref). The old format should still work. |
+| `get_vector(G, p, c)` | [`get_vector`](@ref get_vector(::LieAlgebra))`(`[`LieAlgebra`](@ref)`(G), c[, T])` | moved to using the new [`LieAlgebra`](@ref). The old format should still work. `T` indicates the type of tangent vector. |
+| `hat(G, p, c)` | [`hat`](@ref hat(G::LieAlgebra))`(`[`LieAlgebra`](@ref)`(G), p, c[, T])` | hat/vee moved to using the new [`LieAlgebra`](@ref). The old format should still work. `T` indicates the type of tangent vector. |
 | `inner(G, g, X, Y)` | [`inner`](@ref)`(`[`LieAlgebra`](@ref)`(G), X, Y)` | the inner product on the Lie Algebra. The old variant still calls the new one.|
 | `inverse_translate(G, g, h, c)` | [`inv_left_compose`](@ref)`(G, g, h)`, [`inv_right_compose`](@ref)`(G, g, h)` | compute ``g^{-1}∘h`` and ``g∘h^{-1}``, resp. |
 | `inverse_translate_diff(G, g, h, X, LeftForwardAction())` | - | discontinued, use `diff_left_compose(G, inv(G,g), h)` |
@@ -54,7 +55,7 @@ The list is alphabetical, but first lists types, then functions
 | `switch_side(A)` | [`switch`](@ref switch(::GroupAction))`(A)` | switches from a left action to its corresponding right action. |
 | `translate(G, g, h)` | [`compose`](@ref)`(G, g, h)` | unified to `compose` |
 | `translate_diff(G, g, X, c)` | [`diff_left_compose`](@ref)`(G, g, h, X)`, [`diff_right_compose`](@ref)`(G, g, h, X)` | for compose ``g∘h`` the functions now specify whether the derivative is taken w.r.t. to the left (`g`) or right (`h`) argument |
-| `vee(G, p, X)` | [`hat`](@ref hat(G::Algebra, c))`(`[`LieAlgebra`](@ref)`(G), p, c)` | hat/vee moved to using the new [`LieAlgebra`](@ref). The old format should still work. |
+| `vee(G, p, X)` | [`vee`](@ref vee(G::LieAlgebra, X))`(`[`LieAlgebra`](@ref)`(G), X)` | hat/vee moved to using the new [`LieAlgebra`](@ref). The old format should still work. |
 | `VeeOrthogonalBasis` | [`DefaultLieAlgebraOrthogonalBasis`](@ref) | |
 
 ## Further notable changes
