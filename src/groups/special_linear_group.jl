@@ -27,8 +27,6 @@ function SpecialLinearGroup(n::Int, field=ManifoldsBase.ℝ; kwargs...)
     )
 end
 
-# TODO: document hat/vee with the corresponding formulae
-
 function get_coordinates_lie!(
     ::LieAlgebra{ℝ,MatrixMultiplicationGroupOperation,<:SpecialLinearGroup},
     c,

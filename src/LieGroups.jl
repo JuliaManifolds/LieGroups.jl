@@ -137,6 +137,8 @@ export SpecialEuclideanMatrixPoint, SpecialEuclideanMatrixTangentVector
 export SpecialEuclideanProductPoint, SpecialEuclideanProductTangentVector
 export ValidationMPoint, ValidationLieAlgebraTangentVector
 
+export BaseManifoldInverseRetraction,
+    BaseManifoldRetraction, BaseManifoldVectorTransportMethod
 # Errors
 export CompositeManifoldError
 # Functions
@@ -161,11 +163,12 @@ export isapprox, is_point, is_vector
 export exp, exp!
 export identity_element, identity_element!, is_identity, inner
 export inv, inv!, diff_inv, diff_inv!
+export injectivity_radius
 export jacobian_conjugate, jacobian_conjugate!
 export lie_bracket, lie_bracket!, log, log!
 export manifold_dimension
 export norm, number_of_coordinates
-export injectivity_radius
+export push_forward_tangent, push_forward_tangent!, pull_back_tangent, pull_back_tangent!
 export rand, rand!
 export switch
 export sym_rem

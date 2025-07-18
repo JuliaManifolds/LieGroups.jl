@@ -7,6 +7,14 @@ AbstractLieAlgebraTangentVector
 AbstractLieGroupPoint
 ```
 
+## Special types
+
+```@docs
+BaseManifoldInverseRetraction
+BaseManifoldRetraction
+BaseManifoldVectorTransportMethod
+```
+
 ## Functions on Lie groups
 
 ```@autodocs
