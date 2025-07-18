@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * introduce `push_forward_tangent` and `pull_back_tangent` to combine the differential of left compose and its inverse to “move” from the Lie algebra to a certain tangent space and back, but also takes care of adapting the representation, for the case where the representation on the manifold is different from the one on the Lie group / Lie algebra.
 * introduce a `BaseManifoldRetraction` to be able to use retractions on the underlying manifold also as a retraction on the Lie group, cf. (#43) and (#47)
 
+### Fixed
+
+* Fixed a typo, where `within` was misspelled as `widthin` which caused errors in a few places.
+* fix `default_basis` for `LieGroup` to return a `DefaultLieAlgebraOrthogonalBasis` also when providing a point type. That way `get_vector` falls back to the manifold when called with a Lie group and a point, though this is mere a historical format and the Lie algebra approach is the recommended one.
+* mention `get_coordinates`, `get_vector`, `hat`, and `vee` in the transition documentation since it moved to using the `LieAlgebra` instead of the Lie group and a point.
+
 ## [0.1.2] 2025-06-24
 
 ### Added
