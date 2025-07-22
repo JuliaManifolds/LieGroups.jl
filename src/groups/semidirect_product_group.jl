@@ -290,12 +290,12 @@ For this case it is given by
 
 "$(_doc_LSDP_diff_left_compose)"
 diff_left_compose(
-    SDPG::LieGroup{𝔽,LeftSemidirectProductGroupOperation,<:ProductManifold}, g, h, X
+    SDPG::LieGroup{𝔽,<:LeftSemidirectProductGroupOperation,<:ProductManifold}, g, h, X
 ) where {𝔽}
 
 "$(_doc_LSDP_diff_left_compose)"
 function diff_left_compose!(
-    SDPG::LieGroup{𝔽,LeftSemidirectProductGroupOperation,<:ProductManifold}, Y, g, h, X
+    SDPG::LieGroup{𝔽,<:LeftSemidirectProductGroupOperation,<:ProductManifold}, Y, g, h, X
 ) where {𝔽}
     PM = SDPG.manifold
     G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
@@ -352,12 +352,12 @@ For this case it is given by
 
 "$(_doc_RSDP_diff_left_compose)"
 diff_left_compose(
-    SDPG::LieGroup{𝔽,RightSemidirectProductGroupOperation,<:ProductManifold}, g, h, X
+    SDPG::LieGroup{𝔽,<:RightSemidirectProductGroupOperation,<:ProductManifold}, g, h, X
 ) where {𝔽}
 
 "$(_doc_RSDP_diff_left_compose)"
 function diff_left_compose!(
-    SDPG::LieGroup{𝔽,RightSemidirectProductGroupOperation,<:ProductManifold}, Y, g, h, X
+    SDPG::LieGroup{𝔽,<:RightSemidirectProductGroupOperation,<:ProductManifold}, Y, g, h, X
 ) where {𝔽}
     PM = SDPG.manifold
     G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
