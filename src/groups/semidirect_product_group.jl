@@ -274,10 +274,10 @@ end
 
 _doc_LSDP_diff_left_compose = """
     diff_left_compose(
-        SDPG::LieGroup{𝔽,LeftSemidirectProductGroupOperation,<:ProductManifold}, X, g, h
+        SDPG::LieGroup{𝔽,LeftSemidirectProductGroupOperation,<:ProductManifold}, g, h, X
     ) where {𝔽}
     diff_left_compose!(
-        SDPG::LieGroup{𝔽,LeftSemidirectProductGroupOperation,<:ProductManifold}, X, g, h
+        SDPG::LieGroup{𝔽,LeftSemidirectProductGroupOperation,<:ProductManifold}, Y, g, h, X
     ) where {𝔽}
 
 Compute the differential of the left group operation ``λ_g``, that is ``D_{λ_g}(h)[X]``.
