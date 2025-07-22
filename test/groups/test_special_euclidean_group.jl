@@ -353,9 +353,12 @@ using StaticArrays
     @testset "Retraction and vector transport passthrough" begin
         G = SpecialEuclideanGroup(2)
         𝔤 = LieAlgebra(G)
-        g = 1 / 𝔰 .* [1.0 1.0 𝔰; -1.0 1.0 0.0; 0.0 0.0 𝔰]
-        X = [0.0 -0.23 0.0; 0.23 0.0 1.0; 0.0 0.0 0.0]
-        h = [0.0 -1.0 0.0; 1.0 0.0 1.0; 0.0 0.0 1.0]
+        #g = 1 / 𝔰 .* [1.0 1.0 𝔰; -1.0 1.0 0.0; 0.0 0.0 𝔰]
+        #X = [0.0 -0.23 0.0; 0.23 0.0 1.0; 0.0 0.0 0.0]
+        #h = [0.0 -1.0 0.0; 1.0 0.0 1.0; 0.0 0.0 1.0]
+        g = ArrayPartition(1 / 𝔰 * [1.0 1.0; -1.0 1.0], [1.0, 0.0])
+        h = ArrayPartition([0.0 -1.0; 1.0 0.0], [0.0, 1.0])
+        X = ArrayPartition([0.0 -0.23; 0.23 0.0], [0.0, 1.0])
         drm = BaseManifoldRetraction(default_retraction_method(base_manifold(G)))
         dirm = BaseManifoldInverseRetraction(
             default_inverse_retraction_method(base_manifold(G))
