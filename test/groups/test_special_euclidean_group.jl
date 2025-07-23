@@ -373,7 +373,7 @@ using StaticArrays
         k = retract(G, g, X, drm)
         @test is_point(G, k; error=:error)
         # Check formula again for this to be equal do X.
-        # If we apply another pullback, this seems to be right, so we have to check where we accidentiaully pushforward once too much?
+        # If we apply another pullback, this seems to be right, so we have to check where we accidentally pushforward once too much?
         Y = inverse_retract(G, g, k, dirm)
         @test is_point(𝔤, Y; error=:error)
         @test isapprox(𝔤, X, Y)
