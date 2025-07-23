@@ -357,9 +357,9 @@ using StaticArrays
     @testset "Retraction and vector transport passthrough" begin
         G = SpecialEuclideanGroup(2)
         𝔤 = LieAlgebra(G)
-        #g = 1 / 𝔰 .* [1.0 1.0 𝔰; -1.0 1.0 0.0; 0.0 0.0 𝔰]
-        #X = [0.0 -0.23 0.0; 0.23 0.0 1.0; 0.0 0.0 0.0]
-        #h = [0.0 -1.0 0.0; 1.0 0.0 1.0; 0.0 0.0 1.0]
+        # g = 1 / 𝔰 .* [1.0 1.0 𝔰; -1.0 1.0 0.0; 0.0 0.0 𝔰]
+        # X = [0.0 -0.23 0.0; 0.23 0.0 1.0; 0.0 0.0 0.0]
+        # h = [0.0 -1.0 0.0; 1.0 0.0 1.0; 0.0 0.0 1.0]
         g = ArrayPartition(1 / 𝔰 * [1.0 1.0; -1.0 1.0], [1.0, 0.0])
         h = ArrayPartition([0.0 -1.0; 1.0 0.0], [0.0, 1.0])
         X = ArrayPartition([0.0 -0.23; 0.23 0.0], [0.0, 1.0])
@@ -371,11 +371,11 @@ using StaticArrays
             default_vector_transport_method(base_manifold(G))
         )
         k = retract(G, g, X, drm)
-        @test is_point(G, k)
+        @test is_point(G, k; error=:error)
         Y = inverse_retract(G, k, h, dirm)
-        @test is_point(𝔤, Y)
+        @test is_point(𝔤, Y; error=:error)
         @test isapprox(𝔤, X, Y)
         Z = vector_transport_to(G, g, X, h, dvm)
-        @test is_point(𝔤, Z)
+        @test is_point(𝔤, Z; error=:error)
     end
 end

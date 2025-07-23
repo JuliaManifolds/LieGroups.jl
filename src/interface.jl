@@ -622,7 +622,7 @@ end
 function inverse_retract_base_manifold!(
     G::AbstractLieGroup, X, g, h, m::BaseManifoldInverseRetraction
 )
-    inverse_retract!(base_manifold(G), X, g, h, m)
+    inverse_retract!(base_manifold(G), X, g, h, m.inverse_retraction)
     # X is in TgM so we still ave to pull it back to TeM using
     # the left group opp diff.
     pull_back_tangent!(G, X, g, X)
