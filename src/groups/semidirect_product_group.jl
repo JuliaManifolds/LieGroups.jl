@@ -311,7 +311,7 @@ function diff_left_compose!(
     diff_left_compose!(G, Y1, g1, h1, X1)
     # For the second (right) it is diff_compose applied to the diff_apply of the group action
     # where we can do that diff apply already in-place
-    diff_apply!(A, Y2, g1, h2, X2)
+    diff_apply_group!(A, Y2, g1, h2, X2)
     # and then apply diff compose for the right
     x = copy(G, g1)
     # we need the point on G where we apply to
@@ -359,7 +359,7 @@ function diff_left_compose!(
     )
     # For the second (right) it is diff_compose applied to the diff_apply of the group action
     # where we can do that diff apply already in-place
-    diff_apply!(
+    diff_apply_group!(
         A,
         submanifold_component(SDPG, Y, Val(1)),
         submanifold_component(SDPG, g, Val(2)),
