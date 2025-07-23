@@ -937,7 +937,7 @@ end
 @doc "$(_doc_pull_back_t)"
 function pull_back_tangent!(G::AbstractLieGroup, Y, g, X; e=identity_element(G, typeof(g)))
     identity_element!(G, e)
-    diff_left_compose!(G, X, inv(G, g), e, X)
+    diff_left_compose!(G, Y, inv(G, g), e, X)
     return Y
 end
 
