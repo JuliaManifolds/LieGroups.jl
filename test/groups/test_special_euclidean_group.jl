@@ -144,6 +144,10 @@ using StaticArrays
             )
             test_lie_group(G, properties, expectations)
         end
+
+        # @testset "Testing that different representations are consistent" begin
+        #     @test isapprox(G3f, diff_left_compose(G3f, h1, h2, Y1), convert(AbstractMatrix, diff_left_compose(G3f, hL1, hL2, YL1)))
+        # end
     end
     #
     #
