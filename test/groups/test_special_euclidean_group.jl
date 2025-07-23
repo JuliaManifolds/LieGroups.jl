@@ -165,9 +165,9 @@ using StaticArrays
         @test norm(X) == 0
         @test isapprox(G4, exp(G4, X), g)
 
-        Y = log(G4, h)
-        @test is_point(LieAlgebra(G4), Y; error=:error)
-        @test isapprox(G4, exp(G4, Y), h)
+        YL = log(G4, h)
+        @test is_point(LieAlgebra(G4), YL; error=:error)
+        @test isapprox(G4, exp(G4, YL), h)
     end
     #
     #
@@ -357,12 +357,12 @@ using StaticArrays
     @testset "Retraction and vector transport passthrough" begin
         G = SpecialEuclideanGroup(2)
         𝔤 = LieAlgebra(G)
-        # g = 1 / 𝔰 .* [1.0 1.0 𝔰; -1.0 1.0 0.0; 0.0 0.0 𝔰]
-        # X = [0.0 -0.23 0.0; 0.23 0.0 1.0; 0.0 0.0 0.0]
-        # h = [0.0 -1.0 0.0; 1.0 0.0 1.0; 0.0 0.0 1.0]
-        g = ArrayPartition(1 / 𝔰 * [1.0 1.0; -1.0 1.0], [1.0, 0.0])
-        h = ArrayPartition([0.0 -1.0; 1.0 0.0], [0.0, 1.0])
-        X = ArrayPartition([0.0 -0.23; 0.23 0.0], [0.0, 1.0])
+        gH = 1 / 𝔰 .* [1.0 1.0 𝔰; -1.0 1.0 0.0; 0.0 0.0 𝔰]
+        XH = [0.0 -0.23 0.0; 0.23 0.0 1.0; 0.0 0.0 0.0]
+        hH = [0.0 -1.0 0.0; 1.0 0.0 1.0; 0.0 0.0 1.0]
+        gL = ArrayPartition(1 / 𝔰 * [1.0 1.0; -1.0 1.0], [1.0, 0.0])
+        hL = ArrayPartition([0.0 -1.0; 1.0 0.0], [0.0, 1.0])
+        XL = ArrayPartition([0.0 -0.23; 0.23 0.0], [0.0, 1.0])
         drm = BaseManifoldRetraction(default_retraction_method(base_manifold(G)))
         dirm = BaseManifoldInverseRetraction(
             default_inverse_retraction_method(base_manifold(G))
@@ -370,14 +370,14 @@ using StaticArrays
         dvm = BaseManifoldVectorTransportMethod(
             default_vector_transport_method(base_manifold(G))
         )
-        k = retract(G, g, X, drm)
-        @test is_point(G, k; error=:error)
+        kL = retract(G, gL, XL, drm)
+        @test is_point(G, kL; error=:error)
         # Check formula again for this to be equal do X.
         # If we apply another pullback, this seems to be right, so we have to check where we accidentally pushforward once too much?
-        Y = inverse_retract(G, g, k, dirm)
-        @test is_point(𝔤, Y; error=:error)
-        @test isapprox(𝔤, X, Y)
-        Z = vector_transport_to(G, g, X, h, dvm)
-        @test is_point(𝔤, Z; error=:error)
+        YL = inverse_retract(G, gL, kL, dirm)
+        @test is_point(𝔤, YL; error=:error)
+        @test isapprox(𝔤, XL, YL)
+        ZL = vector_transport_to(G, gL, XL, hL, dvm)
+        @test is_point(𝔤, ZL; error=:error)
     end
 end
