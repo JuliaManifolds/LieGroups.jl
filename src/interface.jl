@@ -1044,8 +1044,8 @@ function retract_base_manifold!(G, h, g, X, m::BaseManifoldRetraction)
     # X is in TeM so we first push it to TpM using
     Y = push_forward_tangent(G, g, X)
     # now we can use the retraction on the base manifold
-    retract!(base_manifold(G), q, p, Y, m.retraction)
-    return q
+    retract!(base_manifold(G), h, g, Y, m.retraction)
+    return h
 end
 
 function ManifoldsBase.representation_size(G::AbstractLieGroup)

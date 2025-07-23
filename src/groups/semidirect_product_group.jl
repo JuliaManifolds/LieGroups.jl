@@ -283,6 +283,8 @@ _doc_LSDP_diff_left_compose = """
 Compute the differential of the left group operation ``λ_g``, that is ``D_{λ_g}(h)[X]``.
 For this case it is given by
 
+TODO Update formula the Diff of Lambda is the one with respect to g.
+
 ```math
     D_{λ_g}(h)[X] = $(_tex(:bigl))( D_{λ_{g_1}}(h_1)[X_1], D_{λ_{g_2}}(σ_{g_1}(h_2))$(_tex(:bigl))[ D_{σ_{g_1}}(h_2)[X_2]$(_tex(:bigr))]$(_tex(:bigr)))
 ```
@@ -311,12 +313,12 @@ function diff_left_compose!(
     diff_left_compose!(G, Y1, g1, h1, X1)
     # For the second (right) it is diff_compose applied to the diff_apply of the group action
     # where we can do that diff apply already in-place
-    diff_apply_group!(A, Y2, g1, h2, X2)
+    diff_group_apply!(A, Y2, g1, h2, X2)
     # and then apply diff compose for the right
-    x = copy(G, g1)
+    x = copy(G, h2)
     # we need the point on G where we apply to
     apply!(A, x, g1, h2)
-    diff_compose!(H, Y2, g2, x, Y2)
+    diff_left_compose!(H, Y2, g2, x, Y2)
     return Y
 end
 
@@ -330,6 +332,8 @@ _doc_RSDP_diff_left_compose = """
 
 Compute the differential of the left group operation ``λ_g``, that is ``D_{λ_g}(h)[X]``.
 For this case it is given by
+
+TODO Update formula the Diff of Lambda is the one with respect to g.
 
 ```math
     D_{λ_g}(h)[X] = $(_tex(:bigl))( D_{λ_{g_1}}(σ_{g_2}(h_1))$(_tex(:bigl))[ D_{σ_{g_2}}(h_1)[X_1], D_{λ_{g_2}}(h_2)[X_2]$(_tex(:bigr))]$(_tex(:bigr)))
@@ -359,7 +363,7 @@ function diff_left_compose!(
     )
     # For the second (right) it is diff_compose applied to the diff_apply of the group action
     # where we can do that diff apply already in-place
-    diff_apply_group!(
+    diff_group_apply!(
         A,
         submanifold_component(SDPG, Y, Val(1)),
         submanifold_component(SDPG, g, Val(2)),
