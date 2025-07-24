@@ -61,4 +61,139 @@ function LieGroups.get_vector_lie(
     return ArrayPartition(parts...)
 end
 
+#
+#
+# Conversions on SE(n)
+
+"""
+TODO: Document and check whether we can have nicer accessors for R and t.
+"""
+function Base.convert(
+    ::Type{<:SpecialEuclideanMatrixPoint}, g::SpecialEuclideanProductPoint
+)
+    return SpecialEuclideanMatrixPoint(convert(AbstractMatrix, g))
+end
+function Base.convert(
+    ::Type{LinearAlgebra.AbstractMatrix},
+    # g has matrix first, vector second, so it is a left semidirect product Lie group point
+    g::SpecialEuclideanProductPoint{
+        <:ArrayPartition{T,Tuple{<:AbstractVector{T},<:AbstractMatrix{T}}}
+    },
+) where {T}
+    n = length(g.value.x[2])
+    A = zeros(T, n + 1, n + 1)
+    A[1:n, end] = g.value.x[1] # translation part
+    A[1:n, 1:n] = g.value.x[2] # rotation part
+    A[end, end] = 1.0 # last entry is always 1
+    return A
+end
+function Base.convert(
+    ::Type{LinearAlgebra.AbstractMatrix},
+    # g has matrix first, vector second, so it is a left semidirect product Lie group point
+    g::SpecialEuclideanProductPoint{
+        <:ArrayPartition{T,Tuple{<:AbstractMatrix{T},<:AbstractVector{T}}}
+    },
+) where {T}
+    n = length(g.value.x[2])
+    A = zeros(T, n + 1, n + 1)
+    A[1:n, end] = g.value.x[2] # translation part
+    A[1:n, 1:n] = g.value.x[1] # rotation part
+    A[end, end] = 1.0 # last entry is always 1
+    return SpecialEuclideanMatrixPoint(A)
+end
+
+"""
+TODO: Document and check whether we can have nicer accessors for R and t.
+"""
+function Base.convert(
+    ::Type{<:SpecialEuclideanMatrixTangentVector{A}},
+    g::SpecialEuclideanProductTangentVector,
+) where {A,T}
+    return SpecialEuclideanMatrixTangentVector(convert(AbstractMatrix, g))
+end
+function Base.convert(
+    ::Type{LinearAlgebra.AbstractMatrix},
+    # g has matrix first, vector second, so it is a left semidirect product Lie group point
+    g::SpecialEuclideanProductTangentVector{
+        <:ArrayPartition{T,Tuple{<:AbstractVector{T},<:AbstractMatrix{T}}}
+    },
+) where {T}
+    n = length(g.value.x[2])
+    A = zeros(T, n + 1, n + 1)
+    A[1:n, end] = g.value.x[1] # translation part
+    A[1:n, 1:n] = g.value.x[2] # rotation part
+    A[end, end] = 0.0 # last entry is always 0
+    return A
+end
+function Base.convert(
+    ::Type{LinearAlgebra.AbstractMatrix},
+    # g has matrix first, vector second, so it is a left semidirect product Lie group point
+    g::SpecialEuclideanProductTangentVector{
+        <:ArrayPartition{T,Tuple{<:AbstractMatrix{T},<:AbstractVector{T}}}
+    },
+) where {T}
+    n = length(g.value.x[2])
+    A = zeros(T, n + 1, n + 1)
+    A[1:n, end] = g.value.x[2] # translation part
+    A[1:n, 1:n] = g.value.x[1] # rotation part
+    A[end, end] = 0.0 # last entry is always 0
+    return SpecialEuclideanMatrixPoint(A)
+end
+
+# the reverse:
+"""
+TODO: Document.
+"""
+function Base.convert(
+    ::Type{<:SpecialEuclideanProductPoint{T}}, g::SpecialEuclideanMatrixPoint
+) where {T<:ArrayPartition}
+    return SpecialEuclideanProductPoint(convert(T, g))
+end
+
+function Base.convert(::Type{ArrayPartition}, g::SpecialEuclideanMatrixPoint)
+    return Base.convert(
+        ArrayPartition{Float64,Tuple{<:AbstractMatrix{Float64}},<:AbstractVector{Float64}},
+        g,
+    )
+end
+function Base.convert(
+    ::Type{<:ArrayPartition{T,Tuple{M,V}}}, g::SpecialEuclideanMatrixPoint
+) where {T,M<:AbstractMatrix{T},V<:AbstractVector{T}}
+    n = size(g.value, 1) - 1
+    return ArrayPartition(convert(M, g.value[1:n, 1:n]), convert(V, g.value[1:n, end]))
+end
+function Base.convert(
+    ::Type{<:ArrayPartition{T,Tuple{V,M}}}, g::SpecialEuclideanMatrixPoint
+) where {T,M<:AbstractMatrix{T},V<:AbstractVector{T}}
+    n = size(g.value, 1) - 1
+    return ArrayPartition(convert(V, g.value[1:n, end]), convert(M, g.value[1:n, 1:n]))
+end
+
+"""
+TODO: Document.
+"""
+function Base.convert(
+    ::Type{<:SpecialEuclideanProductTangentVector{T}},
+    g::SpecialEuclideanMatrixTangentVector,
+) where {T<:ArrayPartition}
+    return SpecialEuclideanProductTangentVector(convert(T, g))
+end
+function Base.convert(::Type{ArrayPartition}, g::SpecialEuclideanMatrixTangentVector)
+    return Base.convert(
+        ArrayPartition{Float64,Tuple{<:AbstractMatrix{Float64}},<:AbstractVector{Float64}},
+        g,
+    )
+end
+function Base.convert(
+    ::Type{<:ArrayPartition{T,Tuple{M,V}}}, g::SpecialEuclideanMatrixTangentVector
+) where {T,M<:AbstractMatrix{T},V<:AbstractVector{T}}
+    n = size(g.value, 1) - 1
+    return ArrayPartition(convert(M, g.value[1:n, 1:n]), convert(V, g.value[1:n, end]))
+end
+function Base.convert(
+    ::Type{<:ArrayPartition{T,Tuple{V,M}}}, g::SpecialEuclideanMatrixTangentVector
+) where {T,M<:AbstractMatrix{T},V<:AbstractVector{T}}
+    n = size(g.value, 1) - 1
+    return ArrayPartition(convert(V, g.value[1:n, end]), convert(M, g.value[1:n, 1:n]))
+end
 end
