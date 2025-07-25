@@ -65,16 +65,13 @@ end
 #
 # Conversions on SE(n)
 
-"""
-TODO: Document and check whether we can have nicer accessors for R and t.
-"""
 function Base.convert(
     ::Type{<:SpecialEuclideanMatrixPoint}, g::SpecialEuclideanProductPoint
 )
     return SpecialEuclideanMatrixPoint(convert(AbstractMatrix, g))
 end
 function Base.convert(
-    ::Type{LinearAlgebra.AbstractMatrix},
+    ::Type{AbstractMatrix},
     # g has matrix first, vector second, so it is a left semidirect product Lie group point
     g::SpecialEuclideanProductPoint{
         <:ArrayPartition{T,Tuple{<:AbstractVector{T},<:AbstractMatrix{T}}}
@@ -88,7 +85,7 @@ function Base.convert(
     return A
 end
 function Base.convert(
-    ::Type{LinearAlgebra.AbstractMatrix},
+    ::Type{AbstractMatrix},
     # g has matrix first, vector second, so it is a left semidirect product Lie group point
     g::SpecialEuclideanProductPoint{
         <:ArrayPartition{T,Tuple{<:AbstractMatrix{T},<:AbstractVector{T}}}
@@ -102,9 +99,6 @@ function Base.convert(
     return SpecialEuclideanMatrixPoint(A)
 end
 
-"""
-TODO: Document and check whether we can have nicer accessors for R and t.
-"""
 function Base.convert(
     ::Type{<:SpecialEuclideanMatrixTangentVector{A}},
     g::SpecialEuclideanProductTangentVector,
@@ -112,7 +106,7 @@ function Base.convert(
     return SpecialEuclideanMatrixTangentVector(convert(AbstractMatrix, g))
 end
 function Base.convert(
-    ::Type{LinearAlgebra.AbstractMatrix},
+    ::Type{AbstractMatrix},
     # g has matrix first, vector second, so it is a left semidirect product Lie group point
     g::SpecialEuclideanProductTangentVector{
         <:ArrayPartition{T,Tuple{<:AbstractVector{T},<:AbstractMatrix{T}}}
@@ -122,11 +116,11 @@ function Base.convert(
     A = zeros(T, n + 1, n + 1)
     A[1:n, end] = g.value.x[1] # translation part
     A[1:n, 1:n] = g.value.x[2] # rotation part
-    A[end, end] = 0.0 # last entry is always 0
+    # the bottom row of A is already initialized as 0
     return A
 end
 function Base.convert(
-    ::Type{LinearAlgebra.AbstractMatrix},
+    ::Type{AbstractMatrix},
     # g has matrix first, vector second, so it is a left semidirect product Lie group point
     g::SpecialEuclideanProductTangentVector{
         <:ArrayPartition{T,Tuple{<:AbstractMatrix{T},<:AbstractVector{T}}}
@@ -136,7 +130,7 @@ function Base.convert(
     A = zeros(T, n + 1, n + 1)
     A[1:n, end] = g.value.x[2] # translation part
     A[1:n, 1:n] = g.value.x[1] # rotation part
-    A[end, end] = 0.0 # last entry is always 0
+    # the bottom row of A is already initialized as 0
     return SpecialEuclideanMatrixPoint(A)
 end
 end
