@@ -304,8 +304,8 @@ function diff_left_compose!(
     G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
     A = GroupAction(SDPG.op.action_type, G, H)
 
-    Y1, Y2 = submanifold_components(SDPG, Y)
-    X1, X2 = submanifold_components(SDPG, X)
+    Y1, Y2 = submanifold_components(LieAlgebra(SDPG), Y)
+    X1, X2 = submanifold_components(LieAlgebra(SDPG), X)
     g1, g2 = submanifold_components(SDPG, g)
     h1, h2 = submanifold_components(SDPG, h)
 
