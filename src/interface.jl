@@ -373,7 +373,7 @@ This can be done in-place of `Y`.
 """
 @doc "$(_doc_diff_left_compose)"
 function diff_left_compose(G::AbstractLieGroup, g, h, X)
-    Y = ManifoldsBase.allocate_result(G, diff_left_compose, g, h, X)
+    Y = ManifoldsBase.allocate_result(G, diff_left_compose, X, g, h)
     return diff_left_compose!(G, Y, g, h, X)
 end
 
@@ -391,7 +391,7 @@ This can be done in-place of `Y`.
 """
 @doc "$(_doc_diff_right_compose)"
 function diff_right_compose(G::AbstractLieGroup, h, g, X)
-    Y = ManifoldsBase.allocate_result(G, diff_right_compose, h, g, X)
+    Y = ManifoldsBase.allocate_result(G, diff_right_compose, X, h, g)
     return diff_right_compose!(G, Y, h, g, X)
 end
 
