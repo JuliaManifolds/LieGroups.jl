@@ -365,12 +365,24 @@ using StaticArrays
         )
         kL = retract(G, gL, XL, drm)
         @test is_point(G, kL; error=:error)
+        kL2 = similar(kL)
+        retract!(G, kL2, gL, XL, drm)
+        @test isapprox(G, kL, kL2)
+
         # Check formula again for this to be equal do X.
         # If we apply another pullback, this seems to be right, so we have to check where we accidentally pushforward once too much?
         YL = inverse_retract(G, gL, kL, dirm)
         @test is_point(𝔤, YL; error=:error)
         @test isapprox(𝔤, XL, YL)
+        YL2 = similar(YL)
+        inverse_retract!(G, YL2, gL, kL, dirm)
+        @test isapprox(G, YL, YL2)
+
         ZL = vector_transport_to(G, gL, XL, hL, dvm)
         @test is_point(𝔤, ZL; error=:error)
+
+        ZL2 = similar(ZL)
+        vector_transport_to!(G, ZL2, gL, XL, hL, dvm)
+        @test isapprox(G, gL, ZL2, ZL)
     end
 end
