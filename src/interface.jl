@@ -619,6 +619,11 @@ function ManifoldsBase._inverse_retract!(
 )
     return inverse_retract_base_manifold!(G, X, g, h, m)
 end
+function ManifoldsBase._inverse_retract(
+    G::AbstractLieGroup, g, h, m::BaseManifoldInverseRetraction
+)
+    return inverse_retract_base_manifold(G, g, h, m)
+end
 function inverse_retract_base_manifold!(
     G::AbstractLieGroup, X, g, h, m::BaseManifoldInverseRetraction
 )
@@ -627,6 +632,14 @@ function inverse_retract_base_manifold!(
     # the left group opp diff.
     pull_back_tangent!(G, X, g, X)
     return X
+end
+function inverse_retract_base_manifold(
+    G::AbstractLieGroup, g, h, m::BaseManifoldInverseRetraction
+)
+    X = inverse_retract(base_manifold(G), g, h, m.inverse_retraction)
+    # X is in TgM so we still ave to pull it back to TeM using
+    # the left group opp diff.
+    return pull_back_tangent(G, g, X)
 end
 
 function is_identity end
@@ -1040,12 +1053,21 @@ ManifoldsBase.retract(::LieGroup, p, X, m::BaseManifoldRetraction)
 function ManifoldsBase._retract!(G::AbstractLieGroup, h, g, X, m::BaseManifoldRetraction)
     return retract_base_manifold!(G, h, g, X, m)
 end
+function ManifoldsBase._retract(G::AbstractLieGroup, g, X, m::BaseManifoldRetraction)
+    return retract_base_manifold(G, g, X, m)
+end
 function retract_base_manifold!(G, h, g, X, m::BaseManifoldRetraction)
     # X is in TeM so we first push it to TpM using
     Y = push_forward_tangent(G, g, X)
     # now we can use the retraction on the base manifold
     retract!(base_manifold(G), h, g, Y, m.retraction)
     return h
+end
+function retract_base_manifold(G, g, X, m::BaseManifoldRetraction)
+    # X is in TeM so we first push it to TpM using
+    Y = push_forward_tangent(G, g, X)
+    # now we can use the retraction on the base manifold
+    return retract(base_manifold(G), g, Y, m.retraction)
 end
 
 function ManifoldsBase.representation_size(G::AbstractLieGroup)
@@ -1057,7 +1079,17 @@ function Base.show(io::IO, G::LieGroup)
 end
 
 """
+    BaseManifoldVectorTransportMethod{VTM<:AbstractVectorTransportMethod} <:
+        AbstractVectorTransportMethod
 
+Compute a vector transport by using the transport of type `VTM` on the base manifold of
+a [`LieGroup`](@ref).
+
+# Constructor
+
+    BaseManifoldVectorTransportMethod(vtm::AbstractVectorTransportMethod)
+
+Generate the vector transport with transport `vtm` to use on the base manifold.
 """
 struct BaseManifoldVectorTransportMethod{VTM<:AbstractVectorTransportMethod} <:
        AbstractVectorTransportMethod
@@ -1085,6 +1117,11 @@ function ManifoldsBase._vector_transport_to!(
 )
     return _vector_transport_to_basemanifold!(G, Y, g, X, h, m)
 end
+function ManifoldsBase._vector_transport_to(
+    G::AbstractLieGroup, g, X, h, m::BaseManifoldVectorTransportMethod
+)
+    return _vector_transport_to_basemanifold(G, g, X, h, m)
+end
 
 function _vector_transport_to_basemanifold!(
     G::AbstractLieGroup, Y, g, X, h, m::BaseManifoldVectorTransportMethod
@@ -1098,6 +1135,17 @@ function _vector_transport_to_basemanifold!(
     # the left group opp diff.
     pull_back_tangent!(G, Y, g, X)
     return Y
+end
+function _vector_transport_to_basemanifold(
+    G::AbstractLieGroup, g, X, h, m::BaseManifoldVectorTransportMethod
+)
+    # (a) we have to push forward X from TeG to TgG
+    Y = push_forward_tangent(G, g, X)
+    # then we do the vector transport
+    Y = vector_transport_to(base_manifold(G), g, Y, h, m.vector_transport_method)
+    # now Y is in ThM so we still ave to pull it back to TeM using
+    # the left group opp diff.
+    return pull_back_tangent(G, g, X)
 end
 
 #
