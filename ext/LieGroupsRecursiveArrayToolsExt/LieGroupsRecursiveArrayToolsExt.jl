@@ -108,7 +108,7 @@ TODO: Document and check whether we can have nicer accessors for R and t.
 function Base.convert(
     ::Type{<:SpecialEuclideanMatrixTangentVector{A}},
     g::SpecialEuclideanProductTangentVector,
-) where {A,T}
+) where {A}
     return SpecialEuclideanMatrixTangentVector(convert(AbstractMatrix, g))
 end
 function Base.convert(

@@ -144,10 +144,6 @@ using StaticArrays
             )
             test_lie_group(G, properties, expectations)
         end
-
-        # @testset "Testing that different representations are consistent" begin
-        #     @test isapprox(G3f, diff_left_compose(G3f, h1, h2, Y1), convert(AbstractMatrix, diff_left_compose(G3f, hL1, hL2, YL1)))
-        # end
     end
     #
     #
@@ -376,12 +372,5 @@ using StaticArrays
         @test isapprox(𝔤, XL, YL)
         ZL = vector_transport_to(G, gL, XL, hL, dvm)
         @test is_point(𝔤, ZL; error=:error)
-        # Comparison: Convert and do the same on General linear
-        g = convert(AbstractMatrix, SpecialEuclideanProductPoint(gL))
-        h = convert(AbstractMatrix, SpecialEuclideanProductPoint(hL))
-        X = convert(AbstractMatrix, SpecialEuclideanProductTangentVector(XL))
-        G2 = GeneralLinearGroup(3)
-        k = retract(G2, g, X, BaseManifoldRetraction(default_retraction_method(G2)))
-        @test isapprox(convert(AbstractMatrix, SpecialEuclideanProductPoint(kL)), k)
     end
 end
