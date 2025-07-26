@@ -10,7 +10,6 @@ using StaticArrays
     𝔰 = sqrt(2)
     fcts = [
         compose,
-        diff_left_compose,
         exp,
         get_vector,
         hat,
@@ -133,12 +132,19 @@ using StaticArrays
         YP = [YL1, YL2, YL3]
         YQ = SpecialEuclideanProductTangentVector.(YP)
         for G in [G3f, G3p], (pts, vec) in zip([hA, hM, hP, hQ], [YA, YM, YP, YQ])
+            is_array_partition_representation =
+                pts[1] isa Union{ArrayPartition,SpecialEuclideanProductPoint}
+            ap_funs = if is_array_partition_representation
+                [diff_left_compose]
+            else
+                []
+            end
             properties = Dict(
                 :Name => "The special Euclidean group ($G, $(eltype(pts)))",
                 :Points => pts,
                 :Vectors => vec,
                 :Rng => Random.MersenneTwister(),
-                :Functions => fcts,
+                :Functions => vcat(fcts, ap_funs),
             )
             expectations = Dict(
                 :repr => "SpecialEuclideanGroup(3)", :atol => 1e-14, :is_flat => false
