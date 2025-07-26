@@ -354,37 +354,23 @@ function diff_left_compose!(
     PM = SDPG.manifold
     H, G = map(LieGroup, PM.manifolds, SDPG.op.operations)
     A = GroupAction(SDPG.op.action_type, G, H)
+
+    Y1, Y2 = submanifold_components(LieAlgebra(SDPG), Y)
+    X1, X2 = submanifold_components(LieAlgebra(SDPG), X)
+    g1, g2 = submanifold_components(SDPG, g)
+    h1, h2 = submanifold_components(SDPG, h)
+
     # We have to perform 3 steps applying the group action
     # 1) for the right this is just a diff on that group
-    diff_left_compose!(
-        G,
-        submanifold_component(SDPG, Y, Val(2)),
-        submanifold_component(SDPG, g, Val(2)),
-        submanifold_component(SDPG, h, Val(2)),
-        submanifold_component(SDPG, X, Val(2)),
-    )
-    # For the second (right) it is diff_compose applied to the diff_apply of the group action
+    diff_left_compose!(G, Y2, g2, h2, X2)
+    # For the second (left) it is diff_compose applied to the diff_apply of the group action
     # where we can do that diff apply already in-place
-    diff_group_apply!(
-        A,
-        submanifold_component(SDPG, Y, Val(1)),
-        submanifold_component(SDPG, g, Val(2)),
-        submanifold_component(SDPG, h, Val(1)),
-        submanifold_component(SDPG, X, Val(1)),
-    )
+    diff_group_apply!(A, Y1, g2, h1, X1)
     # and then apply diff compose for the right
-    x = copy(G, submanifold_component(SDPG, g, Val(1)))
+    x = copy(G, h1)
     # we need the point on G where we apply to
-    apply!(
-        A, x, submanifold_component(SDPG, g, Val(2)), submanifold_component(SDPG, h, Val(1))
-    )
-    diff_left_compose!(
-        H,
-        submanifold_component(SDPG, Y, Val(1)),
-        submanifold_component(SDPG, g, Val(1)),
-        x,
-        submanifold_component(SDPG, Y, Val(1)),
-    )
+    apply!(A, x, g2, h1)
+    diff_left_compose!(H, Y1, g1, x, Y1)
     return X
 end
 
