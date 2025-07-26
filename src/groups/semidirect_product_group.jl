@@ -373,12 +373,12 @@ function diff_left_compose!(
         submanifold_component(SDPG, X, Val(1)),
     )
     # and then apply diff compose for the right
-    x = copy(G, submanifold_component(SDPG, g, Val(2)))
+    x = copy(G, submanifold_component(SDPG, g, Val(1)))
     # we need the point on G where we apply to
     apply!(
         A, x, submanifold_component(SDPG, g, Val(2)), submanifold_component(SDPG, h, Val(1))
     )
-    diff_compose!(
+    diff_left_compose!(
         H,
         submanifold_component(SDPG, Y, Val(1)),
         submanifold_component(SDPG, g, Val(1)),
