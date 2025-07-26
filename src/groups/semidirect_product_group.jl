@@ -371,7 +371,7 @@ function diff_left_compose!(
     # we need the point on G where we apply to
     apply!(A, x, g2, h1)
     diff_left_compose!(H, Y1, g1, x, Y1)
-    return X
+    return Y
 end
 
 function get_vector_lie!(
