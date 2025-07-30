@@ -15,7 +15,7 @@ struct LeftGroupOperationAction <: AbstractLeftGroupActionType end
 """
     RightGroupOperationAction <: AbstractRightGroupActionType
 
-A type for the [`AbstractLeftGroupActionType`](@ref) when acting on the group itself
+A type for the [`AbstractRightGroupActionType`](@ref) when acting on the group itself
 from the right.
 
 ```math
