@@ -196,9 +196,7 @@ formula reads ``[X, Y] = [(X_t, X_R), (Y_t, Y_R)] = (X_R * Y_t - Y_R * X_t, X_R 
 """
 function LieGroups.lie_bracket!(
     𝔤::LieGroups.LieAlgebra{
-        ℝ,
-        <:LieGroups.SpecialEuclideanGroupOperation,
-        <:LieGroups.SpecialEuclideanGroup,
+        ℝ,<:LieGroups.SpecialEuclideanGroupOperation,<:LieGroups.SpecialEuclideanGroup
     },
     Z::ArrayPartition,
     X::ArrayPartition,

@@ -781,7 +781,7 @@ function lie_bracket!(
     ::LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup},
     Z::AbstractMatrix,
     X::AbstractMatrix,
-    Y::AbstractMatrix
+    Y::AbstractMatrix,
 )
     mul!(Z, X, Y)
     mul!(Z, Y, X, -1, true)
