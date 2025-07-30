@@ -777,14 +777,22 @@ function LinearAlgebra.norm(
     return norm([n1, n2])
 end
 
+function Base.:*(
+    X::SpecialEuclideanMatrixTangentVector, Y::SpecialEuclideanMatrixTangentVector
+)
+    return SpecialEuclideanMatrixTangentVector(X.value * Y.value)
+end
+
 function lie_bracket!(
     ::LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup},
-    Z::AbstractMatrix,
-    X::AbstractMatrix,
-    Y::AbstractMatrix,
+    Z::Union{AbstractMatrix,SpecialEuclideanMatrixTangentVector},
+    X::Union{AbstractMatrix,SpecialEuclideanMatrixTangentVector},
+    Y::Union{AbstractMatrix,SpecialEuclideanMatrixTangentVector},
 )
-    mul!(Z, X, Y)
-    mul!(Z, Y, X, -1, true)
+    # FIXME mul! does not work with SpecialEuclideanMatrixTangentVector
+    # mul!(Z, X, Y)
+    # mul!(Z, Y, X, -1, true)
+    Z .= X * Y - Y * X
     return Z
 end
 
