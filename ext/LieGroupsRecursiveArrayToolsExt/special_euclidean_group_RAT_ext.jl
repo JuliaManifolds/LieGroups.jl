@@ -204,12 +204,12 @@ function LieGroups.lie_bracket!(
 )
     G = LieGroups.base_lie_group(𝔤)
     SOn, _ = LieGroups._SOn_and_Tn(G)
-    X_t = submanifold_components(G, X, :Translation)
-    X_R = submanifold_components(G, X, :Rotation)
-    Y_t = submanifold_components(G, Y, :Translation)
-    Y_R = submanifold_components(G, Y, :Rotation)
-    Z_t = submanifold_components(G, Z, :Translation)
-    Z_R = submanifold_components(G, Z, :Rotation)
+    X_t = submanifold_component(G, X, :Translation)
+    X_R = submanifold_component(G, X, :Rotation)
+    Y_t = submanifold_component(G, Y, :Translation)
+    Y_R = submanifold_component(G, Y, :Rotation)
+    Z_t = submanifold_component(G, Z, :Translation)
+    Z_R = submanifold_component(G, Z, :Rotation)
     LieGroups.lie_bracket!(LieAlgebra(SOn), Z_R, X_R, Y_R)
     Z_t .= X_R * Y_t .- Y_R * X_t
     return Z
