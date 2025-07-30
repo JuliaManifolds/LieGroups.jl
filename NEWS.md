@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Fixed a typo, where `within` was misspelled as `widthin` which caused errors in a few places.
 * fix `default_basis` for `LieGroup` to return a `DefaultLieAlgebraOrthogonalBasis` also when providing a point type. That way `get_vector` falls back to the manifold when called with a Lie group and a point, though this is mere a historical format and the Lie algebra approach is the recommended one.
 * mention `get_coordinates`, `get_vector`, `hat`, and `vee` in the transition documentation since it moved to using the `LieAlgebra` instead of the Lie group and a point.
+* Fixed `RightGroupOperationAction` to be a subtype of `AbstractRightGroupActionType`
 
 ## [0.1.2] 2025-06-24
 
