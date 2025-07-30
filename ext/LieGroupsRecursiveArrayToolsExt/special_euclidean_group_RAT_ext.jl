@@ -186,6 +186,37 @@ function LinearAlgebra.norm(
     return LinearAlgebra.norm([n1, n2])
 end
 
+"""
+    lie_bracket(𝔰𝔢::LieAlgebra{ℝ, SpecialEuclideanGroupOperation, SpecialEuclidean}, X::ArrayPartition, Y::ArrayPartition)
+    lie_bracket!(𝔰𝔢::LieAlgebra{ℝ, SpecialEuclideanGroupOperation, SpecialEuclidean}, Z::ArrayPartition, X::ArrayPartition, Y::ArrayPartition)
+
+Calculate the Lie bracket between elements `X` and `Y` of the special Euclidean Lie
+algebra. For the matrix representation the formula is ``[X, Y] = XY-YX``, while in the `ArrayPartition` representation the
+formula reads ``[X, Y] = [(X_t, X_R), (Y_t, Y_R)] = (X_R * Y_t - Y_R * X_t, X_R * Y_R - Y_R * X_R)``.
+"""
+function LieGroups.lie_bracket!(
+    𝔤::LieGroups.LieAlgebra{
+        ℝ,
+        <:LieGroups.SpecialEuclideanGroupOperation,
+        <:LieGroups.SpecialEuclideanGroup,
+    },
+    Z::ArrayPartition,
+    X::ArrayPartition,
+    Y::ArrayPartition,
+)
+    G = LieGroups.base_lie_group(𝔤)
+    SOn, _ = LieGroups._SOn_and_Tn(G)
+    X_t = submanifold_components(G, X, :Translation)
+    X_R = submanifold_components(G, X, :Rotation)
+    Y_t = submanifold_components(G, Y, :Translation)
+    Y_R = submanifold_components(G, Y, :Rotation)
+    Z_t = submanifold_components(G, Z, :Translation)
+    Z_R = submanifold_components(G, Z, :Rotation)
+    LieGroups.lie_bracket!(LieAlgebra(SOn), Z_R, X_R, Y_R)
+    Z_t .= X_R * Y_t .- Y_R * X_t
+    return Z
+end
+
 function ManifoldsBase.submanifold_component(
     G::LieGroups.LeftSpecialEuclideanGroup,
     g::Union{ArrayPartition,SpecialEuclideanProductPoint},

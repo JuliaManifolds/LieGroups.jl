@@ -777,6 +777,17 @@ function LinearAlgebra.norm(
     return norm([n1, n2])
 end
 
+function lie_bracket!(
+    ::LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup},
+    Z::AbstractMatrix,
+    X::AbstractMatrix,
+    Y::AbstractMatrix
+)
+    mul!(Z, X, Y)
+    mul!(Z, Y, X, -1, true)
+    return Z
+end
+
 function ManifoldsBase.log!(::SpecialEuclideanGroup, X::AbstractMatrix, g::AbstractMatrix)
     copyto!(X, log(g))
     return X
