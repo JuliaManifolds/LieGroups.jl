@@ -24,7 +24,7 @@ from the right.
 
 for its inverse ``(σ_h)^{-1}`` see [`InverseRightGroupOperationAction`](@ref).
 """
-struct RightGroupOperationAction <: AbstractLeftGroupActionType end
+struct RightGroupOperationAction <: AbstractRightGroupActionType end
 
 """
     InverseLeftGroupOperationAction <: AbstractRightGroupActionType
