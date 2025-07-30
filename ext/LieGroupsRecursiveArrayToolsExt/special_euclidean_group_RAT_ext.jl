@@ -198,9 +198,9 @@ function LieGroups.lie_bracket!(
     𝔤::LieGroups.LieAlgebra{
         ℝ,<:LieGroups.SpecialEuclideanGroupOperation,<:LieGroups.SpecialEuclideanGroup
     },
-    Z::Union{<:ArrayPartition, <:SpecialEuclideanProductTangentVector},
-    X::Union{<:ArrayPartition, <:SpecialEuclideanProductTangentVector},
-    Y::Union{<:ArrayPartition, <:SpecialEuclideanProductTangentVector},
+    Z::Union{<:ArrayPartition,<:SpecialEuclideanProductTangentVector},
+    X::Union{<:ArrayPartition,<:SpecialEuclideanProductTangentVector},
+    Y::Union{<:ArrayPartition,<:SpecialEuclideanProductTangentVector},
 )
     G = LieGroups.base_lie_group(𝔤)
     SOn, _ = LieGroups._SOn_and_Tn(G)
