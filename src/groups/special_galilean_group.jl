@@ -28,6 +28,8 @@ function LieGroups.apply!(A::GroupAction{RotationBoostAction}, k, g, h)
     k_p = submanifold_component(H, k, Val(1))
     k_p .= v * t + R * p
     # NOTE k_t unchanged
+    k_t = submanifold_component(H, k, Val(2))
+    k_t .= t
     return k
 end
 
