@@ -149,7 +149,8 @@ function RightSemidirectProductLieGroup(
     N::LieGroup, H::LieGroup, action::AbstractGroupActionType=default_right_action(N, H)
 )
     return LieGroup(
-        ProductManifold(N.manifold, H.manifold), RightSemidirectProductGroupOperation(N.op, H.op, action)
+        ProductManifold(N.manifold, H.manifold),
+        RightSemidirectProductGroupOperation(N.op, H.op, action),
     )
 end
 
