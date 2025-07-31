@@ -38,6 +38,7 @@ end
         include_test("groups/test_special_linear_group.jl")
         include_test("groups/test_special_orthogonal_group.jl")
         include_test("groups/test_special_euclidean_group.jl")
+        include_test("groups/test_special_galilean_group.jl")
         include_test("groups/test_special_unitary_group.jl")
         include_test("groups/test_symplectic_group.jl")
         include_test("groups/test_translation_group.jl")

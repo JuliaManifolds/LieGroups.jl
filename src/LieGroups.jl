@@ -90,6 +90,7 @@ include("groups/special_orthogonal_group.jl")
 
 # Products of Groups
 include("groups/special_euclidean_group.jl")
+include("groups/special_galilean_group.jl")
 
 export AbstractLieGroup
 export LieGroup, LieAlgebra
