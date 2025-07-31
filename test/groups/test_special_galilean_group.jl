@@ -31,63 +31,29 @@ using StaticArrays
         G3p = SpecialGalileanGroup(3)
         hL1 = ArrayPartition(
             ArrayPartition(
-                1 / 𝔰 * [1.0 1.0 0.0; -1.0 1.0 0.0; 0.0 0.0 𝔰],
-                [1 / 𝔰, 0.0, 0.0]
+                1 / 𝔰 * [1.0 1.0 0.0; -1.0 1.0 0.0; 0.0 0.0 𝔰], [1 / 𝔰, 0.0, 0.0]
             ),
-            ArrayPartition(
-                [0.0, 0.0, 0.0],
-                [0.0]
-            )
+            ArrayPartition([0.0, 0.0, 0.0], [0.0]),
         )
         hL2 = ArrayPartition(
-            ArrayPartition(
-                [0.0 -1.0 0.0; 1.0 0.0 0.0; 0.0 0.0 1.0],
-                [0.0, 1.0, 0.0]
-            ),
-            ArrayPartition(
-                [0.0, 0.1, 0.0],
-                [0.1]
-            )
+            ArrayPartition([0.0 -1.0 0.0; 1.0 0.0 0.0; 0.0 0.0 1.0], [0.0, 1.0, 0.0]),
+            ArrayPartition([0.0, 0.1, 0.0], [0.1]),
         )
         hL3 = ArrayPartition(
-            ArrayPartition(
-                [1.0 0.0 0.0; 0.0 1.0 0.0; 0.0 0.0 1.0],
-                [1.0, 1.0, 0.0]
-            ),
-            ArrayPartition(
-                [0.0, 0.0, 1.0],
-                [1.0]
-            )
+            ArrayPartition([1.0 0.0 0.0; 0.0 1.0 0.0; 0.0 0.0 1.0], [1.0, 1.0, 0.0]),
+            ArrayPartition([0.0, 0.0, 1.0], [1.0]),
         )
         YL1 = ArrayPartition(
-            ArrayPartition(
-                [0.0 -0.23 0.0; 0.23 0.0 0.0; 0.0 0.0 0.0],
-                [0.0, 1.0, 0.0]
-            ),
-            ArrayPartition(
-                [0.0, 0.0, 0.0],
-                [1.0]
-            )
+            ArrayPartition([0.0 -0.23 0.0; 0.23 0.0 0.0; 0.0 0.0 0.0], [0.0, 1.0, 0.0]),
+            ArrayPartition([0.0, 0.0, 0.0], [1.0]),
         )
         YL2 = ArrayPartition(
-            ArrayPartition(
-                [0.0 0.30 0.0; -0.30 0.0 0.0; 0.0 0.0 0.0],
-                [1.0, 1.0, 0.0]
-            ),
-            ArrayPartition(
-                [1.0, 0.3, 0.0],
-                [0.1]
-            )
+            ArrayPartition([0.0 0.30 0.0; -0.30 0.0 0.0; 0.0 0.0 0.0], [1.0, 1.0, 0.0]),
+            ArrayPartition([1.0, 0.3, 0.0], [0.1]),
         )
         YL3 = ArrayPartition(
-            ArrayPartition(
-                [9.0 0.1 0.0; -0.1 0.0 0.0; 0.0 0.0 0.0],
-                [1.0, 0.0, 0.0]
-            ),
-            ArrayPartition(
-                [0.0, 0.0, 0.3],
-                [0.1]
-            )
+            ArrayPartition([9.0 0.1 0.0; -0.1 0.0 0.0; 0.0 0.0 0.0], [1.0, 0.0, 0.0]),
+            ArrayPartition([0.0, 0.0, 0.3], [0.1]),
         )
         hP = [hL1, hL2, hL3]
         YP = [YL1, YL2, YL3]
@@ -107,5 +73,4 @@ using StaticArrays
             test_lie_group(G, properties, expectations)
         end
     end
-
 end
