@@ -67,7 +67,6 @@ Alternatively, the short hand `G × H` can be used.
 function ProductLieGroup(G::LieGroup, H::LieGroup)
     return LieGroup(ProductManifold(G.manifold, H.manifold), G.op × H.op)
 end
-end
 
 function ManifoldsBase.submanifold_components(
     ::LieGroup{𝔽,Op,M}, op::ProductGroupOperation
