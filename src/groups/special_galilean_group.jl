@@ -20,7 +20,7 @@ function LieGroups.apply!(A::GroupAction{RotationBoostAction}, k, g, h)
     G = A.group
     R = submanifold_component(G, g, Val(1))
     v = submanifold_component(G, g, Val(2))
-    
+
     H = A.manifold
     p = submanifold_component(H, h, Val(1))
     t = submanifold_component(H, h, Val(2))[1]
@@ -93,18 +93,8 @@ function SpecialGalileanGroup(n::Int)
 end
 
 #TODO don't know if something similar already exists in LieGroups.jl
-function _skew(v::AbstractVector{T}) where T<:Real
-    return SMatrix{3,3,T}(
-            0,
-         v[3],
-        -v[2],
-        -v[3],  
-            0,  
-         v[1],
-         v[2],
-        -v[1],
-            0
-    )
+function _skew(v::AbstractVector{T}) where {T<:Real}
+    return SMatrix{3,3,T}(0, v[3], -v[2], -v[3], 0, v[1], v[2], -v[1], 0)
 end
 
 function _Q(θ⃗)
@@ -135,8 +125,11 @@ function _P(θ⃗)
     end
 end
 
-function LieGroups.exp!(G::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, q::ArrayPartition, X::ArrayPartition)
-    
+function LieGroups.exp!(
+    G::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
+    q::ArrayPartition,
+    X::ArrayPartition,
+)
     θ⃗ₓ = X.x[1].x[1] # ωΔt
 
     ν = X.x[1].x[2]  # aΔt
@@ -162,7 +155,7 @@ end
 function LieGroups.log!(
     M::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
     X::ArrayPartition,
-    p::ArrayPartition
+    p::ArrayPartition,
 )
     ΔR = p.x[1].x[1]
     Δv = p.x[1].x[2]
@@ -177,7 +170,6 @@ function LieGroups.log!(
     Q = _Q(θ⃗)
     iQ = inv(Q)
 
-    
     X.x[1].x[1] .= log(SpecialOrthogonalGroup(3), ΔR) # θ⃗ₓ
     X.x[1].x[2] .= iQ * Δv # ν aΔt
     X.x[2].x[1] .= iQ * (Δp - P * iQ * Δv * Δt) # ρ vΔt
@@ -186,8 +178,7 @@ function LieGroups.log!(
 end
 
 function LieGroups.identity_element(
-    ::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{N}}},
-    ::Type{<:StaticArray}
+    ::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{N}}}, ::Type{<:StaticArray}
 ) where {N}
     return ArrayPartition(
         ArrayPartition(
@@ -197,7 +188,7 @@ function LieGroups.identity_element(
         ArrayPartition(
             @SVector(zeros(3)),      # Δp
             @SVector([0.0]),         # Δt
-        )
+        ),
     )
 end
 
@@ -209,13 +200,13 @@ function LieGroups.inv(G::SpecialGalileanGroup, p::ArrayPartition)
 
     return ArrayPartition(
         ArrayPartition(
-            ΔR',
-            -ΔR' * Δv
+            ΔR',                      # ΔR
+            -ΔR' * Δv,                # Δv
+        ),                            #
+        ArrayPartition(               #   
+            -ΔR' * (Δp - Δv * Δt[1]), # Δp
+            -Δt,                      # Δt
         ),
-        ArrayPartition(
-            -ΔR' * (Δp - Δv * Δt[1]),
-            -Δt
-        )
     )
 end
 
@@ -232,12 +223,12 @@ function LieGroups.compose(G::SpecialGalileanGroup, p::ArrayPartition, q::ArrayP
 
     return ArrayPartition(
         ArrayPartition(
-            ΔR * δR,
-            Δv + ΔR * δv,
+            ΔR * δR,                   # ΔR
+            Δv + ΔR * δv,              # Δv
         ),
         ArrayPartition(
-            Δp + Δv * δt[1] + ΔR * δp,
-            Δt + δt
-        )
+            Δp + Δv * δt[1] + ΔR * δp, # Δp
+            Δt + δt,                   # Δt
+        ),
     )
 end
