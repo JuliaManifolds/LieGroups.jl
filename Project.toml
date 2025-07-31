@@ -9,10 +9,9 @@ Manifolds = "1cead3c2-87b3-11e9-0ccd-23c62b72b94e"
 ManifoldsBase = "3362f125-f0bb-47a3-aa74-596ffd7ef2fb"
 Quaternions = "94ee1d12-ae83-5a48-8b1c-48b8ff168ae0"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
-StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
-
-[weakdeps]
 RecursiveArrayTools = "731186ca-8d62-57ce-b412-fbd966d074cd"
+Rotations = "6038ab10-8711-5258-84ad-4b1120ba62dc"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [extensions]
 LieGroupsRecursiveArrayToolsExt = "RecursiveArrayTools"
@@ -25,6 +24,7 @@ ManifoldsBase = "1.2"
 Quaternions = "0.7.6"
 Random = "1.10"
 RecursiveArrayTools = "2, 3"
+Rotations = "1.7.1"
 StaticArrays = "1.5"
 Test = "1.10"
 julia = "1.10"
