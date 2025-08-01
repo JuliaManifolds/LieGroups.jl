@@ -809,9 +809,6 @@ function lie_bracket!(
     X::Union{<:AbstractMatrix,SpecialEuclideanMatrixTangentVector},
     Y::Union{<:AbstractMatrix,SpecialEuclideanMatrixTangentVector},
 )
-    # FIXME mul! does not work with SpecialEuclideanMatrixTangentVector
-    # mul!(Z, X, Y)
-    # mul!(Z, Y, X, -1, true)
     Z .= X * Y - Y * X
     return Z
 end
