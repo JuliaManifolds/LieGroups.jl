@@ -11,3 +11,6 @@ LieGroups = "0.1"
 Manifolds = "0.10.14"
 RecursiveArrayTools = "3.31"
 Rotations = "1.7"
+
+[sources]
+LieGroups = { path = ".." }
