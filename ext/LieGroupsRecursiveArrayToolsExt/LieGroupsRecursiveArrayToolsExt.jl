@@ -60,5 +60,4 @@ function LieGroups.get_vector_lie(
     end
     return ArrayPartition(parts...)
 end
-
 end
