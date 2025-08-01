@@ -57,8 +57,8 @@ using LieGroupsTestSuite
         X1, X2, X3 = 1.0, 3.0, -123.0
         properties = Dict(
             :Name => "Array Points and Array Vectors",
-            :Points => [fill(x1), fill(x2), fill(x3)],
-            :Vectors => [fill(X1), fill(X2), fill(X3)],
+            :Points => [fill(x1), fill(x2), fill(x3), [x1], [x2], [x3]],
+            :Vectors => [fill(X1), fill(X2), fill(X3), [X1], [X2], [X3]],
             :Rng => Random.MersenneTwister(),
             :Mutating => true,
             :Functions => [
@@ -94,6 +94,12 @@ using LieGroupsTestSuite
             @test compose(C2, 1.0, fill(1.0)) == 2.0
             @test compose(C2, fill(1.0), 1.0) == 2.0
             @test LieGroups.sym_rem(fill(Float64(π))) == fill(Float64(-π))
+            a = -π + 0.1
+            b = -0.2 
+            @test compose(C2, a, b) ==  LieGroups.sym_rem(a + b)
+            @test compose(C2, fill(a), fill(b)) ==  LieGroups.sym_rem(a + b)
+            @test compose(C2, fill(a), b) ==  LieGroups.sym_rem(a + b)
+            @test compose(C2, a, fill(b)) ==  LieGroups.sym_rem(a + b)
         end
     end
     @testset "Planar Circle" begin
