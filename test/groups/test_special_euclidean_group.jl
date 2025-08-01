@@ -18,6 +18,7 @@ using StaticArrays
         inv,
         is_flat,
         is_identity,
+        lie_bracket,
         log,
         norm,
         rand,

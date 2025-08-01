@@ -295,8 +295,7 @@ lie_bracket(::LieAlgebra{𝔽,MatrixMultiplicationGroupOperation}, ::Any, ::Any)
 function lie_bracket!(
     ::LieAlgebra{𝔽,O,<:LieGroup{𝔽,O}}, Z, X, Y
 ) where {𝔽,O<:MatrixMultiplicationGroupOperation}
-    mul!(Z, X, Y)
-    mul!(Z, Y, X, -1, true)
+    Z .= X * Y - Y * X
     return Z
 end
 

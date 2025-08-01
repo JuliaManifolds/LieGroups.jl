@@ -777,6 +777,42 @@ function LinearAlgebra.norm(
     return norm([n1, n2])
 end
 
+function Base.:*(
+    X::SpecialEuclideanMatrixTangentVector, Y::SpecialEuclideanMatrixTangentVector
+)
+    return SpecialEuclideanMatrixTangentVector(X.value * Y.value)
+end
+
+_doc_lie_bracket_SEn = """
+    lie_bracket(𝔰𝔢::LieAlgebra{ℝ, SpecialEuclideanGroupOperation, SpecialEuclideanGroup}, X, Y)
+    lie_bracket!(𝔰𝔢::LieAlgebra{ℝ, SpecialEuclideanGroupOperation, SpecialEuclideanGroup}, Z, X, Y)
+
+Calculate the Lie bracket between elements `X` and `Y` of the Lie algebra of the [`SpecialEuclideanGroup`](@ref).
+For the matrix representation, cf. [`SpecialEuclideanMatrixTangentVector`](@ref) or a `<:AbstractMatrix`, the formula reads
+
+```math
+[X, Y] = XY-YX
+```
+"""
+
+@doc "$(_doc_lie_bracket_SEn)"
+lie_bracket(
+    𝔰𝔢::LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup},
+    X::Union{<:AbstractMatrix,SpecialEuclideanMatrixTangentVector},
+    Y::Union{<:AbstractMatrix,SpecialEuclideanMatrixTangentVector},
+)
+
+@doc "$(_doc_lie_bracket_SEn)"
+function lie_bracket!(
+    ::LieAlgebra{ℝ,<:SpecialEuclideanGroupOperation,<:SpecialEuclideanGroup},
+    Z::Union{<:AbstractMatrix,SpecialEuclideanMatrixTangentVector},
+    X::Union{<:AbstractMatrix,SpecialEuclideanMatrixTangentVector},
+    Y::Union{<:AbstractMatrix,SpecialEuclideanMatrixTangentVector},
+)
+    Z .= X * Y - Y * X
+    return Z
+end
+
 function ManifoldsBase.log!(::SpecialEuclideanGroup, X::AbstractMatrix, g::AbstractMatrix)
     copyto!(X, log(g))
     return X
