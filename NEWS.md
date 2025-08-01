@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.3] unreleased
 
+### Changed
+
+* Switch to using [Runic.jl](https://github.com/fredrikekre/Runic.jl) as code formatter
+
 ### Fixed
 
 * Fixed a typo, where `within` was misspelled as `widthin` which caused errors in a few places.

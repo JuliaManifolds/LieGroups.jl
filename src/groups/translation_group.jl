@@ -13,7 +13,7 @@ are passed on to [`Euclidean`](@extref `Manifolds.Euclidean`) as well
 
 We denote the Lie algebra of ``$(_math(:T))(n)`` by ``$(_math(:t))(n)``.
 """
-const TranslationGroup{𝔽,T} = LieGroup{𝔽,AdditionGroupOperation,Euclidean{T,𝔽}}
+const TranslationGroup{𝔽, T} = LieGroup{𝔽, AdditionGroupOperation, Euclidean{T, 𝔽}}
 
 function TranslationGroup(n::Int...; kwargs...)
     Rn = Euclidean(n...; kwargs...)

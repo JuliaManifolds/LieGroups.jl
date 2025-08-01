@@ -2,11 +2,11 @@
 #circle group represented in ℝ mod 2π = [-π, π), operation: addition mod 2π
 #
 function CircleGroup(M::Circle{ℝ})
-    return LieGroup{ℝ,AdditionGroupOperation,typeof(M)}(M, AdditionGroupOperation())
+    return LieGroup{ℝ, AdditionGroupOperation, typeof(M)}(M, AdditionGroupOperation())
 end
-CircleGroup(𝔽::AbstractNumbers=ℂ) = CircleGroup(Circle(𝔽))
+CircleGroup(𝔽::AbstractNumbers = ℂ) = CircleGroup(Circle(𝔽))
 
-const _RealCircleGroup = LieGroup{ℝ,AdditionGroupOperation,<:Circle{ℝ}}
+const _RealCircleGroup = LieGroup{ℝ, AdditionGroupOperation, <:Circle{ℝ}}
 
 _doc_sym_rem = """
     sym_rem(x,[T=π])
@@ -15,23 +15,23 @@ Compute symmetric remainder of `x` with respect to the interall 2*`T`, i.e.
 `(x+T)%2T`, where the default for `T` is ``π``.
 """
 @doc "$(_doc_sym_rem)"
-function sym_rem(x::N, T=π) where {N<:Number}
+function sym_rem(x::N, T = π) where {N <: Number}
     return (x ≈ T ? convert(N, -T) : rem(x, convert(N, 2 * T), RoundNearest))
 end
-function sym_rem(x, T=π)
+function sym_rem(x, T = π)
     return map(sym_rem, x, Ref(T))
 end
 
 function _compose(::_RealCircleGroup, p::Number, q::Number)
     return sym_rem(p + q)
 end
-function _compose(G::_RealCircleGroup, p::AbstractArray{<:Any,0}, q::AbstractArray{<:Any,0})
+function _compose(G::_RealCircleGroup, p::AbstractArray{<:Any, 0}, q::AbstractArray{<:Any, 0})
     return map((pp, qq) -> compose(G, pp, qq), p, q)
 end
-function _compose(::_RealCircleGroup, p::Number, q::AbstractArray{<:Any,0})
+function _compose(::_RealCircleGroup, p::Number, q::AbstractArray{<:Any, 0})
     return p .+ q
 end
-function _compose(::_RealCircleGroup, p::AbstractArray{<:Any,0}, q::Number)
+function _compose(::_RealCircleGroup, p::AbstractArray{<:Any, 0}, q::Number)
     return p .+ q
 end
 
@@ -138,49 +138,49 @@ end
 # This can be combined with the functions above once we only have one circle group const
 #
 function get_coordinates_lie(
-    𝔤::LieAlgebra{ℝ,AdditionGroupOperation,<:_RealCircleGroup},
-    X::T,
-    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
-) where {T}
+        𝔤::LieAlgebra{ℝ, AdditionGroupOperation, <:_RealCircleGroup},
+        X::T,
+        ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+    ) where {T}
     G = base_lie_group(𝔤)
     M = base_manifold(G)
     return get_coordinates(M, identity_element(G, T), X, DefaultOrthonormalBasis(ℝ))
 end
 function get_coordinates_lie!(
-    𝔤::LieAlgebra{ℝ,AdditionGroupOperation,<:_RealCircleGroup},
-    c,
-    X::T,
-    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
-) where {T}
+        𝔤::LieAlgebra{ℝ, AdditionGroupOperation, <:_RealCircleGroup},
+        c,
+        X::T,
+        ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+    ) where {T}
     G = base_lie_group(𝔤)
     M = base_manifold(G)
     return get_coordinates!(M, c, identity_element(G, T), X, DefaultOrthonormalBasis(ℝ))
 end
 
 function get_vector_lie(
-    𝔤::LieAlgebra{ℝ,AdditionGroupOperation,<:_RealCircleGroup},
-    c,
-    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
-    ::Type{<:SArray},
-)
+        𝔤::LieAlgebra{ℝ, AdditionGroupOperation, <:_RealCircleGroup},
+        c,
+        ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+        ::Type{<:SArray},
+    )
     return SVector{1}(c[])
 end
 function get_vector_lie(
-    𝔤::LieAlgebra{ℝ,AdditionGroupOperation,<:_RealCircleGroup},
-    c,
-    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
-    T::Type=Float64,
-)
+        𝔤::LieAlgebra{ℝ, AdditionGroupOperation, <:_RealCircleGroup},
+        c,
+        ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+        T::Type = Float64,
+    )
     G = base_lie_group(𝔤)
     M = base_manifold(G)
     return get_vector(M, identity_element(G, T), c, DefaultOrthonormalBasis(ℝ))
 end
 function get_vector_lie!(
-    𝔤::LieAlgebra{ℝ,AdditionGroupOperation,<:_RealCircleGroup},
-    X::T,
-    c,
-    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
-) where {T}
+        𝔤::LieAlgebra{ℝ, AdditionGroupOperation, <:_RealCircleGroup},
+        X::T,
+        c,
+        ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+    ) where {T}
     G = base_lie_group(𝔤)
     M = base_manifold(G)
     return get_vector!(M, X, identity_element(G, T), c, DefaultOrthonormalBasis(ℝ))
@@ -203,8 +203,8 @@ function ManifoldsBase.isapprox(::_RealCircleGroup, p, X, Y; kwargs...)
 end
 
 function lie_bracket(
-    ::LieAlgebra{ℝ,AdditionGroupOperation,<:_RealCircleGroup}, X::Any, ::Any
-)
+        ::LieAlgebra{ℝ, AdditionGroupOperation, <:_RealCircleGroup}, X::Any, ::Any
+    )
     return zero(X)
 end
 

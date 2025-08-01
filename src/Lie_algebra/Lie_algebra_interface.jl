@@ -1,4 +1,3 @@
-
 """
     LieAlgebra{𝔽, G} <: AbstractManifold{𝔽}
 
@@ -13,16 +12,16 @@ namely the tangent space ``T_{$(_math(:e))}$(_math(:G))`` at the [`Identity`](@r
 this is internally just a `const` of the corresponding $(_link(:TangentSpace)).
 
 !!! note "Convention for representing tangent vectors in the Lie algebra"
-    A vector field ``$(_tex(:Cal,"X")): $(_math(:G)) → T$(_math(:G))``, ``X(g) ∈ T_g$(_math(:G))``
+    A vector field ``$(_tex(:Cal, "X")): $(_math(:G)) → T$(_math(:G))``, ``X(g) ∈ T_g$(_math(:G))``
     is called a left-invariant vector field if it satisfies
 
     ```math
-    $(_tex(:Cal,"X"))(λ_g(h)) = Dλ_g(h)[$(_tex(:Cal,"X"))(h)], $(_tex(:quad))$(_tex(:text, "for all"))$(_tex(:quad)) g, h ∈ $(_math(:G)),
+    $(_tex(:Cal, "X"))(λ_g(h)) = Dλ_g(h)[$(_tex(:Cal, "X"))(h)], $(_tex(:quad))$(_tex(:text, "for all"))$(_tex(:quad)) g, h ∈ $(_math(:G)),
     ```
 
     where ``λ_g: $(_math(:G)) → $(_math(:G))`` is the left multiplication by ``g``.
-    Hence ``$(_tex(:Cal,"X"))`` is determined already when ``X ∈ $(_math(:𝔤))`` is given,
-    since ``$(_tex(:Cal,"X"))(g) = Dλ_g(e)[X]``, cf [HilgertNeeb:2012; Definition 9.1.7](@cite).
+    Hence ``$(_tex(:Cal, "X"))`` is determined already when ``X ∈ $(_math(:𝔤))`` is given,
+    since ``$(_tex(:Cal, "X"))(g) = Dλ_g(e)[X]``, cf [HilgertNeeb:2012; Definition 9.1.7](@cite).
 
     Throughout `LieGroups.jl`, we use this left-invariant convention to store tangent vectors at points on a Lie group as elements of the corresponding Lie algebra.
 
@@ -32,12 +31,12 @@ this is internally just a `const` of the corresponding $(_link(:TangentSpace)).
 
 Return the Lie Algebra belonging to the [`AbstractLieGroup`](@ref) `G`.
 """
-const LieAlgebra{𝔽,O<:AbstractGroupOperation,G<:AbstractLieGroup{<:Any,O}} = ManifoldsBase.Fiber{
-    𝔽,ManifoldsBase.TangentSpaceType,G,Identity{O}
+const LieAlgebra{𝔽, O <: AbstractGroupOperation, G <: AbstractLieGroup{<:Any, O}} = ManifoldsBase.Fiber{
+    𝔽, ManifoldsBase.TangentSpaceType, G, Identity{O},
 }
 
-function LieAlgebra(G::AbstractLieGroup{𝔽,O}) where {𝔽,O<:AbstractGroupOperation}
-    return LieAlgebra{𝔽,O,typeof(G)}(G, Identity(G), ManifoldsBase.TangentSpaceType())
+function LieAlgebra(G::AbstractLieGroup{𝔽, O}) where {𝔽, O <: AbstractGroupOperation}
+    return LieAlgebra{𝔽, O, typeof(G)}(G, Identity(G), ManifoldsBase.TangentSpaceType())
 end
 
 """
@@ -74,8 +73,8 @@ See also [`vee`](@ref).
 
 @doc "$(_doc_get_coordinates)"
 function ManifoldsBase.get_coordinates(
-    𝔤::LieAlgebra, X, B::AbstractBasis=DefaultLieAlgebraOrthogonalBasis()
-)
+        𝔤::LieAlgebra, X, B::AbstractBasis = DefaultLieAlgebraOrthogonalBasis()
+    )
     return ManifoldsBase._get_coordinates(𝔤, X, B)
 end
 # Mimic the levels from ManifoldsBase just without the base point p
@@ -85,8 +84,8 @@ function ManifoldsBase._get_coordinates(𝔤::LieAlgebra, X::T, B::AbstractBasis
 end
 @doc "$(_doc_get_coordinates)"
 function ManifoldsBase.get_coordinates!(
-    𝔤::LieAlgebra, c, X, B::AbstractBasis=DefaultLieAlgebraOrthogonalBasis()
-)
+        𝔤::LieAlgebra, c, X, B::AbstractBasis = DefaultLieAlgebraOrthogonalBasis()
+    )
     return ManifoldsBase._get_coordinates!(𝔤, c, X, B)
 end
 function ManifoldsBase._get_coordinates!(𝔤::LieAlgebra, c, X::T, B::AbstractBasis) where {T}
@@ -94,13 +93,13 @@ function ManifoldsBase._get_coordinates!(𝔤::LieAlgebra, c, X::T, B::AbstractB
     return ManifoldsBase.get_coordinates!(base_manifold(G), c, identity_element(G, T), X, B)
 end
 function ManifoldsBase._get_coordinates(
-    𝔤::LieAlgebra, X, B::DefaultLieAlgebraOrthogonalBasis
-)
+        𝔤::LieAlgebra, X, B::DefaultLieAlgebraOrthogonalBasis
+    )
     return get_coordinates_lie(𝔤, X, B)
 end
 function ManifoldsBase._get_coordinates!(
-    𝔤::LieAlgebra, c, X, B::DefaultLieAlgebraOrthogonalBasis
-)
+        𝔤::LieAlgebra, c, X, B::DefaultLieAlgebraOrthogonalBasis
+    )
     get_coordinates_lie!(𝔤, c, X, B)
     return c
 end
@@ -111,8 +110,8 @@ function get_coordinates_lie(𝔤::LieAlgebra, X, B::DefaultLieAlgebraOrthogonal
     return get_coordinates_lie!(𝔤, c, X, B)
 end
 function get_coordinates_lie!(
-    𝔤::LieAlgebra, c, X::T, ::DefaultLieAlgebraOrthogonalBasis{𝔽}
-) where {T,𝔽}
+        𝔤::LieAlgebra, c, X::T, ::DefaultLieAlgebraOrthogonalBasis{𝔽}
+    ) where {T, 𝔽}
     # Provide a default fallback
     G = base_lie_group(𝔤)
     return get_coordinates!(
@@ -147,24 +146,24 @@ See also [`hat`](@ref)
 
 @doc "$(_doc_get_vector)"
 function ManifoldsBase.get_vector(
-    𝔤::LieAlgebra,
-    c,
-    B::AbstractBasis=DefaultLieAlgebraOrthogonalBasis();
-    tangent_vector_type=nothing,
-    kwargs...,
-)
+        𝔤::LieAlgebra,
+        c,
+        B::AbstractBasis = DefaultLieAlgebraOrthogonalBasis();
+        tangent_vector_type = nothing,
+        kwargs...,
+    )
     return ManifoldsBase._get_vector(𝔤, c, B, tangent_vector_type)
 end
 # Overwrite layer 2 since we do not have a base point and as well if a basis is provided and if we get nothing
 # (define for all basis when moving this to Base)
 @inline function ManifoldsBase._get_vector(
-    𝔤::LieAlgebra, c, B::DefaultLieAlgebraOrthogonalBasis, ::Nothing
-)
+        𝔤::LieAlgebra, c, B::DefaultLieAlgebraOrthogonalBasis, ::Nothing
+    )
     return get_vector_lie(𝔤, c, B)
 end
 @inline function ManifoldsBase._get_vector(
-    𝔤::LieAlgebra, c, B::DefaultLieAlgebraOrthogonalBasis, T::Type
-)
+        𝔤::LieAlgebra, c, B::DefaultLieAlgebraOrthogonalBasis, T::Type
+    )
     return get_vector_lie(𝔤, c, B, T)
 end
 @inline function ManifoldsBase._get_vector(𝔤::LieAlgebra, c, B::AbstractBasis, ::Nothing)
@@ -178,19 +177,19 @@ end
 
 @doc "$(_doc_get_vector)"
 function ManifoldsBase.get_vector!(
-    𝔤::LieAlgebra, X, c, B::ManifoldsBase.AbstractBasis=DefaultLieAlgebraOrthogonalBasis()
-)
+        𝔤::LieAlgebra, X, c, B::ManifoldsBase.AbstractBasis = DefaultLieAlgebraOrthogonalBasis()
+    )
     return ManifoldsBase._get_vector!(𝔤, X, c, B)
 end
 
 function ManifoldsBase._get_vector!(
-    𝔤::LieAlgebra, X::T, c, B::DefaultLieAlgebraOrthogonalBasis
-) where {T}
+        𝔤::LieAlgebra, X::T, c, B::DefaultLieAlgebraOrthogonalBasis
+    ) where {T}
     return get_vector_lie!(𝔤, X, c, B)
 end
 function ManifoldsBase._get_vector!(
-    𝔤::LieAlgebra, X::T, c, B::ManifoldsBase.AbstractBasis
-) where {T}
+        𝔤::LieAlgebra, X::T, c, B::ManifoldsBase.AbstractBasis
+    ) where {T}
     G = base_lie_group(𝔤)
     return ManifoldsBase.get_vector!(base_manifold(G), X, identity_element(G, T), c, B)
 end
@@ -200,14 +199,14 @@ end
     return get_vector_lie!(𝔤, X, c, B)
 end
 @inline function get_vector_lie(
-    𝔤::LieAlgebra, c, B::DefaultLieAlgebraOrthogonalBasis, T::Type
-)
+        𝔤::LieAlgebra, c, B::DefaultLieAlgebraOrthogonalBasis, T::Type
+    )
     X = zero_vector(𝔤, T)
     return get_vector_lie!(𝔤, X, c, B)
 end
 @inline function get_vector_lie!(
-    𝔤::LieAlgebra, X::T, c, ::DefaultLieAlgebraOrthogonalBasis{𝔽}
-) where {T,𝔽}
+        𝔤::LieAlgebra, X::T, c, ::DefaultLieAlgebraOrthogonalBasis{𝔽}
+    ) where {T, 𝔽}
     G = base_lie_group(𝔤)
     return get_vector!(
         base_manifold(G), X, identity_element(G, T), c, DefaultOrthogonalBasis(𝔽)
@@ -224,11 +223,11 @@ to a tangent vector ``X ∈ $(_math(:𝔤))``.
 The coefficients are given with respect to a specific basis to a tangent vector in the Lie algebra
 
 ```math
-X = $(_tex(:sum))_{i∈$(_tex(:Cal,"I"))} c_iB_i,
+X = $(_tex(:sum))_{i∈$(_tex(:Cal, "I"))} c_iB_i,
 ```
 
-where ``$(_tex(:Set, "B_i"))_{i∈$(_tex(:Cal,"I"))}`` is a basis of the Lie algebra
-and ``$(_tex(:Cal,"I"))`` a corresponding index set, which is usually ``$(_tex(:Cal,"I"))=$(_tex(:Set,raw"1,\ldots,n"))``.
+where ``$(_tex(:Set, "B_i"))_{i∈$(_tex(:Cal, "I"))}`` is a basis of the Lie algebra
+and ``$(_tex(:Cal, "I"))`` a corresponding index set, which is usually ``$(_tex(:Cal, "I"))=$(_tex(:Set, raw"1,\ldots,n"))``.
 Then ``$(_tex(:Cal, "V")) = ℝ^n``.
 
 For the allocating variant, you can specify the type `T` of the tangent vector to obtain,
@@ -244,7 +243,7 @@ function ManifoldsBase.hat(𝔤::LieAlgebra, c)
     return get_vector(𝔤, c, DefaultLieAlgebraOrthogonalBasis())
 end
 function ManifoldsBase.hat(𝔤::LieAlgebra, c, T::Type)
-    return get_vector(𝔤, c, DefaultLieAlgebraOrthogonalBasis(); tangent_vector_type=T)
+    return get_vector(𝔤, c, DefaultLieAlgebraOrthogonalBasis(); tangent_vector_type = T)
 end
 
 @doc "$(_doc_hat)"
@@ -303,7 +302,7 @@ function LinearAlgebra.norm(𝔤::LieAlgebra, X)
     return sqrt(real(inner(𝔤, X, X)))
 end
 # Avoid an ambiguity
-function LinearAlgebra.norm(𝔤::LA, X::Real) where {LA<:LieAlgebra}
+function LinearAlgebra.norm(𝔤::LA, X::Real) where {LA <: LieAlgebra}
     return LinearAlgebra.norm(base_manifold(𝔤), identity_element(base_lie_group(𝔤)), X)
 end
 
@@ -336,22 +335,22 @@ see also [`rand(::LieAlgebra; kwargs...)`](@ref)
 @doc "$(_doc_rand_algebra)"
 Random.rand(::LieAlgebra; kwargs...)
 
-function Random.rand(𝔤::LieAlgebra, T::Type; vector_at=nothing, kwargs...)
+function Random.rand(𝔤::LieAlgebra, T::Type; vector_at = nothing, kwargs...)
     X = allocate_on(𝔤, TangentSpaceType(), T)
     G = base_lie_group(𝔤)
-    rand!(𝔤, X; vector_at=identity_element(G), kwargs...)
+    rand!(𝔤, X; vector_at = identity_element(G), kwargs...)
     return X
 end
-function Random.rand(𝔤::LieAlgebra, d::Integer; vectpr_at=nothing, kwargs...)
+function Random.rand(𝔤::LieAlgebra, d::Integer; vectpr_at = nothing, kwargs...)
     G = base_lie_group(𝔤)
     M = base_manifold(G)
-    return [rand(M; vector_at=identity_element(G), kwargs...) for _ in 1:d]
+    return [rand(M; vector_at = identity_element(G), kwargs...) for _ in 1:d]
 end
-function Random.rand(rng::AbstractRNG, 𝔤::LieAlgebra, T::Type; vector_at=nothing, kwargs...)
+function Random.rand(rng::AbstractRNG, 𝔤::LieAlgebra, T::Type; vector_at = nothing, kwargs...)
     X = allocate_on(base_lie_group(𝔤), TangentSpaceType(), T)
     G = base_lie_group(𝔤)
     # Here we also have to turn T into a point type P for the identity.
-    rand!(rng, 𝔤, X; vector_at=identity_element(G), kwargs...)
+    rand!(rng, 𝔤, X; vector_at = identity_element(G), kwargs...)
     return X
 end
 
@@ -375,11 +374,11 @@ Compute the vee map ``(⋅){\\vee}: $(_math(:𝔤)) → $(_tex(:Cal, "V"))`` tha
 from the [`LieAlgebra`](@ref) $(_math(:𝔤)) to its coordinates with respect to the [`DefaultLieAlgebraOrthogonalBasis`](@ref) basis in the Lie algebra
 
 ```math
-X = $(_tex(:sum))_{i∈$(_tex(:Cal,"I"))} c_iB_i,
+X = $(_tex(:sum))_{i∈$(_tex(:Cal, "I"))} c_iB_i,
 ```
 
-where ``$(_tex(:Set, "B_i"))_{i∈$(_tex(:Cal,"I"))}`` is a basis of the Lie algebra
-and ``$(_tex(:Cal,"I"))`` a corresponding index set, which is usually ``$(_tex(:Cal,"I"))=$(_tex(:Set,raw"1,\ldots,n"))``.
+where ``$(_tex(:Set, "B_i"))_{i∈$(_tex(:Cal, "I"))}`` is a basis of the Lie algebra
+and ``$(_tex(:Cal, "I"))`` a corresponding index set, which is usually ``$(_tex(:Cal, "I"))=$(_tex(:Set, raw"1,\ldots,n"))``.
 Then ``$(_tex(:Cal, "V")) = ℝ^n``
 
 The computation can be performed in-place of `c`. The inverse of `vee` is [`hat`](@ref).
@@ -409,7 +408,7 @@ By default this calls `zero_vector` on the manifold of `G` at the `identity_elem
 
 For the allocating variant the type `T` of the zero vector can be specified.
 """
-ManifoldsBase.zero_vector(G::LieGroup{𝔽,<:O}, T::Type) where {𝔽,O<:AbstractGroupOperation}
+ManifoldsBase.zero_vector(G::LieGroup{𝔽, <:O}, T::Type) where {𝔽, O <: AbstractGroupOperation}
 
 function ManifoldsBase.zero_vector(𝔤::LieAlgebra, T::Type)
     G = base_lie_group(𝔤) # access manifold twice -> pass to manifold directly
@@ -438,18 +437,18 @@ forwarding to fields `Xfield` and tangent vector functions
 """
 macro default_lie_algebra_fallbacks(TG, TF, Op, TV, Xfield::Symbol)
     block = quote
-        function ManifoldsBase.check_size(𝔤::LieAlgebra{$TF,<:$Op,<:$TG}, X::$TV; kwargs...)
+        function ManifoldsBase.check_size(𝔤::LieAlgebra{$TF, <:$Op, <:$TG}, X::$TV; kwargs...)
             return ManifoldsBase.check_size(𝔤, X.$Xfield; kwargs...)
         end
-        function ManifoldsBase.is_point(𝔤::LieAlgebra{$TF,<:$Op,<:$TG}, X::$TV; kwargs...)
+        function ManifoldsBase.is_point(𝔤::LieAlgebra{$TF, <:$Op, <:$TG}, X::$TV; kwargs...)
             return ManifoldsBase.is_point(𝔤, X.$Xfield; kwargs...)
         end
-        function LinearAlgebra.norm(𝔤::LieAlgebra{$TF,<:$Op,<:$TG}, X::$TV)
+        function LinearAlgebra.norm(𝔤::LieAlgebra{$TF, <:$Op, <:$TG}, X::$TV)
             return LinearAlgebra.norm(𝔤, X.$Xfield)
         end
         function ManifoldsBase.isapprox(
-            𝔤::LieAlgebra{$TF,<:$Op,<:$TG}, X::$TV, Y::$TV; kwargs...
-        )
+                𝔤::LieAlgebra{$TF, <:$Op, <:$TG}, X::$TV, Y::$TV; kwargs...
+            )
             return ManifoldsBase.isapprox(𝔤, X.$Xfield, Y.$Xfield; kwargs...)
         end
     end
@@ -461,8 +460,8 @@ end
 # allocation helpers
 
 function ManifoldsBase.allocate_result(
-    𝔤::LieAlgebra, f::typeof(ManifoldsBase.get_coordinates), X, basis::AbstractBasis{𝔽}
-) where {𝔽}
+        𝔤::LieAlgebra, f::typeof(ManifoldsBase.get_coordinates), X, basis::AbstractBasis{𝔽}
+    ) where {𝔽}
     X_ = internal_value(X)
     T = ManifoldsBase.coordinate_eltype(𝔤, X_, 𝔽)
     return ManifoldsBase.allocate_coordinates(𝔤, X_, T, number_of_coordinates(𝔤, basis))

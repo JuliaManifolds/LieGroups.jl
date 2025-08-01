@@ -37,11 +37,11 @@ we obtain from the second property as
 
 and see that ``g`` appears on the left.
 
-To emphasize the side the group operation is acting from, we sometimes write ``σ^{$(_tex(:rm,"L"))}``.
+To emphasize the side the group operation is acting from, we sometimes write ``σ^{$(_tex(:rm, "L"))}``.
 If the action is clear from context we write ``σ(g, p) = g $(_math(:act)) p``.
 
-One notable example of a left action is the inverse of an action of [`AbstractRightGroupActionType`](@ref) ``σ^{$(_tex(:rm,"R"))}``,
-which is given by ``τ_g = (σ^{$(_tex(:rm,"R"))}_g)^{-1} = σ^{$(_tex(:rm,"R"))}_{g^{-1}}``.
+One notable example of a left action is the inverse of an action of [`AbstractRightGroupActionType`](@ref) ``σ^{$(_tex(:rm, "R"))}``,
+which is given by ``τ_g = (σ^{$(_tex(:rm, "R"))}_g)^{-1} = σ^{$(_tex(:rm, "R"))}_{g^{-1}}``.
 We obtain
 
 $(_note(:RightInverseActionIsLeft))
@@ -72,11 +72,11 @@ we obtain from the second property as
 
 and see that ``g`` appears on the right.
 
-To emphasize the side the group operation is acting from, we sometimes write ``σ^{$(_tex(:rm,"R"))}``.
+To emphasize the side the group operation is acting from, we sometimes write ``σ^{$(_tex(:rm, "R"))}``.
 If the action is clear from context we write ``σ(p, g) = p $(_math(:act)) g``.
 
-One notable example of a right action is the inverse of an action of  [`AbstractLeftGroupActionType`](@ref) ``σ^{$(_tex(:rm,"L"))}``,
-which is given by ``τ_g = (σ^{$(_tex(:rm,"L"))}_g)^{-1} = σ^{$(_tex(:rm,"L"))}_{g^{-1}}``.
+One notable example of a right action is the inverse of an action of  [`AbstractLeftGroupActionType`](@ref) ``σ^{$(_tex(:rm, "L"))}``,
+which is given by ``τ_g = (σ^{$(_tex(:rm, "L"))}_g)^{-1} = σ^{$(_tex(:rm, "L"))}_{g^{-1}}``.
 We obtain
 
 $(_note(:LeftInverseActionIsRight))
@@ -115,8 +115,8 @@ See [HilgertNeeb:2012; Section 9.1.3](@cite) for more details.
 
 """
 struct GroupAction{
-    T<:AbstractGroupActionType,L<:AbstractLieGroup,M<:ManifoldsBase.AbstractManifold
-}
+        T <: AbstractGroupActionType, L <: AbstractLieGroup, M <: ManifoldsBase.AbstractManifold,
+    }
     type::T
     group::L
     manifold::M

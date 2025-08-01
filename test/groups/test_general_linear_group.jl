@@ -43,9 +43,9 @@ using LieGroupsTestSuite
         )
         test_lie_group(G, properties, expectations)
 
-        @test is_point(G, Identity(G); error=:error)
+        @test is_point(G, Identity(G); error = :error)
         @test_throws DomainError is_point(
-            G, Identity(AdditionGroupOperation()); error=:error
+            G, Identity(AdditionGroupOperation()); error = :error
         )
     end
 
@@ -64,7 +64,7 @@ using LieGroupsTestSuite
             log(G, Identity(G)) == zeros(1, 1) # Matrix to matrix
         end
         @testset "complex" begin
-            G = GeneralLinearGroup(1; field=ℂ)
+            G = GeneralLinearGroup(1; field = ℂ)
             e = Identity(G)
             p = (1 + im) * ones(1, 1)
             X = (1 - im) * ones(1, 1)
