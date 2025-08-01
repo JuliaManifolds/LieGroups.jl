@@ -100,6 +100,15 @@ using LieGroupsTestSuite
             @test compose(C2, fill(a), fill(b)) == fill(LieGroups.sym_rem(a + b))
             @test compose(C2, fill(a), b) == LieGroups.sym_rem(a + b)
             @test compose(C2, a, fill(b)) == LieGroups.sym_rem(a + b)
+            @test compose(C2, [a], [b]) == [LieGroups.sym_rem(a + b)]
+            @test compose(C2, [a], [b]) == [LieGroups.sym_rem(a + b)]
+            c = [0.0]
+            compose!(C2, c, a, b)
+            @test c == [LieGroups.sym_rem(a + b)]
+            compose!(C2, c, [a], b)
+            @test c == [LieGroups.sym_rem(a + b)]
+            compose!(C2, c, [a], [b])
+            @test c == [LieGroups.sym_rem(a + b)]
         end
     end
     @testset "Planar Circle" begin
@@ -143,5 +152,6 @@ using LieGroupsTestSuite
             LieAlgebra(C), SA[2.0], DefaultLieAlgebraOrthogonalBasis(), SVector{1}
         )
         @test a === SA[2.0]
+        @test compose(C, SA[0], SA[π]) == SA[-π]
     end
 end
