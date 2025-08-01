@@ -95,11 +95,11 @@ using LieGroupsTestSuite
             @test compose(C2, fill(1.0), 1.0) == 2.0
             @test LieGroups.sym_rem(fill(Float64(π))) == fill(Float64(-π))
             a = -π + 0.1
-            b = -0.2 
-            @test compose(C2, a, b) ==  LieGroups.sym_rem(a + b)
-            @test compose(C2, fill(a), fill(b)) ==  fill(LieGroups.sym_rem(a + b))
-            @test compose(C2, fill(a), b) ==  LieGroups.sym_rem(a + b)
-            @test compose(C2, a, fill(b)) ==  LieGroups.sym_rem(a + b)
+            b = -0.2
+            @test compose(C2, a, b) == LieGroups.sym_rem(a + b)
+            @test compose(C2, fill(a), fill(b)) == fill(LieGroups.sym_rem(a + b))
+            @test compose(C2, fill(a), b) == LieGroups.sym_rem(a + b)
+            @test compose(C2, a, fill(b)) == LieGroups.sym_rem(a + b)
         end
     end
     @testset "Planar Circle" begin
