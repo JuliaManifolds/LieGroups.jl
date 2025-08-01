@@ -40,10 +40,10 @@ using LieGroupsTestSuite
                 # vee,
             ],
         )
-        expectations = Dict(:repr => "UnitaryGroup(2)", :atol => 1e-14)
+        expectations = Dict(:repr => "UnitaryGroup(2)", :atol => 1.0e-14)
         test_lie_group(G, properties, expectations)
-        G2 = UnitaryGroup(2; parameter=:field)
-        expectations2 = Dict(:repr => "UnitaryGroup(2; parameter=:field)", :atol => 1e-14)
+        G2 = UnitaryGroup(2; parameter = :field)
+        expectations2 = Dict(:repr => "UnitaryGroup(2; parameter=:field)", :atol => 1.0e-14)
         test_lie_group(G2, properties, expectations2)
     end
     @testset "Quaternion Unitary group (Numbers)" begin
@@ -59,9 +59,9 @@ using LieGroupsTestSuite
             :Rng => Random.MersenneTwister(),
             :Functions => [compose, inv, exp, log, rand, show],
         )
-        expectations = Dict(:repr => "UnitaryGroup(1, ℍ)", :atols => Dict(exp => 1e-15))
+        expectations = Dict(:repr => "UnitaryGroup(1, ℍ)", :atols => Dict(exp => 1.0e-15))
         test_lie_group(G, properties, expectations)
-        G2 = UnitaryGroup(1, ℍ; parameter=:field)
+        G2 = UnitaryGroup(1, ℍ; parameter = :field)
 
         expectations2 = Dict(:repr => "UnitaryGroup(1, ℍ; parameter=:field)")
         test_lie_group(
@@ -86,7 +86,7 @@ using LieGroupsTestSuite
         )
         expectations = Dict(:repr => "UnitaryGroup(1, ℍ)")
         test_lie_group(G, properties, expectations)
-        G2 = UnitaryGroup(1, ℍ; parameter=:field)
+        G2 = UnitaryGroup(1, ℍ; parameter = :field)
 
         expectations2 = Dict(:repr => "UnitaryGroup(1, ℍ; parameter=:field)")
         test_lie_group(

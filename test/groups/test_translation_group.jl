@@ -59,11 +59,11 @@ begin
     @testset "Translation group operation action" begin
         # A first group action Test
         for t in [
-            RightGroupOperationAction(),
-            LeftGroupOperationAction(),
-            InverseLeftGroupOperationAction(),
-            InverseRightGroupOperationAction(),
-        ]
+                RightGroupOperationAction(),
+                LeftGroupOperationAction(),
+                InverseLeftGroupOperationAction(),
+                InverseRightGroupOperationAction(),
+            ]
             A = GroupOperationAction(t, G)
             properties2[:Name] = "with $A"
             expectations2[:repr] = "GroupOperationAction($t, $G)"
@@ -72,7 +72,7 @@ begin
     end
 
     @testset "StaticArrays" begin
-        @test identity_element(G, SVector{3,Float64}) === zero(SVector{3,Float64})
-        @test identity_element(G, MVector{3,Float64}) == zero(MVector{3,Float64})
+        @test identity_element(G, SVector{3, Float64}) === zero(SVector{3, Float64})
+        @test identity_element(G, MVector{3, Float64}) == zero(MVector{3, Float64})
     end
 end

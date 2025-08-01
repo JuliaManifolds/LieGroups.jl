@@ -11,7 +11,7 @@ Generate  orthogonal group ``$(_math(:O))(n)``.
 All keyword arguments in `kwargs...` are passed on to [`OrthogonalMatrices`](@extref `Manifolds.OrthogonalMatrices`) as well.
 """
 const OrthogonalGroup{T} = LieGroup{
-    ℝ,MatrixMultiplicationGroupOperation,OrthogonalMatrices{T}
+    ℝ, MatrixMultiplicationGroupOperation, OrthogonalMatrices{T},
 }
 
 function OrthogonalGroup(n::Int; kwargs...)
@@ -22,7 +22,7 @@ end
 const OrthogonalLieAlgebra{T} = LieAlgebra{
     ℝ,
     MatrixMultiplicationGroupOperation,
-    LieGroup{ℝ,MatrixMultiplicationGroupOperation,OrthogonalMatrices{T}},
+    LieGroup{ℝ, MatrixMultiplicationGroupOperation, OrthogonalMatrices{T}},
 }
 
 #
@@ -71,7 +71,7 @@ the ``3×3`` skew symmetric matrices are of the form
     X = $(_tex(:pmatrix, "0 & -c & b", "c & 0 & -a", "-b & a & 0")),
 ```
 for some ``a, b, c ∈ ℝ``. To compute the exponential, the [Rodrigues' rotation formula](https://en.wikipedia.org/wiki/Olinde_Rodrigues)
-can be used. With ``α = $(_tex(:sqrt, "a^2+b^2+c^2")) = $(_tex(:frac, "1", _tex(:sqrt,"2")))$(_tex(:norm,"X"))``
+can be used. With ``α = $(_tex(:sqrt, "a^2+b^2+c^2")) = $(_tex(:frac, "1", _tex(:sqrt, "2")))$(_tex(:norm, "X"))``
 we obtain for ``α ≠ 0``
 
 ```math
@@ -110,8 +110,8 @@ ManifoldsBase.exp(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, X)
 ManifoldsBase.exp!(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, g, X)
 
 function ManifoldsBase.exp!(
-    ::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}}, g, X
-)
+        ::CommonUnitarySubGroup{ManifoldsBase.ℝ, ManifoldsBase.TypeParameter{Tuple{2}}}, g, X
+    )
     @assert size(X) == (2, 2)
     @assert size(g) == (2, 2)
     @inbounds α = (X[2, 1] - X[1, 2]) / 2
@@ -126,8 +126,8 @@ function ManifoldsBase.exp!(
 end
 
 function ManifoldsBase.exp!(
-    ::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{3}}}, g, X
-)
+        ::CommonUnitarySubGroup{ManifoldsBase.ℝ, ManifoldsBase.TypeParameter{Tuple{3}}}, g, X
+    )
     θ = norm(X) / sqrt(2)
     if θ ≈ 0
         a = 1 - θ^2 / 6
@@ -142,8 +142,8 @@ function ManifoldsBase.exp!(
     return g
 end
 function ManifoldsBase.exp!(
-    ::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{4}}}, g, X
-)
+        ::CommonUnitarySubGroup{ManifoldsBase.ℝ, ManifoldsBase.TypeParameter{Tuple{4}}}, g, X
+    )
     T = eltype(X)
     α, β = angles_4d_skew_sym_matrix(X)
     sinα, cosα = sincos(α)
@@ -151,7 +151,7 @@ function ManifoldsBase.exp!(
     α² = α^2
     β² = β^2
     Δ = β² - α²
-    if !isapprox(Δ, 0; atol=1e-6)  # Case α > β ≥ 0
+    if !isapprox(Δ, 0; atol = 1.0e-6)  # Case α > β ≥ 0
         sincα = sinα / α
         sincβ = β == 0 ? one(T) : sinβ / β
         a₀ = (β² * cosα - α² * cosβ) / Δ
@@ -167,7 +167,7 @@ function ManifoldsBase.exp!(
         r = β / α
         c = 1 / (1 + r)
         d = α * (α - β) / 2
-        if α < 1e-2
+        if α < 1.0e-2
             e = evalpoly(α², (inv(T(3)), inv(T(-30)), inv(T(840)), inv(T(-45360))))
         else
             e = (sincα - cosα) / α²
@@ -184,43 +184,43 @@ function ManifoldsBase.exp!(
 end
 
 function ManifoldsBase.exp(
-    G::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
-    p::SMatrix,
-    X::SMatrix{2,2,T},
-) where {T}
+        G::CommonUnitarySubGroup{ManifoldsBase.ℝ, ManifoldsBase.TypeParameter{Tuple{2}}},
+        p::SMatrix,
+        X::SMatrix{2, 2, T},
+    ) where {T}
     # Use the default orthogonal basis and not vee
     θ = X[2] * sqrt(T(2))
     sinθ, cosθ = sincos(θ)
     return p * SA[cosθ -sinθ; sinθ cosθ]
 end
 function ManifoldsBase.exp(
-    G::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
-    X::SMatrix{2,2,T},
-) where {T}
+        G::CommonUnitarySubGroup{ManifoldsBase.ℝ, ManifoldsBase.TypeParameter{Tuple{2}}},
+        X::SMatrix{2, 2, T},
+    ) where {T}
     θ = X[2] * sqrt(T(2))
     sinθ, cosθ = sincos(θ)
     return SA[cosθ -sinθ; sinθ cosθ]
 end
 function ManifoldsBase.exp(
-    G::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
-    p::SMatrix,
-    X::SMatrix,
-)
+        G::CommonUnitarySubGroup{ManifoldsBase.ℝ, ManifoldsBase.TypeParameter{Tuple{3}}},
+        p::SMatrix,
+        X::SMatrix,
+    )
     return exp(G.manifold, p, X)
 end
 function ManifoldsBase.exp(
-    G::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
-    X::SMatrix,
-)
-    return exp(G.manifold, SMatrix{3,3,eltype(X)}(I), X)
+        G::CommonUnitarySubGroup{ManifoldsBase.ℝ, ManifoldsBase.TypeParameter{Tuple{3}}},
+        X::SMatrix,
+    )
+    return exp(G.manifold, SMatrix{3, 3, eltype(X)}(I), X)
 end
 
 function ManifoldsBase.exp_fused(
-    M::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
-    p::SMatrix,
-    X::SMatrix,
-    t::Real,
-)
+        M::CommonUnitarySubGroup{ManifoldsBase.ℝ, ManifoldsBase.TypeParameter{Tuple{2}}},
+        p::SMatrix,
+        X::SMatrix,
+        t::Real,
+    )
     return exp(M, p, t * X)
 end
 
@@ -253,21 +253,21 @@ get_coordinates(G::OrthogonalLieAlgebra, X, ::DefaultLieAlgebraOrthogonalBasis)
 get_coordinates!(G::OrthogonalLieAlgebra, c, X, ::DefaultLieAlgebraOrthogonalBasis)
 
 function get_coordinates_lie!(
-    ::CUSA, c, X, ::DefaultLieAlgebraOrthogonalBasis{ℝ}
-) where {
-    CUSA<:CommonUnitarySubAlgebra{ManifoldsBase.ℝ,<:ManifoldsBase.TypeParameter{Tuple{2}}}
-}
+        ::CUSA, c, X, ::DefaultLieAlgebraOrthogonalBasis{ℝ}
+    ) where {
+        CUSA <: CommonUnitarySubAlgebra{ManifoldsBase.ℝ, <:ManifoldsBase.TypeParameter{Tuple{2}}},
+    }
     @assert size(X) == (2, 2)
     @assert size(c) == (1,)
     c[1] = X[2, 1]
     return c
 end
 function get_coordinates_lie!(
-    G::CommonUnitarySubAlgebra{ManifoldsBase.ℝ,<:ManifoldsBase.TypeParameter{Tuple{n}}},
-    c,
-    X,
-    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
-) where {n}
+        G::CommonUnitarySubAlgebra{ManifoldsBase.ℝ, <:ManifoldsBase.TypeParameter{Tuple{n}}},
+        c,
+        X,
+        ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+    ) where {n}
     @assert size(X) == (n, n)
     @assert length(c) == manifold_dimension(G)
     @assert n > 2
@@ -275,8 +275,8 @@ function get_coordinates_lie!(
     return c
 end
 function get_coordinates_lie!(
-    𝔤::CommonUnitarySubAlgebra{ManifoldsBase.ℝ}, c, X, ::DefaultLieAlgebraOrthogonalBasis{ℝ}
-)
+        𝔤::CommonUnitarySubAlgebra{ManifoldsBase.ℝ}, c, X, ::DefaultLieAlgebraOrthogonalBasis{ℝ}
+    )
     G = 𝔤.manifold
     n = ManifoldsBase.get_parameter(G.manifold.size)[1]
     @assert length(c) == manifold_dimension(𝔤)
@@ -305,20 +305,20 @@ function _get_coordinates_lie_On!(c, X)
 end
 
 function ManifoldsBase.get_coordinates(
-    ::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
-    p::SMatrix,
-    X::SMatrix,
-    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
-)
+        ::CommonUnitarySubGroup{ManifoldsBase.ℝ, ManifoldsBase.TypeParameter{Tuple{2}}},
+        p::SMatrix,
+        X::SMatrix,
+        ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+    )
     return SA[X[2]]
 end
 
 function ManifoldsBase.get_coordinates(
-    ::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
-    p::SMatrix,
-    X::SMatrix,
-    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
-)
+        ::CommonUnitarySubGroup{ManifoldsBase.ℝ, ManifoldsBase.TypeParameter{Tuple{3}}},
+        p::SMatrix,
+        X::SMatrix,
+        ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+    )
     return SA[X[3, 2], X[1, 3], X[2, 1]]
 end
 
@@ -353,21 +353,21 @@ get_vector(𝔤::OrthogonalLieAlgebra, X, ::DefaultLieAlgebraOrthogonalBasis)
 get_vector!(𝔤::OrthogonalLieAlgebra, c, X::DefaultLieAlgebraOrthogonalBasis)
 
 function get_vector_lie(
-    ::CommonUnitarySubAlgebra{ManifoldsBase.ℝ,<:ManifoldsBase.TypeParameter{Tuple{2}}},
-    c,
-    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
-    ::Type{<:SMatrix{2,2,T}},
-) where {T}
+        ::CommonUnitarySubAlgebra{ManifoldsBase.ℝ, <:ManifoldsBase.TypeParameter{Tuple{2}}},
+        c,
+        ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+        ::Type{<:SMatrix{2, 2, T}},
+    ) where {T}
     @assert size(c) == (1,)
-    return SMatrix{2,2,T}(0, c[1], -c[1], 0)
+    return SMatrix{2, 2, T}(0, c[1], -c[1], 0)
 end
 
 function get_vector_lie!(
-    ::CommonUnitarySubAlgebra{ManifoldsBase.ℝ,<:ManifoldsBase.TypeParameter{Tuple{2}}},
-    X,
-    c,
-    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
-)
+        ::CommonUnitarySubAlgebra{ManifoldsBase.ℝ, <:ManifoldsBase.TypeParameter{Tuple{2}}},
+        X,
+        c,
+        ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+    )
     @assert size(X) == (2, 2)
     @assert size(c) == (1,)
     X[1, 1] = 0.0
@@ -377,11 +377,11 @@ function get_vector_lie!(
     return X
 end
 function get_vector_lie!(
-    𝔤::CommonUnitarySubAlgebra{ℝ,<:ManifoldsBase.TypeParameter{Tuple{n}}},
-    X,
-    c,
-    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
-) where {n}
+        𝔤::CommonUnitarySubAlgebra{ℝ, <:ManifoldsBase.TypeParameter{Tuple{n}}},
+        X,
+        c,
+        ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+    ) where {n}
     @assert size(X) == (n, n)
     @assert length(c) == manifold_dimension(𝔤)
     @assert n > 2
@@ -389,8 +389,8 @@ function get_vector_lie!(
     return X
 end
 function get_vector_lie!(
-    𝔤::CommonUnitarySubAlgebra{ManifoldsBase.ℝ}, X, c, ::DefaultLieAlgebraOrthogonalBasis{ℝ}
-)
+        𝔤::CommonUnitarySubAlgebra{ManifoldsBase.ℝ}, X, c, ::DefaultLieAlgebraOrthogonalBasis{ℝ}
+    )
     G = 𝔤.manifold
     n = ManifoldsBase.get_parameter(G.manifold.size)[1]
     @assert length(c) == manifold_dimension(𝔤)
@@ -432,19 +432,19 @@ function _get_vector_lie_On!(X, c)
 end
 
 function ManifoldsBase.get_vector(
-    ::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
-    p::SMatrix,
-    Xⁱ,
-    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
-)
+        ::CommonUnitarySubGroup{ManifoldsBase.ℝ, ManifoldsBase.TypeParameter{Tuple{2}}},
+        p::SMatrix,
+        Xⁱ,
+        ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+    )
     return @SMatrix [0 -Xⁱ[]; Xⁱ[] 0]
 end
 function ManifoldsBase.get_vector(
-    ::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
-    p::SMatrix,
-    Xⁱ,
-    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
-)
+        ::CommonUnitarySubGroup{ManifoldsBase.ℝ, ManifoldsBase.TypeParameter{Tuple{3}}},
+        p::SMatrix,
+        Xⁱ,
+        ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+    )
     return @SMatrix [0 -Xⁱ[3] Xⁱ[2]; Xⁱ[3] 0 -Xⁱ[1]; -Xⁱ[2] Xⁱ[1] 0]
 end
 
@@ -538,8 +538,8 @@ Note the logarithmic map is only locally around the identity uniquely determined
 ManifoldsBase.log(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, g)
 
 function ManifoldsBase.log(
-    M::CommonUnitarySubGroup{ManifoldsBase.ℝ}, p::SMatrix, q::SMatrix
-)
+        M::CommonUnitarySubGroup{ManifoldsBase.ℝ}, p::SMatrix, q::SMatrix
+    )
     return log(M.manifold, p, q)
 end
 
@@ -547,8 +547,8 @@ end
 ManifoldsBase.log!(::OrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, X, g)
 
 function ManifoldsBase.log!(
-    ::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}}, X, g
-)
+        ::CommonUnitarySubGroup{ManifoldsBase.ℝ, ManifoldsBase.TypeParameter{Tuple{2}}}, X, g
+    )
     @assert size(X) == (2, 2)
     @assert size(g) == (2, 2)
     @inbounds α = atan(g[2, 1], g[1, 1])
@@ -561,18 +561,18 @@ function ManifoldsBase.log!(
     return X
 end
 function ManifoldsBase.log!(
-    G::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{2}}},
-    X,
-    ::Identity{MatrixMultiplicationGroupOperation},
-)
+        G::CommonUnitarySubGroup{ManifoldsBase.ℝ, ManifoldsBase.TypeParameter{Tuple{2}}},
+        X,
+        ::Identity{MatrixMultiplicationGroupOperation},
+    )
     return zero_vector!(LieAlgebra(G), X)
 end
 
 function ManifoldsBase.log!(
-    G::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{3}}},
-    X::AbstractMatrix,
-    q::AbstractMatrix,
-)
+        G::CommonUnitarySubGroup{ManifoldsBase.ℝ, ManifoldsBase.TypeParameter{Tuple{3}}},
+        X::AbstractMatrix,
+        q::AbstractMatrix,
+    )
     cosθ = (tr(q) - 1) / 2
     if cosθ ≈ -1
         eig = eigen(q)
@@ -586,10 +586,10 @@ function ManifoldsBase.log!(
     return project!(LieAlgebra(G), X, X)
 end
 function ManifoldsBase.log!(
-    G::CommonUnitarySubGroup{ManifoldsBase.ℝ,ManifoldsBase.TypeParameter{Tuple{4}}},
-    X::AbstractMatrix,
-    q::AbstractMatrix,
-)
+        G::CommonUnitarySubGroup{ManifoldsBase.ℝ, ManifoldsBase.TypeParameter{Tuple{4}}},
+        X::AbstractMatrix,
+        q::AbstractMatrix,
+    )
     cosα, cosβ = cos_angles_4d_rotation_matrix(q)
     α = acos(clamp(cosα, -1, 1))
     β = acos(clamp(cosβ, -1, 1))

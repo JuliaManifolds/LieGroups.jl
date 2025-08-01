@@ -36,7 +36,7 @@ using LieGroupsTestSuite
                 vee,
             ],
         )
-        expectations = Dict(:repr => "SpecialLinearGroup(2, ℝ)", :atol => 1e-10)
+        expectations = Dict(:repr => "SpecialLinearGroup(2, ℝ)", :atol => 1.0e-10)
         test_lie_group(G, properties, expectations)
     end
     @testset "Complex SL(2)" begin
@@ -68,9 +68,9 @@ using LieGroupsTestSuite
                 #vee,
             ],
         )
-        expectations = Dict(:repr => "SpecialLinearGroup(2, ℂ)", :atol => 1e-14)
+        expectations = Dict(:repr => "SpecialLinearGroup(2, ℂ)", :atol => 1.0e-14)
         test_lie_group(G, properties, expectations)
     end
-    @test repr(SpecialLinearGroup(2; parameter=:field)) ===
+    @test repr(SpecialLinearGroup(2; parameter = :field)) ===
         "SpecialLinearGroup(2, ℝ; parameter=:field)"
 end

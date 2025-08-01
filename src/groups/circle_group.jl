@@ -83,7 +83,7 @@ Generate the circle group represented as two dimensional real valued vectors of 
 
 The default representation is by complex numbers and can be constructed with `CircleGroup()`.
 """
-CircleGroup(::Union{ManifoldsBase.AbstractNumbers,Circle,Euclidean,Sphere})
+CircleGroup(::Union{ManifoldsBase.AbstractNumbers, Circle, Euclidean, Sphere})
 
 #
 #

@@ -77,8 +77,8 @@ function GroupOperationAction(action::AbstractGroupActionType, G::LieGroup)
     return GroupAction(action, G, G)
 end
 function Base.show(
-    io::IO, GA::GroupAction{A,G,G}
-) where {A<:AbstractGroupActionType,G<:LieGroup}
+        io::IO, GA::GroupAction{A, G, G}
+    ) where {A <: AbstractGroupActionType, G <: LieGroup}
     return print(io, "GroupOperationAction($(GA.type), $(GA.group))")
 end
 

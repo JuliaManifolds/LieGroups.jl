@@ -80,7 +80,7 @@ using LieGroupsTestSuite
         # fallback on Real fails here since X=2.0 is not a tangent vector
         @test_throws DomainError norm(LieAlgebra(VG), 2.0)
         # Deactivate test
-        VG2 = ValidationLieGroup(G; ignore_contexts=[:Input])
+        VG2 = ValidationLieGroup(G; ignore_contexts = [:Input])
         @test norm(LieAlgebra(VG2), 2.0) isa Number
         # pass through
         @test representation_size(VG) == (3,)
@@ -89,22 +89,22 @@ using LieGroupsTestSuite
         @test Y.value == zeros(3)
     end
     @testset "_msg defaults w/strings" begin
-        @test_logs (:warn, "msg") LieGroups._msg(VG, "msg"; error=:warn)
-        @test_logs (:info, "msg") LieGroups._msg(VG, "msg"; error=:info)
-        @test LieGroups._msg(VG, "msg"; error=:nothing) === nothing
-        @test_logs LieGroups._msg(VG, "msg"; error=:none)
-        @test_throws ErrorException LieGroup._msg(VG, "msg"; error=:error)
+        @test_logs (:warn, "msg") LieGroups._msg(VG, "msg"; error = :warn)
+        @test_logs (:info, "msg") LieGroups._msg(VG, "msg"; error = :info)
+        @test LieGroups._msg(VG, "msg"; error = :nothing) === nothing
+        @test_logs LieGroups._msg(VG, "msg"; error = :none)
+        @test_throws ErrorException LieGroup._msg(VG, "msg"; error = :error)
         # same with error
-        @test_logs (:warn,) LieGroups._msg(VG, DomainError("msg"); error=:warn)
-        @test_logs (:info,) LieGroups._msg(VG, DomainError("msg"); error=:info)
-        @test LieGroups._msg(VG, DomainError("msg"); error=:nothing) === nothing
-        @test_logs LieGroups._msg(VG, DomainError("msg"); error=:none)
-        @test_throws DomainError LieGroups._msg(VG, DomainError("msg"); error=:error)
+        @test_logs (:warn,) LieGroups._msg(VG, DomainError("msg"); error = :warn)
+        @test_logs (:info,) LieGroups._msg(VG, DomainError("msg"); error = :info)
+        @test LieGroups._msg(VG, DomainError("msg"); error = :nothing) === nothing
+        @test_logs LieGroups._msg(VG, DomainError("msg"); error = :none)
+        @test_throws DomainError LieGroups._msg(VG, DomainError("msg"); error = :error)
     end
     @testset "_vlc responses when to exclude certain functions or contexts" begin
-        VG1 = ValidationLieGroup(G; ignore_functions=Dict(exp => :All))
-        VG2 = ValidationLieGroup(G; ignore_functions=Dict(exp => :Input))
-        VG3 = ValidationLieGroup(G; ignore_contexts=[:Input])
+        VG1 = ValidationLieGroup(G; ignore_functions = Dict(exp => :All))
+        VG2 = ValidationLieGroup(G; ignore_functions = Dict(exp => :Input))
+        VG3 = ValidationLieGroup(G; ignore_contexts = [:Input])
         # VG1: checks disabled for all of exp
         @test !LieGroups._vLc(VG1, exp, :Input)
         @test !LieGroups._vLc(VG1, exp, :Ouput)

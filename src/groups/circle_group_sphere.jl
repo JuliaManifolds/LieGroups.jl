@@ -1,18 +1,18 @@
 #
 #circle group represented as vectors in ℝ^2, operation: adding angles in the unit circle
 #
-function CircleGroup(M::Sphere{ManifoldsBase.TypeParameter{Tuple{1}},ℝ})
-    return LieGroup{ℝ,AbelianMultiplicationGroupOperation,typeof(M)}(
+function CircleGroup(M::Sphere{ManifoldsBase.TypeParameter{Tuple{1}}, ℝ})
+    return LieGroup{ℝ, AbelianMultiplicationGroupOperation, typeof(M)}(
         M, AbelianMultiplicationGroupOperation()
     )
 end
 
-function CircleGroup(::Euclidean{ManifoldsBase.TypeParameter{Tuple{2}},ℝ})
+function CircleGroup(::Euclidean{ManifoldsBase.TypeParameter{Tuple{2}}, ℝ})
     return CircleGroup(Sphere(1))
 end
 
 const _PlanarCircleGroup = LieGroup{
-    ℝ,AbelianMultiplicationGroupOperation,<:Sphere{ManifoldsBase.TypeParameter{Tuple{1}},ℝ}
+    ℝ, AbelianMultiplicationGroupOperation, <:Sphere{ManifoldsBase.TypeParameter{Tuple{1}}, ℝ},
 }
 
 #=
@@ -65,7 +65,7 @@ canonical identification of the real plane with the complex plane.
 
 This can be computed in-place of `g`.
 ```math
-$(_tex(:exp)) $(_tex(:pmatrix, 0, "t")) = $(_tex(:pmatrix, _tex(:cos)*"(t)", _tex(:sin)*"(t)"))
+$(_tex(:exp)) $(_tex(:pmatrix, 0, "t")) = $(_tex(:pmatrix, _tex(:cos) * "(t)", _tex(:sin) * "(t)"))
 ```
 """
 @doc "$(_doc_exp_planar_circ)"
@@ -98,7 +98,7 @@ end
 function identity_element(::_PlanarCircleGroup, ::Type{<:AbstractVector{T}}) where {T}
     return [one(T), zero(T)]
 end
-function identity_element!(::_PlanarCircleGroup, p::V) where {T,V<:AbstractVector{T}}
+function identity_element!(::_PlanarCircleGroup, p::V) where {T, V <: AbstractVector{T}}
     p .= [one(T), zero(T)]
     return p
 end
@@ -110,8 +110,8 @@ function inv!(::_PlanarCircleGroup, q, p)
 end
 
 function inv!(
-    G::PG, q, ::Identity{AbelianMultiplicationGroupOperation}
-) where {PG<:_PlanarCircleGroup}
+        G::PG, q, ::Identity{AbelianMultiplicationGroupOperation}
+    ) where {PG <: _PlanarCircleGroup}
     return identity_element!(G, q)
 end
 
@@ -147,8 +147,8 @@ function ManifoldsBase.log(::_PlanarCircleGroup, g)
 end
 
 function ManifoldsBase.log(
-    C::_PlanarCircleGroup, ::Identity{AbelianMultiplicationGroupOperation}
-)
+        C::_PlanarCircleGroup, ::Identity{AbelianMultiplicationGroupOperation}
+    )
     return zero_vector(LieAlgebra(C))
 end
 

@@ -11,7 +11,7 @@ Generate  special orthogonal group ``$(_math(:SO))(n)``.
 All keyword arguments in `kwargs...` are passed on to [`Rotations`](@extref `Manifolds.Rotations`) as well.
 """
 const SpecialOrthogonalGroup{T} = LieGroup{
-    ManifoldsBase.ℝ,MatrixMultiplicationGroupOperation,Rotations{T}
+    ManifoldsBase.ℝ, MatrixMultiplicationGroupOperation, Rotations{T},
 }
 
 function SpecialOrthogonalGroup(n::Int; kwargs...)
@@ -80,8 +80,8 @@ end
 
 inv!(G::SpecialOrthogonalGroup, k, g) = copyto!(G, k, transpose(g))
 function inv!(
-    G::SpecialOrthogonalGroup, q, ::Identity{O}
-) where {O<:AbstractMultiplicationGroupOperation}
+        G::SpecialOrthogonalGroup, q, ::Identity{O}
+    ) where {O <: AbstractMultiplicationGroupOperation}
     return identity_element!(G, q)
 end
 

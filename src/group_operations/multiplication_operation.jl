@@ -14,44 +14,44 @@ A group operation that is realised by a matrix multiplication.
 """
 struct MatrixMultiplicationGroupOperation <: AbstractMultiplicationGroupOperation end
 
-Base.:*(::Identity{MatrixMultiplicationGroupOperation}, p::Union{AbstractMatrix,Number}) = p
+Base.:*(::Identity{MatrixMultiplicationGroupOperation}, p::Union{AbstractMatrix, Number}) = p
 function Base.:*(
-    p::Union{AbstractMatrix,Number}, ::Identity{MatrixMultiplicationGroupOperation}
-)
+        p::Union{AbstractMatrix, Number}, ::Identity{MatrixMultiplicationGroupOperation}
+    )
     return p
 end
 function Base.:*(
-    e::Identity{<:AbstractMultiplicationGroupOperation},
-    ::Identity{<:AbstractMultiplicationGroupOperation},
-)
+        e::Identity{<:AbstractMultiplicationGroupOperation},
+        ::Identity{<:AbstractMultiplicationGroupOperation},
+    )
     return e
 end
 function Base.:*(
-    ::Identity{<:AbstractMultiplicationGroupOperation}, e::Identity{AdditionGroupOperation}
-)
+        ::Identity{<:AbstractMultiplicationGroupOperation}, e::Identity{AdditionGroupOperation}
+    )
     return e
 end
 function Base.:*(
-    e::Identity{AdditionGroupOperation}, ::Identity{<:AbstractMultiplicationGroupOperation}
-)
+        e::Identity{AdditionGroupOperation}, ::Identity{<:AbstractMultiplicationGroupOperation}
+    )
     return e
 end
 
 Base.:/(p, ::Identity{<:AbstractMultiplicationGroupOperation}) = p
 Base.:/(::Identity{<:AbstractMultiplicationGroupOperation}, p) = inv(p)
 function Base.:/(
-    e::Identity{<:AbstractMultiplicationGroupOperation},
-    ::Identity{<:AbstractMultiplicationGroupOperation},
-)
+        e::Identity{<:AbstractMultiplicationGroupOperation},
+        ::Identity{<:AbstractMultiplicationGroupOperation},
+    )
     return e
 end
 
 Base.:\(p, ::Identity{<:AbstractMultiplicationGroupOperation}) = inv(p)
 Base.:\(::Identity{<:AbstractMultiplicationGroupOperation}, p) = p
 function Base.:\(
-    e::Identity{<:AbstractMultiplicationGroupOperation},
-    ::Identity{<:AbstractMultiplicationGroupOperation},
-)
+        e::Identity{<:AbstractMultiplicationGroupOperation},
+        ::Identity{<:AbstractMultiplicationGroupOperation},
+    )
     return e
 end
 
@@ -67,13 +67,13 @@ This can be computed in-place of `k`.
 """
 
 @doc "$(_doc_compose_mult)"
-compose(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any) where {𝔽}
+compose(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, ::Any, ::Any) where {𝔽}
 @doc "$(_doc_compose_mult)"
 compose!(
-    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any
+    ::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any
 ) where {𝔽}
 
-function _compose!(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, k, g, h) where {𝔽}
+function _compose!(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, k, g, h) where {𝔽}
     # perform the multiplication “safe”, that is, even when providing
     # one of the inputs `g,h`` and as output `k`
     (k === g || k === h) ? copyto!(k, g * h) : mul!(k, g, h)
@@ -94,13 +94,13 @@ which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``D(c_
 
 @doc "$(_doc_diff_conjugate_mul)"
 diff_conjugate(
-    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any
+    ::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any
 ) where {𝔽}
 
 @doc "$(_doc_diff_conjugate_mul)"
 function diff_conjugate!(
-    G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, g, h, X
-) where {𝔽}
+        G::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, Y, g, h, X
+    ) where {𝔽}
     inv_right_compose!(G, Y, X, g) # Y = Xg^{-1}
     compose!(G, Y, g, Y) # Y = gY
     return Y
@@ -127,19 +127,19 @@ Then we get ``g^{$(_tex(:transp))}(g^{-1}(gX)g^{-1})`` which simplifies to ``-g^
 """
 
 @doc "$(_doc_diff_inv_mult)"
-diff_inv(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g, X::Number) where {𝔽} = -X
+diff_inv(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, g, X::Number) where {𝔽} = -X
 
 function diff_inv(
-    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation},
-    p::AbstractArray{<:Number,0},
-    X::AbstractArray{<:Number,0},
-) where {𝔽}
+        ::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation},
+        p::AbstractArray{<:Number, 0},
+        X::AbstractArray{<:Number, 0},
+    ) where {𝔽}
     p_inv = inv(p[])
     return -(p[] * X * p_inv)
 end
 
 @doc "$(_doc_diff_inv_mult)"
-function diff_inv!(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, p, X) where {𝔽}
+function diff_inv!(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, Y, p, X) where {𝔽}
     p_inv = inv(p)
     Z = X * p_inv
     mul!(Y, p', Z)
@@ -156,12 +156,12 @@ which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``Dλ_
 """
 
 @doc "$(_doc_diff_left_compose_mult)"
-diff_left_compose(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g, h, X) where {𝔽}
+diff_left_compose(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, g, h, X) where {𝔽}
 
 @doc "$(_doc_diff_left_compose_mult)"
 function diff_left_compose!(
-    G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, g, h, X
-) where {𝔽}
+        G::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, Y, g, h, X
+    ) where {𝔽}
     return copyto!(LieAlgebra(G), Y, g * X)
 end
 
@@ -175,13 +175,13 @@ which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``Dρ_
 
 @doc "$(_doc_diff_right_compose_mult)"
 diff_right_compose(
-    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any
+    ::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any
 ) where {𝔽}
 
 @doc "$(_doc_diff_right_compose_mult)"
 function diff_right_compose!(
-    G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, g, ::Any, X
-) where {𝔽}
+        G::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, Y, g, ::Any, X
+    ) where {𝔽}
     return copyto!(LieAlgebra(G), Y, X * g)
 end
 
@@ -196,12 +196,12 @@ This can be computed in-place of `g`.
 """
 
 @doc "$(_doc_exp_mult)"
-ManifoldsBase.exp(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any) where {𝔽}
+ManifoldsBase.exp(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, ::Any) where {𝔽}
 
 @doc "$(_doc_exp_mult)"
 function ManifoldsBase.exp!(
-    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g, X
-) where {𝔽}
+        ::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, g, X
+    ) where {𝔽}
     copyto!(g, exp(X))
     return g
 end
@@ -215,26 +215,26 @@ which for an [`AbstractMultiplicationGroupOperation`](@ref) is the one-element o
 """
 
 @doc "$(_doc_identity_element_mult)"
-identity_element(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}) where {𝔽}
+identity_element(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}) where {𝔽}
 
 function identity_element(
-    G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Type{<:AbstractArray{T,2}}
-) where {𝔽,T}
+        G::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, ::Type{<:AbstractArray{T, 2}}
+    ) where {𝔽, T}
     (N, M) = representation_size(G.manifold)
     return Matrix{T}(I(N))
 end
 
 @doc "$(_doc_identity_element_mult)"
-identity_element!(::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, e) where {𝔽}
+identity_element!(::LieGroup{𝔽, <:MatrixMultiplicationGroupOperation}, e) where {𝔽}
 function identity_element!(
-    ::LieGroup{𝔽,<:MatrixMultiplicationGroupOperation}, e::AbstractMatrix
-) where {𝔽}
+        ::LieGroup{𝔽, <:MatrixMultiplicationGroupOperation}, e::AbstractMatrix
+    ) where {𝔽}
     return copyto!(e, LinearAlgebra.I)
 end
 
 function ManifoldsBase.inner(
-    G::LieAlgebra{𝔽,<:AbstractMultiplicationGroupOperation}, X, Y
-) where {𝔽}
+        G::LieAlgebra{𝔽, <:AbstractMultiplicationGroupOperation}, X, Y
+    ) where {𝔽}
     return dot(X, Y)
 end
 
@@ -247,29 +247,29 @@ simplifies to the multiplicative inverse ``g^{-1}``. This can be done in-place o
 """
 
 @doc "$(_doc_inv_mult)"
-Base.inv(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any) where {𝔽}
+Base.inv(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, ::Any) where {𝔽}
 
 @doc "$(_doc_inv_mult)"
-function inv!(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, h, g) where {𝔽}
+function inv!(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, h, g) where {𝔽}
     copyto!(h, inv(g))
     return h
 end
 function inv!(
-    G::LieGroup{𝔽,O}, q, ::Identity{O}
-) where {𝔽,O<:AbstractMultiplicationGroupOperation}
+        G::LieGroup{𝔽, O}, q, ::Identity{O}
+    ) where {𝔽, O <: AbstractMultiplicationGroupOperation}
     return identity_element!(G, q)
 end
 
 # Compute g^{-1}h more efficient than inverting g
 function inv_left_compose!(
-    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, k, g, h
-) where {𝔽}
+        ::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, k, g, h
+    ) where {𝔽}
     return copyto!(k, g \ h)
 end
 # Compute g∘h^{-1} more efficient than inverting h
 function inv_right_compose!(
-    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, k, g, h
-) where {𝔽}
+        ::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, k, g, h
+    ) where {𝔽}
     return copyto!(k, g / h)
 end
 
@@ -289,12 +289,12 @@ The computation can be done in-place of `Z`.
 """
 
 @doc "$(_doc_lie_bracket_mult)"
-lie_bracket(::LieAlgebra{𝔽,MatrixMultiplicationGroupOperation}, ::Any, ::Any) where {𝔽}
+lie_bracket(::LieAlgebra{𝔽, MatrixMultiplicationGroupOperation}, ::Any, ::Any) where {𝔽}
 
 @doc "$(_doc_lie_bracket_mult)"
 function lie_bracket!(
-    ::LieAlgebra{𝔽,O,<:LieGroup{𝔽,O}}, Z, X, Y
-) where {𝔽,O<:MatrixMultiplicationGroupOperation}
+        ::LieAlgebra{𝔽, O, <:LieGroup{𝔽, O}}, Z, X, Y
+    ) where {𝔽, O <: MatrixMultiplicationGroupOperation}
     mul!(Z, X, Y)
     mul!(Z, Y, X, -1, true)
     return Z
@@ -311,51 +311,51 @@ This can be computed in-place of `X`.
 """
 
 @doc "$(_doc_log_mult)"
-ManifoldsBase.log(::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, ::Any) where {𝔽}
+ManifoldsBase.log(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, ::Any) where {𝔽}
 
 function ManifoldsBase.log(
-    G::LieGroup{𝔽,O}, ::Identity{O}
-) where {𝔽,O<:AbstractMultiplicationGroupOperation}
+        G::LieGroup{𝔽, O}, ::Identity{O}
+    ) where {𝔽, O <: AbstractMultiplicationGroupOperation}
     return zero_vector(LieAlgebra(G))
 end
 function ManifoldsBase.log(
-    G::LieGroup{𝔽,O}, ::Identity{O}, T::Type
-) where {𝔽,O<:AbstractMultiplicationGroupOperation}
+        G::LieGroup{𝔽, O}, ::Identity{O}, T::Type
+    ) where {𝔽, O <: AbstractMultiplicationGroupOperation}
     return zero_vector(LieAlgebra(G), T)
 end
 
 @doc "$(_doc_log_mult)"
 function ManifoldsBase.log!(
-    ::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, X, g
-) where {𝔽}
+        ::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, X, g
+    ) where {𝔽}
     copyto!(X, log(g))
     return X
 end
 function ManifoldsBase.log!(
-    G::LieGroup{𝔽,O}, X, ::Identity{O}
-) where {𝔽,O<:AbstractMultiplicationGroupOperation}
+        G::LieGroup{𝔽, O}, X, ::Identity{O}
+    ) where {𝔽, O <: AbstractMultiplicationGroupOperation}
     zero_vector!(LieAlgebra(G), X)
     return X
 end
 
 LinearAlgebra.mul!(q, ::Identity{MatrixMultiplicationGroupOperation}, p) = copyto!(q, p)
 function LinearAlgebra.mul!(
-    q::AbstractMatrix, p::AbstractMatrix, ::Identity{MatrixMultiplicationGroupOperation}
-)
+        q::AbstractMatrix, p::AbstractMatrix, ::Identity{MatrixMultiplicationGroupOperation}
+    )
     return copyto!(q, p)
 end
 function LinearAlgebra.mul!(
-    q::Union{AbstractMatrix},
-    ::Identity{MatrixMultiplicationGroupOperation},
-    ::Identity{MatrixMultiplicationGroupOperation},
-)
+        q::Union{AbstractMatrix},
+        ::Identity{MatrixMultiplicationGroupOperation},
+        ::Identity{MatrixMultiplicationGroupOperation},
+    )
     return copyto!(q, I)
 end
 function LinearAlgebra.mul!(
-    q::Identity{MatrixMultiplicationGroupOperation},
-    ::Identity{MatrixMultiplicationGroupOperation},
-    ::Identity{MatrixMultiplicationGroupOperation},
-)
+        q::Identity{MatrixMultiplicationGroupOperation},
+        ::Identity{MatrixMultiplicationGroupOperation},
+        ::Identity{MatrixMultiplicationGroupOperation},
+    )
     return q
 end
 

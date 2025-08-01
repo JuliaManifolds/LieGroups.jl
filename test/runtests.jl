@@ -10,7 +10,7 @@ using LieGroupsTestSuite
 
 function include_test(path)
     @info "Testing $path"
-    @time include(path)  # show basic timing, (this prints a newline at end)
+    return @time include(path)  # show basic timing, (this prints a newline at end)
 end
 
 @testset "LieGroups.jl" begin

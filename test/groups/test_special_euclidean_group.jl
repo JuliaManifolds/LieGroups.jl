@@ -29,7 +29,7 @@ using StaticArrays
     # SE(2) in 4 variants, left semidirect
     @testset "SE(2)" begin
         G2f = SpecialEuclideanGroup(2)
-        G2l = SpecialEuclideanGroup(2; parameter=:type)
+        G2l = SpecialEuclideanGroup(2; parameter = :type)
         g1 = 1 / 𝔰 .* [1.0 1.0 𝔰; -1.0 1.0 0.0; 0.0 0.0 𝔰]
         g2 = [0.0 -1.0 0.0; 1.0 0.0 1.0; 0.0 0.0 1.0]
         g3 = [1.0 0.0 1.0; 0.0 1.0 1.0; 0.0 0.0 1.0]
@@ -37,10 +37,10 @@ using StaticArrays
         gL2 = ArrayPartition([0.0 -1.0; 1.0 0.0], [0.0, 1.0])
         gL3 = ArrayPartition([1.0 0.0; 0.0 1.0], [1.0, 1.0])
         X1 = [0.0 -0.23 0.0; 0.23 0.0 1.0; 0.0 0.0 0.0]
-        X2 = [0.0 0.30 1.0; -0.30 0.0 1.0; 0.0 0.0 0.0]
+        X2 = [0.0 0.3 1.0; -0.3 0.0 1.0; 0.0 0.0 0.0]
         X3 = [0.0 0.1 1.0; -0.1 0.0 0.0; 0.0 0.0 0.0]
         XL1 = ArrayPartition([0.0 -0.23; 0.23 0.0], [0.0, 1.0])
-        XL2 = ArrayPartition([0.0 0.30; -0.30 0.0], [1.0, 1.0])
+        XL2 = ArrayPartition([0.0 0.3; -0.3 0.0], [1.0, 1.0])
         XL3 = ArrayPartition([9.0 0.1; -0.1 0.0], [1.0, 0.0])
         gA = [g1, g2, g3]
         gM = SpecialEuclideanMatrixPoint.(gA)
@@ -59,7 +59,7 @@ using StaticArrays
                 :Functions => fcts,
             )
             expectations = Dict(
-                :repr => "SpecialEuclideanGroup(2)", :atol => 1e-14, :is_flat => true
+                :repr => "SpecialEuclideanGroup(2)", :atol => 1.0e-14, :is_flat => true
             )
             test_lie_group(G, properties, expectations)
             @test ManifoldsBase.tangent_vector_type(G, typeof(pts[1])) == typeof(vec[1])
@@ -76,8 +76,8 @@ using StaticArrays
         # Right variant – exchange product cases
         G2r = TranslationGroup(2) ⋊ SpecialOrthogonalGroup(2)
         G2rt =
-            TranslationGroup(2; parameter=:type) ⋊
-            SpecialOrthogonalGroup(2; parameter=:type)
+            TranslationGroup(2; parameter = :type) ⋊
+            SpecialOrthogonalGroup(2; parameter = :type)
         gR1 = ArrayPartition([1.0, 0.0], 1 / 𝔰 * [1.0 1.0; -1.0 1.0])
         gR2 = ArrayPartition([0.0, 1.0], [0.0 -1.0; 1.0 0.0])
         gR3 = ArrayPartition([1.0, 1.0], [1.0 0.0; 0.0 1.0])
@@ -98,7 +98,7 @@ using StaticArrays
                 :Functions => fcts,
             )
             expectations = Dict(
-                :repr => "SpecialEuclideanGroup(2; variant=:right)", :atol => 1e-14
+                :repr => "SpecialEuclideanGroup(2; variant=:right)", :atol => 1.0e-14
             )
             test_lie_group(G, properties, expectations)
         end
@@ -108,7 +108,7 @@ using StaticArrays
     # SE(3)
     @testset "SE(3)" begin
         G3f = SpecialEuclideanGroup(3)
-        G3p = SpecialEuclideanGroup(3; parameter=:type)
+        G3p = SpecialEuclideanGroup(3; parameter = :type)
         h1 = 1 / 𝔰 .* [1.0 1.0 0.0 1.0; -1.0 1.0 0.0 0.0; 0.0 0.0 𝔰 0.0; 0.0 0.0 0.0 𝔰]
         h2 = [0.0 -1.0 0.0 0.0; 1.0 0.0 0.0 1.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0]
         h3 = [1.0 0.0 0.0 1.0; 0.0 1.0 0.0 1.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0]
@@ -118,10 +118,10 @@ using StaticArrays
         hL2 = ArrayPartition([0.0 -1.0 0.0; 1.0 0.0 0.0; 0.0 0.0 1.0], [0.0, 1.0, 0.0])
         hL3 = ArrayPartition([1.0 0.0 0.0; 0.0 1.0 0.0; 0.0 0.0 1.0], [1.0, 1.0, 0.0])
         Y1 = [0.0 -0.23 0.0 0.0; 0.23 0.0 0.0 1.0; 0.0 0.0 0.0 0.0; 0.0 0.0 0.0 0.0]
-        Y2 = [0.0 0.30 0.0 1.0; -0.30 0.0 0.0 1.0; 0.0 0.0 0.0 0.0; 0.0 0.0 0.0 0.0]
+        Y2 = [0.0 0.3 0.0 1.0; -0.3 0.0 0.0 1.0; 0.0 0.0 0.0 0.0; 0.0 0.0 0.0 0.0]
         Y3 = [0.0 0.1 0.0 1.0; -0.1 0.0 0.0 0.0; 0.0 0.0 0.0 0.0; 0.0 0.0 0.0 0.0]
         YL1 = ArrayPartition([0.0 -0.23 0.0; 0.23 0.0 0.0; 0.0 0.0 0.0], [0.0, 1.0, 0.0])
-        YL2 = ArrayPartition([0.0 0.30 0.0; -0.30 0.0 0.0; 0.0 0.0 0.0], [1.0, 1.0, 0.0])
+        YL2 = ArrayPartition([0.0 0.3 0.0; -0.3 0.0 0.0; 0.0 0.0 0.0], [1.0, 1.0, 0.0])
         YL3 = ArrayPartition([9.0 0.1 0.0; -0.1 0.0 0.0; 0.0 0.0 0.0], [1.0, 0.0, 0.0])
         hA = [h1, h2, h3]
         hM = SpecialEuclideanMatrixPoint.(hA)
@@ -140,7 +140,7 @@ using StaticArrays
                 :Functions => fcts,
             )
             expectations = Dict(
-                :repr => "SpecialEuclideanGroup(3)", :atol => 1e-14, :is_flat => false
+                :repr => "SpecialEuclideanGroup(3)", :atol => 1.0e-14, :is_flat => false
             )
             test_lie_group(G, properties, expectations)
         end
@@ -162,7 +162,7 @@ using StaticArrays
         @test isapprox(G4, exp(G4, X), g)
 
         Y = log(G4, h)
-        @test is_point(LieAlgebra(G4), Y; error=:error)
+        @test is_point(LieAlgebra(G4), Y; error = :error)
         @test isapprox(G4, exp(G4, Y), h)
     end
     #
@@ -180,7 +180,7 @@ using StaticArrays
         X4 = SpecialEuclideanProductTangentVector(X2)
 
         # Test also right semi to array
-        G2r = SpecialEuclideanGroup(2; variant=:right)
+        G2r = SpecialEuclideanGroup(2; variant = :right)
         g2r = ArrayPartition([1.0, 0.0], 1 / 𝔰 * [1.0 1.0; -1.0 1.0])
         g4r = SpecialEuclideanProductPoint(g2r)
         X2r = ArrayPartition([0.0, 1.0], [0.0 -0.23; 0.23 0.0])
@@ -242,7 +242,7 @@ using StaticArrays
         X1 = zero_vector(𝔤l, ArrayPartition{Float64})
         @test X1.x[1] == zeros(2, 2)
         @test X1.x[2] == zeros(2)
-        G2r = SpecialEuclideanGroup(2; variant=:right)
+        G2r = SpecialEuclideanGroup(2; variant = :right)
         𝔤r = LieAlgebra(G2r)
         X2 = zero_vector(𝔤r, ArrayPartition{Float64})
         @test X2.x[1] == zeros(2)
@@ -260,53 +260,53 @@ using StaticArrays
     @testset "Test special cases in expected failing checks and internals" begin
         G = SpecialEuclideanGroup(2)
         𝔤 = LieAlgebra(G)
-        Gr = SpecialEuclideanGroup(2; variant=:right)
+        Gr = SpecialEuclideanGroup(2; variant = :right)
         g1f = [1.0 0.0 0.0; 0.0 1.0 0.0; 0.0 0.0 2.0]
         eG = Identity(G)
         eGm = identity_element(G)
-        @test_throws DomainError is_point(G, g1f; error=:error)
-        @test is_point(G, eG; error=:error)
-        @test_throws DomainError is_point(G, Identity(Gr); error=:error)
+        @test_throws DomainError is_point(G, g1f; error = :error)
+        @test is_point(G, eG; error = :error)
+        @test_throws DomainError is_point(G, Identity(Gr); error = :error)
 
-        @test is_point(Gr, Identity(Gr); error=:error)
-        @test_throws DomainError is_point(Gr, eG; error=:error)
-        @test_throws DomainError is_point(G, g1f; error=:error)
+        @test is_point(Gr, Identity(Gr); error = :error)
+        @test_throws DomainError is_point(Gr, eG; error = :error)
+        @test_throws DomainError is_point(G, g1f; error = :error)
         # non rot
         g2f = [2.0 0.0 0.0; 0.0 1.0 0.0; 0.0 0.0 1.0]
-        @test_throws DomainError is_point(G, g2f; error=:error)
+        @test_throws DomainError is_point(G, g2f; error = :error)
         # 2 errors
         g3f = [2.0 0.0 0.0; 0.0 1.0 0.0; 0.0 0.0 2.0]
-        @test_throws CompositeManifoldError is_point(G, g3f; error=:error)
+        @test_throws CompositeManifoldError is_point(G, g3f; error = :error)
         g4f = zeros(2, 2)
-        @test_throws DomainError is_point(G, g4f; error=:error)
+        @test_throws DomainError is_point(G, g4f; error = :error)
 
         X1 = [0.0 -0.23 0.0; 0.23 0.0 1.0; 0.0 0.0 0.0]
-        @test is_vector(G, eG, X1; error=:error)
-        @test is_vector(G, eGm, X1; error=:error)
-        @test is_point(𝔤, X1; error=:error)
+        @test is_vector(G, eG, X1; error = :error)
+        @test is_vector(G, eGm, X1; error = :error)
+        @test is_point(𝔤, X1; error = :error)
         # not affine
         X1f = [0.0 -0.23 0.0; 0.23 0.0 1.0; 0.0 0.0 1.0]
-        @test_throws DomainError is_vector(G, eG, X1f; error=:error)
-        @test_throws DomainError is_vector(G, eGm, X1f; error=:error)
-        @test_throws DomainError is_point(𝔤, X1f; error=:error)
+        @test_throws DomainError is_vector(G, eG, X1f; error = :error)
+        @test_throws DomainError is_vector(G, eGm, X1f; error = :error)
+        @test_throws DomainError is_point(𝔤, X1f; error = :error)
         # test internal fallback as well
         X1ft = SpecialEuclideanMatrixTangentVector(X1f)
         @test ManifoldsBase.check_size(𝔤, X1ft) isa DomainError
         # not skew
         X2f = [0.0 -0.63 0.0; 0.23 0.0 1.0; 0.0 0.0 0.0]
-        @test_throws DomainError is_vector(G, eG, X2f; error=:error)
-        @test_throws DomainError is_vector(G, eGm, X2f; error=:error)
-        @test_throws DomainError is_point(𝔤, X2f; error=:error)
+        @test_throws DomainError is_vector(G, eG, X2f; error = :error)
+        @test_throws DomainError is_vector(G, eGm, X2f; error = :error)
+        @test_throws DomainError is_point(𝔤, X2f; error = :error)
         # neither
         X3f = [0.0 -0.63 0.0; 0.23 0.0 1.0; 0.0 0.0 1.0]
-        @test_throws CompositeManifoldError is_vector(G, eG, X3f; error=:error)
-        @test_throws CompositeManifoldError is_vector(G, eGm, X3f; error=:error)
-        @test_throws CompositeManifoldError is_point(𝔤, X3f; error=:error)
+        @test_throws CompositeManifoldError is_vector(G, eG, X3f; error = :error)
+        @test_throws CompositeManifoldError is_vector(G, eGm, X3f; error = :error)
+        @test_throws CompositeManifoldError is_point(𝔤, X3f; error = :error)
         # wrong size
         X4f = zeros(2, 2)
-        @test_throws DomainError is_vector(G, eG, X4f; error=:error)
-        @test_throws DomainError is_vector(G, eGm, X4f; error=:error)
-        @test_throws DomainError is_point(𝔤, X4f; error=:error)
+        @test_throws DomainError is_vector(G, eG, X4f; error = :error)
+        @test_throws DomainError is_vector(G, eGm, X4f; error = :error)
+        @test_throws DomainError is_point(𝔤, X4f; error = :error)
 
         # SE2 exp with zero vector
         @test is_identity(G, exp(G, zero_vector(𝔤)))
@@ -318,13 +318,13 @@ using StaticArrays
         X = zeros(3, 3)
         e = Identity(G)
         𝔤 = LieAlgebra(G)
-        @test is_point(𝔤, rand!(G, X; vector_at=e))
+        @test is_point(𝔤, rand!(G, X; vector_at = e))
         eO = Identity(SpecialOrthogonalGroup(2))
         eT = Identity(TranslationGroup(2))
         @test e[G, :Rotation] == eO
         @test e[G, :Translation] == eT
         @test e[G, :] == (eO, eT)
-        Gr = SpecialEuclideanGroup(2; variant=:right)
+        Gr = SpecialEuclideanGroup(2; variant = :right)
         er = Identity(Gr)
         @test er[Gr, :Rotation] == eO
         @test er[Gr, :Translation] == eT
@@ -333,23 +333,23 @@ using StaticArrays
 
     @testset "Small angle cases" begin
         G = SpecialEuclideanGroup(2)
-        X = hat(LieAlgebra(G), [1e-8, 1, 0])
+        X = hat(LieAlgebra(G), [1.0e-8, 1, 0])
         p = exp(G, X)
         @test X ≈ log(G, p)
 
         G = SpecialEuclideanGroup(3)
-        X = hat(LieAlgebra(G), [1e-8, 0, 0, 1, 0, 0])
+        X = hat(LieAlgebra(G), [1.0e-8, 0, 0, 1, 0, 0])
         p = exp(G, X)
         @test X ≈ log(G, p)
     end
 
     @testset "StaticArrays.jl specializations on SE(2)" begin
         G = SpecialEuclideanGroup(2)
-        T = ArrayPartition{Float64,Tuple{SMatrix{2,2,Float64},SVector{2,Float64}}}
+        T = ArrayPartition{Float64, Tuple{SMatrix{2, 2, Float64}, SVector{2, Float64}}}
         X = hat(LieAlgebra(G), SA[1, 0, 0.01], T)
-        @test X isa ArrayPartition{Float64,Tuple{SMatrix{2,2,Float64,4},SVector{2,Float64}}}
+        @test X isa ArrayPartition{Float64, Tuple{SMatrix{2, 2, Float64, 4}, SVector{2, Float64}}}
 
         X = hat(LieAlgebra(G), SA[1, 0, 0.01], ArrayPartition)
-        @test X isa ArrayPartition{Float64,Tuple{Matrix{Float64},Vector{Float64}}}
+        @test X isa ArrayPartition{Float64, Tuple{Matrix{Float64}, Vector{Float64}}}
     end
 end

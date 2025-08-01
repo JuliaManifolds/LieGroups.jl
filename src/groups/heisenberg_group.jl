@@ -1,4 +1,3 @@
-
 @doc """
     HeisenbergGroup{T}
 
@@ -7,11 +6,14 @@ see also [BinzPods:2008](@cite) or [Heisenberg group](https://en.wikipedia.org/w
 where `T` specifies the `eltype` of the matrix entries.
 
 ```math
-$(_tex(:pmatrix,
-    "1 & $(_tex(:vec, "a"))^{$(_tex(:transp))} & c",
-    "$(_tex(:vec, 0))_n & I_n & $(_tex(:vec, "b"))",
-    "0 & $(_tex(:vec, 0))_n^{$(_tex(:transp))} & 1"
-)),
+$(
+    _tex(
+        :pmatrix,
+        "1 & $(_tex(:vec, "a"))^{$(_tex(:transp))} & c",
+        "$(_tex(:vec, 0))_n & I_n & $(_tex(:vec, "b"))",
+        "0 & $(_tex(:vec, 0))_n^{$(_tex(:transp))} & 1"
+    )
+),
 ```
 
 where ``I_n`` is the ``n×n`` unit matrix, ``$(_tex(:vec, "a")), $(_tex(:vec, "b")) ∈ ℝ^n`` are vectors of length ``n``,
@@ -20,20 +22,23 @@ The group operation is matrix multiplication.
 
 The Lie algebra consists of the elements
 ```math
-$(_tex(:pmatrix,
-    "0 & $(_tex(:vec, "a"))^{$(_tex(:transp))} & c",
-    "$(_tex(:vec, 0))_n & Z_n & $(_tex(:vec, "b"))",
-    "0 & $(_tex(:vec, 0))_n^{$(_tex(:transp))} & 0"
-)),
+$(
+    _tex(
+        :pmatrix,
+        "0 & $(_tex(:vec, "a"))^{$(_tex(:transp))} & c",
+        "$(_tex(:vec, 0))_n & Z_n & $(_tex(:vec, "b"))",
+        "0 & $(_tex(:vec, 0))_n^{$(_tex(:transp))} & 0"
+    )
+),
 ```
 where additionally ``Z_n`` denotes the ``n×n`` zero matrix.
 """
 const HeisenbergGroup{T} = LieGroup{
-    ℝ,MatrixMultiplicationGroupOperation,HeisenbergMatrices{T}
+    ℝ, MatrixMultiplicationGroupOperation, HeisenbergMatrices{T},
 }
 
-function HeisenbergGroup(n::Int; parameter::Symbol=:type)
-    Hm = HeisenbergMatrices(n; parameter=parameter)
+function HeisenbergGroup(n::Int; parameter::Symbol = :type)
+    Hm = HeisenbergMatrices(n; parameter = parameter)
     return HeisenbergGroup{typeof(Hm).parameters...}(
         Hm, MatrixMultiplicationGroupOperation()
     )
@@ -54,11 +59,14 @@ end
 
 Compute the Lie group exponential for the [`HeisenbergGroup`](@ref) `G` of the vector `X`.
 
-For ``X = $(_tex(:pmatrix,
-    "0 & $(_tex(:vec, "a"))^{$(_tex(:transp))} & c",
-    "$(_tex(:vec, 0))_n & Z_n & $(_tex(:vec, "b"))",
-    "0 & $(_tex(:vec, 0))_n^{$(_tex(:transp))} & 0"
-))``
+For ``X = $(
+    _tex(
+        :pmatrix,
+        "0 & $(_tex(:vec, "a"))^{$(_tex(:transp))} & c",
+        "$(_tex(:vec, 0))_n & Z_n & $(_tex(:vec, "b"))",
+        "0 & $(_tex(:vec, 0))_n^{$(_tex(:transp))} & 0"
+    )
+)``
 from the Lie algebra of the Heisenberg group,
 where ``$(_tex(:vec, "a")), $(_tex(:vec, "b")) ∈ ℝ^n`` vectors of length ``n``,
 ``$(_tex(:vec, 0))_n`` is the zero vector of length ``n``, ``c ∈ ℝ``, and
@@ -68,11 +76,14 @@ Then the
 
 ```math
 $(_tex(:exp))_{$(_tex(:Cal, "G"))}(X) =
-$(_tex(:pmatrix,
-    "1 & $(_tex(:vec, "a"))^{$(_tex(:transp))} & c + $(_tex(:frac,"1","2"))$(_tex(:vec, "a"))^{$(_tex(:transp))}$(_tex(:vec, "b"))",
-    "$(_tex(:vec, 0))_n & I_n & $(_tex(:vec, "b"))",
-    "0 & $(_tex(:vec, 0))_n^{$(_tex(:transp))} & 1"
-)),
+$(
+    _tex(
+        :pmatrix,
+        "1 & $(_tex(:vec, "a"))^{$(_tex(:transp))} & c + $(_tex(:frac, "1", "2"))$(_tex(:vec, "a"))^{$(_tex(:transp))}$(_tex(:vec, "b"))",
+        "$(_tex(:vec, 0))_n & I_n & $(_tex(:vec, "b"))",
+        "0 & $(_tex(:vec, 0))_n^{$(_tex(:transp))} & 1"
+    )
+),
 ```
 where ``I_n`` is the ``n×n`` unit matrix.
 
@@ -100,17 +111,23 @@ We denote by `g` a point on the Heisenberg group and by ``X`` a vector from the 
 These are of the form
 
 ```math
-g = $(_tex(:pmatrix,
-    "1 & $(_tex(:vec, "a"))^{$(_tex(:transp))} & c",
-    "$(_tex(:vec, 0))_n & I_n & $(_tex(:vec, "b"))",
-    "0 & $(_tex(:vec, 0))_n^{$(_tex(:transp))} & 1"
-))
+g = $(
+    _tex(
+        :pmatrix,
+        "1 & $(_tex(:vec, "a"))^{$(_tex(:transp))} & c",
+        "$(_tex(:vec, 0))_n & I_n & $(_tex(:vec, "b"))",
+        "0 & $(_tex(:vec, 0))_n^{$(_tex(:transp))} & 1"
+    )
+)
 $(_tex(:qquad))
-X = $(_tex(:pmatrix,
-    "0 & $(_tex(:vec, "d"))^{$(_tex(:transp))} & f",
-    "$(_tex(:vec, 0))_n & Z_n & $(_tex(:vec, "e"))",
-    "0 & $(_tex(:vec, 0))_n^{$(_tex(:transp))} & 0"
-)),
+X = $(
+    _tex(
+        :pmatrix,
+        "0 & $(_tex(:vec, "d"))^{$(_tex(:transp))} & f",
+        "$(_tex(:vec, 0))_n & Z_n & $(_tex(:vec, "e"))",
+        "0 & $(_tex(:vec, 0))_n^{$(_tex(:transp))} & 0"
+    )
+),
 ```
 where ``I_n`` is the ``n×n`` unit matrix, ``Z_n`` is the ``n×n`` zero matrix,
 ``$(_tex(:vec, "a")), $(_tex(:vec, "b")), $(_tex(:vec, "d")), $(_tex(:vec, "e")) ∈ ℝ^n`` are vectors of length ``n``,
@@ -119,11 +136,14 @@ where ``I_n`` is the ``n×n`` unit matrix, ``Z_n`` is the ``n×n`` zero matrix,
 Then the formula reads
 ```math
 $(_tex(:exp))_g(X) =
-$(_tex(:pmatrix,
-    "1 & ($(_tex(:vec, "a"))+$(_tex(:vec, "d")))^{$(_tex(:transp))} & c+f+$(_tex(:frac,"1","2"))$(_tex(:vec, "d"))^{$(_tex(:transp))}$(_tex(:vec, "e")) + $(_tex(:vec, "a"))^{$(_tex(:transp))}$(_tex(:vec, "e"))",
-    "$(_tex(:vec, 0))_n & I_n & $(_tex(:vec, "b"))+$(_tex(:vec, "e"))",
-    "0 & $(_tex(:vec, 0))_n^{$(_tex(:transp))} & 1"
-)).
+$(
+    _tex(
+        :pmatrix,
+        "1 & ($(_tex(:vec, "a"))+$(_tex(:vec, "d")))^{$(_tex(:transp))} & c+f+$(_tex(:frac, "1", "2"))$(_tex(:vec, "d"))^{$(_tex(:transp))}$(_tex(:vec, "e")) + $(_tex(:vec, "a"))^{$(_tex(:transp))}$(_tex(:vec, "e"))",
+        "$(_tex(:vec, 0))_n & I_n & $(_tex(:vec, "b"))+$(_tex(:vec, "e"))",
+        "0 & $(_tex(:vec, 0))_n^{$(_tex(:transp))} & 1"
+    )
+).
 ```
 """
 function ManifoldsBase.exp(G::HeisenbergGroup, g, X)
@@ -161,17 +181,23 @@ Compute the logarithmic map on the [`HeisenbergGroup`](@ref) group.
 We denote two points ``g, h`` from the Heisenberg by
 
 ```math
-g = $(_tex(:pmatrix,
-    "1 & $(_tex(:vec, "a"))^{$(_tex(:transp))} & c",
-    "$(_tex(:vec, 0))_n & I_n & $(_tex(:vec, "b"))",
-    "0 & $(_tex(:vec, 0))_n^{$(_tex(:transp))} & 1"
-))
+g = $(
+    _tex(
+        :pmatrix,
+        "1 & $(_tex(:vec, "a"))^{$(_tex(:transp))} & c",
+        "$(_tex(:vec, 0))_n & I_n & $(_tex(:vec, "b"))",
+        "0 & $(_tex(:vec, 0))_n^{$(_tex(:transp))} & 1"
+    )
+)
 $(_tex(:qquad))
-h = $(_tex(:pmatrix,
-    "1 & $(_tex(:vec, "d"))^{$(_tex(:transp))} & f",
-    "$(_tex(:vec, 0))_n & I_n & $(_tex(:vec, "e"))",
-    "0 & $(_tex(:vec, 0))_n^{$(_tex(:transp))} & 1"
-)),
+h = $(
+    _tex(
+        :pmatrix,
+        "1 & $(_tex(:vec, "d"))^{$(_tex(:transp))} & f",
+        "$(_tex(:vec, 0))_n & I_n & $(_tex(:vec, "e"))",
+        "0 & $(_tex(:vec, 0))_n^{$(_tex(:transp))} & 1"
+    )
+),
 ```
 
 where ``I_n`` is the ``n×n`` unit matrix, ``$(_tex(:vec, "a")), $(_tex(:vec, "b")), $(_tex(:vec, "d")), $(_tex(:vec, "e")) ∈ ℝ^n`` are vectors of length ``n``,
@@ -179,11 +205,14 @@ where ``I_n`` is the ``n×n`` unit matrix, ``$(_tex(:vec, "a")), $(_tex(:vec, "b
 
 Then formula reads
 ```math
-$(_tex(:log))_g(h) = $(_tex(:pmatrix,
-    "0 & ($(_tex(:vec, "d"))-$(_tex(:vec, "q")))^{$(_tex(:transp))} & f - c + $(_tex(:vec, "a"))^{$(_tex(:transp))}$(_tex(:vec, "b")) - $(_tex(:vec, "d"))^{$(_tex(:transp))}$(_tex(:vec, "e")) - $(_tex(:frac,"1","2"))($(_tex(:vec, "d"))-$(_tex(:vec, "a")))^{$(_tex(:transp))}($(_tex(:vec, "e"))-$(_tex(:vec, "b")))",
-    "$(_tex(:vec, 0))_n & Z_n & $(_tex(:vec, "e")) - $(_tex(:vec, "b"))",
-    "0 & $(_tex(:vec, 0))_n^{$(_tex(:transp))} & 0"
-)),
+$(_tex(:log))_g(h) = $(
+    _tex(
+        :pmatrix,
+        "0 & ($(_tex(:vec, "d"))-$(_tex(:vec, "q")))^{$(_tex(:transp))} & f - c + $(_tex(:vec, "a"))^{$(_tex(:transp))}$(_tex(:vec, "b")) - $(_tex(:vec, "d"))^{$(_tex(:transp))}$(_tex(:vec, "e")) - $(_tex(:frac, "1", "2"))($(_tex(:vec, "d"))-$(_tex(:vec, "a")))^{$(_tex(:transp))}($(_tex(:vec, "e"))-$(_tex(:vec, "b")))",
+        "$(_tex(:vec, 0))_n & Z_n & $(_tex(:vec, "e")) - $(_tex(:vec, "b"))",
+        "0 & $(_tex(:vec, 0))_n^{$(_tex(:transp))} & 0"
+    )
+),
 ```
 where additionally ``Z_n`` denotes the ``n×n`` zero matrix.
 """
@@ -203,11 +232,11 @@ function ManifoldsBase.log!(G::HeisenbergGroup, X, g, h)
     return X
 end
 function ManifoldsBase.log!(
-    ::HeisenbergGroup,
-    X,
-    ::Identity{MatrixMultiplicationGroupOperation},
-    ::Identity{MatrixMultiplicationGroupOperation},
-)
+        ::HeisenbergGroup,
+        X,
+        ::Identity{MatrixMultiplicationGroupOperation},
+        ::Identity{MatrixMultiplicationGroupOperation},
+    )
     fill!(X, 0)
     return X
 end
@@ -218,11 +247,14 @@ end
 
 Compute the Lie group logarithm for the [`HeisenbergGroup`](@ref) `G`.
 
-For ``g = $(_tex(:pmatrix,
-    "1 & $(_tex(:vec, "a"))^{$(_tex(:transp))} & c",
-    "$(_tex(:vec, 0))_n & I_n & $(_tex(:vec, "b"))",
-    "0 & $(_tex(:vec, 0))_n^{$(_tex(:transp))} & 1"
-))``
+For ``g = $(
+    _tex(
+        :pmatrix,
+        "1 & $(_tex(:vec, "a"))^{$(_tex(:transp))} & c",
+        "$(_tex(:vec, 0))_n & I_n & $(_tex(:vec, "b"))",
+        "0 & $(_tex(:vec, 0))_n^{$(_tex(:transp))} & 1"
+    )
+)``
 from the Lie algebra of the Heisenberg group,
 where ``$(_tex(:vec, "a")), $(_tex(:vec, "b")) ∈ ℝ^n`` vectors of length ``n``,
 ``$(_tex(:vec, 0))_n`` is the zero vector of length ``n``, ``c ∈ ℝ``, and
@@ -232,11 +264,14 @@ Then the
 
 ```math
 $(_tex(:log))_{$(_tex(:Cal, "G"))}(g) =
-$(_tex(:pmatrix,
-    "1 & $(_tex(:vec, "a"))^{$(_tex(:transp))} & c - $(_tex(:frac,"1","2"))$(_tex(:vec, "a"))^{$(_tex(:transp))}$(_tex(:vec, "b"))",
-    "$(_tex(:vec, 0))_n & Z_n & $(_tex(:vec, "b"))",
-    "0 & $(_tex(:vec, 0))_n^{$(_tex(:transp))} & 1"
-)),
+$(
+    _tex(
+        :pmatrix,
+        "1 & $(_tex(:vec, "a"))^{$(_tex(:transp))} & c - $(_tex(:frac, "1", "2"))$(_tex(:vec, "a"))^{$(_tex(:transp))}$(_tex(:vec, "b"))",
+        "$(_tex(:vec, 0))_n & Z_n & $(_tex(:vec, "b"))",
+        "0 & $(_tex(:vec, 0))_n^{$(_tex(:transp))} & 1"
+    )
+),
 ```
 where ``Z_n`` denotes the ``n×n`` zero matrix.
 
@@ -258,15 +293,15 @@ function ManifoldsBase.log!(G::HeisenbergGroup, X, g)
     return X
 end
 function ManifoldsBase.log!(
-    ::HeisenbergGroup, X, ::Identity{MatrixMultiplicationGroupOperation}
-)
+        ::HeisenbergGroup, X, ::Identity{MatrixMultiplicationGroupOperation}
+    )
     fill!(X, 0)
     return X
 end
 
 function Base.show(
-    io::IO, ::HeisenbergGroup{ManifoldsBase.TypeParameter{Tuple{n}}}
-) where {n}
+        io::IO, ::HeisenbergGroup{ManifoldsBase.TypeParameter{Tuple{n}}}
+    ) where {n}
     return print(io, "HeisenbergGroup($(n))")
 end
 function Base.show(io::IO, G::HeisenbergGroup{Tuple{Int}})
