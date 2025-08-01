@@ -97,7 +97,7 @@ using LieGroupsTestSuite
             a = -π + 0.1
             b = -0.2 
             @test compose(C2, a, b) ==  LieGroups.sym_rem(a + b)
-            @test compose(C2, fill(a), fill(b)) ==  LieGroups.sym_rem(a + b)
+            @test compose(C2, fill(a), fill(b)) ==  fill(LieGroups.sym_rem(a + b))
             @test compose(C2, fill(a), b) ==  LieGroups.sym_rem(a + b)
             @test compose(C2, a, fill(b)) ==  LieGroups.sym_rem(a + b)
         end

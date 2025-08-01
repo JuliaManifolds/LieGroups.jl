@@ -29,10 +29,10 @@ function _compose(G::_RealCircleGroup, p::AbstractArray{<:Any,0}, q::AbstractArr
     return map((pp, qq) -> compose(G, pp, qq), p, q)
 end
 function _compose(::_RealCircleGroup, p::Number, q::AbstractArray{<:Any,0})
-    return p .+ q
+    return sym_rem(p .+ q)
 end
 function _compose(::_RealCircleGroup, p::AbstractArray{<:Any,0}, q::Number)
-    return p .+ q
+    return sym_rem(p .+ q)
 end
 
 function _compose!(G::_RealCircleGroup, x, p, q)
