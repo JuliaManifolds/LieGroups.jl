@@ -186,6 +186,55 @@ function LinearAlgebra.norm(
     return LinearAlgebra.norm([n1, n2])
 end
 
+_doc_lie_bracket_SEn_RAT = """
+    lie_bracket(𝔰𝔢::LieAlgebra{ℝ, SpecialEuclideanGroupOperation, SpecialEuclideanGroup}, X::ArrayPartition, Y::ArrayPartition)
+    lie_bracket!(𝔰𝔢::LieAlgebra{ℝ, SpecialEuclideanGroupOperation, SpecialEuclideanGroup}, Z::ArrayPartition, X::ArrayPartition, Y::ArrayPartition)
+
+Calculate the Lie bracket between elements `X` and `Y` of the Lie algebra of the [`SpecialEuclideanGroup`](@ref).
+For the representation as a matrix and a vector, cf. [`SpecialEuclideanProductTangentVector`](@ref) or a `ArrayPartition`
+every Lie algebra element is represented as a pair ``X = (X_{$(LieGroups._tex(:text, "R"))}, X_$(LieGroups._tex(:text, "t")))``
+or a rotation matrix and a translation vector, respectively.
+
+Then the formula for the Lie bracket is given by
+```math
+[X, Y] = [(X_{$(LieGroups._tex(:text, "R"))}, X_{$(LieGroups._tex(:text, "t"))}), (Y_{$(LieGroups._tex(:text, "R"))}, Y_{$(LieGroups._tex(:text, "t"))})]
+= (X_{$(LieGroups._tex(:text, "R"))} * Y_{$(LieGroups._tex(:text, "R"))} - Y_{$(LieGroups._tex(:text, "R"))} * X_{$(LieGroups._tex(:text, "R"))}, X_{$(LieGroups._tex(:text, "R"))} * Y_{$(LieGroups._tex(:text, "t"))} - Y_{$(LieGroups._tex(:text, "R"))} * X_{$(LieGroups._tex(:text, "t"))}),
+```
+
+where for the right semidirect product variant, the order of the pair is switched.
+"""
+
+"$(_doc_lie_bracket_SEn_RAT)"
+LieGroups.lie_bracket(
+    𝔤::LieGroups.LieAlgebra{
+        ℝ,<:LieGroups.SpecialEuclideanGroupOperation,<:LieGroups.SpecialEuclideanGroup
+    },
+    X::Union{<:ArrayPartition,<:SpecialEuclideanProductTangentVector},
+    Y::Union{<:ArrayPartition,<:SpecialEuclideanProductTangentVector},
+)
+
+"$(_doc_lie_bracket_SEn_RAT)"
+function LieGroups.lie_bracket!(
+    𝔤::LieGroups.LieAlgebra{
+        ℝ,<:LieGroups.SpecialEuclideanGroupOperation,<:LieGroups.SpecialEuclideanGroup
+    },
+    Z::Union{<:ArrayPartition,<:SpecialEuclideanProductTangentVector},
+    X::Union{<:ArrayPartition,<:SpecialEuclideanProductTangentVector},
+    Y::Union{<:ArrayPartition,<:SpecialEuclideanProductTangentVector},
+)
+    G = LieGroups.base_lie_group(𝔤)
+    SOn, _ = LieGroups._SOn_and_Tn(G)
+    X_t = submanifold_component(LieAlgebra(G), X, Val(:Translation))
+    X_R = submanifold_component(LieAlgebra(G), X, Val(:Rotation))
+    Y_t = submanifold_component(LieAlgebra(G), Y, Val(:Translation))
+    Y_R = submanifold_component(LieAlgebra(G), Y, Val(:Rotation))
+    Z_t = submanifold_component(LieAlgebra(G), Z, Val(:Translation))
+    Z_R = submanifold_component(LieAlgebra(G), Z, Val(:Rotation))
+    LieGroups.lie_bracket!(LieAlgebra(SOn), Z_R, X_R, Y_R)
+    Z_t .= X_R * Y_t .- Y_R * X_t
+    return Z
+end
+
 function ManifoldsBase.submanifold_component(
     G::LieGroups.LeftSpecialEuclideanGroup,
     g::Union{ArrayPartition,SpecialEuclideanProductPoint},
