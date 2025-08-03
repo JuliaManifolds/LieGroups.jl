@@ -9,7 +9,7 @@
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliamanifolds.github.io/LieGroups.jl/dev/)
 [![DOI](https://zenodo.org/badge/481478376.svg)](https://doi.org/10.5281/zenodo.15343362)
 [![code style: runic](https://img.shields.io/badge/code_style-%E1%9A%B1%E1%9A%A2%E1%9A%BE%E1%9B%81%E1%9A%B2-black)](https://github.com/fredrikekre/Runic.jl)
-[CI](https://github.com/JuliaManifolds/LieGroups.jl/actions/workflows/ci.yml/badge.svg)](https://github.com/JuliaManifolds/LieGroups.jl/actions?query=workflow%3ACI+branch%3Amain)
+[![CI](https://github.com/JuliaManifolds/LieGroups.jl/actions/workflows/ci.yml/badge.svg)](https://github.com/JuliaManifolds/LieGroups.jl/actions?query=workflow%3ACI+branch%3Amain)
 [![codecov](https://codecov.io/gh/JuliaManifolds/LieGroups.jl/graph/badge.svg?token=32odCSyJX5)](https://codecov.io/gh/JuliaManifolds/LieGroups.jl)
 [![Aqua QA](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
 
