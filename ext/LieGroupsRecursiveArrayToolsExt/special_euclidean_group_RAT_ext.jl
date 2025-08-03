@@ -206,21 +206,21 @@ where for the right semidirect product variant, the order of the pair is switche
 "$(_doc_lie_bracket_SEn_RAT)"
 LieGroups.lie_bracket(
     𝔤::LieGroups.LieAlgebra{
-        ℝ,<:LieGroups.SpecialEuclideanGroupOperation,<:LieGroups.SpecialEuclideanGroup
+        ℝ, <:LieGroups.SpecialEuclideanGroupOperation, <:LieGroups.SpecialEuclideanGroup,
     },
-    X::Union{<:ArrayPartition,<:SpecialEuclideanProductTangentVector},
-    Y::Union{<:ArrayPartition,<:SpecialEuclideanProductTangentVector},
+    X::Union{<:ArrayPartition, <:SpecialEuclideanProductTangentVector},
+    Y::Union{<:ArrayPartition, <:SpecialEuclideanProductTangentVector},
 )
 
 "$(_doc_lie_bracket_SEn_RAT)"
 function LieGroups.lie_bracket!(
-    𝔤::LieGroups.LieAlgebra{
-        ℝ,<:LieGroups.SpecialEuclideanGroupOperation,<:LieGroups.SpecialEuclideanGroup
-    },
-    Z::Union{<:ArrayPartition,<:SpecialEuclideanProductTangentVector},
-    X::Union{<:ArrayPartition,<:SpecialEuclideanProductTangentVector},
-    Y::Union{<:ArrayPartition,<:SpecialEuclideanProductTangentVector},
-)
+        𝔤::LieGroups.LieAlgebra{
+            ℝ, <:LieGroups.SpecialEuclideanGroupOperation, <:LieGroups.SpecialEuclideanGroup,
+        },
+        Z::Union{<:ArrayPartition, <:SpecialEuclideanProductTangentVector},
+        X::Union{<:ArrayPartition, <:SpecialEuclideanProductTangentVector},
+        Y::Union{<:ArrayPartition, <:SpecialEuclideanProductTangentVector},
+    )
     G = LieGroups.base_lie_group(𝔤)
     SOn, _ = LieGroups._SOn_and_Tn(G)
     X_t = submanifold_component(LieAlgebra(G), X, Val(:Translation))

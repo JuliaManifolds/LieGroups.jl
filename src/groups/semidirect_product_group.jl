@@ -292,13 +292,13 @@ where ``D_{λ_{g_2}}(σ_{g_1}(h_2))`` is given by [`diff_group_apply`](@ref)`(A,
 
 "$(_doc_LSDP_diff_left_compose)"
 diff_left_compose(
-    SDPG::LieGroup{𝔽,<:LeftSemidirectProductGroupOperation,<:ProductManifold}, g, h, X
+    SDPG::LieGroup{𝔽, <:LeftSemidirectProductGroupOperation, <:ProductManifold}, g, h, X
 ) where {𝔽}
 
 "$(_doc_LSDP_diff_left_compose)"
 function diff_left_compose!(
-    SDPG::LieGroup{𝔽,<:LeftSemidirectProductGroupOperation,<:ProductManifold}, Y, g, h, X
-) where {𝔽}
+        SDPG::LieGroup{𝔽, <:LeftSemidirectProductGroupOperation, <:ProductManifold}, Y, g, h, X
+    ) where {𝔽}
     PM = SDPG.manifold
     G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
     A = GroupAction(SDPG.op.action_type, G, H)
@@ -343,13 +343,13 @@ where ``D_{λ_{g_2}}(σ_{g_1}(h_2))`` is given by [`diff_group_apply`](@ref)`(A,
 
 "$(_doc_RSDP_diff_left_compose)"
 diff_left_compose(
-    SDPG::LieGroup{𝔽,<:RightSemidirectProductGroupOperation,<:ProductManifold}, g, h, X
+    SDPG::LieGroup{𝔽, <:RightSemidirectProductGroupOperation, <:ProductManifold}, g, h, X
 ) where {𝔽}
 
 "$(_doc_RSDP_diff_left_compose)"
 function diff_left_compose!(
-    SDPG::LieGroup{𝔽,<:RightSemidirectProductGroupOperation,<:ProductManifold}, Y, g, h, X
-) where {𝔽}
+        SDPG::LieGroup{𝔽, <:RightSemidirectProductGroupOperation, <:ProductManifold}, Y, g, h, X
+    ) where {𝔽}
     PM = SDPG.manifold
     H, G = map(LieGroup, PM.manifolds, SDPG.op.operations)
     A = GroupAction(SDPG.op.action_type, G, H)
