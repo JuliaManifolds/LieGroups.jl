@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.3] unreleased
 
+### Added
+
+* introduce `push_forward_tangent` and `pull_back_tangent` to combine the differential of left compose and its inverse to “move” from the Lie algebra to a certain tangent space and back, but also takes care of adapting the representation, for the case where the representation on the manifold is different from the one on the Lie group / Lie algebra.
+* introduce a `BaseManifoldRetraction` to be able to use retractions on the underlying manifold also as a retraction on the Lie group, cf. (#43) and (#47). This feature assumes that the representation of points and tangent vectors on Lie group and the underlying manifold are the same (so it doesn't work with special Euclidean group with homogeneous coordinates).
+
 ### Fixed
 
 * Fixed a typo, where `within` was misspelled as `widthin` which caused errors in a few places.
@@ -14,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * mention `get_coordinates`, `get_vector`, `hat`, and `vee` in the transition documentation since it moved to using the `LieAlgebra` instead of the Lie group and a point.
 * Fixed `RightGroupOperationAction` to be a subtype of `AbstractRightGroupActionType`
 * Add `lie_bracket` for the SpecialEuclideanGroup.
+* For the CircleGroup(ℝ), fixed compose StackOverflowError and a bug where result could be outside [-π,π), see (#62) for detail.
 
 ## [0.1.2] 2025-06-24
 

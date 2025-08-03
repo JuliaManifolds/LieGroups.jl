@@ -245,31 +245,133 @@ function _compose!(
     SDPG::LieGroup{𝔽,<:RightSemidirectProductGroupOperation,<:ProductManifold}, k, g, h
 ) where {𝔽}
     PM = SDPG.manifold
-    G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
-    A = GroupAction(SDPG.op.action_type, H, G)
+    H, G = map(LieGroup, PM.manifolds, SDPG.op.operations)
+    A = GroupAction(SDPG.op.action_type, G, H)
     # We have to perform 3 steps applying the group action
     # 1) x = σ_g[2](h[1]) (a point on G)
     # 2) compose g[1] and x (a point on G)
     # 3) compose g[2] and h[2] (a point on H)
     # to avoid to overwrite elements in case k=g or k=h: allocate for result of (1)
     # especially after (1) we still need g[1] (in case k=g)
-    x = copy(G, submanifold_component(SDPG, k, Val(1)))
+    x = copy(H, submanifold_component(SDPG, k, Val(1)))
     # (1)
     apply!(
         A, x, submanifold_component(SDPG, g, Val(2)), submanifold_component(SDPG, h, Val(1))
     )
     # (2)
     _compose!(
-        G, submanifold_component(SDPG, k, Val(1)), submanifold_component(SDPG, g, Val(1)), x
+        H, submanifold_component(SDPG, k, Val(1)), submanifold_component(SDPG, g, Val(1)), x
     )
     # (3)
     _compose!(
-        H,
+        G,
         submanifold_component(SDPG, k, Val(2)),
         submanifold_component(SDPG, g, Val(2)),
         submanifold_component(SDPG, h, Val(2)),
     )
     return k
+end
+
+_doc_LSDP_diff_left_compose = """
+    diff_left_compose(
+        SDPG::LieGroup{𝔽,LeftSemidirectProductGroupOperation,<:ProductManifold}, g, h, X
+    ) where {𝔽}
+    diff_left_compose!(
+        SDPG::LieGroup{𝔽,LeftSemidirectProductGroupOperation,<:ProductManifold}, Y, g, h, X
+    ) where {𝔽}
+
+Compute the differential of the left group operation ``λ_g``, that is ``D_{λ_g}(h)[X]``.
+For this case it is given by
+
+TODO Update formula the Diff of Lambda is the one with respect to g.
+
+```math
+    D_{λ_g}(h)[X] = $(_tex(:bigl))( D_{λ_{g_1}}(h_1)[X_1], D_{λ_{g_2}}(σ_{g_1}(h_2))$(_tex(:bigl))[ D_{σ_{g_1}}(h_2)[X_2]$(_tex(:bigr))]$(_tex(:bigr)))
+```
+where ``D_{λ_{g_2}}(σ_{g_1}(h_2))`` is given by [`diff_group_apply`](@ref)`(A, h_2, g_1, X_2)` with ``A`` denotes the [`GroupAction`](@ref) ``σ``.
+"""
+
+"$(_doc_LSDP_diff_left_compose)"
+diff_left_compose(
+    SDPG::LieGroup{𝔽,<:LeftSemidirectProductGroupOperation,<:ProductManifold}, g, h, X
+) where {𝔽}
+
+"$(_doc_LSDP_diff_left_compose)"
+function diff_left_compose!(
+    SDPG::LieGroup{𝔽,<:LeftSemidirectProductGroupOperation,<:ProductManifold}, Y, g, h, X
+) where {𝔽}
+    PM = SDPG.manifold
+    G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
+    A = GroupAction(SDPG.op.action_type, G, H)
+
+    Y1, Y2 = submanifold_components(LieAlgebra(SDPG), Y)
+    X1, X2 = submanifold_components(LieAlgebra(SDPG), X)
+    g1, g2 = submanifold_components(SDPG, g)
+    h1, h2 = submanifold_components(SDPG, h)
+
+    # We have to perform 3 steps applying the group action
+    # 1) for the left this is just a diff on that group
+    diff_left_compose!(G, Y1, g1, h1, X1)
+    # For the second (right) it is diff_compose applied to the diff_apply of the group action
+    # where we can do that diff apply already in-place
+    diff_group_apply!(A, Y2, g1, h2, X2)
+    # and then apply diff compose for the right
+    x = copy(G, h2)
+    # we need the point on G where we apply to
+    apply!(A, x, g1, h2)
+    diff_left_compose!(H, Y2, g2, x, Y2)
+    return Y
+end
+
+_doc_RSDP_diff_left_compose = """
+    diff_left_compose(
+        SDPG::LieGroup{𝔽,RightSemidirectProductGroupOperation,<:ProductManifold}, g, h, X
+    ) where {𝔽}
+    diff_left_compose!(
+        SDPG::LieGroup{𝔽,RightSemidirectProductGroupOperation,<:ProductManifold}, Y, g, h, X
+    ) where {𝔽}
+
+Compute the differential of the left group operation ``λ_g``, that is ``D_{λ_g}(h)[X]``.
+For this case it is given by
+
+TODO Update formula the Diff of Lambda is the one with respect to g.
+
+```math
+    D_{λ_g}(h)[X] = $(_tex(:bigl))( D_{λ_{g_1}}(σ_{g_2}(h_1))$(_tex(:bigl))[ D_{σ_{g_2}}(h_1)[X_1], D_{λ_{g_2}}(h_2)[X_2]$(_tex(:bigr))]$(_tex(:bigr)))
+```
+where ``D_{λ_{g_2}}(σ_{g_1}(h_2))`` is given by [`diff_group_apply`](@ref)`(A, h_2, g_1, X_2)` with ``A`` denotes the [`GroupAction`](@ref) ``σ``.
+"""
+
+"$(_doc_RSDP_diff_left_compose)"
+diff_left_compose(
+    SDPG::LieGroup{𝔽,<:RightSemidirectProductGroupOperation,<:ProductManifold}, g, h, X
+) where {𝔽}
+
+"$(_doc_RSDP_diff_left_compose)"
+function diff_left_compose!(
+    SDPG::LieGroup{𝔽,<:RightSemidirectProductGroupOperation,<:ProductManifold}, Y, g, h, X
+) where {𝔽}
+    PM = SDPG.manifold
+    H, G = map(LieGroup, PM.manifolds, SDPG.op.operations)
+    A = GroupAction(SDPG.op.action_type, G, H)
+
+    Y1, Y2 = submanifold_components(LieAlgebra(SDPG), Y)
+    X1, X2 = submanifold_components(LieAlgebra(SDPG), X)
+    g1, g2 = submanifold_components(SDPG, g)
+    h1, h2 = submanifold_components(SDPG, h)
+
+    # We have to perform 3 steps applying the group action
+    # 1) for the right this is just a diff on that group
+    diff_left_compose!(G, Y2, g2, h2, X2)
+    # For the second (left) it is diff_compose applied to the diff_apply of the group action
+    # where we can do that diff apply already in-place
+    diff_group_apply!(A, Y1, g2, h1, X1)
+    # and then apply diff compose for the right
+    x = copy(G, h1)
+    # we need the point on G where we apply to
+    apply!(A, x, g2, h1)
+    diff_left_compose!(H, Y1, g1, x, Y1)
+    return Y
 end
 
 function get_vector_lie!(
@@ -331,12 +433,12 @@ function inv!(
     SDPG::LieGroup{𝔽,O,M}, k, g
 ) where {𝔽,O<:RightSemidirectProductGroupOperation,M<:ProductManifold}
     PM = SDPG.manifold
-    G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
+    H, G = map(LieGroup, PM.manifolds, SDPG.op.operations)
     A = GroupAction(SDPG.op.action_type, G, H)
     # to avoid side effects, copy
-    g1_ = copy(G, submanifold_component(PM, g, Val(1)))
-    inv!(G, submanifold_component(SDPG, k, Val(1)), submanifold_component(PM, g, Val(1)))
-    inv!(H, submanifold_component(SDPG, k, Val(2)), submanifold_component(PM, g, Val(2)))
+    g1_ = copy(H, submanifold_component(PM, g, Val(1)))
+    inv!(H, submanifold_component(SDPG, k, Val(1)), submanifold_component(PM, g, Val(1)))
+    inv!(G, submanifold_component(SDPG, k, Val(2)), submanifold_component(PM, g, Val(2)))
     apply!( # Apply the group action with g2^-1 to g1
         A,
         submanifold_component(SDPG, k, Val(1)),

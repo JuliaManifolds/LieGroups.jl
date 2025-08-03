@@ -91,12 +91,19 @@ using StaticArrays
         XT = SpecialEuclideanProductTangentVector.(XS)
 
         for G in [G2r, G2rt], (pts, vec) in zip([gA, gM, gS, gT], [XA, XM, XS, XT])
+            is_array_partition_representation =
+                pts[1] isa Union{ArrayPartition,SpecialEuclideanProductPoint}
+            ap_funs = if is_array_partition_representation
+                [diff_left_compose]
+            else
+                []
+            end
             properties = Dict(
                 :Name => "The special Euclidean group ($G, $(eltype(pts)))",
                 :Points => pts,
                 :Vectors => vec,
                 :Rng => Random.MersenneTwister(),
-                :Functions => fcts,
+                :Functions => vcat(fcts, ap_funs),
             )
             expectations = Dict(
                 :repr => "SpecialEuclideanGroup(2; variant=:right)", :atol => 1e-14
@@ -133,12 +140,19 @@ using StaticArrays
         YP = [YL1, YL2, YL3]
         YQ = SpecialEuclideanProductTangentVector.(YP)
         for G in [G3f, G3p], (pts, vec) in zip([hA, hM, hP, hQ], [YA, YM, YP, YQ])
+            is_array_partition_representation =
+                pts[1] isa Union{ArrayPartition,SpecialEuclideanProductPoint}
+            ap_funs = if is_array_partition_representation
+                [diff_left_compose]
+            else
+                []
+            end
             properties = Dict(
                 :Name => "The special Euclidean group ($G, $(eltype(pts)))",
                 :Points => pts,
                 :Vectors => vec,
                 :Rng => Random.MersenneTwister(),
-                :Functions => fcts,
+                :Functions => vcat(fcts, ap_funs),
             )
             expectations = Dict(
                 :repr => "SpecialEuclideanGroup(3)", :atol => 1e-14, :is_flat => false
@@ -162,9 +176,9 @@ using StaticArrays
         @test norm(X) == 0
         @test isapprox(G4, exp(G4, X), g)
 
-        Y = log(G4, h)
-        @test is_point(LieAlgebra(G4), Y; error=:error)
-        @test isapprox(G4, exp(G4, Y), h)
+        YL = log(G4, h)
+        @test is_point(LieAlgebra(G4), YL; error=:error)
+        @test isapprox(G4, exp(G4, YL), h)
     end
     #
     #
@@ -331,7 +345,6 @@ using StaticArrays
         @test er[Gr, :Translation] == eT
         @test er[G, :] == (eO, eT)
     end
-
     @testset "Small angle cases" begin
         G = SpecialEuclideanGroup(2)
         X = hat(LieAlgebra(G), [1e-8, 1, 0])
@@ -343,7 +356,6 @@ using StaticArrays
         p = exp(G, X)
         @test X ≈ log(G, p)
     end
-
     @testset "StaticArrays.jl specializations on SE(2)" begin
         G = SpecialEuclideanGroup(2)
         T = ArrayPartition{Float64,Tuple{SMatrix{2,2,Float64},SVector{2,Float64}}}
@@ -352,5 +364,40 @@ using StaticArrays
 
         X = hat(LieAlgebra(G), SA[1, 0, 0.01], ArrayPartition)
         @test X isa ArrayPartition{Float64,Tuple{Matrix{Float64},Vector{Float64}}}
+    end
+    @testset "Retraction and vector transport passthrough" begin
+        G = SpecialEuclideanGroup(2)
+        𝔤 = LieAlgebra(G)
+        gL = ArrayPartition(1 / 𝔰 * [1.0 1.0; -1.0 1.0], [1.0, 0.0])
+        hL = ArrayPartition([0.0 -1.0; 1.0 0.0], [0.0, 1.0])
+        XL = ArrayPartition([0.0 -0.23; 0.23 0.0], [0.0, 1.0])
+        drm = BaseManifoldRetraction(default_retraction_method(base_manifold(G)))
+        dirm = BaseManifoldInverseRetraction(
+            default_inverse_retraction_method(base_manifold(G))
+        )
+        dvm = BaseManifoldVectorTransportMethod(
+            default_vector_transport_method(base_manifold(G))
+        )
+        kL = retract(G, gL, XL, drm)
+        @test is_point(G, kL; error=:error)
+        kL2 = similar(kL)
+        retract!(G, kL2, gL, XL, drm)
+        @test isapprox(G, kL, kL2)
+
+        # Check formula again for this to be equal do X.
+        # If we apply another pullback, this seems to be right, so we have to check where we accidentally pushforward once too much?
+        YL = inverse_retract(G, gL, kL, dirm)
+        @test is_point(𝔤, YL; error=:error)
+        @test isapprox(𝔤, XL, YL)
+        YL2 = similar(YL)
+        inverse_retract!(G, YL2, gL, kL, dirm)
+        @test isapprox(G, YL, YL2)
+
+        ZL = vector_transport_to(G, gL, XL, hL, dvm)
+        @test is_point(𝔤, ZL; error=:error)
+
+        ZL2 = similar(ZL)
+        vector_transport_to!(G, ZL2, gL, XL, hL, dvm)
+        @test isapprox(G, gL, ZL2, ZL)
     end
 end
