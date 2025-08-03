@@ -36,9 +36,9 @@ end
 const LeftSpecialGalileanGroupOperation = LeftSemidirectProductGroupOperation{
     # The group of spatial rotations and velocity boosts SO(n) ⋉ ℝⁿ
     LeftSemidirectProductGroupOperation{
-        MatrixMultiplicationGroupOperation,AdditionGroupOperation,LeftGroupOperationAction
+        MatrixMultiplicationGroupOperation, AdditionGroupOperation, LeftGroupOperationAction,
     },
-    ProductGroupOperation{Tuple{AdditionGroupOperation,AdditionGroupOperation}},
+    ProductGroupOperation{Tuple{AdditionGroupOperation, AdditionGroupOperation}},
     RotationBoostAction,
 }
 
@@ -48,11 +48,11 @@ SpecialGalileanGroup{T} = LieGroup{
     <:ProductManifold{
         ℝ,
         Tuple{
-            <:ProductManifold{ℝ,Tuple{<:Rotations{T},<:Euclidean{T,ℝ}}},
+            <:ProductManifold{ℝ, Tuple{<:Rotations{T}, <:Euclidean{T, ℝ}}},
             <:ProductManifold{
                 ℝ,
                 Tuple{
-                    <:Euclidean{T,ℝ},<:Euclidean{ManifoldsBase.TypeParameter{Tuple{1}},ℝ}
+                    <:Euclidean{T, ℝ}, <:Euclidean{ManifoldsBase.TypeParameter{Tuple{1}}, ℝ},
                 },
             },
         },
@@ -63,9 +63,9 @@ SpecialGalileanGroup{T} = LieGroup{
 # see eq 1. in https://arxiv.org/pdf/2312.07555
 EventsGroup{T} = LieGroup{
     ℝ,
-    ProductGroupOperation{Tuple{AdditionGroupOperation,AdditionGroupOperation}},
+    ProductGroupOperation{Tuple{AdditionGroupOperation, AdditionGroupOperation}},
     ProductManifold{
-        ℝ,Tuple{Euclidean{T,ℝ},Euclidean{ManifoldsBase.TypeParameter{Tuple{1}},ℝ}}
+        ℝ, Tuple{Euclidean{T, ℝ}, Euclidean{ManifoldsBase.TypeParameter{Tuple{1}}, ℝ}},
     },
 }
 
@@ -91,24 +91,24 @@ ArrayPartition representation
 """
 function SpecialGalileanGroup(n::Int)
     return (SpecialOrthogonalGroup(n) ⋉ TranslationGroup(n)) ⋉
-           (TranslationGroup(n) × TranslationGroup(1))
+        (TranslationGroup(n) × TranslationGroup(1))
 end
 
 #TODO don't know if something similar already exists in LieGroups.jl
-function _skew(v::AbstractVector{T}) where {T<:Real}
-    return SMatrix{3,3,T}(0, v[3], -v[2], -v[3], 0, v[1], v[2], -v[1], 0)
+function _skew(v::AbstractVector{T}) where {T <: Real}
+    return SMatrix{3, 3, T}(0, v[3], -v[2], -v[3], 0, v[1], v[2], -v[1], 0)
 end
 
 function _Q(θ⃗)
     T = eltype(θ⃗)
     θ = norm(θ⃗)
     if θ ≈ 0
-        return SMatrix{3,3,T}(I)
+        return SMatrix{3, 3, T}(I)
     else
         u = θ⃗ / θ
         sθ, cθ = sincos(θ)
         uₓ = _skew(u)
-        return SMatrix{3,3,T}(I) + (1 - cθ) / θ * uₓ + (θ - sθ) / θ * uₓ^2
+        return SMatrix{3, 3, T}(I) + (1 - cθ) / θ * uₓ + (θ - sθ) / θ * uₓ^2
     end
 end
 
@@ -116,22 +116,22 @@ function _P(θ⃗)
     T = eltype(θ⃗)
     θ = norm(θ⃗)
     if θ ≈ 0
-        return 1 / 2 * SMatrix{3,3,T}(I)
+        return 1 / 2 * SMatrix{3, 3, T}(I)
     else
         u = θ⃗ / θ
         sθ, cθ = sincos(θ)
         uₓ = _skew(u)
-        return 1 / 2 * SMatrix{3,3,T}(I) +
-               (θ - sθ) / θ^2 * uₓ +
-               (cθ + 1 / 2 * θ^2 - 1) / θ^2 * uₓ^2
+        return 1 / 2 * SMatrix{3, 3, T}(I) +
+            (θ - sθ) / θ^2 * uₓ +
+            (cθ + 1 / 2 * θ^2 - 1) / θ^2 * uₓ^2
     end
 end
 
 function LieGroups.exp!(
-    G::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
-    q::ArrayPartition,
-    X::ArrayPartition,
-)
+        G::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
+        q::ArrayPartition,
+        X::ArrayPartition,
+    )
     θ⃗ₓ = X.x[1].x[1] # ωΔt
 
     ν = X.x[1].x[2]  # aΔt
@@ -155,10 +155,10 @@ function LieGroups.exp!(
 end
 
 function LieGroups.log!(
-    M::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
-    X::ArrayPartition,
-    p::ArrayPartition,
-)
+        M::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
+        X::ArrayPartition,
+        p::ArrayPartition,
+    )
     ΔR = p.x[1].x[1]
     Δv = p.x[1].x[2]
     Δp = p.x[2].x[1]
@@ -180,11 +180,11 @@ function LieGroups.log!(
 end
 
 function LieGroups.identity_element(
-    ::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{N}}}, ::Type{<:StaticArray}
-) where {N}
+        ::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{N}}}, ::Type{<:StaticArray}
+    ) where {N}
     return ArrayPartition(
         ArrayPartition(
-            SMatrix{3,3,Float64}(I), # ΔR
+            SMatrix{3, 3, Float64}(I), # ΔR
             @SVector(zeros(3)),      # Δv
         ),
         ArrayPartition(
@@ -205,7 +205,7 @@ function LieGroups.inv(G::SpecialGalileanGroup, p::ArrayPartition)
             ΔR',                      # ΔR
             -ΔR' * Δv,                # Δv
         ),                            #
-        ArrayPartition(               #   
+        ArrayPartition(               #
             -ΔR' * (Δp - Δv * Δt[1]), # Δp
             -Δt,                      # Δt
         ),

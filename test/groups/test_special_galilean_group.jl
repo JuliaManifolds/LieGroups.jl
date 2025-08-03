@@ -48,7 +48,7 @@ using StaticArrays
             ArrayPartition([0.0, 0.0, 0.0], [1.0]),
         )
         YL2 = ArrayPartition(
-            ArrayPartition([0.0 0.30 0.0; -0.30 0.0 0.0; 0.0 0.0 0.0], [1.0, 1.0, 0.0]),
+            ArrayPartition([0.0 0.3 0.0; -0.3 0.0 0.0; 0.0 0.0 0.0], [1.0, 1.0, 0.0]),
             ArrayPartition([1.0, 0.3, 0.0], [0.1]),
         )
         YL3 = ArrayPartition(
@@ -66,7 +66,7 @@ using StaticArrays
                 :Functions => fcts,
             )
             expectations = Dict(
-                :atol => 1e-14,
+                :atol => 1.0e-14,
                 # :repr => "SpecialGalileanGroup(3)",
                 # :is_flat => false
             )
