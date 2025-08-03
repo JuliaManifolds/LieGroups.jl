@@ -16,35 +16,33 @@ for ``p ∈ $(_math(:SL))(n,𝔽)`` are represented with their corresponding Lie
 Generate the general linear group  group on ``𝔽^{n×n}``.
 All keyword arguments in `kwargs...` are passed on to [`DeterminantOneMatrices`](@extref `Manifolds.DeterminantOneMatrices`).
 """
-const SpecialLinearGroup{𝔽,T} = LieGroup{
-    𝔽,MatrixMultiplicationGroupOperation,DeterminantOneMatrices{𝔽,T}
+const SpecialLinearGroup{𝔽, T} = LieGroup{
+    𝔽, MatrixMultiplicationGroupOperation, DeterminantOneMatrices{𝔽, T},
 }
 
-function SpecialLinearGroup(n::Int, field=ManifoldsBase.ℝ; kwargs...)
+function SpecialLinearGroup(n::Int, field = ManifoldsBase.ℝ; kwargs...)
     M = DeterminantOneMatrices(n, field; kwargs...)
     return SpecialLinearGroup{typeof(M).parameters...}(
         M, MatrixMultiplicationGroupOperation()
     )
 end
 
-# TODO: document hat/vee with the corresponding formulae
-
 function get_coordinates_lie!(
-    ::LieAlgebra{ℝ,MatrixMultiplicationGroupOperation,<:SpecialLinearGroup},
-    c,
-    X,
-    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
-)
+        ::LieAlgebra{ℝ, MatrixMultiplicationGroupOperation, <:SpecialLinearGroup},
+        c,
+        X,
+        ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+    )
     c .= X[1:(end - 1)]
     return c
 end
 
 function get_vector_lie!(
-    𝔤::LieAlgebra{ℝ,MatrixMultiplicationGroupOperation,<:SpecialLinearGroup},
-    X,
-    c,
-    ::DefaultLieAlgebraOrthogonalBasis{ℝ},
-)
+        𝔤::LieAlgebra{ℝ, MatrixMultiplicationGroupOperation, <:SpecialLinearGroup},
+        X,
+        c,
+        ::DefaultLieAlgebraOrthogonalBasis{ℝ},
+    )
     X[1:(end - 1)] .= c
     X[end] = 0
     X[end] = -tr(X)
@@ -67,20 +65,20 @@ This can be computed in-place of `X`.
 
 @doc "$(_doc_hat_special_linear)"
 ManifoldsBase.hat(
-    ::LieAlgebra{ℝ,MatrixMultiplicationGroupOperation,<:SpecialLinearGroup}, c
+    ::LieAlgebra{ℝ, MatrixMultiplicationGroupOperation, <:SpecialLinearGroup}, c
 )
 
 @doc "$(_doc_hat_special_linear)"
 ManifoldsBase.hat!(
-    ::LieAlgebra{ℝ,MatrixMultiplicationGroupOperation,<:SpecialLinearGroup}, X, c
+    ::LieAlgebra{ℝ, MatrixMultiplicationGroupOperation, <:SpecialLinearGroup}, X, c
 )
 
 function Base.show(
-    io::IO, ::SpecialLinearGroup{𝔽,ManifoldsBase.TypeParameter{Tuple{n}}}
-) where {𝔽,n}
+        io::IO, ::SpecialLinearGroup{𝔽, ManifoldsBase.TypeParameter{Tuple{n}}}
+    ) where {𝔽, n}
     return print(io, "SpecialLinearGroup($n, $(𝔽))")
 end
-function Base.show(io::IO, G::SpecialLinearGroup{𝔽,Tuple{Int}}) where {𝔽}
+function Base.show(io::IO, G::SpecialLinearGroup{𝔽, Tuple{Int}}) where {𝔽}
     M = base_manifold(G)
     n = ManifoldsBase.get_parameter(M.size)[1]
     return print(io, "SpecialLinearGroup($n, $(𝔽); parameter=:field)")
@@ -102,10 +100,10 @@ This can be computed in-place of `c`.
 
 @doc "$(_doc_vee_special_linear)"
 ManifoldsBase.vee(
-    ::LieAlgebra{ℝ,MatrixMultiplicationGroupOperation,<:SpecialLinearGroup}, X
+    ::LieAlgebra{ℝ, MatrixMultiplicationGroupOperation, <:SpecialLinearGroup}, X
 )
 
 @doc "$(_doc_vee_special_linear)"
 ManifoldsBase.vee!(
-    ::LieAlgebra{ℝ,MatrixMultiplicationGroupOperation,<:SpecialLinearGroup}, c, X
+    ::LieAlgebra{ℝ, MatrixMultiplicationGroupOperation, <:SpecialLinearGroup}, c, X
 )

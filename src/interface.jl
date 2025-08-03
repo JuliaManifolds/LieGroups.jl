@@ -10,6 +10,39 @@ on elements of a Lie group ``$(_math(:G))``.
 """
 abstract type AbstractGroupOperation end
 
+@doc raw"""
+    BaseManifoldInverseRetraction{IRM<:AbstractInverseRetractionMethod} <: AbstractInverseRetractionMethod
+
+Compute an inverse retraction by using the inverse retraction of type `IRM` on the base manifold of
+a [`LieGroup`](@ref).
+
+# Constructor
+
+    BaseManifoldInverseRetraction(irm::AbstractInverseRetractionMethod)
+
+Generate the inverse retraction with inverse retraction `rm` to use on the base manifold.
+"""
+struct BaseManifoldInverseRetraction{IRM <: AbstractInverseRetractionMethod} <:
+    AbstractInverseRetractionMethod
+    inverse_retraction::IRM
+end
+
+@doc raw"""
+    BaseManifoldRetraction{RM<:AbstractRetractionMethod} <: AbstractRetractionMethod
+
+Compute a retraction by using the retraction of type `RM` on the base manifold of
+a [`LieGroup`](@ref).
+
+# Constructor
+
+    BaseManifoldRetraction(rm::AbstractRetractionMethod)
+
+Generate the retraction with retraction `rm` to use on the base manifold.
+"""
+struct BaseManifoldRetraction{RM <: AbstractRetractionMethod} <: AbstractRetractionMethod
+    retraction::RM
+end
+
 """
     DefaultLieAlgebraOrthogonalBasis{𝔽} <: ManifoldsBase.AbstractOrthogonalBasis{𝔽,ManifoldsBase.TangentSpaceType}
 
@@ -24,8 +57,8 @@ at the [`identity_element`](@ref) on the [`base_manifold](@ref base_manifold(::A
     define `get_coordinates_lie(::AbstractLieAlgebra, X, B)` and `get_vector_lie(::AbstractLieAlgebra, X, B)`, resp.
 """
 struct DefaultLieAlgebraOrthogonalBasis{𝔽} <:
-       ManifoldsBase.AbstractOrthogonalBasis{𝔽,ManifoldsBase.TangentSpaceType} end
-function DefaultLieAlgebraOrthogonalBasis(𝔽::ManifoldsBase.AbstractNumbers=ℝ)
+    ManifoldsBase.AbstractOrthogonalBasis{𝔽, ManifoldsBase.TangentSpaceType} end
+function DefaultLieAlgebraOrthogonalBasis(𝔽::ManifoldsBase.AbstractNumbers = ℝ)
     return DefaultLieAlgebraOrthogonalBasis{𝔽}()
 end
 
@@ -35,8 +68,8 @@ end
 An abstract type to represent Lie groups. For most cases it should suffice to “combine”
 an $(_link(:AbstractManifold)) with an [`AbstractGroupOperation`](@ref), see [`LieGroup`](@ref).
 """
-abstract type AbstractLieGroup{𝔽,O<:AbstractGroupOperation,M<:AbstractManifold{𝔽}} <:
-              AbstractManifold{𝔽} end
+abstract type AbstractLieGroup{𝔽, O <: AbstractGroupOperation, M <: AbstractManifold{𝔽}} <:
+AbstractManifold{𝔽} end
 
 """
     LieGroup{𝔽, O<:AbstractGroupOperation, M<:AbstractManifold{𝔽}} <:  AbstractLieGroup{𝔽, O, M}
@@ -61,8 +94,8 @@ Lie groups are named after the Norwegian mathematician [Marius Sophus Lie](https
 
 Generate a Lie group based on a manifold `M` and a group operation `op`, where vectors by default are stored in the Lie Algebra.
 """
-struct LieGroup{𝔽,O<:AbstractGroupOperation,M<:ManifoldsBase.AbstractManifold{𝔽}} <:
-       AbstractLieGroup{𝔽,O,M}
+struct LieGroup{𝔽, O <: AbstractGroupOperation, M <: ManifoldsBase.AbstractManifold{𝔽}} <:
+    AbstractLieGroup{𝔽, O, M}
     manifold::M
     op::O
 end
@@ -86,11 +119,11 @@ See also [`identity_element`](@ref) on how to obtain the corresponding [`Abstrac
 
 create the identity of the corresponding subtype `O<:`[`AbstractGroupOperation`](@ref)
 """
-struct Identity{O<:AbstractGroupOperation} end
+struct Identity{O <: AbstractGroupOperation} end
 
-Identity(::AbstractLieGroup{𝔽,O}) where {𝔽,O<:AbstractGroupOperation} = Identity{O}()
-Identity(::O) where {O<:AbstractGroupOperation} = Identity(O)
-Identity(::Type{O}) where {O<:AbstractGroupOperation} = Identity{O}()
+Identity(::AbstractLieGroup{𝔽, O}) where {𝔽, O <: AbstractGroupOperation} = Identity{O}()
+Identity(::O) where {O <: AbstractGroupOperation} = Identity(O)
+Identity(::Type{O}) where {O <: AbstractGroupOperation} = Identity{O}()
 
 """
     AbstractLieGroupPoint <: ManifoldsBase.AbstractManifoldPoint end
@@ -169,8 +202,8 @@ ManifoldsBase.base_manifold(G::LieGroup) = G.manifold
 
 # Since we dispatch per point here, identity is already checked on the `is_point` level.
 function ManifoldsBase.check_point(
-    G::AbstractLieGroup{𝔽,O}, g; kwargs...
-) where {𝔽,O<:AbstractGroupOperation}
+        G::AbstractLieGroup{𝔽, O}, g; kwargs...
+    ) where {𝔽, O <: AbstractGroupOperation}
     return ManifoldsBase.check_point(base_manifold(G), g; kwargs...)
 end
 
@@ -196,11 +229,11 @@ on the [`AbstractLieGroup`](@ref) `G`. This can also be done in-place of `h`.
 """
 @doc "$(_doc_compose)"
 compose(G::AbstractLieGroup, g, h) = _compose(G, g, h)
-compose(::AbstractLieGroup{𝔽,O}, g::Identity{O}, h) where {𝔽,O<:AbstractGroupOperation} = h
-compose(::AbstractLieGroup{𝔽,O}, g, h::Identity{O}) where {𝔽,O<:AbstractGroupOperation} = g
+compose(::AbstractLieGroup{𝔽, O}, g::Identity{O}, h) where {𝔽, O <: AbstractGroupOperation} = h
+compose(::AbstractLieGroup{𝔽, O}, g, h::Identity{O}) where {𝔽, O <: AbstractGroupOperation} = g
 function compose(
-    ::AbstractLieGroup{𝔽,O}, g::Identity{O}, h::Identity{O}
-) where {𝔽,O<:AbstractGroupOperation}
+        ::AbstractLieGroup{𝔽, O}, g::Identity{O}, h::Identity{O}
+    ) where {𝔽, O <: AbstractGroupOperation}
     return g
 end
 
@@ -214,23 +247,23 @@ function compose! end
 @doc "$(_doc_compose)"
 compose!(G::AbstractLieGroup, k, g, h) = _compose!(G, k, g, h)
 function compose!(
-    G::AbstractLieGroup{𝔽,O}, k, ::Identity{O}, h
-) where {𝔽,O<:AbstractGroupOperation}
+        G::AbstractLieGroup{𝔽, O}, k, ::Identity{O}, h
+    ) where {𝔽, O <: AbstractGroupOperation}
     return copyto!(G, k, h)
 end
 function compose!(
-    G::AbstractLieGroup{𝔽,O}, k, g, ::Identity{O}
-) where {𝔽,O<:AbstractGroupOperation}
+        G::AbstractLieGroup{𝔽, O}, k, g, ::Identity{O}
+    ) where {𝔽, O <: AbstractGroupOperation}
     return copyto!(G, k, g)
 end
 function compose!(
-    G::AbstractLieGroup{𝔽,O}, k, ::Identity{O}, ::Identity{O}
-) where {𝔽,O<:AbstractGroupOperation}
+        G::AbstractLieGroup{𝔽, O}, k, ::Identity{O}, ::Identity{O}
+    ) where {𝔽, O <: AbstractGroupOperation}
     return identity_element!(G, k)
 end
 function compose!(
-    ::AbstractLieGroup{𝔽,O}, k::Identity{O}, ::Identity{O}, ::Identity{O}
-) where {𝔽,O<:AbstractGroupOperation}
+        ::AbstractLieGroup{𝔽, O}, k::Identity{O}, ::Identity{O}, ::Identity{O}
+    ) where {𝔽, O <: AbstractGroupOperation}
     return k
 end
 
@@ -260,18 +293,18 @@ end
 
 ManifoldsBase.copyto!(G::AbstractLieGroup, h, g) = copyto!(base_manifold(G), h, g)
 function ManifoldsBase.copyto!(
-    G::AbstractLieGroup{𝔽,O}, h::P, ::Identity{O}
-) where {𝔽,O<:AbstractGroupOperation,P}
+        G::AbstractLieGroup{𝔽, O}, h::P, ::Identity{O}
+    ) where {𝔽, O <: AbstractGroupOperation, P}
     return identity_element!(G, h)
 end
 function ManifoldsBase.copyto!(
-    ::AbstractLieGroup{𝔽,O}, h::Identity{O}, ::Identity{O}
-) where {𝔽,O<:AbstractGroupOperation}
+        ::AbstractLieGroup{𝔽, O}, h::Identity{O}, ::Identity{O}
+    ) where {𝔽, O <: AbstractGroupOperation}
     return h
 end
 function ManifoldsBase.copyto!(
-    G::AbstractLieGroup{𝔽,O}, h::Identity{O}, g
-) where {𝔽,O<:AbstractGroupOperation}
+        G::AbstractLieGroup{𝔽, O}, h::Identity{O}, g
+    ) where {𝔽, O <: AbstractGroupOperation}
     (is_identity(G, g)) && return h
     throw(
         DomainError(
@@ -282,11 +315,11 @@ function ManifoldsBase.copyto!(
 end
 
 function ManifoldsBase.default_basis(
-    ::AbstractLieGroup, ::Type{T}; field::AbstractNumbers=ℝ
-) where {T}
+        ::AbstractLieGroup, ::Type{T}; field::AbstractNumbers = ℝ
+    ) where {T}
     return DefaultLieAlgebraOrthogonalBasis(field)
 end
-function ManifoldsBase.default_basis(::AbstractLieGroup; field::AbstractNumbers=ℝ)
+function ManifoldsBase.default_basis(::AbstractLieGroup; field::AbstractNumbers = ℝ)
     return DefaultLieAlgebraOrthogonalBasis(field)
 end
 
@@ -340,7 +373,7 @@ This can be done in-place of `Y`.
 """
 @doc "$(_doc_diff_left_compose)"
 function diff_left_compose(G::AbstractLieGroup, g, h, X)
-    Y = ManifoldsBase.allocate_result(G, diff_left_compose, g, h, X)
+    Y = ManifoldsBase.allocate_result(G, diff_left_compose, X, g, h)
     return diff_left_compose!(G, Y, g, h, X)
 end
 
@@ -358,7 +391,7 @@ This can be done in-place of `Y`.
 """
 @doc "$(_doc_diff_right_compose)"
 function diff_right_compose(G::AbstractLieGroup, h, g, X)
-    Y = ManifoldsBase.allocate_result(G, diff_right_compose, h, g, X)
+    Y = ManifoldsBase.allocate_result(G, diff_right_compose, X, h, g)
     return diff_right_compose!(G, Y, h, g, X)
 end
 
@@ -441,30 +474,30 @@ end
 ManifoldsBase.exp!(G::AbstractLieGroup, ::Any, ::Any)
 
 function ManifoldsBase.get_coordinates(
-    G::AbstractLieGroup, g, X, B::AbstractBasis{<:Any,TangentSpaceType}
-)
+        G::AbstractLieGroup, g, X, B::AbstractBasis{<:Any, TangentSpaceType}
+    )
     return get_coordinates(LieAlgebra(G), X, B)
 end
 function ManifoldsBase.get_coordinates!(
-    G::AbstractLieGroup, c, g, X, B::AbstractBasis{<:Any,TangentSpaceType}
-)
+        G::AbstractLieGroup, c, g, X, B::AbstractBasis{<:Any, TangentSpaceType}
+    )
     get_coordinates!(LieAlgebra(G), c, X, B)
     return c
 end
 
 function ManifoldsBase.get_vector(
-    G::AbstractLieGroup, g, c, B::AbstractBasis{<:Any,TangentSpaceType}
-)
+        G::AbstractLieGroup, g, c, B::AbstractBasis{<:Any, TangentSpaceType}
+    )
     return get_vector(
         LieAlgebra(G),
         c,
         B;
-        tangent_vector_type=ManifoldsBase.tangent_vector_type(G, typeof(g)),
+        tangent_vector_type = ManifoldsBase.tangent_vector_type(G, typeof(g)),
     )
 end
 function ManifoldsBase.get_vector!(
-    G::AbstractLieGroup, X, g, c, B::AbstractBasis{<:Any,TangentSpaceType}
-)
+        G::AbstractLieGroup, X, g, c, B::AbstractBasis{<:Any, TangentSpaceType}
+    )
     return get_vector!(LieAlgebra(G), X, c, B)
 end
 
@@ -517,14 +550,14 @@ function inv! end
 inv!(G::AbstractLieGroup, h, g)
 
 function Base.inv(
-    ::AbstractLieGroup{𝔽,O}, e::Identity{O}
-) where {𝔽,O<:AbstractGroupOperation}
+        ::AbstractLieGroup{𝔽, O}, e::Identity{O}
+    ) where {𝔽, O <: AbstractGroupOperation}
     return e
 end
 
 function inv!(
-    G::AbstractLieGroup{𝔽,O}, g, ::Identity{O}
-) where {𝔽,O<:AbstractGroupOperation}
+        G::AbstractLieGroup{𝔽, O}, g, ::Identity{O}
+    ) where {𝔽, O <: AbstractGroupOperation}
     return identity_element!(G, g)
 end
 
@@ -572,6 +605,43 @@ function inv_right_compose!(G::AbstractLieGroup, k, h, g)
     return k
 end
 
+"""
+    inverse_retract(G::AbstractLieGroup, g, h, m::BaseManifoldInverseRetraction)
+
+Compute the inverse retraction of `g` and `h` on the [`AbstractLieGroup`](@ref) `G`
+by using an inverse retraction on the underlying manifold and pulling the result back to the Lie algebra.
+"""
+ManifoldsBase.inverse_retract(G::AbstractLieGroup, g, h, m::BaseManifoldInverseRetraction)
+
+# Layer 3
+function ManifoldsBase._inverse_retract!(
+        G::AbstractLieGroup, X, g, h, m::BaseManifoldInverseRetraction
+    )
+    return inverse_retract_base_manifold!(G, X, g, h, m)
+end
+function ManifoldsBase._inverse_retract(
+        G::AbstractLieGroup, g, h, m::BaseManifoldInverseRetraction
+    )
+    return inverse_retract_base_manifold(G, g, h, m)
+end
+function inverse_retract_base_manifold!(
+        G::AbstractLieGroup, X, g, h, m::BaseManifoldInverseRetraction
+    )
+    inverse_retract!(base_manifold(G), X, g, h, m.inverse_retraction)
+    # X is in TgM so we still ave to pull it back to TeM using
+    # the left group opp diff.
+    pull_back_tangent!(G, X, g, X)
+    return X
+end
+function inverse_retract_base_manifold(
+        G::AbstractLieGroup, g, h, m::BaseManifoldInverseRetraction
+    )
+    X = inverse_retract(base_manifold(G), g, h, m.inverse_retraction)
+    # X is in TgM so we still ave to pull it back to TeM using
+    # the left group opp diff.
+    return pull_back_tangent(G, g, X)
+end
+
 function is_identity end
 @doc """
     is_identity(G::AbstractLieGroup, q; kwargs...)
@@ -589,21 +659,21 @@ is_identity(G::AbstractLieGroup, q)
 # Declare as “fallback” for types
 
 function is_identity(
-    G::AbstractLieGroup{𝔽,O}, h::P; kwargs...
-) where {𝔽,P,O<:AbstractGroupOperation}
+        G::AbstractLieGroup{𝔽, O}, h::P; kwargs...
+    ) where {𝔽, P, O <: AbstractGroupOperation}
     return ManifoldsBase.isapprox(G, identity_element(G, P), h; kwargs...)
 end
 function is_identity(
-    ::AbstractLieGroup{𝔽,O}, ::Identity{O}; kwargs...
-) where {𝔽,O<:AbstractGroupOperation}
+        ::AbstractLieGroup{𝔽, O}, ::Identity{O}; kwargs...
+    ) where {𝔽, O <: AbstractGroupOperation}
     return true
 end
 # any other identity than the fitting one
 function is_identity(
-    G::AbstractLieGroup{𝔽,<:AbstractGroupOperation},
-    h::Identity{<:AbstractGroupOperation};
-    kwargs...,
-) where {𝔽}
+        G::AbstractLieGroup{𝔽, <:AbstractGroupOperation},
+        h::Identity{<:AbstractGroupOperation};
+        kwargs...,
+    ) where {𝔽}
     return false
 end
 
@@ -620,17 +690,17 @@ ManifoldsBase.is_point(G::AbstractLieGroup, g; kwargs...)
 # resolve identity already here, everything else passes down to checks.
 
 function ManifoldsBase.is_point(
-    G::AbstractLieGroup{𝔽,O}, e::Identity{O}; kwargs...
-) where {𝔽,O<:AbstractGroupOperation}
+        G::AbstractLieGroup{𝔽, O}, e::Identity{O}; kwargs...
+    ) where {𝔽, O <: AbstractGroupOperation}
     return true
 end
 function ManifoldsBase.is_point(
-    G::AbstractLieGroup, e::Identity; error::Symbol=:none, kwargs...
-)
+        G::AbstractLieGroup, e::Identity; error::Symbol = :none, kwargs...
+    )
     s = """
-        The provided point $e is not the Identity on $G.
-        Expected an Identity corresponding to $(G.op).
-        """
+    The provided point $e is not the Identity on $G.
+    Expected an Identity corresponding to $(G.op).
+    """
     (error === :error) && throw(DomainError(s))
     (error === :info) && @info s
     (error === :warn) && @warn s
@@ -638,8 +708,8 @@ function ManifoldsBase.is_point(
 end
 
 function ManifoldsBase.is_vector(
-    G::AbstractLieGroup{𝔽,O}, ::Identity{O}, X; kwargs...
-) where {𝔽,O<:AbstractGroupOperation}
+        G::AbstractLieGroup{𝔽, O}, ::Identity{O}, X; kwargs...
+    ) where {𝔽, O <: AbstractGroupOperation}
     return ManifoldsBase.is_point(LieAlgebra(G), X; kwargs...)
 end
 
@@ -655,28 +725,28 @@ All keyword argments are passed to this function as well.
 ManifoldsBase.isapprox(G::AbstractLieGroup, g, h; kwargs...) =
     isapprox(base_manifold(G), g, h; kwargs...)
 function ManifoldsBase.isapprox(
-    G::AbstractLieGroup{𝔽,O}, g::Identity{O}, h; kwargs...
-) where {𝔽,O<:AbstractGroupOperation}
+        G::AbstractLieGroup{𝔽, O}, g::Identity{O}, h; kwargs...
+    ) where {𝔽, O <: AbstractGroupOperation}
     return ManifoldsBase.isapprox(G, identity_element(G, typeof(h)), h; kwargs...)
 end
 function ManifoldsBase.isapprox(
-    G::AbstractLieGroup{𝔽,O}, g, h::Identity{O}; kwargs...
-) where {𝔽,O<:AbstractGroupOperation}
+        G::AbstractLieGroup{𝔽, O}, g, h::Identity{O}; kwargs...
+    ) where {𝔽, O <: AbstractGroupOperation}
     return ManifoldsBase.isapprox(G, g, identity_element(G, typeof(g)); kwargs...)
 end
 function ManifoldsBase.isapprox(
-    G::AbstractLieGroup{𝔽,O}, g::Identity{O}, h::Identity{O}; kwargs...
-) where {𝔽,O<:AbstractGroupOperation}
+        G::AbstractLieGroup{𝔽, O}, g::Identity{O}, h::Identity{O}; kwargs...
+    ) where {𝔽, O <: AbstractGroupOperation}
     return true
 end
 function ManifoldsBase.isapprox(
-    G::AbstractLieGroup{𝔽,O}, g::Identity{O}, h::Identity{O2}; kwargs...
-) where {𝔽,O<:AbstractGroupOperation,O2<:AbstractGroupOperation}
+        G::AbstractLieGroup{𝔽, O}, g::Identity{O}, h::Identity{O2}; kwargs...
+    ) where {𝔽, O <: AbstractGroupOperation, O2 <: AbstractGroupOperation}
     return false
 end
 function ManifoldsBase.isapprox(
-    G::AbstractLieGroup{𝔽,O}, g::Identity{O2}, h::Identity{O}; kwargs...
-) where {𝔽,O<:AbstractGroupOperation,O2<:AbstractGroupOperation}
+        G::AbstractLieGroup{𝔽, O}, g::Identity{O2}, h::Identity{O}; kwargs...
+    ) where {𝔽, O <: AbstractGroupOperation, O2 <: AbstractGroupOperation}
     return false
 end
 _doc_jacobian_conjugate = """
@@ -703,8 +773,8 @@ where ``X_j`` is the ``j``th basis vector of ``B``.
 """
 @doc "$(_doc_jacobian_conjugate)"
 function jacobian_conjugate(
-    G::AbstractLieGroup, g, h, B::AbstractBasis=DefaultLieAlgebraOrthogonalBasis()
-)
+        G::AbstractLieGroup, g, h, B::AbstractBasis = DefaultLieAlgebraOrthogonalBasis()
+    )
     J = ManifoldsBase.allocate_result(G, jacobian_conjugate, g, h, B)
     return jacobian_conjugate!(G, J, g, h, B)
 end
@@ -712,13 +782,13 @@ end
 function jacobian_conjugate! end
 @doc "$(_doc_jacobian_conjugate)"
 function jacobian_conjugate!(
-    G::AbstractLieGroup,
-    J,
-    g,
-    h,
-    B::AbstractBasis=DefaultLieAlgebraOrthogonalBasis();
-    X=zero_vector(LieAlgebra(G)),
-)
+        G::AbstractLieGroup,
+        J,
+        g,
+        h,
+        B::AbstractBasis = DefaultLieAlgebraOrthogonalBasis();
+        X = zero_vector(LieAlgebra(G)),
+    )
     n = number_of_coordinates(base_manifold(G), B)
     𝔤 = LieAlgebra(G)
     c = zeros(eltype(J), n)
@@ -794,13 +864,13 @@ function ManifoldsBase.log(G::AbstractLieGroup, g)
     return X
 end
 function ManifoldsBase.log(
-    G::AbstractLieGroup{𝔽,Op}, e::Identity{Op}
-) where {𝔽,Op<:AbstractGroupOperation}
+        G::AbstractLieGroup{𝔽, Op}, e::Identity{Op}
+    ) where {𝔽, Op <: AbstractGroupOperation}
     return zero_vector(LieAlgebra(G))
 end
 function ManifoldsBase.log(
-    G::AbstractLieGroup{𝔽,Op}, ::Identity{Op}, T::Type
-) where {𝔽,Op<:AbstractGroupOperation}
+        G::AbstractLieGroup{𝔽, Op}, ::Identity{Op}, T::Type
+    ) where {𝔽, Op <: AbstractGroupOperation}
     return zero_vector(LieAlgebra(G), T)
 end
 
@@ -808,8 +878,8 @@ end
 ManifoldsBase.log!(G::AbstractLieGroup, ::Any, ::Any)
 
 function ManifoldsBase.log!(
-    G::AbstractLieGroup{𝔽,Op}, X, e::Identity{Op}
-) where {𝔽,Op<:AbstractGroupOperation}
+        G::AbstractLieGroup{𝔽, Op}, X, e::Identity{Op}
+    ) where {𝔽, Op <: AbstractGroupOperation}
     return zero_vector!(LieAlgebra(G), X)
 end
 
@@ -842,7 +912,7 @@ function ManifoldsBase.project!(G::AbstractLieGroup, g, p)
 end
 
 # TODO: Move to ManifoldsBase at some point
-"""
+@doc """
     point_type(G::AbstractLieGroup, tangent_vector_type::Type)
 
 Change `tangent_vector_type` that is a type of tangent vector type on Lie group `G`
@@ -852,12 +922,78 @@ By default both these types are assumed to be identical.
 """
 point_type(::AbstractLieGroup, tangent_vector_type::Type) = tangent_vector_type
 
+_doc_pull_back_t = """
+    pull_back_tangent(G::AnstractLieGroup, g, X; kwargs...)
+    pull_back_tangent!(G::AbstractLiegroup, Y, g, X; kwargs...)
+
+Given a tangent vector `X` on the tangent space at `g` interpreted as the one on the manifold,
+this function pulls it back to the [`LieAlgebra`](@ref).
+
+By default this function falls back to calling [`diff_left_compose`](@ref), but compared to
+that function, this function also takes care about the change of representation.
+
+For example if a default representation for tangent vectors on a manifold is also the Lie algebra,
+then this function simplifies to the identity. This is for example the case for the
+[`SpecialOrthogonalGroup`](@ref) and its [`Rotations`](@extref `Manifolds.Rotations`) manifold.
+
+# Keyword argument
+* `e = identity_element(G, typeof(g))` – if you have a memory available to store an identity point in,
+  you can pass that memory here.
+"""
+
+@doc "$(_doc_pull_back_t)"
+function pull_back_tangent(G::AbstractLieGroup, g, X; e = identity_element(G, typeof(g)))
+    Y = zero_vector(LieAlgebra(G), typeof(X))
+    return pull_back_tangent!(G, Y, g, X)
+end
+
+@doc "$(_doc_pull_back_t)"
+function pull_back_tangent!(G::AbstractLieGroup, Y, g, X; e = identity_element(G, typeof(g)))
+    identity_element!(G, e)
+    diff_left_compose!(G, Y, e, inv(G, g), X)
+    return Y
+end
+
+_doc_push_fwd_t = """
+    push_forward_tangent(G::AnstractLieGroup, g, X)
+    push_forward_tangent!(G::AbstractLiegroup, Y, g, X)
+
+Given a Lie algebra vector `X` on the [`LieAlgebra`](@ref), this function pushes
+the vector forward to the tangent space at `g` interpreted as the one on the manifold.
+
+By default this function falls back to calling [`diff_left_compose`](@ref), but compared to
+that function, this function also takes care about the change of representation.
+
+For example if a default representation for tangent vectors on a manifold is also the Lie algebra,
+then this function simplifies to the identity. This is for example the case for the
+[`SpecialOrthogonalGroup`](@ref) and its [`Rotations`](@extref `Manifolds.Rotations`) manifold.
+
+# Keyword argument
+* `e = identity_element(G, typeof(g))` – if you have a memory available to store an identity point in,
+  you can pass that memory here.
+"""
+
+@doc "$(_doc_push_fwd_t)"
+function push_forward_tangent(G::AbstractLieGroup, g, X; e = identity_element(G, typeof(g)))
+    Y = zero_vector(LieAlgebra(G), typeof(X))
+    return push_forward_tangent!(G, Y, g, X; e = e)
+end
+
+@doc "$(_doc_push_fwd_t)"
+function push_forward_tangent!(
+        G::AbstractLieGroup, Y, g, X; e = identity_element(G, typeof(g))
+    )
+    identity_element!(G, e)
+    diff_left_compose!(G, Y, e, g, X)
+    return Y
+end
+
 @doc "$(_doc_rand)"
 Random.rand(::AbstractLieGroup; kwargs...)
 
 # New in LIeGroups, maybe move to ManifoldsBase at some point
 @doc "$(_doc_rand)"
-Random.rand(G::AbstractLieGroup, T::Type; vector_at=nothing, kwargs...)
+Random.rand(G::AbstractLieGroup, T::Type; vector_at = nothing, kwargs...)
 
 function Random.rand(G::AbstractLieGroup, T::Type, d::Integer; kwargs...)
     return [rand(G, T; kwargs...) for _ in 1:d]
@@ -868,24 +1004,24 @@ end
 function Random.rand(G::AbstractLieGroup, d::Integer; kwargs...)
     return [rand(G; kwargs...) for _ in 1:d]
 end
-function Random.rand(G::AbstractLieGroup, T::Type; vector_at=nothing, kwargs...)
+function Random.rand(G::AbstractLieGroup, T::Type; vector_at = nothing, kwargs...)
     if vector_at === nothing
         gX = allocate_on(G, T)
     else
         gX = allocate_on(G, TangentSpaceType(), T)
     end
-    rand!(G, gX; vector_at=vector_at, kwargs...)
+    rand!(G, gX; vector_at = vector_at, kwargs...)
     return gX
 end
 function Random.rand(
-    rng::AbstractRNG, M::AbstractLieGroup, T::Type; vector_at=nothing, kwargs...
-)
+        rng::AbstractRNG, M::AbstractLieGroup, T::Type; vector_at = nothing, kwargs...
+    )
     if vector_at === nothing
         gX = allocate_on(M, T)
     else
         gX = allocate_on(M, TangentSpaceType(), T)
     end
-    rand!(rng, M, gX; vector_at=vector_at, kwargs...)
+    rand!(rng, M, gX; vector_at = vector_at, kwargs...)
     return gX
 end
 
@@ -895,14 +1031,43 @@ function Random.rand!(G::AbstractLieGroup, pX; kwargs...)
 end
 
 function Random.rand!(
-    rng::AbstractRNG, G::AbstractLieGroup, pX::T; vector_at=nothing, kwargs...
-) where {T}
+        rng::AbstractRNG, G::AbstractLieGroup, pX::T; vector_at = nothing, kwargs...
+    ) where {T}
     M = base_manifold(G)
-    if vector_at === nothing # for points -> pass to manifold
+    return if vector_at === nothing # for points -> pass to manifold
         rand!(rng, M, pX; kwargs...)
     else # for tangent vectors -> materialize identity, pass to tangent space there.
-        rand!(rng, M, pX; vector_at=identity_element(G, T), kwargs...)
+        rand!(rng, M, pX; vector_at = identity_element(G, T), kwargs...)
     end
+end
+
+"""
+    retract(G::AbstractLieGroup, g, h, m::BaseManifoldRetraction)
+
+Compute the retraction of `g` and `X` on the [`AbstractLieGroup`](@ref) `G`
+by pushing `X` forward to the tangent space at `g` and using a retraction on the underlying manifold.
+"""
+ManifoldsBase.retract(::LieGroup, p, X, m::BaseManifoldRetraction)
+
+# Layer 2
+function ManifoldsBase._retract!(G::AbstractLieGroup, h, g, X, m::BaseManifoldRetraction)
+    return retract_base_manifold!(G, h, g, X, m)
+end
+function ManifoldsBase._retract(G::AbstractLieGroup, g, X, m::BaseManifoldRetraction)
+    return retract_base_manifold(G, g, X, m)
+end
+function retract_base_manifold!(G, h, g, X, m::BaseManifoldRetraction)
+    # X is in TeM so we first push it to TpM using
+    Y = push_forward_tangent(G, g, X)
+    # now we can use the retraction on the base manifold
+    retract!(base_manifold(G), h, g, Y, m.retraction)
+    return h
+end
+function retract_base_manifold(G, g, X, m::BaseManifoldRetraction)
+    # X is in TeM so we first push it to TpM using
+    Y = push_forward_tangent(G, g, X)
+    # now we can use the retraction on the base manifold
+    return retract(base_manifold(G), g, Y, m.retraction)
 end
 
 function ManifoldsBase.representation_size(G::AbstractLieGroup)
@@ -913,6 +1078,76 @@ function Base.show(io::IO, G::LieGroup)
     return print(io, "LieGroup($(base_manifold(G)), $(G.op))")
 end
 
+"""
+    BaseManifoldVectorTransportMethod{VTM<:AbstractVectorTransportMethod} <:
+        AbstractVectorTransportMethod
+
+Compute a vector transport by using the transport of type `VTM` on the base manifold of
+a [`LieGroup`](@ref).
+
+# Constructor
+
+    BaseManifoldVectorTransportMethod(vtm::AbstractVectorTransportMethod)
+
+Generate the vector transport with transport `vtm` to use on the base manifold.
+"""
+struct BaseManifoldVectorTransportMethod{VTM <: AbstractVectorTransportMethod} <:
+    AbstractVectorTransportMethod
+    vector_transport_method::VTM
+end
+
+"""
+    vector_transport_to(G::AbstractLieGroup, g, X, h, m::BaseManifoldVectorTransportMethod)
+
+Compute the vector transport of a Lie algebra `X` from  `g` to `h` using a vector transport
+on the underlying manifold. This is done by pushing `X` forward to the tangent space at `g`,
+then performing the vector transport on the base manifold, and finally pulling the resulting
+tangent vector back to the Lie algebra.
+
+This method merely exists for experimental reasons, since the parallel transport on Lie groups,
+where all tangent vectors are represented in the Lie algebra is the identity.
+Hence any of the methods performed here are more costly than plain parallel transport.
+"""
+ManifoldsBase.vector_transport_to(
+    G::AbstractLieGroup, g, X, h, m::BaseManifoldVectorTransportMethod
+)
+
+function ManifoldsBase._vector_transport_to!(
+        G::AbstractLieGroup, Y, g, X, h, m::BaseManifoldVectorTransportMethod
+    )
+    return _vector_transport_to_basemanifold!(G, Y, g, X, h, m)
+end
+function ManifoldsBase._vector_transport_to(
+        G::AbstractLieGroup, g, X, h, m::BaseManifoldVectorTransportMethod
+    )
+    return _vector_transport_to_basemanifold(G, g, X, h, m)
+end
+
+function _vector_transport_to_basemanifold!(
+        G::AbstractLieGroup, Y, g, X, h, m::BaseManifoldVectorTransportMethod
+    )
+    # (a) we have to push forward X from TeG to TgG
+    # we can do this in-place of Y
+    push_forward_tangent!(G, Y, g, X)
+    # then we do the vector transport purely in place of Y
+    vector_transport_to!(base_manifold(G), Y, g, Y, h, m.vector_transport_method)
+    # now Y is in ThM so we still ave to pull it back to TeM using
+    # the left group opp diff.
+    pull_back_tangent!(G, Y, g, X)
+    return Y
+end
+function _vector_transport_to_basemanifold(
+        G::AbstractLieGroup, g, X, h, m::BaseManifoldVectorTransportMethod
+    )
+    # (a) we have to push forward X from TeG to TgG
+    Y = push_forward_tangent(G, g, X)
+    # then we do the vector transport
+    Y = vector_transport_to(base_manifold(G), g, Y, h, m.vector_transport_method)
+    # now Y is in ThM so we still ave to pull it back to TeM using
+    # the left group opp diff.
+    return pull_back_tangent(G, g, X)
+end
+
 #
 # Allocation hints - mainly pass-through, especially for power manifolds
 function ManifoldsBase.allocate_on(G::AbstractLieGroup, T::Type{<:AbstractArray})
@@ -920,10 +1155,10 @@ function ManifoldsBase.allocate_on(G::AbstractLieGroup, T::Type{<:AbstractArray}
 end
 
 function ManifoldsBase.allocate_result(
-    G::AbstractLieGroup,
-    f::Union{typeof(compose),typeof(inv),typeof(conjugate),typeof(exp)},
-    args...,
-)
+        G::AbstractLieGroup,
+        f::Union{typeof(compose), typeof(inv), typeof(conjugate), typeof(exp)},
+        args...,
+    )
     return ManifoldsBase.allocate_result(base_manifold(G), ManifoldsBase.exp, args...)
 end
 function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(jacobian_conjugate), g, h, B)
@@ -934,8 +1169,8 @@ function ManifoldsBase.allocate_result(G::AbstractLieGroup, f::typeof(log), args
     return ManifoldsBase.allocate_result(base_manifold(G), f, args...)
 end
 function ManifoldsBase.allocate_result(
-    G::AbstractLieGroup, f::Union{typeof(rand),typeof(identity_element)}
-)
+        G::AbstractLieGroup, f::Union{typeof(rand), typeof(identity_element)}
+    )
     # both get a type allocated like rand
     return ManifoldsBase.allocate_result(base_manifold(G), rand)
 end
@@ -1008,8 +1243,8 @@ macro default_lie_group_fallbacks(TG, Op, TP, TV, gfield::Symbol, Xfield::Symbol
             return LieGroups.is_identity(G, g.$gfield; kwargs...)
         end
         function ManifoldsBase.isapprox(
-            G::$TG, e::Identity{<:$Op}, X::$TV, Y::$TV; kwargs...
-        )
+                G::$TG, e::Identity{<:$Op}, X::$TV, Y::$TV; kwargs...
+            )
             return ManifoldsBase.isapprox(G, e, X.$Xfield, Y.$Xfield; kwargs...)
         end
         function LieGroups.log!(G::$TG, X::$TV, g::$TP)

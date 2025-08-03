@@ -22,23 +22,23 @@ where ``⋅^+`` denotes the [`symplectic_inverse`](@extref `Manifolds.symplectic
 
 See [BendokatZimmermann:2021; Section 2](@cite) for more information.
 """
-const SymplecticGroup{𝔽,T} = LieGroup{
-    𝔽,MatrixMultiplicationGroupOperation,SymplecticMatrices{T,𝔽}
+const SymplecticGroup{𝔽, T} = LieGroup{
+    𝔽, MatrixMultiplicationGroupOperation, SymplecticMatrices{T, 𝔽},
 }
 
-function SymplecticGroup(n::Int, field::AbstractNumbers=ℝ; kwargs...)
+function SymplecticGroup(n::Int, field::AbstractNumbers = ℝ; kwargs...)
     S = SymplecticMatrices(n, field; kwargs...)
-    return SymplecticGroup{field,typeof(S).parameters[1]}(
+    return SymplecticGroup{field, typeof(S).parameters[1]}(
         S, MatrixMultiplicationGroupOperation()
     )
 end
 
 function Base.show(
-    io::IO, ::SymplecticGroup{𝔽,ManifoldsBase.TypeParameter{Tuple{n}}}
-) where {𝔽,n}
-    return print(io, "SymplecticGroup($(2*n), $(𝔽))")
+        io::IO, ::SymplecticGroup{𝔽, ManifoldsBase.TypeParameter{Tuple{n}}}
+    ) where {𝔽, n}
+    return print(io, "SymplecticGroup($(2 * n), $(𝔽))")
 end
-function Base.show(io::IO, G::SymplecticGroup{𝔽,Tuple{Int}}) where {𝔽}
+function Base.show(io::IO, G::SymplecticGroup{𝔽, Tuple{Int}}) where {𝔽}
     size = get_parameter(G.manifold.size)[1]
-    return print(io, "SymplecticGroup($(2*size), $(𝔽); parameter=:field)")
+    return print(io, "SymplecticGroup($(2 * size), $(𝔽); parameter=:field)")
 end

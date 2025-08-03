@@ -35,7 +35,7 @@ normal_coord_to_vector(M, x, rθ, B) = get_vector(M, x, collect(polar_to_cart(r�
 
 normal_coord_to_point(M, x, rθ, B) = exp(M, x, normal_coord_to_vector(M, x, rθ, B))
 
-function plot_normal_coord!(ax, M, x, B, rs, θs; ncirc=9, options=Dict(), kwargs...)
+function plot_normal_coord!(ax, M, x, B, rs, θs; ncirc = 9, options = Dict(), kwargs...)
     for r in rs[2:(end - 1)]
         push!(
             ax,
@@ -45,7 +45,7 @@ function plot_normal_coord!(ax, M, x, B, rs, θs; ncirc=9, options=Dict(), kwarg
             ),
         )
     end
-    for θ in range(0, 2π; length=ncirc)
+    for θ in range(0, 2π; length = ncirc)
         push!(
             ax,
             Plot3(
@@ -57,7 +57,7 @@ function plot_normal_coord!(ax, M, x, B, rs, θs; ncirc=9, options=Dict(), kwarg
     return ax
 end
 
-function plot_patch!(ax, M, x, B, r, θs; options=Dict())
+function plot_patch!(ax, M, x, B, r, θs; options = Dict())
     push!(
         ax,
         Plot3(
@@ -69,9 +69,9 @@ function plot_patch!(ax, M, x, B, r, θs; options=Dict())
 end
 
 # skip before end removed end-(m-1)...end-1, so m elements
-function plot_geodesic!(ax, M, x, y; n=100, m=0, options=Dict())
+function plot_geodesic!(ax, M, x, y; n = 100, m = 0, options = Dict())
     γ = shortest_geodesic(M, x, y)
-    T = range(0, 1; length=n)
+    T = range(0, 1; length = n)
     pts = γ.(T)
     cut = [pts[1:(end - (m + 1))]..., last(pts)]
     push!(ax, Plot3(options, Coordinates(Tuple.(cut))))
@@ -107,32 +107,36 @@ p3 = γ3(1)
 #
 # Setup Axes
 if dark_mode
-    tp = @pgf Axis({
-        axis_lines = "none",
-        axis_equal,
-        view = "{135}{35}",
-        zmin = -0.05,
-        zmax = 1.0,
-        xmin = 0.0,
-        xmax = 1.0,
-        ymin = 0.0,
-        ymax = 1.0,
-    })
+    tp = @pgf Axis(
+        {
+            axis_lines = "none",
+            axis_equal,
+            view = "{135}{35}",
+            zmin = -0.05,
+            zmax = 1.0,
+            xmin = 0.0,
+            xmax = 1.0,
+            ymin = 0.0,
+            ymax = 1.0,
+        }
+    )
 else
-    tp = @pgf Axis({
-        axis_lines = "none",
-        axis_equal,
-        view = "{135}{35}",
-        zmin = -0.05,
-        zmax = 1.0,
-        xmin = 0.0,
-        xmax = 1.0,
-        ymin = 0.0,
-        ymax = 1.0,
-    })
+    tp = @pgf Axis(
+        {
+            axis_lines = "none",
+            axis_equal,
+            view = "{135}{35}",
+            zmin = -0.05,
+            zmax = 1.0,
+            xmin = 0.0,
+            xmax = 1.0,
+            ymin = 0.0,
+            ymax = 1.0,
+        }
+    )
 end
-rs = range(0, π / 5; length=6)
-θs = range(0, 2π; length=100)
+rs = range(0, π / 5; length = 6)
+θs = range(0, 2π; length = 100)
 
 #
 # Plot manifold patches
@@ -148,14 +152,14 @@ for i in eachindex(base_points)
     B = DiagonalizingOrthonormalBasis(basis_vectors[i])
     basis = get_basis(S, xi, B)
     optionsP = @pgf {fill = patch_colors[i], draw = "none", opacity = patch_opacity}
-    plot_patch!(tp, S, xi, basis, π / 5, θs; options=optionsP)
+    plot_patch!(tp, S, xi, basis, π / 5, θs; options = optionsP)
     optionsL = @pgf {
         meshlinestyle,
         color = dark_mode ? "white" : "black",
         line_width = mesh_line_width,
         opacity = mesh_opacity,
     }
-    plot_normal_coord!(tp, S, xi, basis, rs, θs; options=optionsL)
+    plot_normal_coord!(tp, S, xi, basis, rs, θs; options = optionsL)
 end
 
 #
@@ -168,9 +172,9 @@ options = @pgf {
     color = dark_mode ? "white" : "black",
     "-{Stealth[length=6.195cm,sharp,bend=-9]}", #length=8mm,width=2mm,inset=3mm
 }
-plot_geodesic!(tp, S, base_points[1], base_points[2]; m=25, options=options)
-plot_geodesic!(tp, S, base_points[3], base_points[1]; m=25, options=options)
-plot_geodesic!(tp, S, base_points[2], base_points[3]; m=25, options=options)
+plot_geodesic!(tp, S, base_points[1], base_points[2]; m = 25, options = options)
+plot_geodesic!(tp, S, base_points[3], base_points[1]; m = 25, options = options)
+plot_geodesic!(tp, S, base_points[2], base_points[3]; m = 25, options = options)
 
 #=
 push!(

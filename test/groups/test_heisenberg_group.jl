@@ -50,11 +50,11 @@ using LieGroupsTestSuite
     )
     test_lie_group(G, properties, expectations)
 
-    @test is_point(G, Identity(G); error=:error)
-    @test_throws DomainError is_point(G, Identity(AdditionGroupOperation()); error=:error)
+    @test is_point(G, Identity(G); error = :error)
+    @test_throws DomainError is_point(G, Identity(AdditionGroupOperation()); error = :error)
 
     @testset "field parameter" begin
-        G = HeisenbergGroup(1; parameter=:field)
+        G = HeisenbergGroup(1; parameter = :field)
         @test repr(G) == "HeisenbergGroup(1; parameter=:field)"
     end
 end
