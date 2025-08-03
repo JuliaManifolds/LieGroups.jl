@@ -18,8 +18,8 @@ Compute symmetric remainder of `x` with respect to the interall 2*`T`, i.e.
 function sym_rem(x::N, T=π) where {N<:Number}
     return (x ≈ T ? convert(N, -T) : rem(x, convert(N, 2 * T), RoundNearest))
 end
-function sym_rem(x, T=π)
-    return map(sym_rem, x, Ref(T))
+function sym_rem(v, T=π)
+    return map(x -> sym_rem(x, T), v)
 end
 
 function _compose(::_RealCircleGroup, p::Number, q::Number)
@@ -28,11 +28,8 @@ end
 function _compose(G::_RealCircleGroup, p::AbstractArray{<:Any,0}, q::AbstractArray{<:Any,0})
     return map((pp, qq) -> compose(G, pp, qq), p, q)
 end
-function _compose(::_RealCircleGroup, p::Number, q::AbstractArray{<:Any,0})
-    return p .+ q
-end
-function _compose(::_RealCircleGroup, p::AbstractArray{<:Any,0}, q::Number)
-    return p .+ q
+function _compose(::_RealCircleGroup, p, q)
+    return sym_rem(p .+ q)
 end
 
 function _compose!(G::_RealCircleGroup, x, p, q)
