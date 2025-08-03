@@ -43,10 +43,10 @@ using StaticArrays
         ],
     )
     expectations = Dict(
-        :repr => "SpecialOrthogonalGroup(2)", :lie_bracket => zero(X1), :atol => 1e-10
+        :repr => "SpecialOrthogonalGroup(2)", :lie_bracket => zero(X1), :atol => 1.0e-10
     )
     test_lie_group(G, properties, expectations)
-    G2 = SpecialOrthogonalGroup(2; parameter=:field)
+    G2 = SpecialOrthogonalGroup(2; parameter = :field)
     test_lie_group(G2, properties, expectations)
     #
     #
@@ -65,9 +65,9 @@ using StaticArrays
         :Vectors => [Y1, Y2, Y3],
         :Functions => [exp, hat, log, show, vee],
     )
-    expectations2 = Dict(:repr => "SpecialOrthogonalGroup(3)", :atols => Dict(exp => 1e-14))
+    expectations2 = Dict(:repr => "SpecialOrthogonalGroup(3)", :atols => Dict(exp => 1.0e-14))
     test_lie_group(H, properties2, expectations2)
-    H2 = SpecialOrthogonalGroup(3; parameter=:field)
+    H2 = SpecialOrthogonalGroup(3; parameter = :field)
     test_lie_group(H2, properties2, expectations2)
     # One special case – maybe add to test suite?
     # Hit cosθ = -1
@@ -93,7 +93,7 @@ using StaticArrays
         :Vectors => [Z1, Z2, Z3],
         :Functions => [exp, hat, log, show, vee],
     )
-    expectations3 = Dict(:repr => "SpecialOrthogonalGroup(4)", :atols => Dict(exp => 1e-14))
+    expectations3 = Dict(:repr => "SpecialOrthogonalGroup(4)", :atols => Dict(exp => 1.0e-14))
     test_lie_group(J, properties3, expectations3)
     @testset "𝔰𝔬(4) edge cases" begin
         e = Identity(J)
@@ -110,17 +110,17 @@ using StaticArrays
                 exp!(J, p, X)
                 @test l ≈ p
                 p2 = exp(J, log(J, p))
-                @test isapprox(J, p, p2; atol=1e-6)
+                @test isapprox(J, p, p2; atol = 1.0e-6)
             end
         end
     end
 
     @testset "StaticArrays.jl specializations" begin
         G = SpecialOrthogonalGroup(3)
-        g1 = SMatrix{3,3}(rotation_matrix(3, 2, 1, π / 8) * rotation_matrix(3, 3, 1, π / 4))
-        g2 = SMatrix{3,3}(rotation_matrix(3, 3, 1, π / 4) * rotation_matrix(3, 3, 2, π / 8))
+        g1 = SMatrix{3, 3}(rotation_matrix(3, 2, 1, π / 8) * rotation_matrix(3, 3, 1, π / 4))
+        g2 = SMatrix{3, 3}(rotation_matrix(3, 3, 1, π / 4) * rotation_matrix(3, 3, 2, π / 8))
         X = log(G, g1, g2)
-        @test X isa SMatrix{3,3,Float64,9}
+        @test X isa SMatrix{3, 3, Float64, 9}
         @test X ≈ log(G.manifold, g1, g2)
     end
 end

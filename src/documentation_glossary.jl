@@ -13,7 +13,7 @@
 
 # In general every dictionary here can be either `:Symbol-> String` or `:Symbol -> Dictionary enrties`
 
-_LIEGROUPS_DOC_TYPE = Dict{Symbol,Union{String,Dict,Function}}
+_LIEGROUPS_DOC_TYPE = Dict{Symbol, Union{String, Dict, Function}}
 
 _manopt_glossary = _LIEGROUPS_DOC_TYPE()
 
@@ -39,7 +39,7 @@ glossary(s::String, args...; kwargs...) = s
 glossary(f::Function, args...; kwargs...) = f(args...; kwargs...)
 
 define!(s::Symbol, args...) = define!(_manopt_glossary, s, args...)
-function define!(g::_LIEGROUPS_DOC_TYPE, s::Symbol, e::Union{String,Function})
+function define!(g::_LIEGROUPS_DOC_TYPE, s::Symbol, e::Union{String, Function})
     g[s] = e
     return g
 end
@@ -90,8 +90,8 @@ define!(:LaTeX, :sum, raw"\sum")
 define!(
     :LaTeX,
     :Set,
-    (content, size="") ->
-        _tex(Symbol("$(size)l")) *
+    (content, size = "") ->
+    _tex(Symbol("$(size)l")) *
         raw"\{ " *
         "$(content)" *
         _tex(Symbol("$(size)r")) *
@@ -100,8 +100,8 @@ define!(
 define!(
     :LaTeX,
     :SetDef,
-    (elem, cond, size="") ->
-        _tex(:Set, elem * raw"\ " * _tex(Symbol("$(size)")) * raw"|\ " * "$(cond)", size),
+    (elem, cond, size = "") ->
+    _tex(:Set, elem * raw"\ " * _tex(Symbol("$(size)")) * raw"|\ " * "$(cond)", size),
 )
 define!(:LaTeX, :sin, raw"\sin")
 define!(:LaTeX, :sum, raw"\sum")
@@ -154,17 +154,17 @@ define!(:Math, :GroupOp, :symbol, "∘")
 define!(:Math, :GroupOp, :description, "the Lie Group operation")
 define!(:Math, :∘, _math(:GroupOp, :symbol))
 define!(:Math, :e, _tex(:rm, "e"))
-define!(:Math, :𝔤, (; G="G") -> _math(:LieAlgebra, :symbol; g="g"))
-define!(:Math, :G, (; G="G") -> _math(:LieGroup, :symbol; G=G))
+define!(:Math, :𝔤, (; G = "G") -> _math(:LieAlgebra, :symbol; g = "g"))
+define!(:Math, :G, (; G = "G") -> _math(:LieGroup, :symbol; G = G))
 define!(:Math, :i, _tex(:rm, "i"))
-define!(:Math, :LieAlgebra, :symbol, (; g="g") -> _tex(:frak, g))
+define!(:Math, :LieAlgebra, :symbol, (; g = "g") -> _tex(:frak, g))
 define!(:Math, :LieAlgebra, :description, "the ie Algebra")
-define!(:Math, :LieGroup, :symbol, (; G="G") -> _tex(:Cal, G))
+define!(:Math, :LieGroup, :symbol, (; G = "G") -> _tex(:Cal, G))
 define!(:Math, :LieGroup, :description, "the Lie Group")
 define!(:Math, :mapsto, raw"\mapsto")
-define!(:Math, :Manifold, :symbol, (; M="M") -> _tex(:Cal, M))
+define!(:Math, :Manifold, :symbol, (; M = "M") -> _tex(:Cal, M))
 define!(:Math, :Manifold, :description, "the Riemannian manifold")
-define!(:Math, :M, (; M="M") -> _math(:Manifold, :symbol; M=M))
+define!(:Math, :M, (; M = "M") -> _math(:Manifold, :symbol; M = M))
 define!(:Math, :O, :symbol, _tex(:rm, "O"))
 define!(:Math, :O, :description, "the orthogonal group")
 define!(:Math, :O, _math(:O, :symbol))
@@ -220,9 +220,9 @@ define!(
     """
     ```math
     τ_g(τ_h(p))
-    = σ^{$(_tex(:rm,"L"))}_{g^{-1}}(σ^{$(_tex(:rm,"L"))}_{h^{-1}}(p))
-    = σ^{$(_tex(:rm,"L"))}_{g^{-1}h^{-1}}(p)
-    = σ^{$(_tex(:rm,"L"))}_{(hg)^{-1}}(p)
+    = σ^{$(_tex(:rm, "L"))}_{g^{-1}}(σ^{$(_tex(:rm, "L"))}_{h^{-1}}(p))
+    = σ^{$(_tex(:rm, "L"))}_{g^{-1}h^{-1}}(p)
+    = σ^{$(_tex(:rm, "L"))}_{(hg)^{-1}}(p)
     τ_{hg}(p).
     ```
     """,
@@ -234,9 +234,9 @@ define!(
     """
     ```math
     τ_g(τ_h(p))
-    = σ^{$(_tex(:rm,"R"))}_{g^{-1}}(σ^{$(_tex(:rm,"R"))}_{h^{-1}}(p))
-    = σ^{$(_tex(:rm,"R"))}_{h^{-1}g^{-1}}(p)
-    = σ^{$(_tex(:rm,"R"))}_{(gh)^{-1}}(p)
+    = σ^{$(_tex(:rm, "R"))}_{g^{-1}}(σ^{$(_tex(:rm, "R"))}_{h^{-1}}(p))
+    = σ^{$(_tex(:rm, "R"))}_{h^{-1}g^{-1}}(p)
+    = σ^{$(_tex(:rm, "R"))}_{(gh)^{-1}}(p)
     τ_{gh}(p).
     ```
     """,

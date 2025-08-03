@@ -1,4 +1,3 @@
-
 """
     SemiDirectProductGroupOperation{
         O1<:AbstractGroupOperation,
@@ -9,7 +8,7 @@
 An abstract type for all semdirect product group operations.
 """
 abstract type SemiDirectProductGroupOperation{
-    O1<:AbstractGroupOperation,O2<:AbstractGroupOperation,A<:AbstractGroupActionType
+    O1 <: AbstractGroupOperation, O2 <: AbstractGroupOperation, A <: AbstractGroupActionType,
 } <: AbstractProductGroupOperation end
 
 """
@@ -48,16 +47,16 @@ See [HilgertNeeb:2012; Definition 9.2.22](@cite), second definition for more det
 
 """
 struct LeftSemidirectProductGroupOperation{
-    O1<:AbstractGroupOperation,O2<:AbstractGroupOperation,A<:AbstractGroupActionType
-} <: SemiDirectProductGroupOperation{O1,O2,A}
-    operations::Tuple{O1,O2}
+        O1 <: AbstractGroupOperation, O2 <: AbstractGroupOperation, A <: AbstractGroupActionType,
+    } <: SemiDirectProductGroupOperation{O1, O2, A}
+    operations::Tuple{O1, O2}
     action_type::A
     function LeftSemidirectProductGroupOperation(
-        op1::O1, op2::O2, action::A
-    ) where {
-        O1<:AbstractGroupOperation,O2<:AbstractGroupOperation,A<:AbstractGroupActionType
-    }
-        return new{O1,O2,A}((op1, op2), action)
+            op1::O1, op2::O2, action::A
+        ) where {
+            O1 <: AbstractGroupOperation, O2 <: AbstractGroupOperation, A <: AbstractGroupActionType,
+        }
+        return new{O1, O2, A}((op1, op2), action)
     end
 end
 @inline Base.getindex(spgo::SemiDirectProductGroupOperation, i::Integer) =
@@ -99,16 +98,16 @@ See [HilgertNeeb:2012; Definition 9.2.22](@cite), first definition for more deta
 
 """
 struct RightSemidirectProductGroupOperation{
-    O1<:AbstractGroupOperation,O2<:AbstractGroupOperation,A<:AbstractGroupActionType
-} <: SemiDirectProductGroupOperation{O1,O2,A}
-    operations::Tuple{O1,O2}
+        O1 <: AbstractGroupOperation, O2 <: AbstractGroupOperation, A <: AbstractGroupActionType,
+    } <: SemiDirectProductGroupOperation{O1, O2, A}
+    operations::Tuple{O1, O2}
     action_type::A
     function RightSemidirectProductGroupOperation(
-        op1::O1, op2::O2, action::A
-    ) where {
-        O1<:AbstractGroupOperation,O2<:AbstractGroupOperation,A<:AbstractGroupActionType
-    }
-        return new{O1,O2,A}((op1, op2), action)
+            op1::O1, op2::O2, action::A
+        ) where {
+            O1 <: AbstractGroupOperation, O2 <: AbstractGroupOperation, A <: AbstractGroupActionType,
+        }
+        return new{O1, O2, A}((op1, op2), action)
     end
 end
 
@@ -125,8 +124,8 @@ The short form `N `[`⋉`](@ref ⋉(L1::LieGroup, L2::LieGroup))` H` can be used
 corresponding [`default_left_action`](@ref)`(N,H)` is the one you want to use.
 """
 function LeftSemidirectProductLieGroup(
-    N::LieGroup, H::LieGroup, action::AbstractGroupActionType=default_left_action(N, H)
-)
+        N::LieGroup, H::LieGroup, action::AbstractGroupActionType = default_left_action(N, H)
+    )
     return LieGroup(
         N.manifold × H.manifold, LeftSemidirectProductGroupOperation(N.op, H.op, action)
     )
@@ -145,8 +144,8 @@ The short form `N `[`⋊`](@ref ⋊(L1::LieGroup, L2::LieGroup))` H` can be used
 corresponding [`default_right_action`](@ref)`(N,H)` is the one you want to use.
 """
 function RightSemidirectProductLieGroup(
-    N::LieGroup, H::LieGroup, action::AbstractGroupActionType=default_right_action(N, H)
-)
+        N::LieGroup, H::LieGroup, action::AbstractGroupActionType = default_right_action(N, H)
+    )
     return LieGroup(
         N.manifold × H.manifold, RightSemidirectProductGroupOperation(N.op, H.op, action)
     )
@@ -192,12 +191,12 @@ where ``∘`` denotes the group operation on ``L``, ``⋄`` and ``⋆`` those on
 respectively, and ``σ`` is the group action specified by the [`AbstractGroupActionType`](#ref) within the [`LeftSemidirectProductLieGroup`](@ref)  ``L``.
 """
 compose(
-    SDPG::LieGroup{𝔽,LeftSemidirectProductGroupOperation,<:ProductManifold}, ::Any, ::Any
+    SDPG::LieGroup{𝔽, LeftSemidirectProductGroupOperation, <:ProductManifold}, ::Any, ::Any
 ) where {𝔽}
 
 function _compose!(
-    SDPG::LieGroup{𝔽,<:LeftSemidirectProductGroupOperation,<:ProductManifold}, k, g, h
-) where {𝔽}
+        SDPG::LieGroup{𝔽, <:LeftSemidirectProductGroupOperation, <:ProductManifold}, k, g, h
+    ) where {𝔽}
     PM = SDPG.manifold
     G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
     A = GroupAction(SDPG.op.action_type, G, H)
@@ -239,11 +238,11 @@ where ``∘`` denotes the group operation on ``L``, ``⋄`` and ``⋆`` those on
 respectively, and ``σ`` is the group action specified by the [`AbstractGroupActionType`](#ref) within the [`RightSemidirectProductLieGroup`](@ref) ``L``.
 """
 compose(
-    SDPG::LieGroup{𝔽,RightSemidirectProductGroupOperation,<:ProductManifold}, ::Any, ::Any
+    SDPG::LieGroup{𝔽, RightSemidirectProductGroupOperation, <:ProductManifold}, ::Any, ::Any
 ) where {𝔽}
 function _compose!(
-    SDPG::LieGroup{𝔽,<:RightSemidirectProductGroupOperation,<:ProductManifold}, k, g, h
-) where {𝔽}
+        SDPG::LieGroup{𝔽, <:RightSemidirectProductGroupOperation, <:ProductManifold}, k, g, h
+    ) where {𝔽}
     PM = SDPG.manifold
     H, G = map(LieGroup, PM.manifolds, SDPG.op.operations)
     A = GroupAction(SDPG.op.action_type, G, H)
@@ -293,13 +292,13 @@ where ``D_{λ_{g_2}}(σ_{g_1}(h_2))`` is given by [`diff_group_apply`](@ref)`(A,
 
 "$(_doc_LSDP_diff_left_compose)"
 diff_left_compose(
-    SDPG::LieGroup{𝔽,<:LeftSemidirectProductGroupOperation,<:ProductManifold}, g, h, X
+    SDPG::LieGroup{𝔽, <:LeftSemidirectProductGroupOperation, <:ProductManifold}, g, h, X
 ) where {𝔽}
 
 "$(_doc_LSDP_diff_left_compose)"
 function diff_left_compose!(
-    SDPG::LieGroup{𝔽,<:LeftSemidirectProductGroupOperation,<:ProductManifold}, Y, g, h, X
-) where {𝔽}
+        SDPG::LieGroup{𝔽, <:LeftSemidirectProductGroupOperation, <:ProductManifold}, Y, g, h, X
+    ) where {𝔽}
     PM = SDPG.manifold
     G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
     A = GroupAction(SDPG.op.action_type, G, H)
@@ -344,13 +343,13 @@ where ``D_{λ_{g_2}}(σ_{g_1}(h_2))`` is given by [`diff_group_apply`](@ref)`(A,
 
 "$(_doc_RSDP_diff_left_compose)"
 diff_left_compose(
-    SDPG::LieGroup{𝔽,<:RightSemidirectProductGroupOperation,<:ProductManifold}, g, h, X
+    SDPG::LieGroup{𝔽, <:RightSemidirectProductGroupOperation, <:ProductManifold}, g, h, X
 ) where {𝔽}
 
 "$(_doc_RSDP_diff_left_compose)"
 function diff_left_compose!(
-    SDPG::LieGroup{𝔽,<:RightSemidirectProductGroupOperation,<:ProductManifold}, Y, g, h, X
-) where {𝔽}
+        SDPG::LieGroup{𝔽, <:RightSemidirectProductGroupOperation, <:ProductManifold}, Y, g, h, X
+    ) where {𝔽}
     PM = SDPG.manifold
     H, G = map(LieGroup, PM.manifolds, SDPG.op.operations)
     A = GroupAction(SDPG.op.action_type, G, H)
@@ -375,8 +374,8 @@ function diff_left_compose!(
 end
 
 function get_vector_lie!(
-    Pr𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, X, c, B::DefaultLieAlgebraOrthogonalBasis
-) where {𝔽,Op<:SemiDirectProductGroupOperation,M<:ProductManifold}
+        Pr𝔤::LieAlgebra{𝔽, Op, LieGroup{𝔽, Op, M}}, X, c, B::DefaultLieAlgebraOrthogonalBasis
+    ) where {𝔽, Op <: SemiDirectProductGroupOperation, M <: ProductManifold}
     PrG = Pr𝔤.manifold
     PrM = PrG.manifold
     dims = map(manifold_dimension, PrM.manifolds)
@@ -409,12 +408,12 @@ g^{-1} = (σ_{g_2^{-1}} g_1, g_2^{-1})
 for the right variant, respectively. See also [HilgertNeeb:2012; Proof of Lemma 2.2.3](@cite).
 """
 Base.inv(
-    SDPG::LieGroup{𝔽,Op,M}, g
-) where {𝔽,Op<:SemiDirectProductGroupOperation,M<:ProductManifold}
+    SDPG::LieGroup{𝔽, Op, M}, g
+) where {𝔽, Op <: SemiDirectProductGroupOperation, M <: ProductManifold}
 
 function inv!(
-    SDPG::LieGroup{𝔽,O,M}, k, g
-) where {𝔽,O<:LeftSemidirectProductGroupOperation,M<:ProductManifold}
+        SDPG::LieGroup{𝔽, O, M}, k, g
+    ) where {𝔽, O <: LeftSemidirectProductGroupOperation, M <: ProductManifold}
     PM = SDPG.manifold
     G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
     A = GroupAction(SDPG.op.action_type, G, H)
@@ -430,8 +429,8 @@ function inv!(
     return k
 end
 function inv!(
-    SDPG::LieGroup{𝔽,O,M}, k, g
-) where {𝔽,O<:RightSemidirectProductGroupOperation,M<:ProductManifold}
+        SDPG::LieGroup{𝔽, O, M}, k, g
+    ) where {𝔽, O <: RightSemidirectProductGroupOperation, M <: ProductManifold}
     PM = SDPG.manifold
     H, G = map(LieGroup, PM.manifolds, SDPG.op.operations)
     A = GroupAction(SDPG.op.action_type, G, H)
@@ -448,8 +447,8 @@ function inv!(
     return k
 end
 function inv!(
-    SDPG::LieGroup{𝔽,O,M}, k, ::Identity{O}
-) where {𝔽,O<:LeftSemidirectProductGroupOperation,M<:ProductManifold}
+        SDPG::LieGroup{𝔽, O, M}, k, ::Identity{O}
+    ) where {𝔽, O <: LeftSemidirectProductGroupOperation, M <: ProductManifold}
     PrM = SDPG.manifold
     map(
         inv!,
@@ -460,8 +459,8 @@ function inv!(
     return k
 end
 function inv!(
-    SDPG::LieGroup{𝔽,O,M}, k, ::Identity{O}
-) where {𝔽,O<:RightSemidirectProductGroupOperation,M<:ProductManifold}
+        SDPG::LieGroup{𝔽, O, M}, k, ::Identity{O}
+    ) where {𝔽, O <: RightSemidirectProductGroupOperation, M <: ProductManifold}
     PrM = SDPG.manifold
     map(
         inv!,
@@ -472,31 +471,31 @@ function inv!(
     return k
 end
 function identity_element!(
-    SDPG::LieGroup{𝔽,Op,M}, e
-) where {𝔽,Op<:SemiDirectProductGroupOperation,M<:ProductManifold}
+        SDPG::LieGroup{𝔽, Op, M}, e
+    ) where {𝔽, Op <: SemiDirectProductGroupOperation, M <: ProductManifold}
     GH = map(LieGroup, SDPG.manifold.manifolds, SDPG.op.operations)
     identity_element!.(GH, submanifold_components(SDPG.manifold, e))
     return e
 end
 
 function Base.show(
-    io::IO, SDPG::LieGroup{𝔽,<:LeftSemidirectProductGroupOperation,<:ProductManifold}
-) where {𝔽}
+        io::IO, SDPG::LieGroup{𝔽, <:LeftSemidirectProductGroupOperation, <:ProductManifold}
+    ) where {𝔽}
     G, H = LieGroup.(SDPG.manifold.manifolds, SDPG.op.operations)
     at = SDPG.op.action_type
     return print(io, "LeftSemidirectProductLieGroup($G, $H, $at)")
 end
 function Base.show(
-    io::IO, SDPG::LieGroup{𝔽,<:RightSemidirectProductGroupOperation,<:ProductManifold}
-) where {𝔽}
+        io::IO, SDPG::LieGroup{𝔽, <:RightSemidirectProductGroupOperation, <:ProductManifold}
+    ) where {𝔽}
     G, H = LieGroup.(SDPG.manifold.manifolds, SDPG.op.operations)
     at = SDPG.op.action_type
     return print(io, "RightSemidirectProductLieGroup($G, $H, $at)")
 end
 
 function get_coordinates_lie!(
-    Pr𝔤::LieAlgebra{𝔽,Op,LieGroup{𝔽,Op,M}}, c, X, B::DefaultLieAlgebraOrthogonalBasis
-) where {𝔽,Op<:SemiDirectProductGroupOperation,M<:ProductManifold}
+        Pr𝔤::LieAlgebra{𝔽, Op, LieGroup{𝔽, Op, M}}, c, X, B::DefaultLieAlgebraOrthogonalBasis
+    ) where {𝔽, Op <: SemiDirectProductGroupOperation, M <: ProductManifold}
     PrG = Pr𝔤.manifold
     PrM = PrG.manifold
     dims = map(manifold_dimension, PrM.manifolds)

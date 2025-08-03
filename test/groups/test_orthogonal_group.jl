@@ -45,7 +45,7 @@ using StaticArrays
     test_lie_group(G, properties, expectations)
 
     @testset "StaticArrays specializations for O(2)" begin
-        ps = SMatrix{2,2,Float64}(I)
+        ps = SMatrix{2, 2, Float64}(I)
         Xs = SA[0.0 2.0; -2.0 0.0]
         qs = exp(G, ps, Xs)
 
@@ -53,15 +53,15 @@ using StaticArrays
             -0.9513631281258474 0.30807174236304485
             -0.30807174236304485 -0.9513631281258474
         ]
-        @test qs isa SMatrix{2,2,Float64}
+        @test qs isa SMatrix{2, 2, Float64}
         @test qs === q_ref
 
         qs = exp(G, Xs)
-        @test qs isa SMatrix{2,2,Float64}
+        @test qs isa SMatrix{2, 2, Float64}
         @test qs === q_ref
 
         qs = ManifoldsBase.exp_fused(G, ps, Xs, 1.5)
-        @test qs isa SMatrix{2,2,Float64}
+        @test qs isa SMatrix{2, 2, Float64}
         @test qs === SA[
             -0.45266185729235203 -0.8916822544789362
             0.8916822544789362 -0.45266185729235203
@@ -89,14 +89,14 @@ using StaticArrays
         :Vectors => [Y1, Y2, Y3],
         :Functions => [exp, hat, log, show, vee],
     )
-    expectations2 = Dict(:repr => "OrthogonalGroup(3)", :atols => Dict(exp => 1e-15))
+    expectations2 = Dict(:repr => "OrthogonalGroup(3)", :atols => Dict(exp => 1.0e-15))
     test_lie_group(H, properties2, expectations2)
     @testset "O(3) special cases" begin
         @test is_identity(H, exp(H, zeros(3, 3)))
     end
 
     @testset "StaticArrays specializations for O(3)" begin
-        ps = SMatrix{3,3,Float64}(I)
+        ps = SMatrix{3, 3, Float64}(I)
         Xs = SA[0.0 0.1 0.0; -0.1 0.0 0.0; 0.0 0.0 0.0]
         qs = exp(H, ps, Xs)
 
@@ -105,11 +105,11 @@ using StaticArrays
             -0.09983341664682815 0.9950041652780258 0.0
             0.0 0.0 1.0
         ]
-        @test qs isa SMatrix{3,3,Float64}
+        @test qs isa SMatrix{3, 3, Float64}
         @test qs ≈ q_ref
 
         qs = exp(H, Xs)
-        @test qs isa SMatrix{3,3,Float64}
+        @test qs isa SMatrix{3, 3, Float64}
         @test qs ≈ q_ref
 
         @test get_coordinates(H, ps, Xs, DefaultLieAlgebraOrthogonalBasis()) isa SVector{3}
@@ -133,7 +133,7 @@ using StaticArrays
         :Vectors => [Z1, Z2, Z3],
         :Functions => [exp, hat, log, show, vee],
     )
-    expectations3 = Dict(:repr => "OrthogonalGroup(4)", :atols => Dict(exp => 1e-15))
+    expectations3 = Dict(:repr => "OrthogonalGroup(4)", :atols => Dict(exp => 1.0e-15))
     test_lie_group(J, properties3, expectations3)
     @testset "𝔬(4) edge cases" begin
         𝔧 = LieAlgebra(J)
@@ -150,7 +150,7 @@ using StaticArrays
                 exp!(J, p, X)
                 @test l ≈ p
                 p2 = exp(J, log(J, p))
-                @test isapprox(J, p, p2; atol=1e-6)
+                @test isapprox(J, p, p2; atol = 1.0e-6)
             end
         end
     end

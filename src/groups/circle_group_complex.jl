@@ -2,15 +2,15 @@
 #circle group represented by complex numbers, operation: complex multiplication
 #
 function CircleGroup(M::Circle{ℂ})
-    return LieGroup{ℂ,AbelianMultiplicationGroupOperation,typeof(M)}(
+    return LieGroup{ℂ, AbelianMultiplicationGroupOperation, typeof(M)}(
         M, AbelianMultiplicationGroupOperation()
     )
 end
 
-const _ComplexCircleGroup = LieGroup{ℂ,AbelianMultiplicationGroupOperation,<:Circle{ℂ}}
+const _ComplexCircleGroup = LieGroup{ℂ, AbelianMultiplicationGroupOperation, <:Circle{ℂ}}
 
 function LieAlgebra(G::_ComplexCircleGroup)
-    return LieAlgebra{ℝ,AbelianMultiplicationGroupOperation,typeof(G)}(
+    return LieAlgebra{ℝ, AbelianMultiplicationGroupOperation, typeof(G)}(
         G, Identity(G), ManifoldsBase.TangentSpaceType()
     )
 end
@@ -73,40 +73,40 @@ Base.exp(::_ComplexCircleGroup, X::Number) = exp(X)
 exp!(M::_ComplexCircleGroup, g, X)
 
 function get_coordinates_lie(
-    𝔤::LieAlgebra{ℝ,AbelianMultiplicationGroupOperation,<:_ComplexCircleGroup},
-    X::T,
-    ::DefaultLieAlgebraOrthogonalBasis{𝔽},
-) where {T,𝔽}
+        𝔤::LieAlgebra{ℝ, AbelianMultiplicationGroupOperation, <:_ComplexCircleGroup},
+        X::T,
+        ::DefaultLieAlgebraOrthogonalBasis{𝔽},
+    ) where {T, 𝔽}
     G = base_lie_group(𝔤)
     M = base_manifold(G)
     return get_coordinates(M, identity_element(G, T), X, DefaultOrthonormalBasis(𝔽))
 end
 function get_coordinates_lie!(
-    𝔤::LieAlgebra{ℝ,AbelianMultiplicationGroupOperation,<:_ComplexCircleGroup},
-    c,
-    X,
-    ::DefaultLieAlgebraOrthogonalBasis{𝔽},
-) where {𝔽}
+        𝔤::LieAlgebra{ℝ, AbelianMultiplicationGroupOperation, <:_ComplexCircleGroup},
+        c,
+        X,
+        ::DefaultLieAlgebraOrthogonalBasis{𝔽},
+    ) where {𝔽}
     G = base_lie_group(𝔤)
     M = base_manifold(G)
     return get_coordinates!(M, c, identity_element(G), X, DefaultOrthonormalBasis(𝔽))
 end
 function get_vector_lie(
-    𝔤::LieAlgebra{ℝ,AbelianMultiplicationGroupOperation,<:_ComplexCircleGroup},
-    c,
-    ::DefaultLieAlgebraOrthogonalBasis{𝔽},
-    T::Type=ComplexF64,
-) where {𝔽}
+        𝔤::LieAlgebra{ℝ, AbelianMultiplicationGroupOperation, <:_ComplexCircleGroup},
+        c,
+        ::DefaultLieAlgebraOrthogonalBasis{𝔽},
+        T::Type = ComplexF64,
+    ) where {𝔽}
     G = base_lie_group(𝔤)
     M = base_manifold(G)
     return get_vector(M, identity_element(G, T), c, DefaultOrthonormalBasis(𝔽))
 end
 function get_vector_lie!(
-    𝔤::LieAlgebra{ℝ,AbelianMultiplicationGroupOperation,<:_ComplexCircleGroup},
-    X::T,
-    c,
-    ::DefaultLieAlgebraOrthogonalBasis{𝔽},
-) where {T,𝔽}
+        𝔤::LieAlgebra{ℝ, AbelianMultiplicationGroupOperation, <:_ComplexCircleGroup},
+        X::T,
+        c,
+        ::DefaultLieAlgebraOrthogonalBasis{𝔽},
+    ) where {T, 𝔽}
     G = base_lie_group(𝔤)
     M = base_manifold(G)
     return get_vector!(M, X, identity_element(G, T), c, DefaultOrthonormalBasis(𝔽))
@@ -146,8 +146,8 @@ function ManifoldsBase.log!(::_ComplexCircleGroup, X, g)
 end
 
 function ManifoldsBase.log!(
-    G::_ComplexCircleGroup, X, ::Identity{AbelianMultiplicationGroupOperation}
-)
+        G::_ComplexCircleGroup, X, ::Identity{AbelianMultiplicationGroupOperation}
+    )
     return zero_vector!(LieAlgebra(G), X)
 end
 

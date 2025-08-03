@@ -24,7 +24,7 @@ using LieGroupsTestSuite
     @test !isapprox(G, e, Identity(op2))
     @test is_point(G, e)
     @test !is_point(G, Identity(op2))
-    @test_throws DomainError is_point(G, Identity(op2); error=:error)
+    @test_throws DomainError is_point(G, Identity(op2); error = :error)
     @testset "Methoderrors for the non-implemented mutating variants" begin
         g = :none
         h = :alsonone
@@ -82,7 +82,7 @@ end
         c = [0.0, 1.0]
         @test get_vector(𝔤, c, B) == get_vector(M, q, c, B)
         @test get_vector(G, p, c, B) == get_vector(M, q, c, B)
-        @test get_vector(𝔤, c, B; tangent_vector_type=Vector{Float64}) ==
+        @test get_vector(𝔤, c, B; tangent_vector_type = Vector{Float64}) ==
             get_vector(M, q, c, B)
         d = copy(c)
         @test get_vector!(𝔤, d, c, B) == get_vector!(M, d, q, c, B)
@@ -96,8 +96,8 @@ end
         # B2
         B2 = DefaultLieAlgebraOrthogonalBasis()
         @test get_vector(𝔤, c, B2) == c #on Euclidean this is the same
-        @test get_vector(𝔤, c, B2; tangent_vector_type=Vector{Float64}) == c
-        @test get_vector(𝔤, c, B2; tangent_vector_type=Vector{Float64}) == c
+        @test get_vector(𝔤, c, B2; tangent_vector_type = Vector{Float64}) == c
+        @test get_vector(𝔤, c, B2; tangent_vector_type = Vector{Float64}) == c
         @test hat(𝔤, c) == c # and hat/vee as well
         # Real fallback test here not 100% accurate
         𝔤2 = LieAlgebra(LieGroup(ManifoldsBase.DefaultManifold(), AdditionGroupOperation()))
@@ -128,7 +128,7 @@ end
         𝔤 = LieAlgebra(G)
         q = zeros(2)
         Random.seed!(42)
-        p = rand(G, Vector{Float64}; vector_at=q)
+        p = rand(G, Vector{Float64}; vector_at = q)
         @test is_point(G, p)
         pts1 = rand(G, 2)
         @test all(is_point.(Ref(G), pts1))
@@ -139,7 +139,7 @@ end
         @test all(is_point.(Ref(G), pts3))
         pts4 = rand(rng, G, Vector{Float64}, 2)
         @test all(is_point.(Ref(G), pts4))
-        p2 = rand(rng, G, Vector{Float64}; vector_at=q)
+        p2 = rand(rng, G, Vector{Float64}; vector_at = q)
         @test is_point(G, p2)
     end
 end

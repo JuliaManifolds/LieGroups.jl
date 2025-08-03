@@ -33,12 +33,12 @@ This can be computed in-place of `k`.
 """
 
 @doc "$(_doc_compose_add)"
-compose(::LieGroup{𝔽,AdditionGroupOperation}, g, h) where {𝔽}
+compose(::LieGroup{𝔽, AdditionGroupOperation}, g, h) where {𝔽}
 
 @doc "$(_doc_compose_add)"
-compose!(::LieGroup{𝔽,AdditionGroupOperation}, k, g, h) where {𝔽}
+compose!(::LieGroup{𝔽, AdditionGroupOperation}, k, g, h) where {𝔽}
 
-function _compose!(G::LieGroup{𝔽,AdditionGroupOperation}, k, g, h) where {𝔽}
+function _compose!(G::LieGroup{𝔽, AdditionGroupOperation}, k, g, h) where {𝔽}
     k .= g .+ h
     return k
 end
@@ -52,10 +52,10 @@ which simplifies for [`AdditionGroupOperation`](@ref) to ``D(c_g(h))[X] = X``.
 """
 
 @doc "$(_doc_diff_conjugate_add)"
-diff_conjugate(G::LieGroup{𝔽,AdditionGroupOperation}, g, h, X) where {𝔽}
+diff_conjugate(G::LieGroup{𝔽, AdditionGroupOperation}, g, h, X) where {𝔽}
 
 @doc "$(_doc_diff_conjugate_add)"
-function diff_conjugate!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, X) where {𝔽}
+function diff_conjugate!(G::LieGroup{𝔽, AdditionGroupOperation}, Y, g, h, X) where {𝔽}
     return copyto!(LieAlgebra(G), Y, X)
 end
 
@@ -68,10 +68,10 @@ which simplifies for [`AdditionGroupOperation`](@ref) to ``Dι_{$(_math(:G))}(g)
 """
 
 @doc "$(_doc_diff_inv_add)"
-diff_inv(G::LieGroup{𝔽,AdditionGroupOperation}, g, X) where {𝔽} = -X
+diff_inv(G::LieGroup{𝔽, AdditionGroupOperation}, g, X) where {𝔽} = -X
 
 @doc "$(_doc_diff_inv_add)"
-function diff_inv!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, X) where {𝔽}
+function diff_inv!(G::LieGroup{𝔽, AdditionGroupOperation}, Y, g, X) where {𝔽}
     Y .= (-1) .* X
     return Y
 end
@@ -85,10 +85,10 @@ which simplifies for [`AdditionGroupOperation`](@ref) to ``Dλ_g(h)[X] = X``.
 """
 
 @doc "$(_doc_diff_left_compose_add)"
-diff_left_compose(G::LieGroup{𝔽,AdditionGroupOperation}, g, h, X) where {𝔽} = X
+diff_left_compose(G::LieGroup{𝔽, AdditionGroupOperation}, g, h, X) where {𝔽} = X
 
 @doc "$(_doc_diff_left_compose_add)"
-function diff_left_compose!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, X) where {𝔽}
+function diff_left_compose!(G::LieGroup{𝔽, AdditionGroupOperation}, Y, g, h, X) where {𝔽}
     return copyto!(LieAlgebra(G), Y, X)
 end
 
@@ -101,10 +101,10 @@ which simplifies for [`AdditionGroupOperation`](@ref) to ``Dρ_g(h)[X] = X``.
 """
 
 @doc "$(_doc_diff_right_compose_add)"
-diff_right_compose(::LieGroup{𝔽,AdditionGroupOperation}, ::Any, ::Any, ::Any) where {𝔽}
+diff_right_compose(::LieGroup{𝔽, AdditionGroupOperation}, ::Any, ::Any, ::Any) where {𝔽}
 
 @doc "$(_doc_diff_right_compose_add)"
-function diff_right_compose!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, X) where {𝔽}
+function diff_right_compose!(G::LieGroup{𝔽, AdditionGroupOperation}, Y, g, h, X) where {𝔽}
     return copyto!(LieAlgebra(G), Y, X)
 end
 
@@ -119,20 +119,20 @@ Since `e` is just the zero-element with respect to the corresponding `+`, the fo
 """
 
 @doc "$(_doc_exp_add)"
-ManifoldsBase.exp(::LieGroup{𝔽,AdditionGroupOperation}, X) where {𝔽} = X
+ManifoldsBase.exp(::LieGroup{𝔽, AdditionGroupOperation}, X) where {𝔽} = X
 
 @doc "$(_doc_exp_add)"
-function ManifoldsBase.exp!(::LieGroup{𝔽,AdditionGroupOperation}, g, X) where {𝔽}
+function ManifoldsBase.exp!(::LieGroup{𝔽, AdditionGroupOperation}, g, X) where {𝔽}
     g .= X
     return g
 end
 
 @inline function get_vector_lie(
-    ::LieAlgebra{ℝ,AdditionGroupOperation},
-    c,
-    B::DefaultLieAlgebraOrthogonalBasis{ℝ},
-    T::Type{<:SArray},
-)
+        ::LieAlgebra{ℝ, AdditionGroupOperation},
+        c,
+        B::DefaultLieAlgebraOrthogonalBasis{ℝ},
+        T::Type{<:SArray},
+    )
     return convert(T, c)
 end
 
@@ -145,35 +145,35 @@ which for the [`AdditionGroupOperation`](@ref) is the zero element or array.
 """
 
 @doc "$(_doc_identity_element_add)"
-identity_element(::LieGroup{𝔽,AdditionGroupOperation}) where {𝔽}
+identity_element(::LieGroup{𝔽, AdditionGroupOperation}) where {𝔽}
 
 function identity_element(
-    G::LieGroup{𝔽,AdditionGroupOperation}, ::Type{T}
-) where {𝔽,T<:AbstractArray}
+        G::LieGroup{𝔽, AdditionGroupOperation}, ::Type{T}
+    ) where {𝔽, T <: AbstractArray}
     return zeros(representation_size(G.manifold))
 end
 function identity_element(
-    ::LieGroup{𝔽,AdditionGroupOperation}, ::Type{T}
-) where {𝔽,T<:Union{Number,AbstractArray{<:Number,0}}}
+        ::LieGroup{𝔽, AdditionGroupOperation}, ::Type{T}
+    ) where {𝔽, T <: Union{Number, AbstractArray{<:Number, 0}}}
     return zero(T)
 end
 function identity_element(
-    ::LieGroup{𝔽,AdditionGroupOperation}, ::Type{Array{T,0}}
-) where {𝔽,T<:Number}
+        ::LieGroup{𝔽, AdditionGroupOperation}, ::Type{Array{T, 0}}
+    ) where {𝔽, T <: Number}
     return fill(zero(T))
 end
 function identity_element(
-    ::LieGroup{𝔽,AdditionGroupOperation}, T::Type{<:StaticArray}
-) where {𝔽}
+        ::LieGroup{𝔽, AdditionGroupOperation}, T::Type{<:StaticArray}
+    ) where {𝔽}
     return zero(T)
 end
 
 @doc "$(_doc_identity_element_add)"
-function identity_element!(::LieGroup{𝔽,AdditionGroupOperation}, e) where {𝔽}
+function identity_element!(::LieGroup{𝔽, AdditionGroupOperation}, e) where {𝔽}
     return fill!(e, 0)
 end
 
-function ManifoldsBase.inner(::LieAlgebra{ℝ,AdditionGroupOperation}, X, Y)
+function ManifoldsBase.inner(::LieAlgebra{ℝ, AdditionGroupOperation}, X, Y)
     return dot(X, Y)
 end
 
@@ -186,17 +186,17 @@ simplifies to ``-g``. This can be done in-place of `h`.
 """
 
 @doc "$(_doc_inv_add)"
-Base.inv(G::LieGroup{𝔽,AdditionGroupOperation}, g) where {𝔽}
+Base.inv(G::LieGroup{𝔽, AdditionGroupOperation}, g) where {𝔽}
 
 @doc "$(_doc_inv_add)"
-function inv!(::LieGroup{𝔽,AdditionGroupOperation}, h, g) where {𝔽}
+function inv!(::LieGroup{𝔽, AdditionGroupOperation}, h, g) where {𝔽}
     h .= (-1) .* g
     return h
 end
 # Resolve ambiguity
 function inv!(
-    G::LieGroup{𝔽,AdditionGroupOperation}, q, ::Identity{AdditionGroupOperation}
-) where {𝔽}
+        G::LieGroup{𝔽, AdditionGroupOperation}, q, ::Identity{AdditionGroupOperation}
+    ) where {𝔽}
     return identity_element!(G, q)
 end
 
@@ -211,12 +211,12 @@ The computation can be done in-place of `Z`.
 """
 
 @doc "$(_doc_lie_bracket_add)"
-lie_bracket(𝔤::LieAlgebra{𝔽,AdditionGroupOperation}, X, Y) where {𝔽}
+lie_bracket(𝔤::LieAlgebra{𝔽, AdditionGroupOperation}, X, Y) where {𝔽}
 
 @doc "$(_doc_lie_bracket_add)"
 function lie_bracket!(
-    𝔤::LieAlgebra{𝔽,O,<:LieGroup{𝔽,O}}, Z, X, Y
-) where {𝔽,O<:AdditionGroupOperation}
+        𝔤::LieAlgebra{𝔽, O, <:LieGroup{𝔽, O}}, Z, X, Y
+    ) where {𝔽, O <: AdditionGroupOperation}
     return zero_vector!(𝔤, Z)
 end
 
@@ -231,18 +231,18 @@ Since `e` is just the zero-element with respect to the corresponding `+`, the fo
 """
 
 @doc "$(_doc_log_add)"
-ManifoldsBase.log(::LieGroup{𝔽,AdditionGroupOperation}, q) where {𝔽} = q
+ManifoldsBase.log(::LieGroup{𝔽, AdditionGroupOperation}, q) where {𝔽} = q
 function ManifoldsBase.log(
-    G::LieGroup{𝔽,AdditionGroupOperation}, e::Identity{AdditionGroupOperation}
-) where {𝔽}
+        G::LieGroup{𝔽, AdditionGroupOperation}, e::Identity{AdditionGroupOperation}
+    ) where {𝔽}
     return zero_vector(LieAlgebra(G))
 end
 @doc "$(_doc_log_add)"
-function ManifoldsBase.log!(G::LieGroup{𝔽,AdditionGroupOperation}, X, g) where {𝔽}
+function ManifoldsBase.log!(G::LieGroup{𝔽, AdditionGroupOperation}, X, g) where {𝔽}
     return copyto!(G, X, g)
 end
 function ManifoldsBase.log!(
-    ::LieGroup{𝔽,AdditionGroupOperation}, X, ::Identity{AdditionGroupOperation}
-) where {𝔽}
+        ::LieGroup{𝔽, AdditionGroupOperation}, X, ::Identity{AdditionGroupOperation}
+    ) where {𝔽}
     return fill!(X, 0)
 end

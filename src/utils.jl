@@ -31,10 +31,13 @@ obtained from the distinct real parts of the eigenvalues of the rotation
 matrix. This function computes these more efficiently by solving the system
 
 ```math
-$(_tex(:aligned,
-    "$(_tex(:cos))α + $(_tex(:cos))β &= $(_tex(:frac, "1","2"))$(_tex(:rm,"tr"))(R)",
-    "$(_tex(:cos))α $(_tex(:cos))β &= $(_tex(:frac, "1","8"))$(_tex(:rm,"tr"))(R)^2 - $(_tex(:frac, "1","16"))$(_tex(:rm,"tr"))((R - R^T)^2) - 1"
-))
+$(
+    _tex(
+        :aligned,
+        "$(_tex(:cos))α + $(_tex(:cos))β &= $(_tex(:frac, "1", "2"))$(_tex(:rm, "tr"))(R)",
+        "$(_tex(:cos))α $(_tex(:cos))β &= $(_tex(:frac, "1", "8"))$(_tex(:rm, "tr"))(R)^2 - $(_tex(:frac, "1", "16"))$(_tex(:rm, "tr"))((R - R^T)^2) - 1"
+    )
+)
 ```
 
 By convention, the returned values are sorted in decreasing order.

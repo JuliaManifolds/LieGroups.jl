@@ -10,68 +10,68 @@ manifold of rotations [`UnitaryMatrices`](@extref `Manifolds.GeneralUnitaryMatri
 Generate unitary group ``$(_math(:U))(n)``.
 All keyword arguments in `kwargs...` are passed on to [`Rotations`](@extref `Manifolds.Rotations`) as well.
 """
-const UnitaryGroup{𝔽,T} = LieGroup{
-    𝔽,MatrixMultiplicationGroupOperation,UnitaryMatrices{T,𝔽}
+const UnitaryGroup{𝔽, T} = LieGroup{
+    𝔽, MatrixMultiplicationGroupOperation, UnitaryMatrices{T, 𝔽},
 }
 
-function UnitaryGroup(n::Int, 𝔽::AbstractNumbers=ManifoldsBase.ℂ; kwargs...)
+function UnitaryGroup(n::Int, 𝔽::AbstractNumbers = ManifoldsBase.ℂ; kwargs...)
     U = UnitaryMatrices(n, 𝔽; kwargs...)
-    return UnitaryGroup{𝔽,typeof(U).parameters[1]}(U, MatrixMultiplicationGroupOperation())
+    return UnitaryGroup{𝔽, typeof(U).parameters[1]}(U, MatrixMultiplicationGroupOperation())
 end
 
 function ManifoldsBase.check_size(
-    ::UnitaryGroup{ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, g::Number
-)
+        ::UnitaryGroup{ℍ, ManifoldsBase.TypeParameter{Tuple{1}}}, g::Number
+    )
     return nothing
 end
 function ManifoldsBase.check_size(
-    ::UnitaryGroup{ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, g, X::Number
-)
+        ::UnitaryGroup{ℍ, ManifoldsBase.TypeParameter{Tuple{1}}}, g, X::Number
+    )
     return nothing
 end
 
 function _compose(
-    ::UnitaryGroup{ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, g::Number, h::Number
-)
+        ::UnitaryGroup{ℍ, ManifoldsBase.TypeParameter{Tuple{1}}}, g::Number, h::Number
+    )
     return g * h
 end
 
 function conjugate(
-    G::UnitaryGroup{ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, g::Number, h::Number
-)
+        G::UnitaryGroup{ℍ, ManifoldsBase.TypeParameter{Tuple{1}}}, g::Number, h::Number
+    )
     return g * h * inv(G, g)
 end
 
 function Base.exp(
-    ::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, X::Number
-)
+        ::UnitaryGroup{ManifoldsBase.ℍ, ManifoldsBase.TypeParameter{Tuple{1}}}, X::Number
+    )
     return exp(X)
 end
 function Base.exp(
-    ::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}},
-    g::Number,
-    X::Number,
-)
+        ::UnitaryGroup{ManifoldsBase.ℍ, ManifoldsBase.TypeParameter{Tuple{1}}},
+        g::Number,
+        X::Number,
+    )
     return g * exp(X)
 end
 function ManifoldsBase.exp!(
-    ::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, g, X
-)
+        ::UnitaryGroup{ManifoldsBase.ℍ, ManifoldsBase.TypeParameter{Tuple{1}}}, g, X
+    )
     g .= exp.(X)
     return g
 end
 
 function identity_element(
-    ::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}},
-    ::Type{<:Quaternion{T}},
-) where {T}
+        ::UnitaryGroup{ManifoldsBase.ℍ, ManifoldsBase.TypeParameter{Tuple{1}}},
+        ::Type{<:Quaternion{T}},
+    ) where {T}
     return Quaternions.quat(one(T))
 end
 
 function identity_element(
-    G::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}},
-    ::Type{Matrix{T}},
-) where {T<:Quaternion}
+        G::UnitaryGroup{ManifoldsBase.ℍ, ManifoldsBase.TypeParameter{Tuple{1}}},
+        ::Type{Matrix{T}},
+    ) where {T <: Quaternion}
     return fill(identity_element(G, T), 1, 1)
 end
 
@@ -83,28 +83,28 @@ function inv!(G::UnitaryGroup, h, ::Identity{MatrixMultiplicationGroupOperation}
 end
 
 function Base.log(
-    ::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, g::Number
-)
+        ::UnitaryGroup{ManifoldsBase.ℍ, ManifoldsBase.TypeParameter{Tuple{1}}}, g::Number
+    )
     return log(g)
 end
 function Base.log(
-    G::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}},
-    g::Number,
-    h::Number,
-)
+        G::UnitaryGroup{ManifoldsBase.ℍ, ManifoldsBase.TypeParameter{Tuple{1}}},
+        g::Number,
+        h::Number,
+    )
     return log(inv(G, g) * h)
 end
 function ManifoldsBase.log!(
-    ::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}}, X, g
-)
+        ::UnitaryGroup{ManifoldsBase.ℍ, ManifoldsBase.TypeParameter{Tuple{1}}}, X, g
+    )
     X .= log.(g)
     return X
 end
 function ManifoldsBase.log!(
-    G::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{1}}},
-    X,
-    ::Identity{MatrixMultiplicationGroupOperation},
-)
+        G::UnitaryGroup{ManifoldsBase.ℍ, ManifoldsBase.TypeParameter{Tuple{1}}},
+        X,
+        ::Identity{MatrixMultiplicationGroupOperation},
+    )
     X .= quat(0.0)
     return X
 end
@@ -121,8 +121,8 @@ implementations where
 * certain subgroups real/complex share a common implementation, e.g. for the same sizes `T` usually via [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)
 * certain functions are the same for all sizes `T` as long as the field `𝔽` is the same
 """
-const CommonUnitarySubGroup{𝔽,T} = LieGroup{
-    𝔽,MatrixMultiplicationGroupOperation,<:GeneralUnitaryMatrices{T,𝔽}
+const CommonUnitarySubGroup{𝔽, T} = LieGroup{
+    𝔽, MatrixMultiplicationGroupOperation, <:GeneralUnitaryMatrices{T, 𝔽},
 }
 
 #
@@ -138,25 +138,25 @@ implementations where
 * certain sub algebras real/complex share a common implementation, e.g. for the same sizes `T` usually via [`TypeParameter`](@extref `ManifoldsBase.TypeParameter`)
 * certain functions are the same for all sizes `T` as long as the field `𝔽` is the same
 """
-const CommonUnitarySubAlgebra{𝔽,T} = LieAlgebra{
-    𝔽,MatrixMultiplicationGroupOperation,<:CommonUnitarySubGroup{𝔽,T}
+const CommonUnitarySubAlgebra{𝔽, T} = LieAlgebra{
+    𝔽, MatrixMultiplicationGroupOperation, <:CommonUnitarySubGroup{𝔽, T},
 }
 
 function Base.show(
-    io::IO, ::UnitaryGroup{ManifoldsBase.ℂ,ManifoldsBase.TypeParameter{Tuple{n}}}
-) where {n}
+        io::IO, ::UnitaryGroup{ManifoldsBase.ℂ, ManifoldsBase.TypeParameter{Tuple{n}}}
+    ) where {n}
     return print(io, "UnitaryGroup($(n))")
 end
-function Base.show(io::IO, M::UnitaryGroup{ManifoldsBase.ℂ,Tuple{Int}})
+function Base.show(io::IO, M::UnitaryGroup{ManifoldsBase.ℂ, Tuple{Int}})
     n = ManifoldsBase.get_parameter(M.manifold.size)[1]
     return print(io, "UnitaryGroup($(n); parameter=:field)")
 end
 function Base.show(
-    io::IO, ::UnitaryGroup{ManifoldsBase.ℍ,ManifoldsBase.TypeParameter{Tuple{n}}}
-) where {n}
+        io::IO, ::UnitaryGroup{ManifoldsBase.ℍ, ManifoldsBase.TypeParameter{Tuple{n}}}
+    ) where {n}
     return print(io, "UnitaryGroup($(n), ℍ)")
 end
-function Base.show(io::IO, G::UnitaryGroup{ManifoldsBase.ℍ,Tuple{Int}})
+function Base.show(io::IO, G::UnitaryGroup{ManifoldsBase.ℍ, Tuple{Int}})
     n = ManifoldsBase.get_parameter(G.manifold.size)[1]
     return print(io, "UnitaryGroup($(n), ℍ; parameter=:field)")
 end
