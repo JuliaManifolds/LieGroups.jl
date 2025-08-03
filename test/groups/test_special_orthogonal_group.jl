@@ -35,6 +35,8 @@ using StaticArrays
             is_identity,
             lie_bracket,
             log,
+            push_forward_tangent,
+            pull_back_tangent,
             rand,
             show,
             vee,
