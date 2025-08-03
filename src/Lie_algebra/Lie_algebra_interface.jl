@@ -270,9 +270,9 @@ This falls back to checking whether `X` is a valid point on the tangent space
 at the [`identity_element`](@ref)`(G)` on the [`base_manifold`](@ref)`(G)`
 on the [`AbstractLieGroup`](@ref) of `𝔤`
 """
-function ManifoldsBase.is_point(𝔤::LieAlgebra, X::T; kwargs...) where {T}
+function ManifoldsBase.is_point(𝔤::LieAlgebra, X::T, b::Bool=false; kwargs...) where {T}
     return ManifoldsBase.is_vector(
-        base_lie_group(𝔤), identity_element(base_lie_group(𝔤), T), X, false; kwargs...
+        base_lie_group(𝔤), identity_element(base_lie_group(𝔤), T), X, b; kwargs...
     )
 end
 

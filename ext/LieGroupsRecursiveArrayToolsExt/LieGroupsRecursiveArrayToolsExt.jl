@@ -4,7 +4,7 @@ using LieGroups
 using RecursiveArrayTools: ArrayPartition
 using LinearAlgebra
 using ManifoldsBase
-using ManifoldsBase: base_manifold, submanifold_components
+using ManifoldsBase: base_manifold, submanifold_components, submanifold_component
 
 include("special_euclidean_group_RAT_ext.jl")
 
@@ -60,5 +60,4 @@ function LieGroups.get_vector_lie(
     end
     return ArrayPartition(parts...)
 end
-
 end

@@ -5,24 +5,24 @@
 if "--help" ∈ ARGS
     println(
         """
-        docs/make.jl
+docs/make.jl
 
-        Render the `LieGroups.jl` documentation with optional arguments
+Render the `LieGroups.jl` documentation with optional arguments
 
-        Arguments
-        * `--exclude-tutorials` - exclude the tutorials from the menu of Documenter,
-          this can be used if you do not have Quarto installed to still be able to render the docs
-          locally on this machine. This option should not be set on CI.
-        * `--help`              - print this help and exit without rendering the documentation
-        * `--prettyurls`        – toggle the prettyurls part to true (which is otherwise only true on CI)
-        * `--quarto`            – run the Quarto notebooks from the `tutorials/` folder before generating the documentation
-          this has to be run locally at least once for the `tutorials/*.md` files to exist that are included in
-          the documentation (see `--exclude-tutorials`) for the alternative.
-          If they are generated once they are cached accordingly.
-          Then you can spare time in the rendering by not passing this argument.
-          If quarto is not run, some tutorials are generated as empty files, since they
-          are referenced from within the documentation. This is currently `getstarted.md`.
-        """,
+Arguments
+* `--exclude-tutorials` - exclude the tutorials from the menu of Documenter,
+  this can be used if you do not have Quarto installed to still be able to render the docs
+  locally on this machine. This option should not be set on CI.
+* `--help`              - print this help and exit without rendering the documentation
+* `--prettyurls`        – toggle the prettyurls part to true (which is otherwise only true on CI)
+* `--quarto`            – run the Quarto notebooks from the `tutorials/` folder before generating the documentation
+  this has to be run locally at least once for the `tutorials/*.md` files to exist that are included in
+  the documentation (see `--exclude-tutorials`) for the alternative.
+  If they are generated once they are cached accordingly.
+  Then you can spare time in the rendering by not passing this argument.
+  If quarto is not run, some tutorials are generated as empty files, since they
+  are referenced from within the documentation. This is currently `getstarted.md`.
+""",
     )
     exit(0)
 end
@@ -33,9 +33,9 @@ tutorials_in_menu = !("--exclude-tutorials" ∈ ARGS)
 ## Build tutorials menu
 tutorials_menu =
     "How to..." => [
-    "🚀 Get Started with LieGroups.jl" => "tutorials/getstarted.md",
-    "Transition from `GroupManifolds`" => "tutorials/transition.md",
-]
+        "🚀 Get Started with LieGroups.jl" => "tutorials/getstarted.md",
+        "Transition from `GroupManifolds`" => "tutorials/transition.md",
+    ]
 all_tutorials_exist = true
 for (name, file) in tutorials_menu.second
     fn = joinpath(@__DIR__, "src/", file)
@@ -69,12 +69,10 @@ end
 # (from https://github.com/JuliaIO/HDF5.jl/pull/1020/) 
 using Pkg
 if Base.active_project() != joinpath(@__DIR__, "Project.toml")
+    using Pkg
     Pkg.activate(@__DIR__)
+    Pkg.instantiate()
 end
-# load LieGroups in dev mode
-Pkg.develop(PackageSpec(; path = (@__DIR__) * "/../"))
-Pkg.resolve()
-Pkg.instantiate()
 
 # (c) If quarto is set, or we are on CI, run quarto
 if run_quarto || run_on_CI
@@ -83,8 +81,6 @@ if run_quarto || run_on_CI
     # instantiate the tutorials environment if necessary
     Pkg.activate(tutorials_folder)
     # For a breaking release -> also set the tutorials folder to the most recent version
-    Pkg.develop(PackageSpec(; path = (@__DIR__) * "/../"))
-    Pkg.resolve()
     Pkg.instantiate()
     Pkg.activate(@__DIR__) # but return to the docs one before
     run(`quarto render $(tutorials_folder)`)
@@ -98,12 +94,13 @@ using Documenter
 using DocumenterCitations, DocumenterInterLinks
 using LinearAlgebra
 using LieGroups
+using RecursiveArrayTools
 
 # (e) add contributing.md and changelog.md to the docs – and link to releases and issues
 
 function add_links(
-        line::String, url::String = "https://github.com/JuliaManifolds/LieGroups.jl"
-    )
+    line::String, url::String="https://github.com/JuliaManifolds/LieGroups.jl"
+)
     # replace issues (#XXXX) -> ([#XXXX](url/issue/XXXX))
     while (m = match(r"\(\#([0-9]+)\)", line)) !== nothing
         id = m.captures[1]
@@ -141,22 +138,22 @@ for (md_file, doc_file) in [("CONTRIBUTING.md", "contributing.md"), ("NEWS.md", 
 end
 
 # (f) finally make docs
-bib = CitationBibliography(joinpath(@__DIR__, "src", "references.bib"); style = :alpha)
+bib = CitationBibliography(joinpath(@__DIR__, "src", "references.bib"); style=:alpha)
 links = InterLinks(
     "ManifoldsBase" => ("https://juliamanifolds.github.io/ManifoldsBase.jl/stable/"),
     "Manifolds" => ("https://juliamanifolds.github.io/Manifolds.jl/stable/"),
 )
 makedocs(;
-    format = Documenter.HTML(;
-        prettyurls = (get(ENV, "CI", nothing) == "true") || ("--prettyurls" ∈ ARGS),
-        assets = ["assets/favicon.ico", "assets/citations.css", "assets/link-icons.css"],
-        size_threshold_warn = 200 * 2^10, # raise slightly from 100 to 200 KiB
-        size_threshold = 300 * 2^10,      # raise slightly 200 to to 300 KiB
+    format=Documenter.HTML(;
+        prettyurls=(get(ENV, "CI", nothing) == "true") || ("--prettyurls" ∈ ARGS),
+        assets=["assets/favicon.ico", "assets/citations.css", "assets/link-icons.css"],
+        size_threshold_warn=200 * 2^10, # raise slightly from 100 to 200 KiB
+        size_threshold=300 * 2^10,      # raise slightly 200 to to 300 KiB
     ),
-    modules = [LieGroups],
-    authors = "Seth Axen, Mateusz Baran, Ronny Bergmann, Olivier Verdier, and contributors",
-    sitename = "LieGroups.jl",
-    pages = [
+    modules=[LieGroups, Base.get_extension(LieGroups, :LieGroupsRecursiveArrayToolsExt)],
+    authors="Seth Axen, Mateusz Baran, Ronny Bergmann, Olivier Verdier, and contributors",
+    sitename="LieGroups.jl",
+    pages=[
         "Home" => "index.md",
         "About" => "about.md",
         (tutorials_in_menu ? [tutorials_menu] : [])...,
@@ -188,8 +185,8 @@ makedocs(;
         "Changelog" => "news.md",
         "References" => "references.md",
     ],
-    plugins = [bib, links],
+    plugins=[bib, links],
 )
-deploydocs(; repo = "github.com/JuliaManifolds/LieGroups.jl", push_preview = true)
+deploydocs(; repo="github.com/JuliaManifolds/LieGroups.jl", push_preview=true)
 #back to main env
 Pkg.activate()
