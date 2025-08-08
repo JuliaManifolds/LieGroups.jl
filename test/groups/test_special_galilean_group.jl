@@ -7,6 +7,7 @@ s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 using LieGroupsTestSuite
 
 using StaticArrays
+using LinearAlgebra
 
 @testset "Special Galilean" begin
     𝔰 = sqrt(2)

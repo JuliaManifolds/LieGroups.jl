@@ -1,18 +1,9 @@
-# using LieGroups
-# using ManifoldsBase
-# using ManifoldsBase: submanifold_component
-# using LieGroups:
-#     ℝ, Rotations, Euclidean, ProductManifold, LeftSemidirectProductGroupOperation
-# import LieGroups: default_left_action
 
-# using RecursiveArrayTools: ArrayPartition
+"""
+    RotationBoostAction
 
-# using StaticArrays, LinearAlgebra
-
-using Rotations: RotationVec
-using RecursiveArrayTools: ArrayPartition
-
-##
+The group action of the semidirect product of spatial rotations and velocity boosts (SO(n) ⋉ ℝⁿ) on the space of events (position, time).
+"""
 struct RotationBoostAction <: AbstractLeftGroupActionType end
 
 # the action of the rotation-boost semidirect product group on the events (x,t) group
@@ -27,7 +18,7 @@ function LieGroups.apply!(A::GroupAction{RotationBoostAction}, k, g, h)
 
     k_p = submanifold_component(H, k, Val(1))
     k_p .= v * t + R * p
-    # NOTE k_t unchanged
+
     k_t = submanifold_component(H, k, Val(2))
     k_t .= t
     return k
@@ -42,7 +33,7 @@ const LeftSpecialGalileanGroupOperation = LeftSemidirectProductGroupOperation{
     RotationBoostAction,
 }
 
-SpecialGalileanGroup{T} = LieGroup{
+const SpecialGalileanGroup{T} = LieGroup{
     ℝ,
     <:LeftSpecialGalileanGroupOperation,
     <:ProductManifold{
@@ -74,13 +65,11 @@ function default_left_action(::SpecialEuclideanGroup, ::EventsGroup)
 end
 
 """
-    SpecialGalileanGroup
+    SpecialGalileanGroup(n::Int)
 
-References: 
-- https://hal.science/hal-02183498/document
-- TODO new reference: https://arxiv.org/pdf/2312.07555
-- TODO new reference: https://arxiv.org/pdf/2409.14276
-
+Construct the special Galilean group SGal(n) as a nested semidirect product:
+    (SO(n) ⋉ ℝⁿ) ⋉ (ℝⁿ × ℝ)
+where SO(n) are spatial rotations, ℝⁿ are velocity boosts, and (ℝⁿ × ℝ) are spacetime translations.
 Affine representation 
 Δ = [ΔR Δv Δp;
      0   1 Δt;
@@ -88,149 +77,12 @@ Affine representation
 
 ArrayPartition representation
 Δ = ((ΔR, Δv), (Δp, Δt))
+See Eq. (SGal3_definition) and Section "The Matrix Representation of SGal(3)".
+References: 
+- https://hal.science/hal-02183498/document
+- https://arxiv.org/pdf/2312.07555
+- https://arxiv.org/pdf/2409.14276
 """
 function SpecialGalileanGroup(n::Int)
-    return (SpecialOrthogonalGroup(n) ⋉ TranslationGroup(n)) ⋉
-        (TranslationGroup(n) × TranslationGroup(1))
-end
-
-#TODO don't know if something similar already exists in LieGroups.jl
-function _skew(v::AbstractVector{T}) where {T <: Real}
-    return SMatrix{3, 3, T}(0, v[3], -v[2], -v[3], 0, v[1], v[2], -v[1], 0)
-end
-
-function _Q(θ⃗)
-    T = eltype(θ⃗)
-    θ = norm(θ⃗)
-    if θ ≈ 0
-        return SMatrix{3, 3, T}(I)
-    else
-        u = θ⃗ / θ
-        sθ, cθ = sincos(θ)
-        uₓ = _skew(u)
-        return SMatrix{3, 3, T}(I) + (1 - cθ) / θ * uₓ + (θ - sθ) / θ * uₓ^2
-    end
-end
-
-function _P(θ⃗)
-    T = eltype(θ⃗)
-    θ = norm(θ⃗)
-    if θ ≈ 0
-        return 1 / 2 * SMatrix{3, 3, T}(I)
-    else
-        u = θ⃗ / θ
-        sθ, cθ = sincos(θ)
-        uₓ = _skew(u)
-        return 1 / 2 * SMatrix{3, 3, T}(I) +
-            (θ - sθ) / θ^2 * uₓ +
-            (cθ + 1 / 2 * θ^2 - 1) / θ^2 * uₓ^2
-    end
-end
-
-function LieGroups.exp!(
-        G::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
-        q::ArrayPartition,
-        X::ArrayPartition,
-    )
-    θ⃗ₓ = X.x[1].x[1] # ωΔt
-
-    ν = X.x[1].x[2]  # aΔt
-    ρ = X.x[2].x[1]  # vΔt
-
-    Δt = X.x[2].x[2][1]
-
-    # ωΔt = vee(θ⃗ₓ)
-    θ⃗ = SA[θ⃗ₓ[3, 2]; θ⃗ₓ[1, 3]; θ⃗ₓ[2, 1]]
-
-    P = _P(θ⃗)
-    Q = _Q(θ⃗)
-
-    M_SO3 = SpecialOrthogonalGroup(3)
-    q.x[1].x[1] .= exp(M_SO3, θ⃗ₓ)
-    q.x[1].x[2] .= Q * ν
-    q.x[2].x[1] .= Q * ρ + P * ν * Δt
-    q.x[2].x[2] .= Δt
-
-    return q
-end
-
-function LieGroups.log!(
-        M::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
-        X::ArrayPartition,
-        p::ArrayPartition,
-    )
-    ΔR = p.x[1].x[1]
-    Δv = p.x[1].x[2]
-    Δp = p.x[2].x[1]
-    Δt = p.x[2].x[2][1]
-
-    #FIXME Rotations is not a dependency, find alternative for RotationVec
-    Rv = RotationVec(ΔR)
-    θ⃗ = SA[Rv.sx, Rv.sy, Rv.sz]
-
-    P = _P(θ⃗)
-    Q = _Q(θ⃗)
-    iQ = inv(Q)
-
-    X.x[1].x[1] .= log(SpecialOrthogonalGroup(3), ΔR) # θ⃗ₓ
-    X.x[1].x[2] .= iQ * Δv # ν aΔt
-    X.x[2].x[1] .= iQ * (Δp - P * iQ * Δv * Δt) # ρ vΔt
-    X.x[2].x[2] .= Δt
-    return X
-end
-
-function LieGroups.identity_element(
-        ::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{N}}}, ::Type{<:StaticArray}
-    ) where {N}
-    return ArrayPartition(
-        ArrayPartition(
-            SMatrix{3, 3, Float64}(I), # ΔR
-            @SVector(zeros(3)),      # Δv
-        ),
-        ArrayPartition(
-            @SVector(zeros(3)),      # Δp
-            @SVector([0.0]),         # Δt
-        ),
-    )
-end
-
-function LieGroups.inv(G::SpecialGalileanGroup, p::ArrayPartition)
-    ΔR = p.x[1].x[1]
-    Δv = p.x[1].x[2]
-    Δp = p.x[2].x[1]
-    Δt = p.x[2].x[2]
-
-    return ArrayPartition(
-        ArrayPartition(
-            ΔR',                      # ΔR
-            -ΔR' * Δv,                # Δv
-        ),                            #
-        ArrayPartition(               #
-            -ΔR' * (Δp - Δv * Δt[1]), # Δp
-            -Δt,                      # Δt
-        ),
-    )
-end
-
-function LieGroups.compose(G::SpecialGalileanGroup, p::ArrayPartition, q::ArrayPartition)
-    ΔR = p.x[1].x[1]
-    Δv = p.x[1].x[2]
-    Δp = p.x[2].x[1]
-    Δt = p.x[2].x[2]
-
-    δR = q.x[1].x[1]
-    δv = q.x[1].x[2]
-    δp = q.x[2].x[1]
-    δt = q.x[2].x[2]
-
-    return ArrayPartition(
-        ArrayPartition(
-            ΔR * δR,                   # ΔR
-            Δv + ΔR * δv,              # Δv
-        ),
-        ArrayPartition(
-            Δp + Δv * δt[1] + ΔR * δp, # Δp
-            Δt + δt,                   # Δt
-        ),
-    )
+    return (SpecialOrthogonalGroup(n) ⋉ TranslationGroup(n)) ⋉ (TranslationGroup(n) × TranslationGroup(1))
 end
