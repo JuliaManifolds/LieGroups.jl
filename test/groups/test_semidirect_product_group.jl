@@ -37,35 +37,55 @@ using LieGroupsTestSuite
         test_lie_group(Gr, properties, expectations)
     end
     @testset "Defaults" begin
-        # Let's take a bit of a funny, but nondefault semidirect product
-        G = SpecialOrthogonalGroup(2)
+
+        struct TestLeftAction <: AbstractLeftGroupActionType end
+
+        function LieGroups.apply!(A::GroupAction{TestLeftAction}, k, g, h)
+            return k .= g*h
+        end
         g1 = 1 / sqrt(2) * [1.0 1.0; -1.0 1.0]
         g2 = [0.0 -1.0; 1.0 0.0]
         g3 = [1.0 0.0; 0.0 1.0]
-        X1, X2, X3 = [0.0 0.1; -0.1 0.0], [0.0 -0.2; 0.2 0.0], [0.0 0.0; 0.0 0.0]
+        h1 = [0.,0]
+        h2 = [0.1, 0.1]
+        h3 = [0.0, 1.0]
+        Xg1, Xg2, Xg3 = [0.0 0.1; -0.1 0.0], [0.0 -0.2; 0.2 0.0], [0.0 0.0; 0.0 0.0]
+        Xh1, Xh2, Xh3 = [0.0, 0.0], [0.0, -0.2], [1.0, 0.0]
 
-        Gl = LeftSemidirectProductLieGroup(G, G, LeftGroupOperationAction())
-        Gr = RightSemidirectProductLieGroup(G, G, RightGroupOperationAction())
+        Gl = LeftSemidirectProductLieGroup(SpecialOrthogonalGroup(2), TranslationGroup(2), TestLeftAction())
+        Gr = RightSemidirectProductLieGroup(TranslationGroup(2), SpecialOrthogonalGroup(2), TestLeftAction())
 
-        h1 = ArrayPartition(copy(g1), copy(g2))
-        h2 = ArrayPartition(copy(g2), copy(g1))
-        h3 = ArrayPartition(copy(g3), copy(g3))
-        Y1 = ArrayPartition(copy(X1), copy(X2))
-        Y2 = ArrayPartition(copy(X2), copy(X1))
-        Y3 = ArrayPartition(copy(X3), copy(X3))
+        p1 = ArrayPartition(copy(g1), copy(h1))
+        p2 = ArrayPartition(copy(g2), copy(h2))
+        p3 = ArrayPartition(copy(g3), copy(h3))
+        Y1 = ArrayPartition(copy(Xg1), copy(Xg1))
+        Y2 = ArrayPartition(copy(Xg2), copy(Xg2))
+        Y3 = ArrayPartition(copy(Xg3), copy(Xg3))
         properties = Dict(
             :Name => "The generic left semi-direct product group",
-            :Points => [h1, h2, h3],
+            :Points => [p1, p2, p3],
             :Vectors => [Y1, Y2, Y3],
-            :Functions => [identity_element, inv, show],
+            :Functions => [identity_element, inv, compose, show],
         )
         expectations_l = Dict(
-            :repr => "LeftSemidirectProductLieGroup(SpecialOrthogonalGroup(2), SpecialOrthogonalGroup(2), LeftGroupOperationAction())",
+            :repr => "LeftSemidirectProductLieGroup(SpecialOrthogonalGroup(2), TranslationGroup(2; field=ℝ), TestLeftAction())",
         )
         test_lie_group(Gl, properties, expectations_l)
-        properties[:Name] = "The generic left semi-direct product group"
+
+        p1 = ArrayPartition(copy(h1), copy(g1))
+        p2 = ArrayPartition(copy(h2), copy(g2))
+        p3 = ArrayPartition(copy(h3), copy(g3))
+        Y1 = ArrayPartition(copy(Xg1), copy(Xg1))
+        Y2 = ArrayPartition(copy(Xg2), copy(Xg2))
+        Y3 = ArrayPartition(copy(Xg3), copy(Xg3))
+        properties = Dict(
+            :Name => "The generic right semi-direct product group",
+            :Points => [p1, p2, p3],
+            :Vectors => [Y1, Y2, Y3],
+            :Functions => [identity_element, inv, compose, show],
+        )
         expectations_r = Dict(
-            :repr => "RightSemidirectProductLieGroup(SpecialOrthogonalGroup(2), SpecialOrthogonalGroup(2), RightGroupOperationAction())",
+            :repr => "RightSemidirectProductLieGroup(TranslationGroup(2; field=ℝ), SpecialOrthogonalGroup(2), TestLeftAction())",
         )
         test_lie_group(Gr, properties, expectations_r)
     end

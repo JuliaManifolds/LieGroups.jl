@@ -5,6 +5,19 @@ All notable Changes to the Julia package `LieGroups.jl` will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.4] unreleased
+
+### Added
+
+* Add the Special Galilean Group (#60)
+
+### Changed
+
+### Fixed
+
+* Fix the default implementation of `inv` for semidirect product groups (#60).
+* Fix an issue when combining product and semidirect product Lie groups (#60).
+
 ## [0.1.3] 2025-08-04
 
 ### Added

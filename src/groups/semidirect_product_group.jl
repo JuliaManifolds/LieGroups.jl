@@ -398,13 +398,13 @@ end
 Compute the inverse element of an element ``g = (g_1, g_2)`` given by
 
 ```math
-g^{-1} = (g_1^{-1}, σ_{g_1^{-1}}g_2).
+g^{-1} = (g_1^{-1}, σ_{g_1^{-1}}g_2^{-1}).
 ```
 
 for the left variant and
 
 ```math
-g^{-1} = (σ_{g_2^{-1}} g_1, g_2^{-1})
+g^{-1} = (σ_{g_2^{-1}} g_1^{-1}, g_2^{-1})
 ```
 
 for the right variant, respectively. See also [HilgertNeeb:2012; Proof of Lemma 2.2.3](@cite).
@@ -421,12 +421,12 @@ function inv!(
     A = GroupAction(SDPG.op.action_type, G, H)
     inv!(G, submanifold_component(SDPG, k, Val(1)), submanifold_component(PM, g, Val(1)))
     inv!(H, submanifold_component(SDPG, k, Val(2)), submanifold_component(PM, g, Val(2)))
-    g2_ = copy(H, submanifold_component(PM, k, Val(2)))
-    apply!( # Apply the group action with g1^-1 to g2
+    inv_g2 = copy(H, submanifold_component(SDPG, k, Val(2)))
+    apply!( # Apply the group action with g1^-1 to g2^-1
         A,
         submanifold_component(SDPG, k, Val(2)),
         submanifold_component(SDPG, k, Val(1)),
-        g2_,
+        inv_g2,
     )
     return k
 end
@@ -436,15 +436,15 @@ function inv!(
     PM = SDPG.manifold
     H, G = map(LieGroup, PM.manifolds, SDPG.op.operations)
     A = GroupAction(SDPG.op.action_type, G, H)
-    # to avoid side effects, copy
-    g1_ = copy(H, submanifold_component(PM, g, Val(1)))
     inv!(H, submanifold_component(SDPG, k, Val(1)), submanifold_component(PM, g, Val(1)))
     inv!(G, submanifold_component(SDPG, k, Val(2)), submanifold_component(PM, g, Val(2)))
-    apply!( # Apply the group action with g2^-1 to g1
+    # to avoid side effects, copy
+    inv_g1 = copy(H, submanifold_component(PM, k, Val(1)))
+    apply!( # Apply the group action with g2^-1 to g1^-1
         A,
         submanifold_component(SDPG, k, Val(1)),
         submanifold_component(SDPG, k, Val(2)),
-        g1_,
+        inv_g1,
     )
     return k
 end
