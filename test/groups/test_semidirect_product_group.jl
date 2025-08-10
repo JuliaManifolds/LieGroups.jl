@@ -134,5 +134,28 @@ using LieGroupsTestSuite
             SpecialOrthogonalGroup(2) ⋉ TranslationGroup(2)
         )
         @test G2 == G
+
+        G3 = ProductLieGroup(TranslationGroup(2))
+        @test G3.manifold isa ProductManifold
+
+        #test that the different combinations of products groups are equivalent
+        PG = TranslationGroup(1) × SpecialEuclideanGroup(2) × TranslationGroup(2) × CircleGroup()
+        PG1 = ProductLieGroup(
+            TranslationGroup(1),
+            SpecialEuclideanGroup(2) × TranslationGroup(2) × CircleGroup()
+        )
+        @test PG1 == PG
+        PG2 = ProductLieGroup(
+            TranslationGroup(1) × SpecialEuclideanGroup(2),
+            TranslationGroup(2) × CircleGroup()
+        )
+        @test PG2 == PG
+        PG3 = ProductLieGroup(
+            TranslationGroup(1) × SpecialEuclideanGroup(2) × TranslationGroup(2),
+            CircleGroup()
+        )
+        @test PG3 == PG
+        PG4 = ProductLieGroup(PG)
+        @test PG4 == PG
     end
 end

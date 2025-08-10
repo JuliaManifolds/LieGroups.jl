@@ -80,6 +80,9 @@ end
 function ProductLieGroup(G::LieGroup)
     return LieGroup(ProductManifold(G.manifold), ProductGroupOperation(G.op))
 end
+function ProductLieGroup(G::LieGroup{<:Any, <:ProductGroupOperation})
+    return G
+end
 function ProductLieGroup(G::LieGroup, H::LieGroup, groups::LieGroup...)
     return ProductLieGroup(ProductLieGroup(G, H), groups...)
 end
