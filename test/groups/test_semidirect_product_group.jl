@@ -119,9 +119,13 @@ using LieGroupsTestSuite
             :Points => pts,
             :Vectors => vec,
             :Functions => fcts,
+        )
+
+        expectations = Dict(
             :atol => 1.0e-14,
         )
-        test_lie_group(G, properties)
+
+        test_lie_group(G, properties, expectations)
 
         G2 = ProductLieGroup(
             TranslationGroup(2),
