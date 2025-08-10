@@ -41,12 +41,12 @@ using LieGroupsTestSuite
         struct TestLeftAction <: AbstractLeftGroupActionType end
 
         function LieGroups.apply!(A::GroupAction{TestLeftAction}, k, g, h)
-            return k .= g*h
+            return k .= g * h
         end
         g1 = 1 / sqrt(2) * [1.0 1.0; -1.0 1.0]
         g2 = [0.0 -1.0; 1.0 0.0]
         g3 = [1.0 0.0; 0.0 1.0]
-        h1 = [0.,0]
+        h1 = [0.0, 0]
         h2 = [0.1, 0.1]
         h3 = [0.0, 1.0]
         Xg1, Xg2, Xg3 = [0.0 0.1; -0.1 0.0], [0.0 -0.2; 0.2 0.0], [0.0 0.0; 0.0 0.0]
