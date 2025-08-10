@@ -121,7 +121,6 @@ using LieGroupsTestSuite
             :Functions => fcts,
             :atol => 1.0e-14,
         )
-       
         test_lie_group(G, properties)
 
         G2 = ProductLieGroup(
