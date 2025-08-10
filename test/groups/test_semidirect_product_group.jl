@@ -89,4 +89,47 @@ using LieGroupsTestSuite
         )
         test_lie_group(Gr, properties, expectations_r)
     end
+
+    @testset "Combining ⋊, ⋉, and ×" begin
+        fcts = [
+            compose,
+            exp,
+            get_vector,
+            hat,
+            identity_element,
+            inner,
+            inv,
+            is_identity,
+            lie_bracket,
+            log,
+            norm,
+            rand,
+            show,
+            vee,
+        ]
+
+        G = TranslationGroup(2) × (TranslationGroup(2) ⋊ SpecialOrthogonalGroup(2)) × TranslationGroup(2) × (SpecialOrthogonalGroup(2) ⋉ TranslationGroup(2))
+        ε = identity_element(G)
+        p = rand(G)
+        pts = [p, ε]
+        vec = [rand(G; vector_at = p), zero_vector(G, ε)]
+
+        properties = Dict(
+            :Name => "Test combining ⋊, ⋉, and ×",
+            :Points => pts,
+            :Vectors => vec,
+            :Functions => fcts,
+            :atol => 1.0e-14,
+        )
+       
+        test_lie_group(G, properties)
+
+        G2 = ProductLieGroup(
+            TranslationGroup(2),
+            TranslationGroup(2) ⋊ SpecialOrthogonalGroup(2),
+            TranslationGroup(2),
+            SpecialOrthogonalGroup(2) ⋉ TranslationGroup(2)
+        )
+        @test G2 == G
+    end
 end
