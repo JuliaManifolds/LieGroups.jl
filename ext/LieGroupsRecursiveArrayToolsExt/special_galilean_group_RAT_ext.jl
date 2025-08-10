@@ -1,4 +1,3 @@
-using Rotations: RotationVec
 using LieGroups: SpecialGalileanGroup
 using StaticArrays
 using LinearAlgebra
@@ -101,15 +100,14 @@ function LieGroups.log!(
     Δp = p.x[2].x[1]
     Δt = p.x[2].x[2][1]
 
-    #FIXME Rotations is not a dependency, find alternative for RotationVec
-    Rv = RotationVec(ΔR)
-    θ⃗ = SA[Rv.sx, Rv.sy, Rv.sz]
+    SO3 = SpecialOrthogonalGroup(3)
+    log!(SO3, X.x[1].x[1], ΔR) # θ⃗ₓ # FIXME allocates
+    θ⃗ = vee(LieAlgebra(SO3), X.x[1].x[1])
 
     P = _P(θ⃗)
     Q = _Q(θ⃗)
     iQ = inv(Q)
 
-    log!(SpecialOrthogonalGroup(3), X.x[1].x[1], ΔR) # θ⃗ₓ # FIXME allocates
     X.x[1].x[2] .= iQ * Δv # ν aΔt
     X.x[2].x[1] .= iQ * (Δp - P * iQ * Δv * Δt) # ρ vΔt
     X.x[2].x[2] .= Δt
@@ -125,15 +123,16 @@ function LieGroups.log(
     Δp = p.x[2].x[1]
     Δt = p.x[2].x[2][1]
 
-    Rv = RotationVec(ΔR)
-    θ⃗ = SA[Rv.sx, Rv.sy, Rv.sz]
+    SO3 = SpecialOrthogonalGroup(3)
+    θ⃗ₓ = log(SO3, ΔR)
+    θ⃗ = vee(LieAlgebra(SO3), θ⃗ₓ)
 
     P = _P(θ⃗)
     Q = _Q(θ⃗)
     iQ = inv(Q)
     return ArrayPartition(
         ArrayPartition(
-            log(SpecialOrthogonalGroup(3), ΔR), # θ⃗ₓ
+            θ⃗ₓ,
             iQ * Δv # ν aΔt
         ),
         ArrayPartition(
