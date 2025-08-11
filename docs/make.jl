@@ -167,6 +167,7 @@ makedocs(;
             "Product group" => "groups/product_group.md",
             "Semidirect product group" => "groups/semidirect_product_group.md",
             "Special Euclidean group" => "groups/special_euclidean_group.md",
+            "Special Galilean group" => "groups/special_galilean_group.md",
             "Special linear" => "groups/special_linear.md",
             "Special orthogonal group" => "groups/special_orthogonal_group.md",
             "Special unitary group" => "groups/special_unitary_group.md",
