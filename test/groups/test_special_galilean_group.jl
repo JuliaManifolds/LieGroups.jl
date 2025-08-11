@@ -44,6 +44,8 @@ using LinearAlgebra
             ArrayPartition([1.0 0.0 0.0; 0.0 1.0 0.0; 0.0 0.0 1.0], [1.0, 1.0, 0.0]),
             ArrayPartition([0.0, 0.0, 1.0], [1.0]),
         )
+        hL4 = identity_element(G3p, StaticArray)
+
         YL1 = ArrayPartition(
             ArrayPartition([0.0 -0.23 0.0; 0.23 0.0 0.0; 0.0 0.0 0.0], [0.0, 1.0, 0.0]),
             ArrayPartition([0.0, 0.0, 0.0], [1.0]),
@@ -56,8 +58,10 @@ using LinearAlgebra
             ArrayPartition([9.0 0.1 0.0; -0.1 0.0 0.0; 0.0 0.0 0.0], [1.0, 0.0, 0.0]),
             ArrayPartition([0.0, 0.0, 0.3], [0.1]),
         )
-        hP = [hL1, hL2, hL3]
-        YP = [YL1, YL2, YL3]
+        YL4 = zero_vector(G3p, hL4)
+        
+        hP = [hL1, hL2, hL3, hL4]
+        YP = [YL1, YL2, YL3, YL4]
         for G in [G3p], (pts, vec) in zip([hP], [YP])
             properties = Dict(
                 :Name => "Special Galilean Group SGal(3)",
