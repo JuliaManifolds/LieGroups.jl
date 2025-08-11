@@ -58,8 +58,7 @@ using LinearAlgebra
             ArrayPartition([9.0 0.1 0.0; -0.1 0.0 0.0; 0.0 0.0 0.0], [1.0, 0.0, 0.0]),
             ArrayPartition([0.0, 0.0, 0.3], [0.1]),
         )
-        YL4 = zero_vector(G3p, hL4)
-        
+        YL4 = zero(hL4)
         hP = [hL1, hL2, hL3, hL4]
         YP = [YL1, YL2, YL3, YL4]
         for G in [G3p], (pts, vec) in zip([hP], [YP])
