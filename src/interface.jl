@@ -428,9 +428,14 @@ ManifoldsBase.exp(G::AbstractLieGroup, ::Any, ::Any)
 
 @doc "$_doc_exp"
 function ManifoldsBase.exp!(G::AbstractLieGroup, h, g, X)
-    exp!(G, h, X)
-    compose!(G, h, g, h)
-    return h
+    if Base.mightalias(g, h)
+       compose!(G, h, g, exp(G, X))
+       return h
+    else
+        exp!(G, h, X)
+        compose!(G, h, g, h)
+        return h
+    end
 end
 
 _doc_exponential = """
