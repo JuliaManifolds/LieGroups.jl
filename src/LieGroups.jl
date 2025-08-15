@@ -165,6 +165,7 @@ export identity_element, identity_element!, is_identity, inner
 export inv, inv!, diff_inv, diff_inv!
 export injectivity_radius
 export jacobian_conjugate, jacobian_conjugate!
+export jacobian_exp_argument, jacobian_exp_argument!
 export lie_bracket, lie_bracket!, log, log!
 export manifold_dimension
 export norm, number_of_coordinates

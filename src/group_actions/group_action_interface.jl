@@ -139,7 +139,7 @@ This can be performed in-place of `q`.
 # un-comment the preceding line and remove this, once GroupManifolds no longer exists in Manifolds.jl
 @doc "$(_doc_apply)"
 function apply(A::GroupAction, g, p)
-    q = allocate_result(base_manifold(A), apply, g, p)
+    q = allocate_result(base_manifold(A), apply, p)
     apply!(A, q, g, p)
     return q
 end
@@ -192,7 +192,7 @@ where for a left group action we have ``σ_g(p) = σ(g,p)``, for a right action 
 function diff_apply end
 @doc "$(_doc_diff_apply)"
 function diff_apply(A::GroupAction, g, p, X)
-    Y = allocate_result(base_manifold(A), diff_apply, p, g, X)
+    Y = allocate_result(base_manifold(A), diff_apply, p, X)
     diff_apply!(A, Y, g, p, X)
     return Y
 end
@@ -213,7 +213,7 @@ and for a right action ``σ_p(g) = σ(p, g)``.
 function diff_group_apply end
 @doc "$(_doc_diff_group_apply)"
 function diff_group_apply(A::GroupAction, g, p, X)
-    Y = allocate_result(base_manifold(A), apply, g, p, X)
+    Y = allocate_result(base_manifold(A), apply, g, X)
     diff_group_apply!(A, Y, g, p, X)
     return Y
 end

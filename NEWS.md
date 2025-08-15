@@ -5,6 +5,16 @@ All notable Changes to the Julia package `LieGroups.jl` will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.4] unreleased
+
+## Added
+
+* mention `adjoint_matrix` in the transition documentation (#52)
+* introduce `jacobian_exp_argument`
+## Fixed
+
+* fixes an allocation bug for `apply` and `diff_apply` (#52)
+
 ## [0.1.3] 2025-08-04
 
 ### Added

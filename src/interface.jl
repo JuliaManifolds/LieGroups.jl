@@ -749,6 +749,7 @@ function ManifoldsBase.isapprox(
     ) where {𝔽, O <: AbstractGroupOperation, O2 <: AbstractGroupOperation}
     return false
 end
+
 _doc_jacobian_conjugate = """
     jacobian_conjugate(G::AbstractLieGroup, g, h; basis::AbstractBasis=DefaultLieAlgebraOrthogonalBasis(); X=zero_vector(LieAlgebar(G)))
     jacobian_conjugate!(G::AbstractLieGroup, J, g, h; basis::AbstractBasis=DefaultLieAlgebraOrthogonalBasis(); X=zero_vector(LieAlgebar(G)))
@@ -801,6 +802,29 @@ function jacobian_conjugate!(
     end
     return J
 end
+
+_doc_jac_exp_arg = """
+    jacobian_exp_argument(G::AbstractLieGroup, g, X, b)
+    jacobian_exp_argument!(G::AbstractLieGroup, J, g, X, b)
+
+Compute the Jacobian of the [`exp`](@ref) ``$(_tex(:exp))_g(X)`` with respect to
+an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`) of the [`LieAlgebra`](@ref).
+"""
+
+"$(_doc_jac_exp_arg)"
+function jacobian_exp_argument(
+        G::AbstractLieGroup, g, X, B::AbstractBasis = DefaultLieAlgebraOrthogonalBasis()
+    )
+    J = ManifoldsBase.allocate_result(G, jacobian_exp_argument, g, X, B)
+    return jacobian_exp_argument!(G, J, g, X, B)
+end
+
+
+"$(_doc_jac_exp_arg)"
+jacobian_exp_argument!(
+    G::AbstractLieGroup, J, g, X,
+    B::AbstractBasis = DefaultLieAlgebraOrthogonalBasis()
+)
 
 _doc_log = """
     log(G::AbstractLieGroup, g, h)
