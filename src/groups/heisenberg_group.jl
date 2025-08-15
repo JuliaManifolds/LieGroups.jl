@@ -154,15 +154,29 @@ end
 
 function ManifoldsBase.exp!(G::HeisenbergGroup, h, g, X)
     n = ManifoldsBase.get_parameter(G.manifold.size)[1]
-    copyto!(h, I)
-    a_g_view = _heisenberg_a_view(G, g)
-    b_g_view = _heisenberg_b_view(G, g)
+
     a_X_view = _heisenberg_a_view(G, X)
     b_X_view = _heisenberg_b_view(G, X)
-    h[1, 2:(n + 1)] .= a_g_view .+ a_X_view
-    h[2:(n + 1), n + 2] .= b_g_view .+ b_X_view
-    h[1, n + 2] =
-        g[1, n + 2] + X[1, n + 2] + dot(a_X_view, b_X_view) / 2 + dot(a_g_view, b_X_view)
+    if Base.mightalias(h, g)
+        a_g = copy(_heisenberg_a_view(G, g))
+        b_g = copy(_heisenberg_b_view(G, g))
+        gn2 = g[1, n + 2]
+        copyto!(h, I)
+        h[1, 2:(n + 1)] .= a_g .+ a_X_view
+        h[2:(n + 1), n + 2] .= b_g .+ b_X_view
+        h[1, n + 2] = gn2 + X[1, n + 2] + dot(a_X_view, b_X_view) / 2 + dot(a_g, b_X_view)
+    else
+        copyto!(h, I)
+        a_g_view = _heisenberg_a_view(G, g)
+        b_g_view = _heisenberg_b_view(G, g)
+        h[1, 2:(n + 1)] .= a_g_view .+ a_X_view
+        h[2:(n + 1), n + 2] .= b_g_view .+ b_X_view
+        h[1, n + 2] =
+            g[1, n + 2] +
+            X[1, n + 2] +
+            dot(a_X_view, b_X_view) / 2 +
+            dot(a_g_view, b_X_view)
+    end
     return h
 end
 

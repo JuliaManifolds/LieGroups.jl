@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+* Fixed an issue, where `exp!(G, h, g, X)` would return a wrong result if the input `g`and the output `h`are aliased (#63).
 * Fix the default implementation of `inv` for semidirect product groups (#60).
 * Fix an issue when combining product and semidirect product Lie groups (#60).
 
