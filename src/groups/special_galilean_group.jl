@@ -90,15 +90,16 @@ end
     SpecialGalileanGroup(n::Int)
 
 Construct the special Galilean group SGal(n) as a nested semidirect product:
-    (SO(n) ⋉ ℝⁿ) ⋉ (ℝⁿ × ℝ)
+    ``(SO(n) ⋉ ℝⁿ) ⋉ (ℝⁿ × ℝ)``
 where SO(n) are spatial rotations, ℝⁿ are velocity boosts, and (ℝⁿ × ℝ) are spacetime translations.
 The affine representation of the group is given by the matrix:
+```math
 SGal(3) = [R v p;
            0 1 t;
            0 0 1] ⊂ ℝ⁵ˣ⁵
-
+```
 ArrayPartition representation
-SGal(3) = ((R, v), (p, t))
+``SGal(3) = ((R, v), (p, t))``
 [Kelly:2025](@cite)
 """
 function SpecialGalileanGroup(n::Int)
