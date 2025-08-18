@@ -87,7 +87,21 @@ using LinearAlgebra
         Xⁱ1 = vee(LieAlgebra(G), X)
         @test Xⁱ1 ≈ Xⁱ
         @test typeof(Xⁱ1) == typeof(Xⁱ)
-        @test typeof(exp(G, X)) == typeof(ε)
+        g = exp(G, X)
+        @test typeof(g) == typeof(ε)
+        # pack Xⁱ manually into a matrix to test against the matrix exponential
+        Xmat = [
+            0.0  -0.03 0.02 0.1 1.0;
+            0.03  0.0 -0.01 0.2 2.0;
+            -0.02  0.01 0.0  0.3 3.0;
+            0.0   0.0  0.0  0.0 0.5;
+            0.0   0.0  0.0  0.0 0.0
+        ]
+        gmat = exp(Xmat)
+        @test g.x[1].x[1] ≈ gmat[1:3, 1:3]
+        @test g.x[1].x[2] ≈ gmat[1:3, 4]
+        @test g.x[2].x[1] ≈ gmat[1:3, 5]
+        @test g.x[2].x[2][1] ≈ gmat[4, 5]
     end
 
 end
