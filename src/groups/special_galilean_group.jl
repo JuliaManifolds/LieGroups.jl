@@ -6,6 +6,13 @@ The group action of the semidirect product of spatial rotations and velocity boo
 struct RotationBoostAction <: AbstractLeftGroupActionType end
 
 # the action of the rotation-boost semidirect product group on the events (x,t) group
+"""
+    LieGroups.apply!(A::GroupAction{RotationBoostAction}, k, g, h)
+
+Apply the action of the rotation-boost semidirect product group (SO(n) ⋉ ℝⁿ) on an event (x, t).
+Given group element `g = (R, v)` and event `h = (x, t)`, computes the transformed event `k = (R*x + v*t, t)`.
+See [Kelly:2025; section 4.1](@cite).
+"""
 function LieGroups.apply!(A::GroupAction{RotationBoostAction}, k, g, h)
     G = A.group
     R = submanifold_component(G, g, Val(1))
@@ -32,6 +39,12 @@ const LeftSpecialGalileanGroupOperation = LeftSemidirectProductGroupOperation{
     RotationBoostAction,
 }
 
+"""
+    SpecialGalileanGroup{T}
+
+The special Galilean group SGal(3), a 10-dimensional Lie group of spacetime transformations preserving spatial distances and absolute time intervals.
+It consists of spatial rotations, velocity boosts, and spacetime translations [Kelly:2025](@cite).
+"""
 const SpecialGalileanGroup{T} = LieGroup{
     ℝ,
     <:LeftSpecialGalileanGroupOperation,
@@ -49,8 +62,13 @@ const SpecialGalileanGroup{T} = LieGroup{
     },
 }
 
-# EventsGroup is a Product group of Translation(n) x Time
-# see eq 1. in https://arxiv.org/pdf/2312.07555
+"""
+    EventsGroup{T}
+
+An event is a point in Galilean spacetime, specified by three spatial coordinates and one temporal coordinate and 
+denoted by a tuple (x, t) ∈ ℝ³ × ℝ.
+See [Kelly:2025; section 4.1](@cite).
+"""
 EventsGroup{T} = LieGroup{
     ℝ,
     ProductGroupOperation{Tuple{AdditionGroupOperation, AdditionGroupOperation}},
@@ -59,6 +77,11 @@ EventsGroup{T} = LieGroup{
     },
 }
 
+"""
+    default_left_action(::SpecialEuclideanGroup, ::EventsGroup)
+
+Return the default left group action for SE(n) acting on events (position, time), i.e., the RotationBoostAction.
+"""
 function default_left_action(::SpecialEuclideanGroup, ::EventsGroup)
     return RotationBoostAction()
 end
@@ -69,18 +92,14 @@ end
 Construct the special Galilean group SGal(n) as a nested semidirect product:
     (SO(n) ⋉ ℝⁿ) ⋉ (ℝⁿ × ℝ)
 where SO(n) are spatial rotations, ℝⁿ are velocity boosts, and (ℝⁿ × ℝ) are spacetime translations.
-Affine representation 
-Δ = [ΔR Δv Δp;
-     0   1 Δt;
-     0   0  1] ⊂ ℝ⁵ˣ⁵
+The affine representation of the group is given by the matrix:
+SGal(3) = [R v p;
+           0 1 t;
+           0 0 1] ⊂ ℝ⁵ˣ⁵
 
 ArrayPartition representation
-Δ = ((ΔR, Δv), (Δp, Δt))
-See Eq. (SGal3_definition) and Section "The Matrix Representation of SGal(3)".
-References: 
-- https://hal.science/hal-02183498/document
-- https://arxiv.org/pdf/2312.07555
-- https://arxiv.org/pdf/2409.14276
+SGal(3) = ((R, v), (p, t))
+[Kelly:2025](@cite)
 """
 function SpecialGalileanGroup(n::Int)
     return (SpecialOrthogonalGroup(n) ⋉ TranslationGroup(n)) ⋉ (TranslationGroup(n) × TranslationGroup(1))
