@@ -84,7 +84,7 @@ function LieGroups.exp(
         ),
         ArrayPartition(
             Q * ρ + P * ν * Δt,
-            [Δt]
+            copy(X.x[2].x[2])
         )
     )
     return q
@@ -137,7 +137,7 @@ function LieGroups.log(
         ),
         ArrayPartition(
             iQ * (Δp - P * iQ * Δv * Δt), # ρ vΔt
-            [Δt]
+            copy(p.x[2].x[2]) # Δt
         )
     )
 end

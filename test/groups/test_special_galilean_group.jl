@@ -77,4 +77,17 @@ using LinearAlgebra
             test_lie_group(G, properties, expectations)
         end
     end
+
+    @testset "Test SGal(3) SArray" begin
+        G = SpecialGalileanGroup(3)
+        ε = identity_element(G, StaticArray)
+        Xⁱ = SA[1.0, 2.0, 3.0, 0.1, 0.2, 0.3, 0.01, 0.02, 0.03, 0.5]
+        X = hat(LieAlgebra(G), Xⁱ, typeof(ε))
+        @test typeof(X) == typeof(ε)
+        Xⁱ1 = vee(LieAlgebra(G), X)
+        @test Xⁱ1 ≈ Xⁱ
+        @test typeof(Xⁱ1) == typeof(Xⁱ)
+        @test typeof(exp(G, X)) == typeof(ε)
+    end
+
 end
