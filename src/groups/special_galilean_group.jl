@@ -91,7 +91,7 @@ end
 
 Construct the special Galilean group SGal(n) as a nested semidirect product:
     ``(SO(n) ⋉ ℝⁿ) ⋉ (ℝⁿ × ℝ)``
-where SO(n) are spatial rotations, ℝⁿ are velocity boosts, and (ℝⁿ × ℝ) are spacetime translations.
+where ``R ∈ SO(n)`` are spatial rotations, ``v ∈ ℝⁿ`` are velocity boosts, and ``(p, t) ∈ (ℝⁿ × ℝ)`` are the (position, time) events.
 The affine representation of the group is given by the matrix:
 ```math
 \\mathrm{SGal}(3) = \\begin{bmatrix}
