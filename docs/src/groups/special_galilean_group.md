@@ -1,4 +1,4 @@
-# The special galilean group
+# The special Galilean group
 
 ```@autodocs
 Modules = [LieGroups]
