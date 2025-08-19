@@ -80,7 +80,7 @@ EventsGroup{T} = LieGroup{
 """
     default_left_action(::SpecialEuclideanGroup, ::EventsGroup)
 
-Return the default left group action for SE(n) acting on events (position, time), i.e., the RotationBoostAction.
+Return the default left group action for SE(n) acting on events (position, time), i.e., the [`RotationBoostAction`](@ref)`.
 """
 function default_left_action(::SpecialEuclideanGroup, ::EventsGroup)
     return RotationBoostAction()
