@@ -58,15 +58,29 @@ function LinearAlgebra.cross(P1::ProductGroupOperation, P2::ProductGroupOperatio
 end
 
 """
-    ProductLieGroup(G, H, ...)
+    ProductLieGroup(G1, G2, ..., Gn)
 
-Return the [`LieGroup`](@ref) of the product of Lie groups `G` and `H`.
+Return the [`LieGroup`](@ref) of the product of Lie groups `G1`, `G2`, up to `Gn`
+and all following Lie groups.
+This can be considered as a vector of Lie group, where the vector is always
+of the same length as the number of provided Lie Groups.
 
-Alternatively, the short hand `G × H` can be used.
+If none of the Lie groups are product Lie groups themselves,
+this is equivalent to `G1 × G2 × ... × Gn`.
+
+For an example illustrating the differences see [`x`](@ref LinearAlgebra.cross(::LieGroup...)`(::LieGroup...)`.
 """
-function ProductLieGroup(G::LieGroup, H::LieGroup)
-    return LieGroup(G.manifold × H.manifold, G.op × H.op)
+function ProductLieGroup(lie_groups::LieGroup...)
+    return LieGroup(
+        ProductManifold([L.manifold for L in lie_groups]...),
+        ProductGroupOperation([L.op for L in lie_groups]...)
+    )
 end
+# Do not “wrap twice”
+function ProductLieGroup(G::LieGroup{𝔽, Op, M}) where {𝔽, Op <: ProductGroupOperation, M <: ProductManifold}
+    return G
+end
+
 
 function ManifoldsBase.submanifold_components(
         ::LieGroup{𝔽, Op, M}, op::ProductGroupOperation
@@ -127,16 +141,69 @@ end
     G × H
     G1 × G2 × G3 × ...
 
-Return the [`ProductLieGroup`](@ref) For two [`LieGroups`](@ref) `G` and `H`,
-where for the case that one of them is a [`ProductLieGroup`](@ref) itself,
-the other is either prepended (if `H` is a product) or appended (if `G` is).
-If both are product Lie groups, they are combined into one, keeping the order of operations.
+Return the [`ProductLieGroup`](@ref) For two [`LieGroups`](@ref) `G` and `H`.
 
-For the case that more than two are concatenated with `×` this is iterated.
+For the case that one of them is a product Lie group already,
+the other one is appended or prepended, depending on which one is the product;
+they are joined into one large product if both are product Lie groups.
+
+In order to build a [`ProductLieGroup`](@ref) that does not “splat” its arguments,
+or in other words to obtain “nested” products,
+use [`ProductLieGroup`](@ref)`(G1, G2, G3, ...)`.
+
+# Example.
+
+For
+```
+G1 = TranslationGroup(2)
+G2 = SpecialOrthogonalGroup(2)
+G3 = GeneralLinearGroup(2)
+```
+
+We can have one large product Lie group
+
+```
+G = G1 × G2 × G3 # or equivalently ProductLieGroup(G1, G2, G3)
+```
+
+and alternatively generate a product of a Lie group with an existing product using
+
+```
+H = ProductLieGroup(G1, G2 × G3)
+```
+
+!!! note "Technical detail"
+    Since for the first, single Lie group, the order should be irrelevant, it means
+    in practice that `×` behaves slightly different than `ProductLieGroup` in that it “splats” its arguments.
+    `G` is equivalent to calling
+    `ProductLieGroup(G1, G2) × G3` or ` G1 × ProductLieGroup(G2, G3)`.
+    Both, as `G` would consist of vectors of length 3.
+    These are different from both
+    `ProductLieGroup(ProductLieGroup(G1, G2), G3)` and `ProductLieGroup(G1, ProductLieGroup(G2, G3))`,
+    which are both vectors of length 2, where the first has a vector of length 2 in its first component,
+    the second such a vector in its second component.
 """
 LinearAlgebra.cross(::LieGroup...)
 function LinearAlgebra.cross(G::LieGroup, H::LieGroup)
     return ProductLieGroup(G, H)
+end
+function LinearAlgebra.cross(
+        G::LieGroup{𝔽, Op, M}, H::LieGroup
+    ) where {𝔽, Op <: ProductGroupOperation, M <: ProductManifold}
+    return ProductLieGroup(map(LieGroup, G.manifold.manifolds, G.op.operations)..., H)
+end
+function LinearAlgebra.cross(
+        G::LieGroup, H::LieGroup{𝔽, Op, M}
+    ) where {𝔽, Op <: ProductGroupOperation, M <: ProductManifold}
+    return ProductLieGroup(G, map(LieGroup, H.manifold.manifolds, H.op.operations)...)
+end
+function LinearAlgebra.cross(
+        G::LieGroup{𝔽1, Op1, M1}, H::LieGroup{𝔽2, Op2, M2}
+    ) where {𝔽1, Op1 <: ProductGroupOperation, M1 <: ProductManifold, 𝔽2, Op2 <: ProductGroupOperation, M2 <: ProductManifold}
+    return ProductLieGroup(
+        map(LieGroup, G.manifold.manifolds, G.op.operations)...,
+        map(LieGroup, H.manifold.manifolds, H.op.operations)...
+    )
 end
 
 function diff_conjugate!(

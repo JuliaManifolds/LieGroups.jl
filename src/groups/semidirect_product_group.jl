@@ -126,8 +126,9 @@ corresponding [`default_left_action`](@ref)`(N,H)` is the one you want to use.
 function LeftSemidirectProductLieGroup(
         N::LieGroup, H::LieGroup, action::AbstractGroupActionType = default_left_action(N, H)
     )
+    # Use product manifold instead of × to not accidentally splat.
     return LieGroup(
-        N.manifold × H.manifold, LeftSemidirectProductGroupOperation(N.op, H.op, action)
+        ProductManifold(N.manifold, H.manifold), LeftSemidirectProductGroupOperation(N.op, H.op, action)
     )
 end
 
@@ -146,8 +147,9 @@ corresponding [`default_right_action`](@ref)`(N,H)` is the one you want to use.
 function RightSemidirectProductLieGroup(
         N::LieGroup, H::LieGroup, action::AbstractGroupActionType = default_right_action(N, H)
     )
+    # Use product manifold instead of × to not accidentally splat.
     return LieGroup(
-        N.manifold × H.manifold, RightSemidirectProductGroupOperation(N.op, H.op, action)
+        ProductManifold(N.manifold, H.manifold), RightSemidirectProductGroupOperation(N.op, H.op, action)
     )
 end
 

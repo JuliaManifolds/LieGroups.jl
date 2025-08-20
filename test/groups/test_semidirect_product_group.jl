@@ -69,4 +69,21 @@ using LieGroupsTestSuite
         )
         test_lie_group(Gr, properties, expectations_r)
     end
+    @testset "Interaction os semidirect and product" begin
+        M = LieGroupsTestSuite.DummyManifold()
+        op1 = LieGroupsTestSuite.DummyOperation()
+        G1 = LieGroup(M, op1)
+        op2 = LieGroupsTestSuite.DummySecondOperation()
+        G2 = LieGroup(M, op2)
+
+
+        Gl = LeftSemidirectProductLieGroup(G1 × G2, G2 × G1, LeftGroupOperationAction())
+        @test Gl.manifold isa ProductManifold
+        @test length(Gl.manifold.manifolds) == 2 # we still just have 2 manifolds, those of the semiproduct
+        # And it is a product of products
+        @test Gl.manifold.manifolds[1] isa ProductManifold
+        @test Gl.manifold.manifolds[2] isa ProductManifold
+        @test Gl.manifold.manifolds[1].manifolds[1] === G1.manifold
+        @test Gl.manifold.manifolds[2].manifolds[1] === G2.manifold
+    end
 end
