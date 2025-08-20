@@ -5,7 +5,6 @@ The group action of the semidirect product of spatial rotations and velocity boo
 """
 struct RotationBoostAction <: AbstractLeftGroupActionType end
 
-# the action of the rotation-boost semidirect product group on the events (x,t) group
 """
     LieGroups.apply!(A::GroupAction{RotationBoostAction}, k, g, h)
 
@@ -31,7 +30,6 @@ function LieGroups.apply!(A::GroupAction{RotationBoostAction}, k, g, h)
 end
 
 const LeftSpecialGalileanGroupOperation = LeftSemidirectProductGroupOperation{
-    # The group of spatial rotations and velocity boosts SO(n) ⋉ ℝⁿ
     LeftSemidirectProductGroupOperation{
         MatrixMultiplicationGroupOperation, AdditionGroupOperation, LeftGroupOperationAction,
     },
@@ -39,12 +37,6 @@ const LeftSpecialGalileanGroupOperation = LeftSemidirectProductGroupOperation{
     RotationBoostAction,
 }
 
-"""
-    SpecialGalileanGroup{T}
-
-The special Galilean group SGal(3), a 10-dimensional Lie group of spacetime transformations preserving spatial distances and absolute time intervals.
-It consists of spatial rotations, velocity boosts, and spacetime translations [Kelly:2025](@cite).
-"""
 const SpecialGalileanGroup{T} = LieGroup{
     ℝ,
     <:LeftSpecialGalileanGroupOperation,
@@ -59,21 +51,6 @@ const SpecialGalileanGroup{T} = LieGroup{
                 },
             },
         },
-    },
-}
-
-"""
-    EventsGroup{T}
-
-An event is a point in Galilean spacetime, specified by three spatial coordinates and one temporal coordinate and 
-denoted by a tuple (x, t) ∈ ℝ³ × ℝ.
-See [Kelly:2025; section 4.1](@cite).
-"""
-EventsGroup{T} = LieGroup{
-    ℝ,
-    ProductGroupOperation{Tuple{AdditionGroupOperation, AdditionGroupOperation}},
-    ProductManifold{
-        ℝ, Tuple{Euclidean{T, ℝ}, Euclidean{ManifoldsBase.TypeParameter{Tuple{1}}, ℝ}},
     },
 }
 
