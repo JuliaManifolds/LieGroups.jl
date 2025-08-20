@@ -2,10 +2,13 @@ using LieGroups: SpecialGalileanGroup
 using StaticArrays
 using LinearAlgebra
 
+# Internal function to compute the skew-symmetric matrix as an SMatrix used for perfomance.
+# Can be replaced with hat(SO(3), v) once that works without allocations.
 function _skew(v::AbstractVector{T}) where {T <: Real}
     return SMatrix{3, 3, T}(0, v[3], -v[2], -v[3], 0, v[1], v[2], -v[1], 0)
 end
 
+# Internal function to compute the matrix Q used in the exponential and logarithm maps for the Special Galilean group. (D matrix in Kelly:2025)
 function _Q(θ⃗)
     T = eltype(θ⃗)
     θ = norm(θ⃗)
@@ -19,6 +22,7 @@ function _Q(θ⃗)
     end
 end
 
+# Internal function to compute the matrix P used in the exponential and logarithm maps for the Special Galilean group. (E matrix in Kelly:2025)
 function _P(θ⃗)
     T = eltype(θ⃗)
     θ = norm(θ⃗)
@@ -45,7 +49,6 @@ function LieGroups.exp!(
 
     Δt = X.x[2].x[2][1]
 
-    # ωΔt = vee(θ⃗ₓ)
     θ⃗ = SA[θ⃗ₓ[3, 2]; θ⃗ₓ[1, 3]; θ⃗ₓ[2, 1]]
 
     P = _P(θ⃗)
@@ -54,7 +57,7 @@ function LieGroups.exp!(
     M_SO3 = SpecialOrthogonalGroup(3)
     exp!(M_SO3, h.x[1].x[1], θ⃗ₓ)
     h.x[1].x[2] .= Q * ν
-    h.x[2].x[1] .= Q * ρ + P * ν * Δt #FIXME allocates if X is not a static array
+    h.x[2].x[1] .= Q * ρ + P * ν .* Δt
     h.x[2].x[2] .= Δt
 
     return h
@@ -70,7 +73,6 @@ function LieGroups.exp(
     ρ = X.x[2].x[1]  # vΔt
     Δt = X.x[2].x[2][1]
 
-    # ωΔt = vee(θ⃗ₓ)
     θ⃗ = SA[θ⃗ₓ[3, 2]; θ⃗ₓ[1, 3]; θ⃗ₓ[2, 1]]
 
     P = _P(θ⃗)
@@ -198,14 +200,18 @@ function LieGroups.compose(::SpecialGalileanGroup, g::ArrayPartition, h::ArrayPa
     )
 end
 
-#NOTE The ordering is hat and vee are different that the default in LieGroups.jl
-# see eq 14 for the basis used for hat and vee
-
+# Dev NOTE: hat and vee use a different bases order than that of the underlining semidirect + direct product groups,
+# therefore, get_vector_lie and get_coordinates_lie are implemented explicitly.
+"""
+    LieGroups.get_vector_lie(::typeof(LieAlgebra(SpecialGalileanGroup(3))), c, ::DefaultLieAlgebraOrthogonalBasis)
+Return a vector representation of the Lie algebra element `c` in the SpecialGalileanGroup(3).
+The basis is defined in eq 14 of [Kelly:2025](@cite).
+"""
 function LieGroups.get_vector_lie(
         ::typeof(LieAlgebra(SpecialGalileanGroup(3))),
         c::SVector{10, T},
         ::DefaultLieAlgebraOrthogonalBasis,
-        ::Type{<:ArrayPartition{<:Real}} # = ArrayPartition{T}
+        ::Type{<:ArrayPartition{<:Real}}
     ) where {T <: Real}
     return ArrayPartition(
         ArrayPartition(
@@ -229,7 +235,6 @@ function LieGroups.get_vector_lie(
     return LieGroups.get_vector_lie!(𝔤, X, c, B)
 end
 
-
 function LieGroups.get_vector_lie!(
         ::typeof(LieAlgebra(SpecialGalileanGroup(3))),
         X::ArrayPartition{T},
@@ -242,8 +247,11 @@ function LieGroups.get_vector_lie!(
     X.x[2].x[2] .= c[10]                # Δt
     return X
 end
-# 𝔤::LieAlgebra, c, B::DefaultLieAlgebraOrthogonalBasis, T::Type
 
+"""
+    LieGroups.get_coordinates_lie(::typeof(LieAlgebra(SpecialGalileanGroup(3))), X, ::DefaultLieAlgebraOrthogonalBasis)
+Return the coordinates of the Lie algebra element `X` for the SpecialGalileanGroup(3). The basis is defined in eq 14 of [Kelly:2025](@cite).
+"""
 function LieGroups.get_coordinates_lie(
         ::typeof(LieAlgebra(SpecialGalileanGroup(3))),
         X::ArrayPartition{
