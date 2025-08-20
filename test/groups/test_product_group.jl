@@ -66,5 +66,7 @@ using LieGroupsTestSuite
         @test G3 × G == H
         @test G × G3 == H
         @test G2 × G2 == H
+        # Check constructor for more than 2 Lie groups
+        @test ProductLieGroup(G, G, G, G) == H
     end
 end
