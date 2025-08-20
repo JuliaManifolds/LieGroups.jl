@@ -65,26 +65,7 @@ Return the [`LieGroup`](@ref) of the product of Lie groups `G` and `H`.
 Alternatively, the short hand `G × H` can be used.
 """
 function ProductLieGroup(G::LieGroup, H::LieGroup)
-    return LieGroup(ProductManifold(G.manifold, H.manifold), G.op × H.op)
-end
-function ProductLieGroup(G::LieGroup{<:Any, <:ProductGroupOperation}, H::LieGroup)
-    return LieGroup(ProductManifold(G.manifold.manifolds..., H.manifold), G.op × H.op)
-end
-function ProductLieGroup(G::LieGroup, H::LieGroup{<:Any, <:ProductGroupOperation})
-    return LieGroup(ProductManifold(G.manifold, H.manifold.manifolds...), G.op × H.op)
-end
-function ProductLieGroup(G::LieGroup{<:Any, <:ProductGroupOperation}, H::LieGroup{<:Any, <:ProductGroupOperation})
-    return LieGroup(ProductManifold(G.manifold.manifolds..., H.manifold.manifolds...), G.op × H.op)
-end
-
-function ProductLieGroup(G::LieGroup)
-    return LieGroup(ProductManifold(G.manifold), ProductGroupOperation(G.op))
-end
-function ProductLieGroup(G::LieGroup{<:Any, <:ProductGroupOperation})
-    return G
-end
-function ProductLieGroup(G::LieGroup, H::LieGroup, groups::LieGroup...)
-    return ProductLieGroup(ProductLieGroup(G, H), groups...)
+    return LieGroup(G.manifold × H.manifold, G.op × H.op)
 end
 
 function ManifoldsBase.submanifold_components(

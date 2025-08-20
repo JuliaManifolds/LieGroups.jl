@@ -78,15 +78,6 @@ EventsGroup{T} = LieGroup{
 }
 
 """
-    default_left_action(::SpecialEuclideanGroup, ::EventsGroup)
-
-Return the default left group action for SE(n) acting on events (position, time), i.e., the [`RotationBoostAction`](@ref)`.
-"""
-function default_left_action(::SpecialEuclideanGroup, ::EventsGroup)
-    return RotationBoostAction()
-end
-
-"""
     SpecialGalileanGroup(n::Int)
 
 Construct the special Galilean group SGal(n) as a nested semidirect product:
@@ -105,5 +96,10 @@ ArrayPartition representation:
 [Kelly:2025](@cite)
 """
 function SpecialGalileanGroup(n::Int)
-    return (SpecialOrthogonalGroup(n) ⋉ TranslationGroup(n)) ⋉ (TranslationGroup(n) × TranslationGroup(1))
+    G = SpecialOrthogonalGroup(n) ⋉ TranslationGroup(n)
+    N = TranslationGroup(n) × TranslationGroup(1)
+    return LieGroup(
+        ProductManifold(G.manifold, N.manifold),
+        LeftSemidirectProductGroupOperation(G.op, N.op, RotationBoostAction()),
+    )
 end

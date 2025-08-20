@@ -202,11 +202,11 @@ end
 
 # Dev NOTE: hat and vee use a different bases order than that of the underlining semidirect + direct product groups,
 # therefore, get_vector_lie and get_coordinates_lie are implemented explicitly.
-"""
-    LieGroups.get_vector_lie(::typeof(LieAlgebra(SpecialGalileanGroup(3))), c, ::DefaultLieAlgebraOrthogonalBasis)
-Return a vector representation of the Lie algebra element `c` in the SpecialGalileanGroup(3).
-The basis is defined in eq 14 of [Kelly:2025](@cite).
-"""
+# """
+#     LieGroups.get_vector_lie(::typeof(LieAlgebra(SpecialGalileanGroup(3))), c, ::DefaultLieAlgebraOrthogonalBasis)
+# Return a vector representation of the Lie algebra element `c` in the SpecialGalileanGroup(3).
+# The basis is defined in eq 14 of [Kelly:2025](@cite).
+# """
 function LieGroups.get_vector_lie(
         ::typeof(LieAlgebra(SpecialGalileanGroup(3))),
         c::SVector{10, T},
@@ -248,10 +248,10 @@ function LieGroups.get_vector_lie!(
     return X
 end
 
-"""
-    LieGroups.get_coordinates_lie(::typeof(LieAlgebra(SpecialGalileanGroup(3))), X, ::DefaultLieAlgebraOrthogonalBasis)
-Return the coordinates of the Lie algebra element `X` for the SpecialGalileanGroup(3). The basis is defined in eq 14 of [Kelly:2025](@cite).
-"""
+# """
+#     LieGroups.get_coordinates_lie(::typeof(LieAlgebra(SpecialGalileanGroup(3))), X, ::DefaultLieAlgebraOrthogonalBasis)
+# Return the coordinates of the Lie algebra element `X` for the SpecialGalileanGroup(3). The basis is defined in eq 14 of [Kelly:2025](@cite).
+# """
 function LieGroups.get_coordinates_lie(
         ::typeof(LieAlgebra(SpecialGalileanGroup(3))),
         X::ArrayPartition{

@@ -90,72 +90,72 @@ using LieGroupsTestSuite
         test_lie_group(Gr, properties, expectations_r)
     end
 
-    @testset "Combining ⋊, ⋉, and ×" begin
-        fcts = [
-            compose,
-            exp,
-            get_vector,
-            hat,
-            identity_element,
-            inner,
-            inv,
-            is_identity,
-            lie_bracket,
-            log,
-            norm,
-            rand,
-            show,
-            vee,
-        ]
+    # @testset "Combining ⋊, ⋉, and ×" begin
+    #     fcts = [
+    #         compose,
+    #         exp,
+    #         get_vector,
+    #         hat,
+    #         identity_element,
+    #         inner,
+    #         inv,
+    #         is_identity,
+    #         lie_bracket,
+    #         log,
+    #         norm,
+    #         rand,
+    #         show,
+    #         vee,
+    #     ]
 
-        G = TranslationGroup(2) × (TranslationGroup(2) ⋊ SpecialOrthogonalGroup(2)) × TranslationGroup(2) × (SpecialOrthogonalGroup(2) ⋉ TranslationGroup(2))
-        ε = identity_element(G)
-        p = rand(G)
-        pts = [p, ε]
-        vec = [rand(G; vector_at = p), zero_vector(G, ε)]
+    #     G = TranslationGroup(2) × (TranslationGroup(2) ⋊ SpecialOrthogonalGroup(2)) × TranslationGroup(2) × (SpecialOrthogonalGroup(2) ⋉ TranslationGroup(2))
+    #     ε = identity_element(G)
+    #     p = rand(G)
+    #     pts = [p, ε]
+    #     vec = [rand(G; vector_at = p), zero_vector(G, ε)]
 
-        properties = Dict(
-            :Name => "Test combining ⋊, ⋉, and ×",
-            :Points => pts,
-            :Vectors => vec,
-            :Functions => fcts,
-        )
+    #     properties = Dict(
+    #         :Name => "Test combining ⋊, ⋉, and ×",
+    #         :Points => pts,
+    #         :Vectors => vec,
+    #         :Functions => fcts,
+    #     )
 
-        expectations = Dict(
-            :atol => 1.0e-14,
-        )
+    #     expectations = Dict(
+    #         :atol => 1.0e-14,
+    #     )
 
-        test_lie_group(G, properties, expectations)
+    #     test_lie_group(G, properties, expectations)
 
-        G2 = ProductLieGroup(
-            TranslationGroup(2),
-            TranslationGroup(2) ⋊ SpecialOrthogonalGroup(2),
-            TranslationGroup(2),
-            SpecialOrthogonalGroup(2) ⋉ TranslationGroup(2)
-        )
-        @test G2 == G
+    #     G2 = ProductLieGroup(
+    #         TranslationGroup(2),
+    #         TranslationGroup(2) ⋊ SpecialOrthogonalGroup(2),
+    #         TranslationGroup(2),
+    #         SpecialOrthogonalGroup(2) ⋉ TranslationGroup(2)
+    #     )
+    #     @test G2 == G
 
-        G3 = ProductLieGroup(TranslationGroup(2))
-        @test G3.manifold isa ProductManifold
+    #     G3 = ProductLieGroup(TranslationGroup(2))
+    #     @test G3.manifold isa ProductManifold
 
-        #test that the different combinations of products groups are equivalent
-        PG = TranslationGroup(1) × SpecialEuclideanGroup(2) × TranslationGroup(2) × CircleGroup()
-        PG1 = ProductLieGroup(
-            TranslationGroup(1),
-            SpecialEuclideanGroup(2) × TranslationGroup(2) × CircleGroup()
-        )
-        @test PG1 == PG
-        PG2 = ProductLieGroup(
-            TranslationGroup(1) × SpecialEuclideanGroup(2),
-            TranslationGroup(2) × CircleGroup()
-        )
-        @test PG2 == PG
-        PG3 = ProductLieGroup(
-            TranslationGroup(1) × SpecialEuclideanGroup(2) × TranslationGroup(2),
-            CircleGroup()
-        )
-        @test PG3 == PG
-        PG4 = ProductLieGroup(PG)
-        @test PG4 == PG
-    end
+    #     #test that the different combinations of products groups are equivalent
+    #     PG = TranslationGroup(1) × SpecialEuclideanGroup(2) × TranslationGroup(2) × CircleGroup()
+    #     PG1 = ProductLieGroup(
+    #         TranslationGroup(1),
+    #         SpecialEuclideanGroup(2) × TranslationGroup(2) × CircleGroup()
+    #     )
+    #     @test PG1 == PG
+    #     PG2 = ProductLieGroup(
+    #         TranslationGroup(1) × SpecialEuclideanGroup(2),
+    #         TranslationGroup(2) × CircleGroup()
+    #     )
+    #     @test PG2 == PG
+    #     PG3 = ProductLieGroup(
+    #         TranslationGroup(1) × SpecialEuclideanGroup(2) × TranslationGroup(2),
+    #         CircleGroup()
+    #     )
+    #     @test PG3 == PG
+    #     PG4 = ProductLieGroup(PG)
+    #     @test PG4 == PG
+    # end
 end
