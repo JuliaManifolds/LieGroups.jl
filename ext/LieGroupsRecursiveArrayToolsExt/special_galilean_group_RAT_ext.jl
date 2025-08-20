@@ -36,7 +36,7 @@ end
 
 function LieGroups.exp!(
         ::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
-        q::ArrayPartition,
+        h::ArrayPartition,
         X::ArrayPartition,
     )
     θ⃗ₓ = X.x[1].x[1] # ωΔt
@@ -52,12 +52,12 @@ function LieGroups.exp!(
     Q = _Q(θ⃗)
 
     M_SO3 = SpecialOrthogonalGroup(3)
-    exp!(M_SO3, q.x[1].x[1], θ⃗ₓ)
-    q.x[1].x[2] .= Q * ν
-    q.x[2].x[1] .= Q * ρ + P * ν * Δt #FIXME allocates if X is not a static array
-    q.x[2].x[2] .= Δt
+    exp!(M_SO3, h.x[1].x[1], θ⃗ₓ)
+    h.x[1].x[2] .= Q * ν
+    h.x[2].x[1] .= Q * ρ + P * ν * Δt #FIXME allocates if X is not a static array
+    h.x[2].x[2] .= Δt
 
-    return q
+    return h
 end
 
 function LieGroups.exp(
@@ -77,7 +77,7 @@ function LieGroups.exp(
     Q = _Q(θ⃗)
 
     M_SO3 = SpecialOrthogonalGroup(3)
-    q = ArrayPartition(
+    h = ArrayPartition(
         ArrayPartition(
             exp(M_SO3, θ⃗ₓ),
             Q * ν
@@ -87,18 +87,18 @@ function LieGroups.exp(
             copy(X.x[2].x[2])
         )
     )
-    return q
+    return h
 end
 
 function LieGroups.log!(
         ::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
         X::ArrayPartition,
-        p::ArrayPartition,
+        g::ArrayPartition,
     )
-    ΔR = p.x[1].x[1]
-    Δv = p.x[1].x[2]
-    Δp = p.x[2].x[1]
-    Δt = p.x[2].x[2][1]
+    ΔR = g.x[1].x[1]
+    Δv = g.x[1].x[2]
+    Δp = g.x[2].x[1]
+    Δt = g.x[2].x[2][1]
 
     SO3 = SpecialOrthogonalGroup(3)
     log!(SO3, X.x[1].x[1], ΔR) # θ⃗ₓ # FIXME allocates
@@ -116,12 +116,12 @@ end
 
 function LieGroups.log(
         ::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
-        p::ArrayPartition
+        g::ArrayPartition
     )
-    ΔR = p.x[1].x[1]
-    Δv = p.x[1].x[2]
-    Δp = p.x[2].x[1]
-    Δt = p.x[2].x[2][1]
+    ΔR = g.x[1].x[1]
+    Δv = g.x[1].x[2]
+    Δp = g.x[2].x[1]
+    Δt = g.x[2].x[2][1]
 
     SO3 = SpecialOrthogonalGroup(3)
     θ⃗ₓ = log(SO3, ΔR)
@@ -137,7 +137,7 @@ function LieGroups.log(
         ),
         ArrayPartition(
             iQ * (Δp - P * iQ * Δv * Δt), # ρ vΔt
-            copy(p.x[2].x[2]) # Δt
+            copy(g.x[2].x[2]) # Δt
         )
     )
 end
@@ -157,11 +157,11 @@ function LieGroups.identity_element(
     )
 end
 
-function LieGroups.inv(::SpecialGalileanGroup, p::ArrayPartition)
-    ΔR = p.x[1].x[1]
-    Δv = p.x[1].x[2]
-    Δp = p.x[2].x[1]
-    Δt = p.x[2].x[2]
+function LieGroups.inv(::SpecialGalileanGroup, g::ArrayPartition)
+    ΔR = g.x[1].x[1]
+    Δv = g.x[1].x[2]
+    Δp = g.x[2].x[1]
+    Δt = g.x[2].x[2]
 
     return ArrayPartition(
         ArrayPartition(
@@ -175,16 +175,16 @@ function LieGroups.inv(::SpecialGalileanGroup, p::ArrayPartition)
     )
 end
 
-function LieGroups.compose(::SpecialGalileanGroup, p::ArrayPartition, q::ArrayPartition)
-    ΔR = p.x[1].x[1]
-    Δv = p.x[1].x[2]
-    Δp = p.x[2].x[1]
-    Δt = p.x[2].x[2]
+function LieGroups.compose(::SpecialGalileanGroup, g::ArrayPartition, h::ArrayPartition)
+    ΔR = g.x[1].x[1]
+    Δv = g.x[1].x[2]
+    Δp = g.x[2].x[1]
+    Δt = g.x[2].x[2]
 
-    δR = q.x[1].x[1]
-    δv = q.x[1].x[2]
-    δp = q.x[2].x[1]
-    δt = q.x[2].x[2]
+    δR = h.x[1].x[1]
+    δv = h.x[1].x[2]
+    δp = h.x[2].x[1]
+    δt = h.x[2].x[2]
 
     return ArrayPartition(
         ArrayPartition(
@@ -203,18 +203,18 @@ end
 
 function LieGroups.get_vector_lie(
         ::typeof(LieAlgebra(SpecialGalileanGroup(3))),
-        Xⁱ::SVector{10, T},
+        c::SVector{10, T},
         ::DefaultLieAlgebraOrthogonalBasis,
         ::Type{<:ArrayPartition{<:Real}} # = ArrayPartition{T}
     ) where {T <: Real}
     return ArrayPartition(
         ArrayPartition(
-            _skew(Xⁱ[SA[7:9...]]), # θ ωΔt
-            Xⁱ[SA[4:6...]]         # ν aΔt
+            _skew(c[SA[7:9...]]), # θ ωΔt
+            c[SA[4:6...]]         # ν aΔt
         ),
         ArrayPartition(
-            Xⁱ[SA[1:3...]],        # ρ vΔt
-            Xⁱ[SA[10]],            # Δt
+            c[SA[1:3...]],        # ρ vΔt
+            c[SA[10]],            # Δt
         )
     )
 end
@@ -233,13 +233,13 @@ end
 function LieGroups.get_vector_lie!(
         ::typeof(LieAlgebra(SpecialGalileanGroup(3))),
         X::ArrayPartition{T},
-        Xⁱ,
+        c,
         ::DefaultLieAlgebraOrthogonalBasis
     ) where {T <: Real}
-    X.x[1].x[1] .= _skew(Xⁱ[SA[7:9...]]) # θ ωΔt
-    X.x[1].x[2] .= Xⁱ[SA[4:6...]]        # ν aΔt
-    X.x[2].x[1] .= Xⁱ[SA[1:3...]]        # ρ vΔt
-    X.x[2].x[2] .= Xⁱ[10]                # Δt
+    X.x[1].x[1] .= _skew(c[SA[7:9...]]) # θ ωΔt
+    X.x[1].x[2] .= c[SA[4:6...]]        # ν aΔt
+    X.x[2].x[1] .= c[SA[1:3...]]        # ρ vΔt
+    X.x[2].x[2] .= c[10]                # Δt
     return X
 end
 # 𝔤::LieAlgebra, c, B::DefaultLieAlgebraOrthogonalBasis, T::Type
@@ -270,19 +270,19 @@ end
 
 function LieGroups.get_coordinates_lie!(
         ::typeof(LieAlgebra(SpecialGalileanGroup(3))),
-        Xⁱ,
+        c,
         X::ArrayPartition,
         ::DefaultLieAlgebraOrthogonalBasis
     )
-    Xⁱ[1] = X.x[2].x[1][1]   # ν aΔt
-    Xⁱ[2] = X.x[2].x[1][2]
-    Xⁱ[3] = X.x[2].x[1][3]
-    Xⁱ[4] = X.x[1].x[2][1]   # ρ vΔt
-    Xⁱ[5] = X.x[1].x[2][2]
-    Xⁱ[6] = X.x[1].x[2][3]
-    Xⁱ[7] = X.x[1].x[1][3, 2] # θ⃗ₓ[3,2]
-    Xⁱ[8] = X.x[1].x[1][1, 3] # θ⃗ₓ[1,3]
-    Xⁱ[9] = X.x[1].x[1][2, 1] # θ⃗ₓ[2,1]
-    Xⁱ[10] = X.x[2].x[2][]    # Δt
-    return Xⁱ
+    c[1] = X.x[2].x[1][1]   # ν aΔt
+    c[2] = X.x[2].x[1][2]
+    c[3] = X.x[2].x[1][3]
+    c[4] = X.x[1].x[2][1]   # ρ vΔt
+    c[5] = X.x[1].x[2][2]
+    c[6] = X.x[1].x[2][3]
+    c[7] = X.x[1].x[1][3, 2] # θ⃗ₓ[3,2]
+    c[8] = X.x[1].x[1][1, 3] # θ⃗ₓ[1,3]
+    c[9] = X.x[1].x[1][2, 1] # θ⃗ₓ[2,1]
+    c[10] = X.x[2].x[2][]    # Δt
+    return c
 end
