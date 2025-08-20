@@ -42,10 +42,10 @@ using LieGroupsTestSuite
         @test ManifoldsBase.check_size(G, Identity(G)) == nothing
         @test ManifoldsBase.check_size(G, Identity(G), X) == nothing
     end
-    @testset "Special dispatch cass for log" begin end
     @testset "Product Operation generators" begin
         G = LieGroupsTestSuite.DummyLieGroup()
         G2 = G × G
+        @test ProductLieGroup(G2) === G2 #Product groups are not “wrapped twice”
         op = LieGroupsTestSuite.DummyOperation()
         op2 = LieGroupsTestSuite.DummySecondOperation()
         O1 = op × op2
@@ -56,5 +56,15 @@ using LieGroupsTestSuite
         @test O1[2] == op2
         @test O1[:] == (op, op2)
         @test O1[:] == LieGroups.submanifold_components(G2, O1)
+    end
+    @testset "× splashes" begin
+        G = LieGroupsTestSuite.DummyLieGroup()
+        G2 = G × G
+        G3 = G × G × G
+        H = G × G × G × G
+        # one or two products in cross -> splat.
+        @test G3 × G == H
+        @test G × G3 == H
+        @test G2 × G2 == H
     end
 end

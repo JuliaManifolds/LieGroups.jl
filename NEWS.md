@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+* Fixed an issue where internally the product manifold in a `SemidirectProductLieGroup` was accidentally splashed
+* make `×` and `ProductLieGroup` behave the same way as `×` and `ProductManifold` do
 * Fixed an issue, where `exp!(G, h, g, X)` would return a wrong result if the input `g`and the output `h`are aliased (#63).
 
 ## [0.1.3] 2025-08-04

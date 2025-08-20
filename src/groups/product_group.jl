@@ -76,6 +76,11 @@ function ProductLieGroup(lie_groups::LieGroup...)
         ProductGroupOperation([L.op for L in lie_groups]...)
     )
 end
+# Do not “wrap twice”
+function ProductLieGroup(G::LieGroup{𝔽, Op, M}) where {𝔽, Op <: ProductGroupOperation, M <: ProductManifold}
+    return G
+end
+
 
 function ManifoldsBase.submanifold_components(
         ::LieGroup{𝔽, Op, M}, op::ProductGroupOperation
@@ -149,7 +154,7 @@ use [`ProductLieGroup`](@ref)`(G1, G2, G3, ...)`.
 # Example.
 
 For
-````
+```
 G1 = TranslationGroup(2)
 G2 = SpecialOrthogonalGroup(2)
 G3 = GeneralLinearGroup(2)
@@ -159,21 +164,20 @@ We can have one large product Lie group
 
 ```
 G = G1 × G2 × G3 # or equivalently ProductLieGroup(G1, G2, G3)
-````
+```
 
-and alternatively generate a product of a Lie group with an exitsing product using
+and alternatively generate a product of a Lie group with an existing product using
 
 ```
 H = ProductLieGroup(G1, G2 × G3)
 ```
 
-!!! Note
+!!! note "Technical detail"
     Since for the first, single Lie group, the order should be irrelevant, it means
     in practice that `×` behaves slightly different than `ProductLieGroup` in that it “splats” its arguments.
     `G` is equivalent to calling
     `ProductLieGroup(G1, G2) × G3` or ` G1 × ProductLieGroup(G2, G3)`.
     Both, as `G` would consist of vectors of length 3.
-
     These are different from both
     `ProductLieGroup(ProductLieGroup(G1, G2), G3)` and `ProductLieGroup(G1, ProductLieGroup(G2, G3))`,
     which are both vectors of length 2, where the first has a vector of length 2 in its first component,
