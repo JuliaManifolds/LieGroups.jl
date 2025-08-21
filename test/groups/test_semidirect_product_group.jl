@@ -57,7 +57,7 @@ using LieGroupsTestSuite
             :Name => "The generic left semi-direct product group",
             :Points => [h1, h2, h3],
             :Vectors => [Y1, Y2, Y3],
-            :Functions => [identity_element, inv, show],
+            :Functions => [identity_element, is_identity, inv, show],
         )
         expectations_l = Dict(
             :repr => "LeftSemidirectProductLieGroup(SpecialOrthogonalGroup(2), SpecialOrthogonalGroup(2), LeftGroupOperationAction())",
