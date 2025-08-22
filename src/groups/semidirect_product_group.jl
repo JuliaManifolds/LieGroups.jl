@@ -14,7 +14,7 @@ abstract type SemiDirectProductGroupOperation{
 """
     LeftSemidirectProductGroupOperation{O1,O2,A} <: SemiDirectProductGroupOperation{O1,O2,A}
 
-A struct to model a semidirect Lie group product.
+A struct to model a left semidirect Lie group product.
 
 Let ``($(_tex(:Cal, "G")), ⋆)`` and ``($(_tex(:Cal, "H")), ⋄)`` be two Lie groups
 with group operations ``⋆`` and ``⋄``, respectively.
@@ -26,7 +26,7 @@ For a left group action, we use an [`AbstractLeftGroupActionType`](@ref)
 and use here the notation ``σ_g: $(_tex(:Cal, "H")) → $(_tex(:Cal, "H"))``, ``g  ∈ G``,
 as a family of maps on ``$(_tex(:Cal, "H"))``.
 
-In this case the group operation ``∘`` on the product manifold ``$(_tex(:Cal, "H"))×$(_tex(:Cal, "G"))`` is defined by
+In this case the group operation ``∘`` on the product manifold ``$(_tex(:Cal, "G"))×$(_tex(:Cal, "H"))`` is defined by
 
 ```math
     (g_1,h_1) ∘ (g_2,h_2) := $(_tex(:bigl))( g_1 ⋆ g_2, h_1 ⋄ σ_{g_1}(h_2) $(:tex(:bigr))).
@@ -37,7 +37,7 @@ For a right group action, we use an [`AbstractRightGroupActionType`](@ref)
 and use here the notation ``τ_g: $(_tex(:Cal, "H")) → $(_tex(:Cal, "H"))``, ``g  ∈ G``,
 as a family of maps on ``$(_tex(:Cal, "H"))``.
 
-In this case the group operation ``∘`` on the product manifold ``$(_tex(:Cal, "H"))×$(_tex(:Cal, "G"))`` is defined by
+In this case the group operation ``∘`` on the product manifold ``$(_tex(:Cal, "G"))×$(_tex(:Cal, "H'"))`` is defined by
 
 ```math
     (g_1,h_1) ∘ (g_2,h_2) := $(_tex(:bigl))( g_1 ⋆ g_2, h_1 ⋄ τ_{g_1^{-1}}(h_2) $(:tex(:bigr))).
@@ -89,21 +89,33 @@ end
 A struct to model a right semidirect Lie group product.
 
 Let ``($(_tex(:Cal, "G")), ⋆)`` and ``($(_tex(:Cal, "H")), ⋄)`` be two Lie groups
-with group operations ``⋆`` and ``⋄``, respectively, as well as a group action
-``σ: $(_tex(:Cal, "G"))×$(_tex(:Cal, "H")) → $(_tex(:Cal, "H"))``, cf [`AbstractGroupActionType`](#ref).
+with group operations ``⋆`` and ``⋄``, respectively.
 
-We use here as well use the notation ``σ_g: $(_tex(:Cal, "H")) → $(_tex(:Cal, "H"))``, ``g  ∈ G``,
+We further need a [`GroupAction`](@ref). We have two choices:
+
+For a right group action, we use an [`AbstractRightGroupActionType`](@ref)
+``τ: $(_tex(:Cal, "H"))×$(_tex(:Cal, "G")) → $(_tex(:Cal, "H"))``
+and use here the notation ``τ_g: $(_tex(:Cal, "H")) → $(_tex(:Cal, "H"))``, ``g  ∈ G``,
 as a family of maps on ``$(_tex(:Cal, "H"))``.
-In the following we consider a [`LeftGroupAction`](@ref).
 
-Then we define a group operation ``∘`` on the product manifold ``$(_tex(:Cal, "H"))×$(_tex(:Cal, "G"))`` by
+In this case the group operation ``∘`` on the product manifold ``$(_tex(:Cal, "G"))×$(_tex(:Cal, "H"))`` is defined by
 
 ```math
-    (h_1,g_1) ∘ (h_2,g_2) := (h_1 ⋄ σ_{g_1}(h_2), g_1 ⋆ g_2)
+    (h_1,g_1) ∘ (h_2,g_2) := $(_tex(:bigl))( h_1 ⋄ τ_{g_1^{-1}}(h_2), g_1 ⋆ g_2 $(:tex(:bigr))).
 ```
 
-And use the shorthand notation ``H``[`⋊`](@ref)``G`` = (H×G,∘)``.
+For a left group action, we use an [`AbstractLeftGroupActionType`](@ref)
+``σ: $(_tex(:Cal, "G"))×$(_tex(:Cal, "H")) → $(_tex(:Cal, "H"))``
+and use here the notation ``σ_g: $(_tex(:Cal, "H")) → $(_tex(:Cal, "H"))``, ``g  ∈ G``,
+as a family of maps on ``$(_tex(:Cal, "H"))``.
 
+In this case the group operation ``∘`` on the product manifold ``$(_tex(:Cal, "H"))×$(_tex(:Cal, "G"))`` is defined by
+
+```math
+    (h_1,g_1) ∘ (h_2,g_2) := $(_tex(:bigl))( h_1 ⋄ σ_{g_1}(h_2), g_1 ⋆ g_2 $(:tex(:bigr))).
+```
+
+For both we use the shorthand notation ``H``[`⋊`](@ref)``G = (H×G,∘)``.
 See [HilgertNeeb:2012; Definition 9.2.22](@cite), first definition for more details.
 
 # Constructor
@@ -118,8 +130,14 @@ See [HilgertNeeb:2012; Definition 9.2.22](@cite), first definition for more deta
 
 * `op1::AbstractGroupOperation`: The group operation ``⋄`` on ``$(_tex(:Cal, "H"))``
 * `op2::AbstractGroupOperation`: The group operation ``⋆`` on ``$(_tex(:Cal, "G"))``
-* `action::AbstractGroupActionType`: The group action ``σ`` of ``$(_tex(:Cal, "G"))`` on ``$(_tex(:Cal, "H"))``
+* `action::AbstractGroupActionType`: The group action ``σ`` or ``τ`` of ``$(_tex(:Cal, "G"))`` acting on ``$(_tex(:Cal, "H"))``
 
+!!! note "A note on left/right"
+    The “right” in the right semidirect product refers to the side, where the “pure” group operation takes place.
+    The “left/right” for the action refers to the type of group action used.
+    Formally there is a third “left/right” choice: which side the action is applied to.
+    Since the first two choices add enough complexity to the interface and the implementation, this third
+    choice is for now omitted and we decided for the more common case as an action on the right (``h_2``) as default.
 """
 struct RightSemidirectProductGroupOperation{
         O1 <: AbstractGroupOperation, O2 <: AbstractGroupOperation, A <: AbstractGroupActionType,
