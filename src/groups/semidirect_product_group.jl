@@ -9,7 +9,7 @@
 An abstract type for all semidirect product group operations.
 """
 abstract type SemiDirectProductGroupOperation{
-    O1 <: AbstractGroupOperation, O2 <: AbstractGroupOperation, A <: AbstractGroupActionType, AO <: AbstractActionActsOnType
+    O1 <: AbstractGroupOperation, O2 <: AbstractGroupOperation, A <: AbstractGroupActionType, AO <: AbstractActionActsOnType,
 } <: AbstractProductGroupOperation end
 
 """
@@ -49,13 +49,13 @@ The resulting group operations are documented in the corresponding `compose` doc
     The “left/right” to act on refers to the left or right element in the second component, the action is applied to, see e.g. the explanation in [`ActionActsOnLeftType`](@ref)
 """
 struct LeftSemidirectProductGroupOperation{
-        O1 <: AbstractGroupOperation, O2 <: AbstractGroupOperation, A <: AbstractGroupActionType, AO <: AbstractActionActsOnType
+        O1 <: AbstractGroupOperation, O2 <: AbstractGroupOperation, A <: AbstractGroupActionType, AO <: AbstractActionActsOnType,
     } <: SemiDirectProductGroupOperation{O1, O2, A}
     operations::Tuple{O1, O2}
     action_type::A
     action_on::AO
     function LeftSemidirectProductGroupOperation(
-            op1::O1, op2::O2, action::A, action_on::AO=ActionActsOnLeftType()
+            op1::O1, op2::O2, action::A, action_on::AO = ActionActsOnLeftType()
         ) where {
             O1 <: AbstractGroupOperation, O2 <: AbstractGroupOperation, A <: AbstractGroupActionType,
         }
@@ -107,13 +107,13 @@ See [HilgertNeeb:2012; Definition 9.2.22](@cite), first definition for more deta
     The “left/right” to act on refers to the left or right element in the second component, the action is applied to, see e.g. the explanation in [`ActionActsOnLeftType`](@ref)
 """
 struct RightSemidirectProductGroupOperation{
-        O1 <: AbstractGroupOperation, O2 <: AbstractGroupOperation, A <: AbstractGroupActionType, AO <: AbstractActionActsOnType
+        O1 <: AbstractGroupOperation, O2 <: AbstractGroupOperation, A <: AbstractGroupActionType, AO <: AbstractActionActsOnType,
     } <: SemiDirectProductGroupOperation{O1, O2, A}
     operations::Tuple{O1, O2}
     action_type::A
     action_on::AO
     function RightSemidirectProductGroupOperation(
-            op1::O1, op2::O2, action::A, action_on::AO=ActionActsOnRightType()
+            op1::O1, op2::O2, action::A, action_on::AO = ActionActsOnRightType()
         ) where {
             O1 <: AbstractGroupOperation, O2 <: AbstractGroupOperation, A <: AbstractGroupActionType,
         }
@@ -137,7 +137,7 @@ are the ones you want to use.
 """
 function LeftSemidirectProductLieGroup(
         N::LieGroup, H::LieGroup, action::AbstractGroupActionType = default_left_action(N, H);
-        action_on::AbstractActionActsOnType=ActionActsOnLeftType()
+        action_on::AbstractActionActsOnType = ActionActsOnLeftType()
     )
     # Use product manifold instead of × to not accidentally splat.
     return LieGroup(
@@ -161,7 +161,7 @@ are the ones you want to use.
 """
 function RightSemidirectProductLieGroup(
         N::LieGroup, H::LieGroup, action::AbstractGroupActionType = default_right_action(N, H);
-        action_on::AbstractActionActsOnType=ActionActsOnRightType()
+        action_on::AbstractActionActsOnType = ActionActsOnRightType()
     )
     # Use product manifold instead of × to not accidentally splat.
     return LieGroup(
@@ -177,7 +177,7 @@ For two [`LieGroups`](@ref) `L1`, `L2`, generate the [`LeftSemidirectProductLieG
 where the corresponding [`default_left_action`](@ref)`(L1, L2)` and [`ActionActsOnLeftType`](@ref) are used.
 """
 function ⋉(L1::LieGroup, L2::LieGroup)
-    return LeftSemidirectProductLieGroup(L1, L2, default_left_action(L1, L2); action_on=ActionActsOnLeftType())
+    return LeftSemidirectProductLieGroup(L1, L2, default_left_action(L1, L2); action_on = ActionActsOnLeftType())
 end
 
 """
@@ -188,7 +188,7 @@ For two [`LieGroups`](@ref) `L1`, `L2`, generate the [`RightSemidirectProductLie
 where the corresponding [`default_right_action`](@ref)`(L1, L2)` and [`ActionActsOnRightType`](@ref) are used.
 """
 function ⋊(L1::LieGroup, L2::LieGroup)
-    return RightSemidirectProductLieGroup(L1, L2, default_right_action(L1, L2); action_on=ActionActsOnRightType())
+    return RightSemidirectProductLieGroup(L1, L2, default_right_action(L1, L2); action_on = ActionActsOnRightType())
 end
 
 #

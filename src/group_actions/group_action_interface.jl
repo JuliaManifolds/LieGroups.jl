@@ -92,18 +92,18 @@ abstract type AbstractActionActsOnType end
 
 An [`AbstractActionActsOnType`](@ref) representing that an action acts on the left.
 
-This is meant in the following way: Given a [`GroupAction`](@ref) ``α: $(_math(:G)) × $(_math(:H)) → $(_math(:H))``
-where a Lie group ``$(_math(:G))`` acts on another Lie group ``$(_math(:H))`` with an arbitrary action.
+This is meant in the following way: Given a [`GroupAction`](@ref) ``α: $(_math(:G)) × $(_tex(:Cal, "H")) → $(_tex(:Cal, "H"))``
+where a Lie group ``$(_math(:G))`` acts on another Lie group ``$(_tex(:Cal, "H"))`` with an arbitrary action.
 
 Then, e.g. within the definition of the [`LeftSemidirectProductGroupOperation`](@ref) or [`RightSemidirectProductGroupOperation`](@ref),
 we have two choices where the group action ``α`` acts on, namely:
-Let ``g ∈ $(_math(:G))`` and ``h_1,h_2 ∈ $(_math(:H))`` be given, then this type represents the variant
+Let ``g ∈ $(_math(:G))`` and ``h_1,h_2 ∈ $(_tex(:Cal, "H"))`` be given, then this type represents the variant
 
 ```math
 α_g(h_1) ⋅ h_2,
 ```
-where ``⋅`` denotes the group operation on ``$(_math(:H))``.
-The `Left`` in the name of this type refers to the fact that the action is applied to the left element ``h_1``.
+where ``⋅`` denotes the group operation on ``$(_tex(:Cal, "H"))``.
+The `Left` in the name of this type refers to the fact that the action is applied to the left element ``h_1``.
 
 Note that this is independent of both the type of action (left or right) and whether the semidirect product is a left or a right semidirect one.
 """
@@ -114,17 +114,17 @@ struct ActionActsOnLeftType <: AbstractActionActsOnType end
 
 An [`AbstractActionActsOnType`](@ref) representing that an action acts on the right.
 
-This is meant in the following way: Given a [`GroupAction`](@ref) ``α: $(_math(:G)) × $(_math(:H)) → $(_math(:H))``
-where a Lie group ``$(_math(:G))`` acts on another Lie group ``$(_math(:H))`` with an arbitrary action.
+This is meant in the following way: Given a [`GroupAction`](@ref) ``α: $(_math(:G)) × $(_tex(:Cal, "H")) → $(_tex(:Cal, "H"))``
+where a Lie group ``$(_math(:G))`` acts on another Lie group ``$(_tex(:Cal, "H"))`` with an arbitrary action.
 
 Then, e.g. within the definition of the [`LeftSemidirectProductGroupOperation`](@ref) or [`RightSemidirectProductGroupOperation`](@ref),
 we have two choices where the group action ``α`` acts on, namely:
-Let ``g ∈ $(_math(:G))`` and ``h_1,h_2 ∈ $(_math(:H))`` be given, then this type represents the variant
+Let ``g ∈ $(_math(:G))`` and ``h_1,h_2 ∈ $(_tex(:Cal, "H"))`` be given, then this type represents the variant
 
 ```math
 h_1 ⋅ α_g(h_2),
 ```
-where ``⋅`` denotes the group operation on ``$(_math(:H))``.
+where ``⋅`` denotes the group operation on ``$(_tex(:Cal, "H"))``.
 The `Right` in the name of this type refers to the fact that the action is applied to the right element ``h_2``.
 
 Note that this is independent of both the type of action (left or right) and whether the semidirect product is a left or a right semidirect one.
@@ -153,13 +153,13 @@ with the properties
 If ``α`` is a [``LeftGroupAction``](@ref) we usually denote it by ``σ`` and the compatibility reads
 
 ```math
-σ_g(σ_h(p)) = σ_{g$(_math(:∘))h}(p) $(_tex(:text," holds for all")) g,h ∈ $(_math(:G)) $(_tex(:text," and")) p ∈ $(_math(:M))
+σ_g(σ_h(p)) = σ_{g$(_math(:∘))h}(p) $(_tex(:text, " holds for all")) g,h ∈ $(_math(:G)) $(_tex(:text, " and")) p ∈ $(_math(:M))
 ```
 
 If ``α`` is a [``RightGroupAction``](@ref) we usually denote it by ``τ`` and the compatibility reads
 
 ```math
-τ_g(τ_h(p)) = τ_{h$(_math(:∘))g}(p)`` holds for all ``g,h ∈ $(_math(:G)) $(_tex(:text," for all")) p ∈ $(_math(:M))
+τ_g(τ_h(p)) = τ_{h$(_math(:∘))g}(p)`` holds for all ``g,h ∈ $(_math(:G)) $(_tex(:text, " for all")) p ∈ $(_math(:M))
 ```
 
 _intuitively_ the left/right property of an action specifies on which side the “outer” group actions element ``g``
@@ -192,11 +192,12 @@ struct GroupAction{
     manifold::M
 end
 function GroupAction(
-    group::G, manifold::M;
-    type::T = LeftGroupAction(),
-    on::O = ActionActsOnRight(),
-) where {G <: AbstractLieGroup, M <: ManifoldsBase.AbstractManifold, T <: AbstractGroupActionType, O <: AbstractActionActsOnType} =
-    GroupAction{T, O, G, M}(type, on, group, manifold)
+        group::G, manifold::M;
+        type::T = LeftGroupAction(),
+        on::O = ActionActsOnRight(),
+    ) where {G <: AbstractLieGroup, M <: ManifoldsBase.AbstractManifold, T <: AbstractGroupActionType, O <: AbstractActionActsOnType}
+    return GroupAction{T, O, G, M}(type, on, group, manifold)
+end
 #
 #
 # Functions
