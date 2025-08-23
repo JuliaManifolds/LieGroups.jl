@@ -81,7 +81,6 @@ and what it acts on, i.e. the [`AbstractActionActsOnType`](@ref) `AO`.
 
 The resulting group operations are documented in the corresponding `compose` documentation.
 
-
 For both we use the shorthand notation ``H``[`⋊`](@ref)``G = (H×G,∘)``.
 See [HilgertNeeb:2012; Definition 9.2.22](@cite), first definition for more details.
 
