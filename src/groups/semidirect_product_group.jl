@@ -126,21 +126,21 @@ end
         action_on::AbstractActionActsOnType=ActionActsOnLeft()
     )
 
-Generate the semidirect product Lie Group ``$(_tex(:Cal, "G")) = N ⋉ H`` for an [`AbstractLeftGroupActionType`](@ref)
-using the [`LeftSemidirectProductGroupOperation`](@ref) for the group operation definition
-as well as [HilgertNeeb:2012; Definition 9.2.22](@cite), second definition, for more details.
+Generate the semidirect product Lie Group ``$(_tex(:Cal, "G")) ⋉ $(_tex(:Cal, "H"))`` for an [`AbstractGroupActionType`](@ref)
+using the [`LeftSemidirectProductGroupOperation`](@ref) as group operation definition.
+See [HilgertNeeb:2012; Definition 9.2.22](@cite), second definition, for more details.
 
-The short form `N `[`⋉`](@ref ⋉(L1::LieGroup, L2::LieGroup))` H` can be used if the
-corresponding [`default_left_action`](@ref)`(N,H)` as well as the [`ActionActsOnLeft`](@ref)
+The short form [`G ⋉ H`](@ref ⋉(L1::LieGroup, L2::LieGroup)) can be used if the
+corresponding [`default_left_action(G,H)`](@ref default_left_action) as well as the [`ActionActsOnLeft`](@ref)
 are the ones you want to use.
 """
 function LeftSemidirectProductLieGroup(
-        N::LieGroup, H::LieGroup, action::AbstractGroupActionType = default_left_action(N, H);
+        G::LieGroup, H::LieGroup, action::AbstractGroupActionType = default_left_action(G, H);
         action_on::AbstractActionActsOnType = ActionActsOnLeft()
     )
     # Use product manifold instead of × to not accidentally splat.
     return LieGroup(
-        ProductManifold(N.manifold, H.manifold), LeftSemidirectProductGroupOperation(N.op, H.op, action, action_on)
+        ProductManifold(G.manifold, H.manifold), LeftSemidirectProductGroupOperation(G.op, H.op, action, action_on)
     )
 end
 
@@ -150,21 +150,21 @@ end
         action_on::AbstractActionActsOnType=ActionActsOnRight()
     )
 
-Generate the semidirect product Lie Group ``$(_tex(:Cal, "G")) = N ⋊ H`` for an [`AbstractLeftGroupActionType`](@ref)
-using the [`RightSemidirectProductGroupOperation`](@ref) for the group operation definition
-as well as [HilgertNeeb:2012; Definition 9.2.22](@cite), first definition, for more details.
+Generate the semidirect product Lie Group ``$(_tex(:Cal, "H")) ⋊ $(_tex(:Cal, "G"))`` for an [`AbstractGroupActionType`](@ref)
+using the [`RightSemidirectProductGroupOperation`](@ref) for the group operation definition.
+See [HilgertNeeb:2012; Definition 9.2.22](@cite), first definition, for more details.
 
-The short form `N `[`⋊`](@ref ⋊(L1::LieGroup, L2::LieGroup))` H` can be used if the
-corresponding [`default_right_action`](@ref)`(N,H)` and the [`ActionActsOnRight`](@ref)
+The short form [`H ⋊ G`](@ref ⋊(L1::LieGroup, L2::LieGroup)) can be used if the
+corresponding [`default_right_action`](@ref)`(H,G)` and the [`ActionActsOnRight`](@ref)
 are the ones you want to use.
 """
 function RightSemidirectProductLieGroup(
-        N::LieGroup, H::LieGroup, action::AbstractGroupActionType = default_right_action(N, H);
+        H::LieGroup, G::LieGroup, action::AbstractGroupActionType = default_right_action(H, G);
         action_on::AbstractActionActsOnType = ActionActsOnRight()
     )
     # Use product manifold instead of × to not accidentally splat.
     return LieGroup(
-        ProductManifold(N.manifold, H.manifold), RightSemidirectProductGroupOperation(N.op, H.op, action, action_on)
+        ProductManifold(H.manifold, G.manifold), RightSemidirectProductGroupOperation(H.op, G.op, action, action_on)
     )
 end
 
