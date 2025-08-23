@@ -117,6 +117,7 @@ export AbstractLeftGroupActionType, AbstractRightGroupActionType
 export LeftGroupOperationAction, RightGroupOperationAction
 export GroupAction, GroupOperationAction
 export InverseLeftGroupOperationAction, InverseRightGroupOperationAction
+export AbstractActionActsOnType, ActionActsOnLeft, ActionActsOnRight
 
 #
 #

@@ -73,13 +73,13 @@ struct InverseRightGroupOperationAction <: AbstractLeftGroupActionType end
 Return a [`GroupAction`](@ref) for an [`AbstractGroupActionType`](@ref) `action`
 representing the group operation as an action of the group on itself.
 """
-function GroupOperationAction(action::AbstractGroupActionType, G::LieGroup)
-    return GroupAction(action, G, G)
+function GroupOperationAction(G::LieGroup; type::AbstractGroupActionType=LeftGroupOperationAction(), on::AbstractActionActsOnType=ActionActsOnLeftType())
+    return GroupAction(G, G; type=type, on=on)
 end
 function Base.show(
-        io::IO, GA::GroupAction{A, G, G}
-    ) where {A <: AbstractGroupActionType, G <: LieGroup}
-    return print(io, "GroupOperationAction($(GA.type), $(GA.group))")
+        io::IO, GA::GroupAction{A, O, G, G}
+    ) where {A <: AbstractGroupActionType, O <: AbstractActionActsOnType, G <: LieGroup}
+    return print(io, "GroupOperationAction($(GA.group); type=$(GA.type), on=$(GA.on))")
 end
 
 function apply!(A::GroupAction{LeftGroupOperationAction}, k, g, h)

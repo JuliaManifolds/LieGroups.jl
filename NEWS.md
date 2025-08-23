@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.4] unreleased
 
+### Added
+
+* Introduce a `AbstractActionActsOnType` to distinguish, what previously was called “side”,
+  i.e. whether an action acts on the left (`ActionActsOnLeft`) or right (`ActionActsOnRight`)
+
 ### Fixed
 
 * Fixed an issue where internally the product manifold in a `SemidirectProductLieGroup` was accidentally splashed

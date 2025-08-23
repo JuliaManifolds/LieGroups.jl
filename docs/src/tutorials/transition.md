@@ -22,14 +22,17 @@ The list is alphabetical, but first lists types, then functions
 | `Manifolds.jl` | `LieGroups.jl` | Comment |
 |:---------- |:---------- |:-------------- |
 | `AdditionOperation` | [`AdditionGroupOperation`](@ref) | |
-| `LeftForwardAction` | [`LeftGroupOperationAction`](@ref)
-| `LeftBackwardAction` | [`InverseRightGroupOperationAction`](@ref) | note that this is now also aa [`AbstractLeftGroupActionType`](@ref) |
+| `GroupActionSide` | [`AbstractActionActsOnType`](@ref) | The new naming is more descriptive. |
+| `LeftBackwardAction` | [`LeftGroupOperationAction`](@ref) and [`ActionActsOnRight`](@ref) |  |
+| `LeftForwardAction` | [`LeftGroupOperationAction`](@ref) and [`ActionActsOnLeft`](@ref) | |
+| `LeftSide` | [`ActionActsOnLeft`](@ref) | |
 | | [`LieAlgebra`](@ref)`(G)` | new alias to emphasize its manifold- and vector structure as well as for a few dispatch methods. |
 | `GroupManifold(M, op)` | [`LieGroup`](@ref)`(M, op)` | |
 | `PowerGroup(M)` | [`PowerLieGroup`](@ref)`(G,n)` | The main change is, that the constructor now requires a Lie group to build the power Lie group; This also allows for `G^n`. The other two former constructors for nested and nested-replacing are no longer necessary. `PowerLieGroup` behaves exactly the same as [`PowerManifold`](@extref `ManifoldsBase.PowerManifold`). |
 | `ProductGroup(M)` | [`ProductLieGroup`](@ref)`(G, H)` | The main change is, that the constructor now requires two Lie groups to build their product. This also allows for the short hand `G×H` to generate this product. |
-| `RightBackwardAction` | [`RightGroupOperationAction`](@ref) | |
-| `RightForwardAction` | [`InverseLeftGroupOperationAction`](@ref) | note that this is an [`AbstractRightGroupActionType`](@ref) |
+| `RightBackwardAction` | [`RightGroupOperationAction`](@ref) and [`ActionActsOnRight`](@ref) | |
+| `RightForwardAction` | [`RightGroupOperationAction`](@ref) and [`ActionActsOnLeft`](@ref) |
+| `RightSide` | [`ActionActsOnRight`](@ref) | |
 | `SemidirectProductGroup(G, H, a)` | [`LeftSemidirectProductLieGroup`](@ref)`(G, H, a)` | While this staid the same, there is now also the [`default_left_action`](@ref)`(G,H)`. When this agrees with `a` you can use the short hand `G⋉H` to generate this semidirect product. Analogously there now also exists the [`RightSemidirectProductLieGroup`](@ref)`(G,H)` with[`default_left_action`](@ref)`(G,H)` that allows for the short cut `G⋊H` |
 | `SpecialEuclidean(n)` | `SpecialEuclideanGroup(n; variant=:right)` | |
 | `adjoint_action` | [`adjoint`](@ref) | now implemented with a default, when you provide [`diff_conjugate!`](@ref).
