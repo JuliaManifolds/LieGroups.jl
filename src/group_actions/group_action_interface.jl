@@ -70,7 +70,7 @@ When writing about general group actions, the symbol ``α`` is often used.
 In that case the order of arguments follows either the one from the left action, but most often we use the index notation.
 The definition of functions also follows this notation, i.e. we use e.g. `apply(A, g, p)`
 
-One notable example of a right action is the inverse of an action of [`LeftGroupAction`](@ref) ``σ``,
+One notable example of a right action is the inverse of an action of [`AbstractLeftGroupActionType`](@ref) ``σ``,
 which is given by ``τ_g = (σ_g)^{-1} = σ_{g^{-1}}``.
 We obtain
 
@@ -82,13 +82,13 @@ abstract type AbstractRightGroupActionType <: AbstractGroupActionType end
     AbstractActionActsOnType
 
 An abstract type representing what an action acts on,
-Most notably these are the [`ActionActsOnLeftType`](@ref) and [`ActionActsOnRight`](@ref),
+Most notably these are the [`ActionActsOnLeft`](@ref) and [`ActionActsOnRight`](@ref),
 see their documentations for more details
 """
 abstract type AbstractActionActsOnType end
 
 """
-    ActionActsOnLeftType <: AbstractActionActsOnType
+    ActionActsOnLeft <: AbstractActionActsOnType
 
 An [`AbstractActionActsOnType`](@ref) representing that an action acts on the left.
 
@@ -107,7 +107,7 @@ The `Left` in the name of this type refers to the fact that the action is applie
 
 Note that this is independent of both the type of action (left or right) and whether the semidirect product is a left or a right semidirect one.
 """
-struct ActionActsOnLeftType <: AbstractActionActsOnType end
+struct ActionActsOnLeft <: AbstractActionActsOnType end
 
 """
     ActionActsOnRight <: AbstractActionActsOnType
@@ -150,13 +150,13 @@ with the properties
 **Identity.** ``α($(_math(:e)), p) = p`` holds for all ``p ∈ $(_math(:M))``
 
 **Compatibility.**
-If ``α`` is a [``LeftGroupAction``](@ref) we usually denote it by ``σ`` and the compatibility reads
+If ``α`` is a [``AbstractLeftGroupActionType``](@ref) we usually denote it by ``σ`` and the compatibility reads
 
 ```math
 σ_g(σ_h(p)) = σ_{g$(_math(:∘))h}(p) $(_tex(:text, " holds for all")) g,h ∈ $(_math(:G)) $(_tex(:text, " and")) p ∈ $(_math(:M))
 ```
 
-If ``α`` is a [``RightGroupAction``](@ref) we usually denote it by ``τ`` and the compatibility reads
+If ``α`` is a [``AbstractRightGroupActionType``](@ref) we usually denote it by ``τ`` and the compatibility reads
 
 ```math
 τ_g(τ_h(p)) = τ_{h$(_math(:∘))g}(p)`` holds for all ``g,h ∈ $(_math(:G)) $(_tex(:text, " for all")) p ∈ $(_math(:M))
@@ -176,12 +176,11 @@ See [HilgertNeeb:2012; Section 9.1.3](@cite) for more details.
 
 # Constructors
     GroupAction(
-        group::AbstractLieGroup, manifold::ManifoldsBase.AbstractManifold;
-        type::AbstractGroupActionType=LeftGroupAction(),
+        group::AbstractLieGroup, manifold::ManifoldsBase.AbstractManifold, type::AbstractGroupActionType;
         on::AbstractActionActsOnType=ActionActsOnRight()
     )
 Generate a group action where the type of the action and what it acts on are keyword arguments.
-They default to the most common choice, a [`LeftGroupAction`](@ref) acting on the
+They default to the most common choice, that the [`ActionActsOnRight`](@ref).
 """
 struct GroupAction{
         T <: AbstractGroupActionType, O <: AbstractActionActsOnType, L <: AbstractLieGroup, M <: ManifoldsBase.AbstractManifold,
@@ -192,8 +191,7 @@ struct GroupAction{
     manifold::M
 end
 function GroupAction(
-        group::G, manifold::M;
-        type::T = LeftGroupAction(),
+        group::G, manifold::M, type::T,
         on::O = ActionActsOnRight(),
     ) where {G <: AbstractLieGroup, M <: ManifoldsBase.AbstractManifold, T <: AbstractGroupActionType, O <: AbstractActionActsOnType}
     return GroupAction{T, O, G, M}(type, on, group, manifold)

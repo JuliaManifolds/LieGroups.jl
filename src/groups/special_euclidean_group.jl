@@ -1,6 +1,6 @@
 # for (g, t)
 const LeftSpecialEuclideanGroupOperation = LeftSemidirectProductGroupOperation{
-    <:MatrixMultiplicationGroupOperation, <:AdditionGroupOperation, LeftGroupOperationAction, ActionActsOnLeftType,
+    <:MatrixMultiplicationGroupOperation, <:AdditionGroupOperation, LeftGroupOperationAction, ActionActsOnLeft,
 }
 
 const LeftSpecialEuclideanGroup{T} = LieGroup{
@@ -11,7 +11,7 @@ const LeftSpecialEuclideanGroup{T} = LieGroup{
 
 # for (t, g)
 const RightSpecialEuclideanGroupOperation = RightSemidirectProductGroupOperation{
-    <:AdditionGroupOperation, <:MatrixMultiplicationGroupOperation, LeftGroupOperationAction, ActionActsOnRightType,
+    <:AdditionGroupOperation, <:MatrixMultiplicationGroupOperation, LeftGroupOperationAction, ActionActsOnRight,
 }
 const RightSpecialEuclideanGroup{T} = LieGroup{
     ℝ,

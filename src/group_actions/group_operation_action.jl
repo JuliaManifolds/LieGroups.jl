@@ -73,7 +73,7 @@ struct InverseRightGroupOperationAction <: AbstractLeftGroupActionType end
 Return a [`GroupAction`](@ref) for an [`AbstractGroupActionType`](@ref) `action`
 representing the group operation as an action of the group on itself.
 """
-function GroupOperationAction(G::LieGroup; type::AbstractGroupActionType = LeftGroupOperationAction(), on::AbstractActionActsOnType = ActionActsOnLeftType())
+function GroupOperationAction(G::LieGroup; type::AbstractGroupActionType = LeftGroupOperationAction(), on::AbstractActionActsOnType = ActionActsOnLeft())
     return GroupAction(G, G; type = type, on = on)
 end
 function Base.show(
