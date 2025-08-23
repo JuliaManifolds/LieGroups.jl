@@ -229,7 +229,7 @@ $(_doc_semidirect_sub_groups) Let ``σ`` denote a left group action. It here act
 Then the group operation ``$(_math(:∘))`` on the left semidirect product Lie group ``G ⋉ H`` is given by
 
 ```math
-    (g_1,h_1) ∘ (g_2,h_2) := (g_1 ⋆ g_2, σ_{g_2}(h_1) ⋆ h_2).
+    (g_1,h_1) ∘ (g_2,h_2) := $(_tex(:bigl))( g_1 ⋆ g_2, σ_{g_2}(h_1) ⋄ h_2 $(_tex(:bigr))).
 ```
 
 See also [`AbstractLeftGroupActionType`](@ref) and [`ActionActsOnLeft`](@ref).
@@ -260,7 +260,7 @@ $(_doc_semidirect_sub_groups) Let ``σ`` denote a left group action. It here act
 Then the group operation ``$(_math(:∘))`` on the left semidirect product Lie group ``G ⋉ H`` is given by
 
 ```math
-    (g_1,h_1) ∘ (g_2,h_2) := (g_1 ⋆ g_2, h_1 ⋆ σ_{g_1}(h_2)).
+    (g_1,h_1) ∘ (g_2,h_2) := $(_tex(:bigl))( g_1 ⋆ g_2, h_1 ⋄ σ_{g_1}(h_2) $(_tex(:bigr))).
 ```
 
 See also [`AbstractLeftGroupActionType`](@ref) and [`ActionActsOnRight`](@ref).
@@ -291,10 +291,10 @@ $(_doc_semidirect_sub_groups) Let ``τ`` denote a right group action. It here ac
 Then the group operation ``$(_math(:∘))`` on the left semidirect product Lie group ``G ⋉ H`` is given by
 
 ```math
-    (g_1,h_1) ∘ (g_2,h_2) := (g_1 ⋆ g_2, τ_{g_2^{-1}}(h_1) ⋆ h_2).
+    (g_1,h_1) ∘ (g_2,h_2) := $(_tex(:bigl))( g_1 ⋆ g_2, τ_{g_2^{-1}}(h_1) ⋄ h_2 $(_tex(:bigr))).
 ```
 
-See also [`AbstractLeftGroupActionType`](@ref) and [`ActionActsOnLeft`](@ref).
+See also [`AbstractRightGroupActionType`](@ref) and [`ActionActsOnLeft`](@ref).
 """
 compose(
     SDPG::LieGroup{𝔽, LeftSemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, ::Any, ::Any
@@ -324,7 +324,7 @@ $(_doc_semidirect_sub_groups) Let ``τ`` denote a right group action. It here ac
 Then the group operation ``$(_math(:∘))`` on the left semidirect product Lie group ``G ⋉ H`` is given by
 
 ```math
-    (g_1,h_1) ∘ (g_2,h_2) := (g_1 ⋆ g_2, h_1 ⋆ τ_{g_1^{-1}}(h_2)).
+    (g_1,h_1) ∘ (g_2,h_2) := $(_tex(:bigl))( g_1 ⋆ g_2, h_1 ⋄ τ_{g_1^{-1}}(h_2) $(_tex(:bigr))).
 ```
 
 See also [`AbstractRightGroupActionType`](@ref) and [`ActionActsOnRight`](@ref).
@@ -357,7 +357,7 @@ $(_doc_semidirect_sub_groups) Let ``σ`` denote a left group action. It here act
 Then the group operation ``$(_math(:∘))`` on the right semidirect product Lie group ``H ⋊ G`` is given by
 
 ```math
-    (h_1,g_1) ∘ (h_2,g_2) := (σ_{g_2}(h_1) ⋆ h_2, g_1 ⋆ g_2).
+    (h_1,g_1) ∘ (h_2,g_2) := $(_tex(:bigl))( σ_{g_2}(h_1) ⋄ h_2, g_1 ⋆ g_2 $(_tex(:bigr))).
 ```
 
 See also [`AbstractLeftGroupActionType`](@ref) and [`ActionActsOnLeft`](@ref).
@@ -388,7 +388,7 @@ $(_doc_semidirect_sub_groups) Let ``σ`` denote a left group action. It here act
 Then the group operation ``$(_math(:∘))`` on the right semidirect product Lie group ``H ⋊ G`` is given by
 
 ```math
-    (h_1,g_1) ∘ (h_2,g_2) := (h_1 ⋆ σ_{g_1}(h_2), g_1 ⋆ g_2).
+    (h_1,g_1) ∘ (h_2,g_2) := $(_tex(:bigl))( h_1 ⋄ σ_{g_1}(h_2), g_1 ⋆ g_2 $(_tex(:bigr))).
 ```
 
 See also [`AbstractLeftGroupActionType`](@ref) and [`ActionActsOnRight`](@ref).
@@ -419,10 +419,10 @@ $(_doc_semidirect_sub_groups) Let ``τ`` denote a right group action. It here ac
 Then the group operation ``$(_math(:∘))`` on the right semidirect product Lie group ``H ⋊ G`` is given by
 
 ```math
-    (h_1,g_1) ∘ (h_2,g_2) := (τ_{g_2^{-1}}(h_1) ⋆ h_2, g_1 ⋆ g_2).
+    (h_1,g_1) ∘ (h_2,g_2) := $(_tex(:bigl))( τ_{g_2^{-1}}(h_1) ⋄ h_2, g_1 ⋆ g_2 $(_tex(:bigr))).
 ```
 
-See also [`AbstractLeftGroupActionType`](@ref) and [`ActionActsOnLeft`](@ref).
+See also [`AbstractRightGroupActionType`](@ref) and [`ActionActsOnLeft`](@ref).
 """
 compose(
     SDPG::LieGroup{𝔽, RightSemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, ::Any, ::Any
@@ -444,7 +444,7 @@ function _compose!(
     return k
 end
 
-#TODO 8 Rightsemidirect, right action, act on right
+# 8. Rightsemidirect, right action, act on right
 """
     compose(L::LieGroup{𝔽,RightSemidirectProductGroupOperation{⋄,⋆,<:AbstractRightGroupActionType,ActionActsOnRight}}, g, h)
 
@@ -452,10 +452,10 @@ $(_doc_semidirect_sub_groups) Let ``τ`` denote a right group action. It here ac
 Then the group operation ``$(_math(:∘))`` on the semidirect product Lie group ``H ⋊ G`` is given by
 
 ```math
-    (g_1,h_1) ∘ (g_2,h_2) := (g_1 ⋆ g_2, h_1 ⋆ τ_{g_1^{-1}}(h_2)).
+    (g_1,h_1) ∘ (g_2,h_2) := $(_tex(:bigl))( g_1 ⋆ g_2, h_1 ⋄ τ_{g_1^{-1}}(h_2) $(_tex(:bigr))).
 ```
 
-See also [`AbstractLeftGroupActionType`](@ref) and [`ActionActsOnRight`](@ref).
+See also [`AbstractRightGroupActionType`](@ref) and [`ActionActsOnRight`](@ref).
 """
 compose(
     SDPG::LieGroup{𝔽, RightSemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, ::Any, ::Any
