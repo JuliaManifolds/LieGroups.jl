@@ -29,7 +29,7 @@ as a family of maps on ``$(_tex(:Cal, "H"))``.
 In this case the group operation ``∘`` on the product manifold ``$(_tex(:Cal, "G"))×$(_tex(:Cal, "H"))`` is defined by
 
 ```math
-    (g_1,h_1) ∘ (g_2,h_2) := $(_tex(:bigl))( g_1 ⋆ g_2, h_1 ⋄ σ_{g_1}(h_2) $(:tex(:bigr))).
+    (g_1,h_1) ∘ (g_2,h_2) := $(_tex(:bigl))( g_1 ⋆ g_2, h_1 ⋄ σ_{g_1}(h_2) $(_tex(:bigr))).
 ```
 
 For a right group action, we use an [`AbstractRightGroupActionType`](@ref)
@@ -40,7 +40,7 @@ as a family of maps on ``$(_tex(:Cal, "H"))``.
 In this case the group operation ``∘`` on the product manifold ``$(_tex(:Cal, "G"))×$(_tex(:Cal, "H'"))`` is defined by
 
 ```math
-    (g_1,h_1) ∘ (g_2,h_2) := $(_tex(:bigl))( g_1 ⋆ g_2, h_1 ⋄ τ_{g_1^{-1}}(h_2) $(:tex(:bigr))).
+    (g_1,h_1) ∘ (g_2,h_2) := $(_tex(:bigl))( g_1 ⋆ g_2, h_1 ⋄ τ_{g_1^{-1}}(h_2) $(_tex(:bigr))).
 ```
 
 For both we use the shorthand notation ``G``[`⋉`](@ref)``H`` = (G×H,∘)``.
@@ -101,7 +101,7 @@ as a family of maps on ``$(_tex(:Cal, "H"))``.
 In this case the group operation ``∘`` on the product manifold ``$(_tex(:Cal, "G"))×$(_tex(:Cal, "H"))`` is defined by
 
 ```math
-    (h_1,g_1) ∘ (h_2,g_2) := $(_tex(:bigl))( h_1 ⋄ τ_{g_1^{-1}}(h_2), g_1 ⋆ g_2 $(:tex(:bigr))).
+    (h_1,g_1) ∘ (h_2,g_2) := $(_tex(:bigl))( h_1 ⋄ τ_{g_1^{-1}}(h_2), g_1 ⋆ g_2 $(_tex(:bigr))).
 ```
 
 For a left group action, we use an [`AbstractLeftGroupActionType`](@ref)
@@ -112,7 +112,7 @@ as a family of maps on ``$(_tex(:Cal, "H"))``.
 In this case the group operation ``∘`` on the product manifold ``$(_tex(:Cal, "H"))×$(_tex(:Cal, "G"))`` is defined by
 
 ```math
-    (h_1,g_1) ∘ (h_2,g_2) := $(_tex(:bigl))( h_1 ⋄ σ_{g_1}(h_2), g_1 ⋆ g_2 $(:tex(:bigr))).
+    (h_1,g_1) ∘ (h_2,g_2) := $(_tex(:bigl))( h_1 ⋄ σ_{g_1}(h_2), g_1 ⋆ g_2 $(_tex(:bigr))).
 ```
 
 For both we use the shorthand notation ``H``[`⋊`](@ref)``G = (H×G,∘)``.
