@@ -7,6 +7,9 @@
     } <: AbstractProductGroupOperation
 
 An abstract type for all semidirect product group operations.
+
+Most notably there are the left and right semidirect product group operations,
+see [`LeftSemidirectProductGroupOperation`](@ref) and [`RightSemidirectProductGroupOperation`](@ref), respectively.
 """
 abstract type SemiDirectProductGroupOperation{
     O1 <: AbstractGroupOperation, O2 <: AbstractGroupOperation, A <: AbstractGroupActionType, AO <: AbstractActionActsOnType,
@@ -191,170 +194,64 @@ function ⋊(L1::LieGroup, L2::LieGroup)
 end
 
 # A small helper to extract the product manifold, both Lie Groups and the action A
+# It returns
+# PM the product manifold
+# G the first Lie group
+# H the second Lie group that G acts on
+# a the group action
+# 1 the index of G in points of the semidirect Lie group/manifold
+# 2 the index of H in points of the semidirect Lie group/manifold
 function _semidirect_parts(SDPG::LieGroup{𝔽, <:LeftSemidirectProductGroupOperation, <:ProductManifold}) where {𝔽}
     PM = SDPG.manifold
     G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
     a = GroupAction(SDPG.op.action_type, G, H)
-    return PM, G, H, a
+    return PM, G, H, a, 1, 2
 end
 function _semidirect_parts(SDPG::LieGroup{𝔽, <:RightSemidirectProductGroupOperation, <:ProductManifold}) where {𝔽}
     PM = SDPG.manifold
     H, G = map(LieGroup, PM.manifolds, SDPG.op.operations)
     a = GroupAction(SDPG.op.action_type, G, H)
-    return PM, G, H, a
+    return PM, G, H, a, 2, 1
+end
+# A major difference betrween left and right actions is that for right, we have to invert the action while for left we do not
+function _semidirect_maybe_inv!(a::A, G, k, g) where {A <: AbstractRightGroupActionType}
+    return inv!(G, k, g)
+end
+function _semidirect_maybe_inv!(a::A, G, k, g) where {A <: AbstractLeftGroupActionType}
+    return copyto!(G, k, g)
 end
 #
 #
 # Functions
 # ------------------------------------------------------------------------------------------
 # For every function we to the following order of the 8 cases
-# 1. Leftsemidirect, left action, act on left
-# 2. Leftsemidirect, left action, act on right
-# 3. Leftsemidirect, right action, act on left
-# 4. Leftsemidirect, right action, act on right
-# 5. Rightsemidirect, left action, act on left
-# 6. Rightsemidirect, left action, act on right
-# 7. Rightsemidirect, right action, act on left
-# 8. Rightsemidirect, right action, act on right
+# 1. Left semidirect, left action, act on left
+# 2. Left semidirect, left action, act on right
+# 3. Left semidirect, right action, act on left
+# 4. Left semidirect, right action, act on right
+# 5. Right semidirect, left action, act on left
+# 6. Right semidirect, left action, act on right
+# 7. Right semidirect, right action, act on left
+# 8. Right semidirect, right action, act on right
 
 _doc_semidirect_sub_groups = "Let ``($(_tex(:Cal, "G")), ⋆)`` and ``($(_tex(:Cal, "H")), ⋄)`` be two Lie groups
 with group operations ``⋆`` and ``⋄``, respectively.
 "
 
-# 1. Leftsemidirect, left action, act on left
+# 1. Left semidirect, left action, act on left
+# 5. Right semidirect, left action, act on left
 """
     compose(L::LieGroup{𝔽,LeftSemidirectProductGroupOperation{⋆,⋄,<:AbstractLeftGroupActionType,ActionActsOnLeft}}, g, h)
 
 $(_doc_semidirect_sub_groups) Let ``σ`` denote a left group action. It here acts on the left.
-Then the group operation ``$(_math(:∘))`` on the left semidirect product Lie group ``G ⋉ H`` is given by
+
+The group operation ``$(_math(:∘))`` on the [`LeftSemidirectProductGroup`](@ref) ``G ⋉ H`` is given by
 
 ```math
     (g_1,h_1) ∘ (g_2,h_2) := $(_tex(:bigl))( g_1 ⋆ g_2, σ_{g_2}(h_1) ⋄ h_2 $(_tex(:bigr))).
 ```
 
-See also [`AbstractLeftGroupActionType`](@ref) and [`ActionActsOnLeft`](@ref).
-"""
-compose(
-    SDPG::LieGroup{𝔽, LeftSemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, ::Any, ::Any
-) where {𝔽, O1, O2, A <: AbstractLeftGroupActionType, AO <: ActionActsOnLeft}
-
-function _compose!(
-        SDPG::LieGroup{𝔽, LeftSemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, k, g, h
-    ) where {𝔽, O1, O2, A <: AbstractLeftGroupActionType, AO <: ActionActsOnLeft}
-    PM, G, H, a = _semidirect_parts(SDPG)
-    # Note difference from math to code: g=(g_1,h_1), h=(g_2,h_2)=(h1,)
-    # a) group action (first to avoid side effects in g, set k_2 to σ_{g_2}(h_1)
-    apply!(a, submanifold_component(SDPG, k, Val(2)), submanifold_component(SDPG, h, Val(1)), submanifold_component(SDPG, g, Val(2)))
-    # b) group operation on G
-    _compose!(G, submanifold_component(SDPG, k, Val(1)), submanifold_component(SDPG, g, Val(1)), submanifold_component(SDPG, h, Val(1)))
-    # c) group operation on H (not that h_1 is already in k2)
-    _compose!(H, submanifold_component(SDPG, k, Val(2)), submanifold_component(SDPG, k, Val(2)), submanifold_component(SDPG, h, Val(2)))
-    return k
-end
-
-# 2. Leftsemidirect, left action, act on right
-"""
-    compose(L::LieGroup{𝔽,LeftSemidirectProductGroupOperation{⋆,⋄,<:AbstractLeftGroupActionType,ActionActsOnRight}}, g, h)
-
-$(_doc_semidirect_sub_groups) Let ``σ`` denote a left group action. It here acts on the right.
-Then the group operation ``$(_math(:∘))`` on the left semidirect product Lie group ``G ⋉ H`` is given by
-
-```math
-    (g_1,h_1) ∘ (g_2,h_2) := $(_tex(:bigl))( g_1 ⋆ g_2, h_1 ⋄ σ_{g_1}(h_2) $(_tex(:bigr))).
-```
-
-See also [`AbstractLeftGroupActionType`](@ref) and [`ActionActsOnRight`](@ref).
-"""
-compose(
-    SDPG::LieGroup{𝔽, LeftSemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, ::Any, ::Any
-) where {𝔽, O1, O2, A <: AbstractLeftGroupActionType, AO <: ActionActsOnRight}
-
-function _compose!(
-        SDPG::LieGroup{𝔽, LeftSemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, k, g, h
-    ) where {𝔽, O1, O2, A <: AbstractLeftGroupActionType, AO <: ActionActsOnRight}
-    PM, G, H, a = _semidirect_parts(SDPG)
-    # Note difference from math to code: g=(g_1,h_1), h=(g_2,h_2)=(h1,h2)
-    # a) group action (first to avoid side effects in g, set k_2 to σ_{g_1}(h_2)
-    apply!(a, submanifold_component(SDPG, k, Val(2)), submanifold_component(SDPG, g, Val(1)), submanifold_component(SDPG, h, Val(2)))
-    # b) group operation on G
-    _compose!(G, submanifold_component(SDPG, k, Val(1)), submanifold_component(SDPG, g, Val(1)), submanifold_component(SDPG, h, Val(1)))
-    # c) group operation on H (not that h_2 is already in k2)
-    _compose!(H, submanifold_component(SDPG, k, Val(2)), submanifold_component(SDPG, g, Val(2)), submanifold_component(SDPG, k, Val(2)))
-    return k
-end
-
-# 3. Leftsemidirect, right action, act on left
-"""
-    compose(L::LieGroup{𝔽,LeftSemidirectProductGroupOperation{⋆,⋄,<:AbstractRightGroupActionType,ActionActsOnLeft}}, g, h)
-
-$(_doc_semidirect_sub_groups) Let ``τ`` denote a right group action. It here acts on the left.
-Then the group operation ``$(_math(:∘))`` on the left semidirect product Lie group ``G ⋉ H`` is given by
-
-```math
-    (g_1,h_1) ∘ (g_2,h_2) := $(_tex(:bigl))( g_1 ⋆ g_2, τ_{g_2^{-1}}(h_1) ⋄ h_2 $(_tex(:bigr))).
-```
-
-See also [`AbstractRightGroupActionType`](@ref) and [`ActionActsOnLeft`](@ref).
-"""
-compose(
-    SDPG::LieGroup{𝔽, LeftSemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, ::Any, ::Any
-) where {𝔽, O1, O2, A <: AbstractRightGroupActionType, AO <: ActionActsOnLeft}
-
-function _compose!(
-        SDPG::LieGroup{𝔽, LeftSemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, k, g, h
-    ) where {𝔽, O1, O2, A <: AbstractRightGroupActionType, AO <: ActionActsOnLeft}
-    PM, G, H, a = _semidirect_parts(SDPG)
-    # Note difference from math to code: g=(g_1,h_1), h=(g_2,h_2)
-    # Compute g_2^-1 without allocations by using the k1
-    inv!(G, submanifold_component(SDPG, k, Val(1)), submanifold_component(SDPG, h, Val(1)))
-    # a) group action (first to avoid side effects in g, set k_2 to τ_{k1}(h_1)
-    apply!(a, submanifold_component(SDPG, k, Val(2)), submanifold_component(SDPG, k, Val(1)), submanifold_component(SDPG, g, Val(2)))
-    # b) group operation on G (overwrite k1 again, since we do not need it any longer)
-    _compose!(G, submanifold_component(SDPG, k, Val(1)), submanifold_component(SDPG, g, Val(1)), submanifold_component(SDPG, h, Val(1)))
-    # c) group operation on H (not that h_1 is already in k2)
-    _compose!(H, submanifold_component(SDPG, k, Val(2)), submanifold_component(SDPG, k, Val(2)), submanifold_component(SDPG, h, Val(2)))
-    return k
-end
-
-# 4 Leftsemidirect, right action, act on right
-"""
-    compose(L::LieGroup{𝔽,LeftSemidirectProductGroupOperation{⋆,⋄,<:AbstractRightGroupActionType,ActionActsOnRight}}, g, h)
-
-$(_doc_semidirect_sub_groups) Let ``τ`` denote a right group action. It here acts on the right.
-Then the group operation ``$(_math(:∘))`` on the left semidirect product Lie group ``G ⋉ H`` is given by
-
-```math
-    (g_1,h_1) ∘ (g_2,h_2) := $(_tex(:bigl))( g_1 ⋆ g_2, h_1 ⋄ τ_{g_1^{-1}}(h_2) $(_tex(:bigr))).
-```
-
-See also [`AbstractRightGroupActionType`](@ref) and [`ActionActsOnRight`](@ref).
-"""
-compose(
-    SDPG::LieGroup{𝔽, LeftSemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, ::Any, ::Any
-) where {𝔽, O1, O2, A <: AbstractRightGroupActionType, AO <: ActionActsOnRight}
-
-function _compose!(
-        SDPG::LieGroup{𝔽, LeftSemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, k, g, h
-    ) where {𝔽, O1, O2, A <: AbstractRightGroupActionType, AO <: ActionActsOnRight}
-    PM, G, H, a = _semidirect_parts(SDPG)
-    # Avoid memory allocations by computing g_1^-1 in the first result component
-    inv!(G, submanifold_component(SDPG, k, Val(1)), submanifold_component(SDPG, g, Val(1)))
-    # Note difference from math to code: g=(g_1,h_1), h=(g_2,h_2)=(h1,h2)
-    # a) group action (first to avoid side effects in g, set k_2 to τ_{k1}(h_2)
-    apply!(a, submanifold_component(SDPG, k, Val(2)), submanifold_component(SDPG, k, Val(1)), submanifold_component(SDPG, h, Val(2)))
-    # b) group operation on G
-    _compose!(G, submanifold_component(SDPG, k, Val(1)), submanifold_component(SDPG, g, Val(1)), submanifold_component(SDPG, h, Val(1)))
-    # c) group operation on H (not that h2 is already in k2)
-    _compose!(H, submanifold_component(SDPG, k, Val(2)), submanifold_component(SDPG, g, Val(2)), submanifold_component(SDPG, k, Val(2)))
-    return k
-end
-
-# 5. Rightsemidirect, left action, act on left
-"""
-    compose(L::LieGroup{𝔽,RightSemidirectProductGroupOperation{⋄,⋆,<:AbstractLeftGroupActionType,ActionActsOnLeft}}, g, h)
-
-$(_doc_semidirect_sub_groups) Let ``σ`` denote a left group action. It here acts on the left.
-Then the group operation ``$(_math(:∘))`` on the right semidirect product Lie group ``H ⋊ G`` is given by
+The group operation ``$(_math(:∘))`` on the [`RightSemidirectProductGroup`](@ref) ``H ⋊ G`` is given by
 
 ```math
     (h_1,g_1) ∘ (h_2,g_2) := $(_tex(:bigl))( σ_{g_2}(h_1) ⋄ h_2, g_1 ⋆ g_2 $(_tex(:bigr))).
@@ -363,60 +260,23 @@ Then the group operation ``$(_math(:∘))`` on the right semidirect product Lie 
 See also [`AbstractLeftGroupActionType`](@ref) and [`ActionActsOnLeft`](@ref).
 """
 compose(
-    SDPG::LieGroup{𝔽, RightSemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, ::Any, ::Any
+    SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, ::Any, ::Any
 ) where {𝔽, O1, O2, A <: AbstractLeftGroupActionType, AO <: ActionActsOnLeft}
 
-function _compose!(
-        SDPG::LieGroup{𝔽, RightSemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, k, g, h
-    ) where {𝔽, O1, O2, A <: AbstractLeftGroupActionType, AO <: ActionActsOnLeft}
-    PM, G, H, a = _semidirect_parts(SDPG)
-    # Note difference from math to code: g=(g_1,h_1), h=(g_2,h_2)=(h1,)
-    # a) group action (first to avoid side effects in g, set k1 to σ_{g_2}(h_1)
-    apply!(a, submanifold_component(SDPG, k, Val(1)), submanifold_component(SDPG, h, Val(2)), submanifold_component(SDPG, g, Val(1)))
-    # b) group operation on G
-    _compose!(G, submanifold_component(SDPG, k, Val(2)), submanifold_component(SDPG, g, Val(2)), submanifold_component(SDPG, h, Val(2)))
-    # c) group operation on H (not that h_1 is already in k1)
-    _compose!(H, submanifold_component(SDPG, k, Val(1)), submanifold_component(SDPG, k, Val(1)), submanifold_component(SDPG, h, Val(1)))
-    return k
-end
-
-# 6. Rightsemidirect, left action, act on right
-"""
-    compose(L::LieGroup{𝔽,RightSemidirectProductGroupOperation{⋄,⋆,<:AbstractLeftGroupActionType,ActionActsOnRight}}, g, h)
-
-$(_doc_semidirect_sub_groups) Let ``σ`` denote a left group action. It here acts on the right.
-Then the group operation ``$(_math(:∘))`` on the right semidirect product Lie group ``H ⋊ G`` is given by
-
-```math
-    (h_1,g_1) ∘ (h_2,g_2) := $(_tex(:bigl))( h_1 ⋄ σ_{g_1}(h_2), g_1 ⋆ g_2 $(_tex(:bigr))).
-```
-
-See also [`AbstractLeftGroupActionType`](@ref) and [`ActionActsOnRight`](@ref).
-"""
-compose(
-    SDPG::LieGroup{𝔽, RightSemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, ::Any, ::Any
-) where {𝔽, O1, O2, A <: AbstractLeftGroupActionType, AO <: ActionActsOnRight}
-
-function _compose!(
-        SDPG::LieGroup{𝔽, RightSemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, k, g, h
-    ) where {𝔽, O1, O2, A <: AbstractLeftGroupActionType, AO <: ActionActsOnRight}
-    PM, G, H, a = _semidirect_parts(SDPG)
-    # Note difference from math to code: g=(h_1,g_1), h=(h_2,g_2)=(h1,h2)
-    # a) group action (first to avoid side effects in g, set k1 to σ_{g_1}(h_2)
-    apply!(a, submanifold_component(SDPG, k, Val(1)), submanifold_component(SDPG, g, Val(2)), submanifold_component(SDPG, h, Val(1)))
-    # b) group operation on G
-    _compose!(G, submanifold_component(SDPG, k, Val(2)), submanifold_component(SDPG, g, Val(2)), submanifold_component(SDPG, h, Val(2)))
-    # c) group operation on H (not that h_2 is already in k2)
-    _compose!(H, submanifold_component(SDPG, k, Val(1)), submanifold_component(SDPG, g, Val(1)), submanifold_component(SDPG, k, Val(1)))
-    return k
-end
-
+# 3. Leftsemidirect, right action, act on left
 # 7. Rightsemidirect, right action, act on left
 """
-    compose(L::LieGroup{𝔽,RightSemidirectProductGroupOperation{⋄,⋆,<:AbstractRightGroupActionType,ActionActsOnLeft}}, g, h)
+    compose(L::LieGroup{𝔽,SemidirectProductGroupOperation{⋄,⋆,<:AbstractRightGroupActionType,ActionActsOnLeft}}, g, h)
 
 $(_doc_semidirect_sub_groups) Let ``τ`` denote a right group action. It here acts on the left.
-Then the group operation ``$(_math(:∘))`` on the right semidirect product Lie group ``H ⋊ G`` is given by
+
+The group operation ``$(_math(:∘))`` on the [`LeftSemidirectProductGroup`](@ref) ``G ⋉ H`` is given by
+
+```math
+    (g_1,h_1) ∘ (g_2,h_2) := $(_tex(:bigl))( g_1 ⋆ g_2, τ_{g_2^{-1}}(h_1) ⋄ h_2 $(_tex(:bigr))).
+```
+
+The group operation ``$(_math(:∘))`` on the [`RightSemidirectProductGroup`](@ref) ``H ⋊ G`` is given by
 
 ```math
     (h_1,g_1) ∘ (h_2,g_2) := $(_tex(:bigl))( τ_{g_2^{-1}}(h_1) ⋄ h_2, g_1 ⋆ g_2 $(_tex(:bigr))).
@@ -425,31 +285,63 @@ Then the group operation ``$(_math(:∘))`` on the right semidirect product Lie 
 See also [`AbstractRightGroupActionType`](@ref) and [`ActionActsOnLeft`](@ref).
 """
 compose(
-    SDPG::LieGroup{𝔽, RightSemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, ::Any, ::Any
+    SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, ::Any, ::Any
 ) where {𝔽, O1, O2, A <: AbstractRightGroupActionType, AO <: ActionActsOnLeft}
 
+# An implementation for 1,3 (no inverse for left) and 5,7 (inverse for right)
 function _compose!(
-        SDPG::LieGroup{𝔽, RightSemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, k, g, h
-    ) where {𝔽, O1, O2, A <: AbstractRightGroupActionType, AO <: ActionActsOnLeft}
-    PM, G, H, a = _semidirect_parts(SDPG)
-    # Note difference from math to code: g=(h_1,g_1), h=(h_2,g_2)
-    # Compute g_2^-1 without allocations by using the k2
-    inv!(G, submanifold_component(SDPG, k, Val(2)), submanifold_component(SDPG, h, Val(2)))
-    # a) group action (first to avoid side effects in g, set k_2 to τ_{k1}(h_1)
-    apply!(a, submanifold_component(SDPG, k, Val(1)), submanifold_component(SDPG, k, Val(2)), submanifold_component(SDPG, g, Val(1)))
-    # b) group operation on G (overwrite k1 again, since we do not need it any longer)
-    _compose!(G, submanifold_component(SDPG, k, Val(2)), submanifold_component(SDPG, g, Val(2)), submanifold_component(SDPG, h, Val(2)))
-    # c) group operation on H (not that h_1 is already in k1)
-    _compose!(H, submanifold_component(SDPG, k, Val(1)), submanifold_component(SDPG, k, Val(1)), submanifold_component(SDPG, h, Val(1)))
+        SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, k, g, h
+    ) where {𝔽, O1, O2, A <: AbstractGroupActionType, AO <: ActionActsOnLeft}
+    PM, G, H, a, g_ind, h_ind = _semidirect_parts(SDPG)
+    _semidirect_maybe_inv!(a, G, submanifold_component(SDPG, k, Val(g_ind)), submanifold_component(SDPG, h, Val(g_ind)))
+    # Note difference from math to code: g=(g_1,h_1), h=(g_2,h_2)=(h1,)
+    # a) group action (first to avoid side effects in g, set k_2 to σ_{g_2}(h_1)
+    apply!(a, submanifold_component(SDPG, k, Val(h_ind)), submanifold_component(SDPG, h, Val(g_ind)), submanifold_component(SDPG, g, Val(k_ind)))
+    # b) group operation on G
+    _compose!(G, submanifold_component(SDPG, k, Val(g_ind)), submanifold_component(SDPG, g, Val(g_ind)), submanifold_component(SDPG, h, Val(g_ind)))
+    # c) group operation on H (not that h_1 is already in k2)
+    _compose!(H, submanifold_component(SDPG, k, Val(h_ind)), submanifold_component(SDPG, k, Val(k_ind)), submanifold_component(SDPG, h, Val(k_ind)))
     return k
 end
 
-# 8. Rightsemidirect, right action, act on right
+# 2. Left semidirect, left action, act on right
+# 6. Right semidirect, left action, act on right
+@doc """
+    compose(L::LieGroup{𝔽,<:SemidirectProductGroupOperation{⋆,⋄,<:AbstractLeftGroupActionType,ActionActsOnRight}}, g, h)
+
+$(_doc_semidirect_sub_groups) Let ``σ`` denote a left group action. It here acts on the right.
+
+The group operation ``$(_math(:∘))`` on the [`LeftSemidirectProductGroup`](@ref) ``G ⋉ H`` is given by
+
+```math
+    (g_1,h_1) ∘ (g_2,h_2) := $(_tex(:bigl))( g_1 ⋆ g_2, h_1 ⋄ σ_{g_1}(h_2) $(_tex(:bigr))).
+```
+
+The group operation ``$(_math(:∘))`` on the [`RightSemidirectProductGroup`](@ref) ``H ⋊ G`` is given by
+
+```math
+    (h_1,g_1) ∘ (h_2,g_2) := $(_tex(:bigl))( h_1 ⋄ σ_{g_1}(h_2), g_1 ⋆ g_2 $(_tex(:bigr))).
+```
+
+See also [`AbstractLeftGroupActionType`](@ref) and [`ActionActsOnRight`](@ref).
 """
-    compose(L::LieGroup{𝔽,RightSemidirectProductGroupOperation{⋄,⋆,<:AbstractRightGroupActionType,ActionActsOnRight}}, g, h)
+compose(
+    SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, ::Any, ::Any
+) where {𝔽, O1, O2, A <: AbstractLeftGroupActionType, AO <: ActionActsOnRight}
+
+# 4 Leftsemidirect, right action, act on right
+# 8. Rightsemidirect, right action, act on right
+@doc """
+    compose(L::LieGroup{𝔽,LeftSemidirectProductGroupOperation{⋆,⋄,<:AbstractRightGroupActionType,ActionActsOnRight}}, g, h)
 
 $(_doc_semidirect_sub_groups) Let ``τ`` denote a right group action. It here acts on the right.
-Then the group operation ``$(_math(:∘))`` on the semidirect product Lie group ``H ⋊ G`` is given by
+The group operation ``$(_math(:∘))`` on the [`LeftSemidirectProductGroup`](@ref) ``G ⋉ H`` is given by
+
+```math
+    (g_1,h_1) ∘ (g_2,h_2) := $(_tex(:bigl))( g_1 ⋆ g_2, h_1 ⋄ τ_{g_1^{-1}}(h_2) $(_tex(:bigr))).
+```
+
+The group operation ``$(_math(:∘))`` on the [`RightSemidirectProductGroup`](@ref) ``H ⋊ G`` is given by
 
 ```math
     (g_1,h_1) ∘ (g_2,h_2) := $(_tex(:bigl))( g_1 ⋆ g_2, h_1 ⋄ τ_{g_1^{-1}}(h_2) $(_tex(:bigr))).
@@ -458,22 +350,23 @@ Then the group operation ``$(_math(:∘))`` on the semidirect product Lie group 
 See also [`AbstractRightGroupActionType`](@ref) and [`ActionActsOnRight`](@ref).
 """
 compose(
-    SDPG::LieGroup{𝔽, RightSemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, ::Any, ::Any
+    SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, ::Any, ::Any
 ) where {𝔽, O1, O2, A <: AbstractRightGroupActionType, AO <: ActionActsOnRight}
 
+# a common implementation for 2,4 (left, no inverse) and 6,8 (right, with inverse)
 function _compose!(
-        SDPG::LieGroup{𝔽, RightSemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, k, g, h
-    ) where {𝔽, O1, O2, A <: AbstractRightGroupActionType, AO <: ActionActsOnRight}
-    PM, G, H, a = _semidirect_parts(SDPG)
-    # Avoid memory allocations by computing g_1^-1 in the first result component
-    inv!(G, submanifold_component(SDPG, k, Val(1)), submanifold_component(SDPG, g, Val(1)))
+        SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, k, g, h
+    ) where {𝔽, O1, O2, A <: AbstractGroupActionType, AO <: ActionActsOnRight}
+    PM, G, H, a, g_ind, h_ind = _semidirect_parts(SDPG)
+    # invert for right, copy for left
+    _semidirect_maybe_inv!(a, G, submanifold_component(SDPG, k, Val(g_ind)), submanifold_component(SDPG, g, Val(g_ind)))
     # Note difference from math to code: g=(g_1,h_1), h=(g_2,h_2)=(h1,h2)
-    # a) group action (first to avoid side effects in g, set k_2 to τ_{k1}(h_2)
-    apply!(a, submanifold_component(SDPG, k, Val(2)), submanifold_component(SDPG, k, Val(1)), submanifold_component(SDPG, h, Val(2)))
+    # a) group action (first to avoid side effects in g, set k_2 to σ_{g_1}(h_2)
+    apply!(a, submanifold_component(SDPG, k, Val(h_ind)), submanifold_component(SDPG, g, Val(g_ind)), submanifold_component(SDPG, h, Val(h_ind)))
     # b) group operation on G
-    _compose!(G, submanifold_component(SDPG, k, Val(1)), submanifold_component(SDPG, g, Val(1)), submanifold_component(SDPG, h, Val(1)))
-    # c) group operation on H (not that h2 is already in k2)
-    _compose!(H, submanifold_component(SDPG, k, Val(2)), submanifold_component(SDPG, g, Val(2)), submanifold_component(SDPG, k, Val(2)))
+    _compose!(G, submanifold_component(SDPG, k, Val(g_ind)), submanifold_component(SDPG, g, Val(g_ind)), submanifold_component(SDPG, h, Val(g_ind)))
+    # c) group operation on H (not that h_2 is already in k2)
+    _compose!(H, submanifold_component(SDPG, k, Val(h_ind)), submanifold_component(SDPG, g, Val(h_ind)), submanifold_component(SDPG, k, Val(h_ind)))
     return k
 end
 
