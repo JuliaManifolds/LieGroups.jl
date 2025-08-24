@@ -23,15 +23,15 @@ The list is alphabetical, but first lists types, then functions
 |:---------- |:---------- |:-------------- |
 | `AdditionOperation` | [`AdditionGroupOperation`](@ref) | |
 | `GroupActionSide` | [`AbstractActionActsOnType`](@ref) | Switching to a new, hopefully more descriptive naming. |
-| `LeftBackwardAction` | [`LeftGroupOperationAction`](@ref) and [`ActionActsOnRight`](@ref) | This tuple form has been discontinued. |
-| `LeftForwardAction` | [`LeftGroupOperationAction`](@ref) and [`ActionActsOnLeft`](@ref) | This tuple form has been discontinued. |
+| `LeftBackwardAction` | [`AbstractRightGroupActionType`](@ref) and [`ActionActsOnRight`](@ref) | This tuple form has been discontinued. |
+| `LeftForwardAction` | [`AbstractLeftGroupActionType`](@ref) and [`ActionActsOnLeft`](@ref) | This tuple form has been discontinued. |
 | `LeftSide` | [`ActionActsOnLeft`](@ref) | |
 | | [`LieAlgebra`](@ref)`(G)` | new alias to emphasize its manifold- and vector structure as well as for a few dispatch methods. |
 | `GroupManifold(M, op)` | [`LieGroup`](@ref)`(M, op)` | |
 | `PowerGroup(M)` | [`PowerLieGroup`](@ref)`(G,n)` | The main change is, that the constructor now requires a Lie group to build the power Lie group; This also allows for `G^n`. The other two former constructors for nested and nested-replacing are no longer necessary. `PowerLieGroup` behaves exactly the same as [`PowerManifold`](@extref `ManifoldsBase.PowerManifold`). |
 | `ProductGroup(M)` | [`ProductLieGroup`](@ref)`(G, H)` | The main change is, that the constructor now requires two Lie groups to build their product. This also allows for the short hand `G×H` to generate this product. |
-| `RightBackwardAction` | [`RightGroupOperationAction`](@ref) and [`ActionActsOnRight`](@ref) | This tuple form has been discontinued. |
-| `RightForwardAction` | [`RightGroupOperationAction`](@ref) and [`ActionActsOnLeft`](@ref) | This tuple form has been discontinued. |
+| `RightBackwardAction` | [`AbstractRightGroupActionType`](@ref) and [`ActionActsOnRight`](@ref) | This tuple form has been discontinued. |
+| `RightForwardAction` | [`AbstractRightGroupActionType`](@ref) and [`ActionActsOnLeft`](@ref) | This tuple form has been discontinued. |
 | `RightSide` | [`ActionActsOnRight`](@ref) | |
 | `SemidirectProductGroup(G, H, a)` | [`LeftSemidirectProductLieGroup`](@ref)`(G, H, a)` | While this staid the same, there is now also the [`default_left_action`](@ref)`(G,H)`. When this agrees with `a` you can use the short hand `G⋉H` to generate this semidirect product. Analogously there now also exists the [`RightSemidirectProductLieGroup`](@ref)`(G,H)` with[`default_left_action`](@ref)`(G,H)` that allows for the short cut `G⋊H` |
 | `SpecialEuclidean(n)` | `SpecialEuclideanGroup(n; variant=:right)` | |
@@ -55,7 +55,7 @@ The list is alphabetical, but first lists types, then functions
 | `log_lie(G, g)` | [`log`](@ref log(G::LieGroup, g))`(G, g)` | the (matrix/Lie group) logarithm |
 | `norm(G, p, X)` | [`norm`](@extref ManifoldsBase :jl:function:`LinearAlgebra.norm`)`(`[`LieAlgebra`](@ref)`(G), X)` | the norm product on the Lie Algebra. The old variant still calls the new one. |
 | `switch_direction(A)` | [`inv`](@ref inv(::GroupAction))`(A)` | switches from an action to its inverse action (formerly the direction forward/backward, sometimes even left/right, do not confuse with the side left/right). |
-| `switch_side(A)` | [`switch`](@ref switch(::GroupAction))`(A)` | switches from a left action to its corresponding right action. |
+| `switch_side(A)` | - | discontinued |
 | `translate(G, g, h)` | [`compose`](@ref)`(G, g, h)` | unified to `compose` |
 | `translate_diff(G, g, X, c)` | [`diff_left_compose`](@ref)`(G, g, h, X)`, [`diff_right_compose`](@ref)`(G, g, h, X)` | for compose ``g∘h`` the functions now specify whether the derivative is taken w.r.t. to the left (`g`) or right (`h`) argument |
 | `vee(G, p, X)` | [`vee`](@ref vee(G::LieAlgebra, X))`(`[`LieAlgebra`](@ref)`(G), X)` | hat/vee moved to using the new [`LieAlgebra`](@ref). The old format should still work. |
