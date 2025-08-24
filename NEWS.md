@@ -157,7 +157,7 @@ Compared to `Manifolds.jl`
 ### Added
 
 * Finishes most of the work on the interface for the `LieGroup` type and the new `LieAlgebra` type.
-* Finishes a generic implementation of a `SemiDirectProductGroupOperation`
+* Finishes a generic implementation of a `SemidirectProductGroupOperation`
 * All details will be detailed in the next release
 
 ## Old Changelog pre 0.0.3
