@@ -507,12 +507,12 @@ function diff_left_compose!(
         SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, Y, g, h, X
     ) where {𝔽, O1, O2, A <: AbstractGroupActionType, AO <: ActionActsOnLeft}
     PM, G, H, a, g_ind, h_ind = _semidirect_parts(SDPG)
-    spdg = LieAlgebra(SDPG)
+    sdpg = LieAlgebra(SDPG)
     # We use a naming close to the left variant: g = (gG, gH) = (g_1,h_1)
-    YG, YH = submanifold_component(spdg, Y, Val(g_ind)), submanifold_component(spdg, Y, Val(h_ind))
-    XG, XH = submanifold_component(spdg, X, Val(g_ind)), submanifold_component(spdg, X, Val(h_ind))
-    gG, gH = submanifold_component(SPDG, g, Val(g_ind)), submanifold_component(SPDG, g, Val(h_ind))
-    hG, hH = submanifold_component(SPDG, h, Val(g_ind)), submanifold_component(SPDG, h, Val(h_ind))
+    YG, YH = submanifold_component(sdpg, Y, Val(g_ind)), submanifold_component(sdpg, Y, Val(h_ind))
+    XG, XH = submanifold_component(sdpg, X, Val(g_ind)), submanifold_component(sdpg, X, Val(h_ind))
+    gG, gH = submanifold_component(SDPG, g, Val(g_ind)), submanifold_component(SDPG, g, Val(h_ind))
+    hG, hH = submanifold_component(SDPG, h, Val(g_ind)), submanifold_component(SDPG, h, Val(h_ind))
     # For right actions we have to invert hG - this allocates when it has to invert
     hG_mod = _semidirect_maybe_inv(a, G, hG)
     # we need one allocation to compute the action

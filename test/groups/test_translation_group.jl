@@ -64,7 +64,7 @@ begin
                 InverseLeftGroupOperationAction(),
                 InverseRightGroupOperationAction(),
             ]
-            A = GroupOperationAction(t, G)
+            A = GroupOperationAction(G, t)
             properties2[:Name] = "with $A"
             expectations2[:repr] = "GroupOperationAction($t, $G)"
             test_group_action(A, properties2, expectations2)
