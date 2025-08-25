@@ -4,8 +4,11 @@ In this package,the notation introduced in [Manifolds.jl Notation](https://julia
 
 | Symbol | Description | Also used | Comment |
 |:----:|:--------------- |:----:|:--- |
+| ``α`` | a general group action, when it is not specified whether it is a left (``α=σ``) or right (``α=τ``) action. | | |
 | ``∘`` | a group operation | | |
 | ``c_g:\mathcal G → \mathcal G`` | the conjugation map (with `g`) | | |
+| ``Df(p)[X]`` | the differential of a map `f` at point `p` in direction `X` | | |
+| ``D_af`` | the differential of a map `f` with respect to a certain parameter. | | |
 | ``\mathrm{e}`` | identity element of a group | | |
 | ``\exp_{\mathcal G}(X)`` | The Lie group exponential function | | |
 | ``\exp_g(X)`` | The Lie group exponential map (w.r.t. a Cartan Schouten connection) | | |

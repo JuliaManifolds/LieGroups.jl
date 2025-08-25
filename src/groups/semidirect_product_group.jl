@@ -217,6 +217,13 @@ function _semidirect_parts(SDPG::LieGroup{𝔽, <:RightSemidirectProductGroupOpe
     return PM, G, H, a, 2, 1
 end
 # A major difference between left and right actions is that for right, we have to invert the action while for left we do not
+function _semidirect_maybe_inv(a::A, G, g) where {A <: AbstractRightGroupActionType}
+    return inv(G, g)
+end
+function _semidirect_maybe_inv(a::A, G, g) where {A <: AbstractLeftGroupActionType}
+    return g
+end
+#and in in-place
 function _semidirect_maybe_inv!(a::A, G, k, g) where {A <: AbstractRightGroupActionType}
     return inv!(G, k, g)
 end
@@ -378,6 +385,17 @@ function _compose!(
 end
 
 # diff compose left
+_semidirect_diff_compose_notation = """
+## Notation
+
+* ``Dρ_{g'}(g)[X]`` and ``Dρ_{h'}(h)[Y]`` denote [`diff_left_compose`](@ref) on ``$(_tex(:Cal, "G"))`` and ``$(_tex(:Cal, "H"))``, respectively.
+* ``Dλ_{g'}(g)[X]`` and ``Dλ_{h'}(h)[Y]`` denote the [`diff_right_compose`](@ref) on ``$(_tex(:Cal, "G"))`` and  ``$(_tex(:Cal, "H"))``, respectively.
+* ``Dσ_g(h)[Y]`` denotes the [`diff_apply`](@ref)
+* ``D_{$(_tex(:Cal, "G"))}σ_g(h)[X]`` denotes the [`diff_group_apply`](@ref), i.e., differential of the group action with respect to its base point ``g``.
+"""
+
+# 1. Left semidirect, left action, act on left
+# 5. Right semidirect, left action, act on left
 """
     diff_left_compose(
         L::LieGroup{𝔽,<:SemidirectProductGroupOperation{⋆,⋄,<:AbstractLeftGroupActionType,ActionActsOnLeft}}, g, h, X
@@ -389,135 +407,257 @@ or the left group operation ``λ_g(h) = g ∘ h`` with respect to its index ``g`
 
 $(_doc_semidirect_sub_groups) Let ``σ`` denote a left group action. It here acts on the left.
 
-Then for the [`LeftSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on ``G ⋉ H`` we
+For the [`LeftSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on ``$(_tex(:Cal, "G")) ⋉ $(_tex(:Cal, "H"))`` we
 have
 
 ```math
-    ρ_{(g_2,h_2)}(g_1,h_1) ∘  := $(_tex(:bigl))( g_1 ⋆ g_2, σ_{g_2}(h_1) ⋄ h_2 $(_tex(:bigr))).
+    ρ_{(g_2,h_2)}(g_1,h_1) := (g_1,h_1) ∘ (g_2,h_2) = (g_1 ⋆ g_2, σ_{g_2}(h_1) ⋄ h_2).
 ```
 
 such that their differential reads for some ``(X, Y)`` from the Lie algebra that
 
 ```math
-D ρ_{(g_2,h_2)}((g_1,h_1))$(_tex(:bigl))[ X $(_tex(:bigr))]
+D ρ_{(g_2,h_2)}((g_1,h_1))$(_tex(:bigl))[ (X,Y) $(_tex(:bigr))]
   = $(_tex(:bigl))(
   Dρ_{g_2}(g_1)[X],
-  Dρ_{σ_{g_1}(h_2)}(h_1)[Y] + Dλ_{h_1}(σ_{g_1}(h_2)) $(_tex(:bigl))[ D_gσ_{g_1}(h_2)[X] $(_tex(:bigr))]
+  Dρ_{h_2}(σ_{g_2}(h_1)[Dσ_{g_2}(h_1)[Y]]
   $(_tex(:bigr))).
 ```
 
-where
-* ``Dρ_{g'}(g)[X]`` is the `diff_left_compose` on ``$(_tex(:Cal, "G"))``
-* ``Dρ_{h'}(h)[Y]`` is the `diff_left_compose` on ``$(_tex(:Cal, "H"))``.
-* ``Dλ_{g'}(g)[X]`` is the `diff_right_compose` on ``$(_tex(:Cal, "G"))``.
-* ``D_gσ_g(h)[X]`` is the `diff_group_apply`, i,e, differential of the group action with respect to its base point ``g``.
-TODO: improve notation of this differential to use an upright g
-"""
-function diff_left_compose!(
-        SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, Y, g, h, X
-    ) where {𝔽, O1, O2, A <: AbstractLeftGroupActionType, AO <: ActionActsOnLeft}
-    error("Not implemented yet")
-end
-# old code
-_doc_LSDP_diff_left_compose = """
-    diff_left_compose(
-        SDPG::LieGroup{𝔽,LeftSemidirectProductGroupOperation,<:ProductManifold}, g, h, X
-    ) where {𝔽}
-    diff_left_compose!(
-        SDPG::LieGroup{𝔽,LeftSemidirectProductGroupOperation,<:ProductManifold}, Y, g, h, X
-    ) where {𝔽}
-
-Compute the differential of the left group operation ``λ_g``, that is ``D_{λ_g}(h)[X]``.
-For this case it is given by
-
-TODO Update formula the Diff of Lambda is the one with respect to g.
+For the [`RightSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on `` $(_tex(:Cal, "H")) ⋊ $(_tex(:Cal, "G"))`` we
+have
 
 ```math
-    D_{λ_g}(h)[X] = $(_tex(:bigl))( D_{λ_{g_1}}(h_1)[X_1], D_{λ_{g_2}}(σ_{g_1}(h_2))$(_tex(:bigl))[ D_{σ_{g_1}}(h_2)[X_2]$(_tex(:bigr))]$(_tex(:bigr)))
+    ρ_{(h_2,g_2)}(h_1,g_1) := (h_1,g_1) ∘ (h_2,g_2) = (σ_{g_2}(h_1) ⋄ h_2, g_1 ⋆ g_2).
 ```
-where ``D_{λ_{g_2}}(σ_{g_1}(h_2))`` is given by [`diff_group_apply`](@ref)`(A, h_2, g_1, X_2)` with ``A`` denotes the [`GroupAction`](@ref) ``σ``.
+
+such that their differential reads for some ``(Y, X)`` from the Lie algebra that
+
+```math
+D ρ_{(h_2,g_2)}((h_1,g_1))$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
+  = $(_tex(:bigl))(
+  Dρ_{h_2}(σ_{g_2}(h_1)[Dσ_{g_2}(h_1)[Y]],
+  Dρ_{g_2}(g_1)[X],
+  $(_tex(:bigr))).
+```
+
+$(_semidirect_diff_compose_notation)
 """
-
-"$(_doc_LSDP_diff_left_compose)"
 diff_left_compose(
-    SDPG::LieGroup{𝔽, <:LeftSemidirectProductGroupOperation, <:ProductManifold}, g, h, X
-) where {𝔽}
+        SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, g, h, X
+    ) where {𝔽, O1, O2, A <: AbstractLeftGroupActionType, AO <: ActionActsOnLeft}
 
-"$(_doc_LSDP_diff_left_compose)"
+# 3. Left semidirect, right action, act on left
+# 7. Right semidirect, right action, act on left
+"""
+    diff_left_compose(
+        L::LieGroup{𝔽,<:SemidirectProductGroupOperation{⋆,⋄,<:AbstractLeftGroupActionType,ActionActsOnRight}}, g, h, X
+    )
+
+Compute the differential of the group operation ``⋅∘⋅`` with respect to the left argument.
+This means that we consider the right group operation man ``ρ_h(g) = g ∘ h`` with respect to ``g``
+or the left group operation ``λ_g(h) = g ∘ h`` with respect to its index ``g``.
+
+$(_doc_semidirect_sub_groups) Let ``τ`` denote a right group action. It here acts on the left.
+
+For the [`LeftSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on ``$(_tex(:Cal, "G")) ⋉ $(_tex(:Cal, "H"))`` we
+have
+
+```math
+    ρ_{(g_2,h_2)}(g_1,h_1) := (g_1,h_1) ∘ (g_2,h_2) = (g_1 ⋆ g_2, τ_{g_2^{-1}}(h_1) ⋄ h_2).
+```
+
+such that their differential reads for some ``(X, Y)`` from the Lie algebra that
+
+```math
+D ρ_{(g_2,h_2)}((g_1,h_1))$(_tex(:bigl))[ (X,Y) $(_tex(:bigr))]
+  = $(_tex(:bigl))(
+  Dρ_{g_2}(g_1)[X],
+  Dρ_{h_2}(τ_{g_2^{-1}}(h_1)[Dτ_{g_2^{-1}}(h_1)[Y]]
+  $(_tex(:bigr))).
+```
+
+For the [`RightSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on `` $(_tex(:Cal, "H")) ⋊ $(_tex(:Cal, "G"))`` we
+have
+
+```math
+    ρ_{(h_2,g_2)}(h_1,g_1) := (h_1,g_1) ∘ (h_2,g_2) = (τ_{g_2^{-1}}(h_1) ⋄ h_2, g_1 ⋆ g_2).
+```
+
+such that their differential reads for some ``(Y, X)`` from the Lie algebra that
+
+```math
+D ρ_{(h_2,g_2)}((h_1,g_1))$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
+  = $(_tex(:bigl))(
+  Dρ_{h_2}(τ_{g_2^{-1}}(h_1)[Dτ_{g_2^{-1}}(h_1)[Y]]
+  Dρ_{g_2}(g_1)[X]
+  $(_tex(:bigr))).
+```
+
+$(_semidirect_diff_compose_notation)
+"""
+diff_left_compose(
+        SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, g, h, X
+    ) where {𝔽, O1, O2, A <: AbstractRightGroupActionType, AO <: ActionActsOnLeft}
+
+# An implementation for 1,3 (no inverse for left) and 5,7 (inverse for right)
+# in the computation of the element coming from the group action.
 function diff_left_compose!(
-        SDPG::LieGroup{𝔽, <:LeftSemidirectProductGroupOperation, <:ProductManifold}, Y, g, h, X
-    ) where {𝔽}
-    PM = SDPG.manifold
-    G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
-    A = GroupAction(SDPG.op.action_type, G, H)
-
-    Y1, Y2 = submanifold_components(LieAlgebra(SDPG), Y)
-    X1, X2 = submanifold_components(LieAlgebra(SDPG), X)
-    g1, g2 = submanifold_components(SDPG, g)
-    h1, h2 = submanifold_components(SDPG, h)
-
-    # We have to perform 3 steps applying the group action
-    # 1) for the left this is just a diff on that group
-    diff_left_compose!(G, Y1, g1, h1, X1)
-    # For the second (right) it is diff_compose applied to the diff_apply of the group action
-    # where we can do that diff apply already in-place
-    diff_group_apply!(A, Y2, g1, h2, X2)
-    # and then apply diff compose for the right
-    x = copy(G, h2)
-    # we need the point on G where we apply to
-    apply!(A, x, g1, h2)
-    diff_left_compose!(H, Y2, g2, x, Y2)
+        SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, Y, g, h, X
+    ) where {𝔽, O1, O2, A <: AbstractGroupActionType, AO <: ActionActsOnLeft}
+    PM, G, H, a, g_ind, h_ind = _semidirect_parts(SDPG)
+    spdg = LieAlgebra(SDPG)
+    # We use a naming close to the left variant: g = (gG, gH) = (g_1,h_1)
+    YG, YH = submanifold_component(spdg, Y, Val(g_ind)), submanifold_component(spdg, Y, Val(h_ind))
+    XG, XH = submanifold_component(spdg, X, Val(g_ind)), submanifold_component(spdg, X, Val(h_ind))
+    gG, gH = submanifold_component(SPDG, g, Val(g_ind)), submanifold_component(SPDG, g, Val(h_ind))
+    hG, hH = submanifold_component(SPDG, h, Val(g_ind)), submanifold_component(SPDG, h, Val(h_ind))
+    # For right actions we have to invert hG - this allocates when it has to invert
+    hG_mod = _semidirect_maybe_inv(a, G, hG)
+    # we need one allocation to compute the action
+    σg1h2 = apply(a, hG_mod, gH)
+    # Step 1: Compute the argument for the second components diff
+    diff_apply!(a, YH, hG_mod, gH, XH)
+    # Step 2: Differential of right group compose (argument from 1)
+    diff_left_compose!(H, YH, σg1h2, hH, YH)
+    # last: the plain diff compose on G
+    diff_left_compose!(G, YG, gG, hG, XG)
     return Y
 end
 
-_doc_RSDP_diff_left_compose = """
+# 2. Left semidirect, left action, act on right
+# 6. Right semidirect, left action, act on right
+"""
     diff_left_compose(
-        SDPG::LieGroup{𝔽,RightSemidirectProductGroupOperation,<:ProductManifold}, g, h, X
-    ) where {𝔽}
-    diff_left_compose!(
-        SDPG::LieGroup{𝔽,RightSemidirectProductGroupOperation,<:ProductManifold}, Y, g, h, X
-    ) where {𝔽}
+        L::LieGroup{𝔽,<:SemidirectProductGroupOperation{⋆,⋄,<:AbstractLeftGroupActionType,ActionActsOnRight}}, g, h, X
+    )
 
-Compute the differential of the left group operation ``λ_g``, that is ``D_{λ_g}(h)[X]``.
-For this case it is given by
+Compute the differential of the group operation ``⋅∘⋅`` with respect to the left argument.
+This means that we consider the right group operation man ``ρ_h(g) = g ∘ h`` with respect to ``g``
+or the left group operation ``λ_g(h) = g ∘ h`` with respect to its index ``g``.
 
-TODO Update formula the Diff of Lambda is the one with respect to g.
+$(_doc_semidirect_sub_groups) Let ``σ`` denote a left group action. It here acts on the right.
+
+For the [`LeftSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on ``$(_tex(:Cal, "G")) ⋉ $(_tex(:Cal, "H"))`` we
+have
 
 ```math
-    D_{λ_g}(h)[X] = $(_tex(:bigl))( D_{λ_{g_1}}(σ_{g_2}(h_1))$(_tex(:bigl))[ D_{σ_{g_2}}(h_1)[X_1], D_{λ_{g_2}}(h_2)[X_2]$(_tex(:bigr))]$(_tex(:bigr)))
+    ρ_{(g_2,h_2)}(g_1,h_1) := (g_1,h_1) ∘ (g_2,h_2) = (g_1 ⋆ g_2, h_1 ⋄ σ_{g_1}(h_2)).
 ```
-where ``D_{λ_{g_2}}(σ_{g_1}(h_2))`` is given by [`diff_group_apply`](@ref)`(A, h_2, g_1, X_2)` with ``A`` denotes the [`GroupAction`](@ref) ``σ``.
+
+such that their differential reads for some ``(X, Y)`` from the Lie algebra that
+
+```math
+D ρ_{(g_2,h_2)}((g_1,h_1))$(_tex(:bigl))[ (X,Y) $(_tex(:bigr))]
+  = $(_tex(:bigl))(
+  Dρ_{g_2}(g_1)[X],
+  Dρ_{σ_{g_1}(h_2)}(h_1)[Y] + Dλ_{h_1}(σ_{g_1}(h_2)) $(_tex(:bigl))[ D_{$(_tex(:Cal, "G"))}σ_{g_1}(h_2)[X] $(_tex(:bigr))]
+  $(_tex(:bigr))).
+```
+
+For the [`RightSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on `` $(_tex(:Cal, "H")) ⋊ $(_tex(:Cal, "G"))`` we
+have
+
+```math
+    ρ_{(h_2,g_2)}(h_1,g_1) := (h_1,g_1) ∘ (h_2,g_2) = (h_1 ⋄ σ_{g_2}(h_2), g_1 ⋆ g_2).
+```
+
+such that their differential reads for some ``(Y, X)`` from the Lie algebra that
+
+```math
+D ρ_{(h_2,g_2)}((h_1,g_1))$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
+  = $(_tex(:bigl))(
+  Dρ_{σ_{g_1}(h_2)}(h_1)[Y] + Dλ_{h_1}(σ_{g_1}(h_2)) $(_tex(:bigl))[ D_{$(_tex(:Cal, "G"))}σ_{g_1}(h_2)[X] $(_tex(:bigr))],
+  Dρ_{g_2}(g_1)[X]
+  $(_tex(:bigr))).
+```
+
+$(_semidirect_diff_compose_notation)
 """
-
-"$(_doc_RSDP_diff_left_compose)"
 diff_left_compose(
-    SDPG::LieGroup{𝔽, <:RightSemidirectProductGroupOperation, <:ProductManifold}, g, h, X
-) where {𝔽}
+        SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, g, h, X
+    ) where {𝔽, O1, O2, A <: AbstractLeftGroupActionType, AO <: ActionActsOnRight}
 
-"$(_doc_RSDP_diff_left_compose)"
+# 4 Left semidirect, right action, act on right
+# 8. Right semidirect, right action, act on right
+"""
+    diff_left_compose(
+        L::LieGroup{𝔽,<:SemidirectProductGroupOperation{⋆,⋄,<:AbstractLeftGroupActionType,ActionActsOnRight}}, g, h, X
+    )
+
+Compute the differential of the group operation ``⋅∘⋅`` with respect to the left argument.
+This means that we consider the right group operation man ``ρ_h(g) = g ∘ h`` with respect to ``g``
+or the left group operation ``λ_g(h) = g ∘ h`` with respect to its index ``g``.
+
+$(_doc_semidirect_sub_groups) Let ``τ`` denote a right group action. It here acts on the right.
+
+For the [`LeftSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on ``$(_tex(:Cal, "G")) ⋉ $(_tex(:Cal, "H"))`` we
+have
+
+```math
+    ρ_{(g_2,h_2)}(g_1,h_1) := (g_1,h_1) ∘ (g_2,h_2) = (g_1 ⋆ g_2, h_1 ⋄ τ_{g_1^{-1}}(h_2)).
+```
+
+such that their differential reads for some ``(X, Y)`` from the Lie algebra that
+
+```math
+D ρ_{(g_2,h_2)}((g_1,h_1))$(_tex(:bigl))[ (X,Y) $(_tex(:bigr))]
+  = $(_tex(:bigl))(
+  Dρ_{g_2}(g_1)[X],
+  Dρ_{τ_{g_1^{-1}}}(h_1)[Y] + Dλ_{h_1}(τ_{g_1^{-1}}(h_2)) $(_tex(:bigl))[ D_{$(_tex(:Cal, "G"))}τ_{g_1^{-1}}(h_2)[X] $(_tex(:bigr))]
+  $(_tex(:bigr))).
+```
+
+For the [`RightSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on `` $(_tex(:Cal, "H")) ⋊ $(_tex(:Cal, "G"))`` we
+have
+
+```math
+    ρ_{(h_2,g_2)}(h_1,g_1) := (h_1,g_1) ∘ (h_2,g_2) = (h_1 ⋄ σ_{g_2}(h_2), g_1 ⋆ g_2).
+```
+
+such that their differential reads for some ``(Y, X)`` from the Lie algebra that
+
+```math
+D ρ_{(h_2,g_2)}((h_1,g_1))$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
+  = $(_tex(:bigl))(
+  Dρ_{τ_{g_1^{-1}}}(h_1)[Y] + Dλ_{h_1}(τ_{g_1^{-1}}(h_2)) $(_tex(:bigl))[ D_{$(_tex(:Cal, "G"))}τ_{g_1^{-1}}(h_2)[X] $(_tex(:bigr))],
+  Dρ_{g_2}(g_1)[X]
+  $(_tex(:bigr))).
+```
+
+$(_semidirect_diff_compose_notation)
+"""
+diff_left_compose(
+        SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, g, h, X
+    ) where {𝔽, O1, O2, A <: AbstractLeftGroupActionType, AO <: ActionActsOnRight}
+
+# An implementation for 2,6 (no inverse for left) and 4,8 (inverse for right)
+# in the computation of the element coming from the group action.
 function diff_left_compose!(
-        SDPG::LieGroup{𝔽, <:RightSemidirectProductGroupOperation, <:ProductManifold}, Y, g, h, X
-    ) where {𝔽}
-    PM = SDPG.manifold
-    H, G = map(LieGroup, PM.manifolds, SDPG.op.operations)
-    A = GroupAction(SDPG.op.action_type, G, H)
-
-    Y1, Y2 = submanifold_components(LieAlgebra(SDPG), Y)
-    X1, X2 = submanifold_components(LieAlgebra(SDPG), X)
-    g1, g2 = submanifold_components(SDPG, g)
-    h1, h2 = submanifold_components(SDPG, h)
-
-    # We have to perform 3 steps applying the group action
-    # 1) for the right this is just a diff on that group
-    diff_left_compose!(G, Y2, g2, h2, X2)
-    # For the second (left) it is diff_compose applied to the diff_apply of the group action
-    # where we can do that diff apply already in-place
-    diff_group_apply!(A, Y1, g2, h1, X1)
-    # and then apply diff compose for the right
-    x = copy(G, h1)
-    # we need the point on G where we apply to
-    apply!(A, x, g2, h1)
-    diff_left_compose!(H, Y1, g1, x, Y1)
+        SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, Y, g, h, X
+    ) where {𝔽, O1, O2, A <: AbstractGroupActionType, AO <: ActionActsOnRight}
+    PM, G, H, a, g_ind, h_ind = _semidirect_parts(SDPG)
+    spdg = LieAlgebra(SDPG)
+    # We use a naming close to the left variant:
+    # g = (gG, gH) = (g_1,h_1) h = (hG, hH) = (g_2,h_2)
+    # X = (XG, XH) = (X, Y), Y = (YG, YH) the two components of the result
+    YG, YH = submanifold_component(spdg, Y, Val(g_ind)), submanifold_component(spdg, Y, Val(h_ind))
+    XG, XH = submanifold_component(spdg, X, Val(g_ind)), submanifold_component(spdg, X, Val(h_ind))
+    gG, gH = submanifold_component(SPDG, g, Val(g_ind)), submanifold_component(SPDG, g, Val(h_ind))
+    hG, hH = submanifold_component(SPDG, h, Val(g_ind)), submanifold_component(SPDG, h, Val(h_ind))
+    # For right actions we have to invert gG - this allocates when it has to invert
+    gG_mod = _semidirect_maybe_inv(a, G, gG)
+    # one allocation for applying the action
+    # we need one allocation to compute the action
+    σg1mh2 = apply(a, gG_mod, hH)
+    # Step 1: Compute the argument for the second summand on H - use the memory of YH for the result
+    diff_group_apply!(A, YH, gG_mod, hH, XH)
+    # Step 2: Differential of right group compose (argument from 1)
+    diff_right_compose!(H, YH, gH, σg1mh2, YH)
+    # Step 3: a second allocation for the other (first) differential, we want to add to that.
+    YH .+= diff_left_compose(H, gH, σg1mh2, XH)
+    # last: the plain diff compose on G
+    diff_left_compose!(G, YG, gG, hG, XG)
     return Y
 end
 
