@@ -103,16 +103,10 @@ function identity_element!(::_PlanarCircleGroup, p::V) where {T, V <: AbstractVe
     return p
 end
 
-function inv!(::_PlanarCircleGroup, q, p)
+function _inv!(::_PlanarCircleGroup, q, p)
     q[1] = p[1]
     q[2] = -p[2]
     return q
-end
-
-function inv!(
-        G::PG, q, ::Identity{AbelianMultiplicationGroupOperation}
-    ) where {PG <: _PlanarCircleGroup}
-    return identity_element!(G, q)
 end
 
 function inv_left_compose!(C::_PlanarCircleGroup, k, g, h)

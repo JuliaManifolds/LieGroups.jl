@@ -189,15 +189,10 @@ simplifies to ``-g``. This can be done in-place of `h`.
 Base.inv(G::LieGroup{𝔽, AdditionGroupOperation}, g) where {𝔽}
 
 @doc "$(_doc_inv_add)"
-function inv!(::LieGroup{𝔽, AdditionGroupOperation}, h, g) where {𝔽}
+inv!(::LieGroup{𝔽, AdditionGroupOperation}, h, g) where {𝔽}
+function _inv!(::LieGroup{𝔽, AdditionGroupOperation}, h, g) where {𝔽}
     h .= (-1) .* g
     return h
-end
-# Resolve ambiguity
-function inv!(
-        G::LieGroup{𝔽, AdditionGroupOperation}, q, ::Identity{AdditionGroupOperation}
-    ) where {𝔽}
-    return identity_element!(G, q)
 end
 
 _doc_lie_bracket_add = """

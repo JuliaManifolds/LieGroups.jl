@@ -229,15 +229,11 @@ function Base.inv(
 end
 
 @doc "$(_doc_inv_abelmult)"
-function inv!(G::LieGroup{𝔽, <:AbelianMultiplicationGroupOperation}, h, g) where {𝔽}
+inv!(::LieGroup{𝔽, <:AbelianMultiplicationGroupOperation}, h, g) where {𝔽}
+
+function _inv!(G::LieGroup{𝔽, <:AbelianMultiplicationGroupOperation}, h, g) where {𝔽}
     copyto!(h, inv(G, g))
     return h
-end
-
-function inv!(
-        G::LieGroup{𝔽, O}, g, ::Identity{O}
-    ) where {𝔽, O <: AbelianMultiplicationGroupOperation}
-    return identity_element!(G, g)
 end
 
 function inv_left_compose(

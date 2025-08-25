@@ -250,14 +250,11 @@ simplifies to the multiplicative inverse ``g^{-1}``. This can be done in-place o
 Base.inv(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, ::Any) where {𝔽}
 
 @doc "$(_doc_inv_mult)"
-function inv!(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, h, g) where {𝔽}
+inv!(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, h, g) where {𝔽}
+
+function _inv!(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, h, g) where {𝔽}
     copyto!(h, inv(g))
     return h
-end
-function inv!(
-        G::LieGroup{𝔽, O}, q, ::Identity{O}
-    ) where {𝔽, O <: AbstractMultiplicationGroupOperation}
-    return identity_element!(G, q)
 end
 
 # Compute g^{-1}h more efficient than inverting g

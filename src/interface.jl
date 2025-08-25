@@ -542,17 +542,24 @@ on the [`AbstractLieGroup`](@ref) ``$(_math(:G))``,
 that is, return the unique element ``h=g^{-1}`` such that ``h$(_math(:∘))g=$(_math(:e))``, where ``$(_math(:e))`` denotes the [`Identity`](@ref).
 
 This can be done in-place of `h`, without side effects, that is you can do `inv!(G, g, g)`.
+
+!!! info
+    This function also handles the case where `g` is the [`Identity`](@ref)`(G)`.
+    Since this would lead to ambiguities when implementing a new group operations,
+    this function calls `_inv` and `_inv!`, respectively, which is meant for the actual computation of
+    group operations on (non-[`Identity`](@ref)` but maybe its numerical representation) elements.
 """
 
 @doc "$_doc_inv"
-function Base.inv(G::AbstractLieGroup, g)
+Base.inv(G::AbstractLieGroup, g) = _inv(G, g)
+function _inv(G::AbstractLieGroup, g)
     h = allocate_result(G, inv, g)
-    return inv!(G, h, g)
+    return inv!(G, h, g)  # while we could go to _inv! as well, someone might just have done inv!
 end
 
 function inv! end
 @doc "$_doc_inv"
-inv!(G::AbstractLieGroup, h, g)
+inv!(G::AbstractLieGroup, h, g) = _inv!(G, h, g)
 
 function Base.inv(
         ::AbstractLieGroup{𝔽, O}, e::Identity{O}
@@ -565,6 +572,8 @@ function inv!(
     ) where {𝔽, O <: AbstractGroupOperation}
     return identity_element!(G, g)
 end
+
+function _inv! end
 
 _doc_inv_left_compose = """
     inv_left_compose(G::AbstractLieGroup, g, h)

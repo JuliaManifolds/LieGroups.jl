@@ -603,7 +603,9 @@ This computation can be done in-place of `h`.
 Base.inv(G::SpecialEuclideanGroup, g)
 
 @doc "$(_doc_inv_SEn)"
-function inv!(G::SpecialEuclideanGroup, h::AbstractMatrix, g::AbstractMatrix)
+inv!(G::SpecialEuclideanGroup, h, g)
+
+function _inv!(G::SpecialEuclideanGroup, h::AbstractMatrix, g::AbstractMatrix)
     init_constants!(G, h)
     _inv_SE!(G, h, g)
     return h
@@ -615,14 +617,6 @@ function _inv_SE!(G::SpecialEuclideanGroup, h, g)
     th = submanifold_component(G, h, :Translation)
     copyto!(rh, transpose(rg))
     return copyto!(th, -rh * tg)
-end
-
-function inv!(
-        G::SpecialEuclideanGroup,
-        q::AbstractMatrix,
-        ::Identity{<:SpecialEuclideanGroupOperation},
-    )
-    return identity_element!(G, q)
 end
 
 function ManifoldsBase.isapprox(

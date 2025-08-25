@@ -176,7 +176,7 @@ See [HilgertNeeb:2012; Section 9.1.3](@cite) for more details.
 
 # Constructors
     GroupAction(
-        group::AbstractLieGroup, manifold::ManifoldsBase.AbstractManifold, type::AbstractGroupActionType;
+        group::AbstractLieGroup, manifold::ManifoldsBase.AbstractManifold, type::AbstractGroupActionType,
         on::AbstractActionActsOnType=ActionActsOnRight()
     )
 Generate a group action where the type of the action and what it acts on are keyword arguments.
@@ -301,7 +301,7 @@ diff_group_apply!(A::GroupAction, q, g, p)
 Return the [`GroupAction`](@ref) representing the inverse of an [`GroupAction`](@ref) of [`AbstractGroupActionType`](@ref) `T`.
 This is usually done by returning the group action with the inverse type of `T`.
 """
-Base.inv(A::GroupAction) = GroupAction(inv(A.type), A.group, A.manifold)
+Base.inv(A::GroupAction) = GroupAction(A.group, A.manifold, inv(A.type), A.on)
 
 """
     inv(::AbstractGroupActionType)
@@ -312,7 +312,7 @@ inverse operation.
 Base.inv(::AbstractGroupActionType)
 
 function Base.show(io::IO, A::GroupAction)
-    return print(io, "GroupAction($(A.type), $(A.group), $(A.manifold))")
+    return print(io, "GroupAction($(A.group), $(A.manifold), $(A.type), $(A.on))")
 end
 
 function switch end
@@ -324,7 +324,7 @@ Return the group operation action representing the similar [`GroupAction`](@ref)
 but acting from the other side. It switches left to right and vice versa.
 This is done by returning the group action with the “switched” type of `T`.
 """
-switch(A::GroupAction) = GroupAction(switch(A.type), A.group, A.manifold)
+switch(A::GroupAction) = GroupAction(A.group, A.manifold, switch(A.type), A.on)
 
 @doc """
     switch(T::AbstractGroupActionType)

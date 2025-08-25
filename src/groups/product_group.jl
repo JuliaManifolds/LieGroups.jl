@@ -339,7 +339,7 @@ function ManifoldsBase.inner(
     )
 end
 
-function inv!(
+function _inv!(
         PrG::LieGroup{𝔽, Op, M}, h, g
     ) where {𝔽, Op <: ProductGroupOperation, M <: ProductManifold}
     PrM = PrG.manifold
