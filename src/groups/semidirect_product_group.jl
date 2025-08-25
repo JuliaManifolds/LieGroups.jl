@@ -902,7 +902,7 @@ $(_semidirect_diff_compose_notation)
 """
 diff_right_compose(
     SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, g, h, X
-) where {𝔽, O1, O2, A <: AbstractLeftGroupActionType, AO <: ActionActsOnRight}
+) where {𝔽, O1, O2, A <: AbstractRightGroupActionType, AO <: ActionActsOnRight}
 
 # An implementation for 2,6 (no inverse for left) and 4,8 (inverse for right)
 # in the computation of the element coming from the group action.
