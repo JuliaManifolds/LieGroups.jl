@@ -931,6 +931,25 @@ function diff_right_compose!(
     return Y
 end
 
+# get coordinates
+
+function get_coordinates_lie!(
+        Pr𝔤::LieAlgebra{𝔽, Op, LieGroup{𝔽, Op, M}}, c, X, B::DefaultLieAlgebraOrthogonalBasis
+    ) where {𝔽, Op <: SemidirectProductGroupOperation, M <: ProductManifold}
+    PrG = Pr𝔤.manifold
+    PrM = PrG.manifold
+    dims = map(manifold_dimension, PrM.manifolds)
+    @assert length(c) == sum(dims)
+    dim_ranges = ManifoldsBase._get_dim_ranges(dims)
+    Prc = map(dr -> (@inbounds view(c, dr)), dim_ranges)
+    PrL = LieAlgebra.(LieGroup.(PrM.manifolds, PrG.op.operations))
+    ts = ManifoldsBase.ziptuples(PrL, Prc, submanifold_components(Pr𝔤, X))
+    map(ts) do t
+        return get_coordinates_lie!(t..., B)
+    end
+    return c
+end
+
 # get vector
 
 function get_vector_lie!(
@@ -1059,21 +1078,4 @@ function Base.show(
     G, H = LieGroup.(SDPG.manifold.manifolds, SDPG.op.operations)
     at = SDPG.op.action_type
     return print(io, "RightSemidirectProductLieGroup($G, $H, $at)")
-end
-
-function get_coordinates_lie!(
-        Pr𝔤::LieAlgebra{𝔽, Op, LieGroup{𝔽, Op, M}}, c, X, B::DefaultLieAlgebraOrthogonalBasis
-    ) where {𝔽, Op <: SemidirectProductGroupOperation, M <: ProductManifold}
-    PrG = Pr𝔤.manifold
-    PrM = PrG.manifold
-    dims = map(manifold_dimension, PrM.manifolds)
-    @assert length(c) == sum(dims)
-    dim_ranges = ManifoldsBase._get_dim_ranges(dims)
-    Prc = map(dr -> (@inbounds view(c, dr)), dim_ranges)
-    PrL = LieAlgebra.(LieGroup.(PrM.manifolds, PrG.op.operations))
-    ts = ManifoldsBase.ziptuples(PrL, Prc, submanifold_components(Pr𝔤, X))
-    map(ts) do t
-        return get_coordinates_lie!(t..., B)
-    end
-    return c
 end

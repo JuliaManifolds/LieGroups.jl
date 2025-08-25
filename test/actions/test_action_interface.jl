@@ -11,5 +11,5 @@ using LieGroupsTestSuite
     a = GroupAction(G, M, T, ActionActsOnRight())
     @test repr(a) === "GroupAction($G, $M, $T, ActionActsOnRight())"
     @test switch(T) === LieGroupsTestSuite.DummyRightActionType()
-    @test switch(a) === GroupAction(switch(T), G, M, ActionActsOnRight())
+    @test switch(a) === GroupAction(G, M, switch(T), ActionActsOnRight())
 end
