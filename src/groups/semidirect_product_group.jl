@@ -444,8 +444,8 @@ D ρ_{(h_2,g_2)}((h_1,g_1))$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
 $(_semidirect_diff_compose_notation)
 """
 diff_left_compose(
-        SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, g, h, X
-    ) where {𝔽, O1, O2, A <: AbstractLeftGroupActionType, AO <: ActionActsOnLeft}
+    SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, g, h, X
+) where {𝔽, O1, O2, A <: AbstractLeftGroupActionType, AO <: ActionActsOnLeft}
 
 # 3. Left semidirect, right action, act on left
 # 7. Right semidirect, right action, act on left
@@ -489,7 +489,7 @@ such that their differential reads for some ``(Y, X)`` from the Lie algebra that
 ```math
 D ρ_{(h_2,g_2)}((h_1,g_1))$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
   = $(_tex(:bigl))(
-  Dρ_{h_2}(τ_{g_2^{-1}}(h_1)[Dτ_{g_2^{-1}}(h_1)[Y]]
+  Dρ_{h_2}(τ_{g_2^{-1}}(h_1)[Dτ_{g_2^{-1}}(h_1)[Y]],
   Dρ_{g_2}(g_1)[X]
   $(_tex(:bigr))).
 ```
@@ -497,8 +497,8 @@ D ρ_{(h_2,g_2)}((h_1,g_1))$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
 $(_semidirect_diff_compose_notation)
 """
 diff_left_compose(
-        SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, g, h, X
-    ) where {𝔽, O1, O2, A <: AbstractRightGroupActionType, AO <: ActionActsOnLeft}
+    SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, g, h, X
+) where {𝔽, O1, O2, A <: AbstractRightGroupActionType, AO <: ActionActsOnLeft}
 
 # An implementation for 1,3 (no inverse for left) and 5,7 (inverse for right)
 # in the computation of the element coming from the group action.
@@ -575,8 +575,8 @@ D ρ_{(h_2,g_2)}((h_1,g_1))$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
 $(_semidirect_diff_compose_notation)
 """
 diff_left_compose(
-        SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, g, h, X
-    ) where {𝔽, O1, O2, A <: AbstractLeftGroupActionType, AO <: ActionActsOnRight}
+    SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, g, h, X
+) where {𝔽, O1, O2, A <: AbstractLeftGroupActionType, AO <: ActionActsOnRight}
 
 # 4 Left semidirect, right action, act on right
 # 8. Right semidirect, right action, act on right
@@ -628,8 +628,8 @@ D ρ_{(h_2,g_2)}((h_1,g_1))$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
 $(_semidirect_diff_compose_notation)
 """
 diff_left_compose(
-        SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, g, h, X
-    ) where {𝔽, O1, O2, A <: AbstractLeftGroupActionType, AO <: ActionActsOnRight}
+    SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, g, h, X
+) where {𝔽, O1, O2, A <: AbstractLeftGroupActionType, AO <: ActionActsOnRight}
 
 # An implementation for 2,6 (no inverse for left) and 4,8 (inverse for right)
 # in the computation of the element coming from the group action.
