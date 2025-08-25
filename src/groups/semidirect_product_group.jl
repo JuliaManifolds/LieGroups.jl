@@ -418,7 +418,7 @@ have
 such that their differential reads for some ``(X, Y)`` from the Lie algebra that
 
 ```math
-D ρ_{(g_2,h_2)}((g_1,h_1))$(_tex(:bigl))[ (X,Y) $(_tex(:bigr))]
+D ρ_{(g_2,h_2)}(g_1,h_1)$(_tex(:bigl))[ (X,Y) $(_tex(:bigr))]
   = $(_tex(:bigl))(
   Dρ_{g_2}(g_1)[X],
   Dρ_{h_2}(σ_{g_2}(h_1)[Dσ_{g_2}(h_1)[Y]]
@@ -435,7 +435,7 @@ have
 such that their differential reads for some ``(Y, X)`` from the Lie algebra that
 
 ```math
-D ρ_{(h_2,g_2)}((h_1,g_1))$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
+D ρ_{(h_2,g_2)}(h_1,g_1)$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
   = $(_tex(:bigl))(
   Dρ_{h_2}(σ_{g_2}(h_1)[Dσ_{g_2}(h_1)[Y]],
   Dρ_{g_2}(g_1)[X],
@@ -471,7 +471,7 @@ have
 such that their differential reads for some ``(X, Y)`` from the Lie algebra that
 
 ```math
-D ρ_{(g_2,h_2)}((g_1,h_1))$(_tex(:bigl))[ (X,Y) $(_tex(:bigr))]
+D ρ_{(g_2,h_2)}(g_1,h_1)$(_tex(:bigl))[ (X,Y) $(_tex(:bigr))]
   = $(_tex(:bigl))(
   Dρ_{g_2}(g_1)[X],
   Dρ_{h_2}(τ_{g_2^{-1}}(h_1)[Dτ_{g_2^{-1}}(h_1)[Y]]
@@ -488,7 +488,7 @@ have
 such that their differential reads for some ``(Y, X)`` from the Lie algebra that
 
 ```math
-D ρ_{(h_2,g_2)}((h_1,g_1))$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
+D ρ_{(h_2,g_2)}(h_1,g_1)$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
   = $(_tex(:bigl))(
   Dρ_{h_2}(τ_{g_2^{-1}}(h_1)[Dτ_{g_2^{-1}}(h_1)[Y]],
   Dρ_{g_2}(g_1)[X]
@@ -516,11 +516,11 @@ function diff_left_compose!(
     # For right actions we have to invert hG - this allocates when it has to invert
     hG_mod = _semidirect_maybe_inv(a, G, hG)
     # we need one allocation to compute the action
-    σg1h2 = apply(a, hG_mod, gH)
+    σg2h1 = apply(a, hG_mod, gH)
     # Step 1: Compute the argument for the second components diff
     diff_apply!(a, YH, hG_mod, gH, XH)
     # Step 2: Differential of right group compose (argument from 1)
-    diff_left_compose!(H, YH, σg1h2, hH, YH)
+    diff_left_compose!(H, YH, σg2h1, hH, YH)
     # last: the plain diff compose on G
     diff_left_compose!(G, YG, gG, hG, XG)
     return Y
@@ -549,7 +549,7 @@ have
 such that their differential reads for some ``(X, Y)`` from the Lie algebra that
 
 ```math
-D ρ_{(g_2,h_2)}((g_1,h_1))$(_tex(:bigl))[ (X,Y) $(_tex(:bigr))]
+D ρ_{(g_2,h_2)}(g_1,h_1)$(_tex(:bigl))[ (X,Y) $(_tex(:bigr))]
   = $(_tex(:bigl))(
   Dρ_{g_2}(g_1)[X],
   Dρ_{σ_{g_1}(h_2)}(h_1)[Y] + Dλ_{h_1}(σ_{g_1}(h_2)) $(_tex(:bigl))[ D_{$(_tex(:Cal, "G"))}σ_{g_1}(h_2)[X] $(_tex(:bigr))]
@@ -566,7 +566,7 @@ have
 such that their differential reads for some ``(Y, X)`` from the Lie algebra that
 
 ```math
-D ρ_{(h_2,g_2)}((h_1,g_1))$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
+D ρ_{(h_2,g_2)}(h_1,g_1)$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
   = $(_tex(:bigl))(
   Dρ_{σ_{g_1}(h_2)}(h_1)[Y] + Dλ_{h_1}(σ_{g_1}(h_2)) $(_tex(:bigl))[ D_{$(_tex(:Cal, "G"))}σ_{g_1}(h_2)[X] $(_tex(:bigr))],
   Dρ_{g_2}(g_1)[X]
@@ -602,7 +602,7 @@ have
 such that their differential reads for some ``(X, Y)`` from the Lie algebra that
 
 ```math
-D ρ_{(g_2,h_2)}((g_1,h_1))$(_tex(:bigl))[ (X,Y) $(_tex(:bigr))]
+D ρ_{(g_2,h_2)}(g_1,h_1)$(_tex(:bigl))[ (X,Y) $(_tex(:bigr))]
   = $(_tex(:bigl))(
   Dρ_{g_2}(g_1)[X],
   Dρ_{τ_{g_1^{-1}}}(h_1)[Y] + Dλ_{h_1}(τ_{g_1^{-1}}(h_2)) $(_tex(:bigl))[ D_{$(_tex(:Cal, "G"))}τ_{g_1^{-1}}(h_2)[X] $(_tex(:bigr))]
@@ -619,7 +619,7 @@ have
 such that their differential reads for some ``(Y, X)`` from the Lie algebra that
 
 ```math
-D ρ_{(h_2,g_2)}((h_1,g_1))$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
+D ρ_{(h_2,g_2)}(h_1,g_1)$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
   = $(_tex(:bigl))(
   Dρ_{τ_{g_1^{-1}}}(h_1)[Y] + Dλ_{h_1}(τ_{g_1^{-1}}(h_2)) $(_tex(:bigl))[ D_{$(_tex(:Cal, "G"))}τ_{g_1^{-1}}(h_2)[X] $(_tex(:bigr))],
   Dρ_{g_2}(g_1)[X]
@@ -652,7 +652,7 @@ function diff_left_compose!(
     # we need one allocation to compute the action
     σg1mh2 = apply(a, gG_mod, hH)
     # Step 1: Compute the argument for the second summand on H - use the memory of YH for the result
-    diff_group_apply!(A, YH, gG_mod, hH, XH)
+    diff_group_apply!(A, YH, gG_mod, hH, XG)
     # Step 2: Differential of right group compose (argument from 1)
     diff_right_compose!(H, YH, gH, σg1mh2, YH)
     # Step 3: a second allocation for the other (first) differential, we want to add to that.
@@ -662,8 +662,7 @@ function diff_left_compose!(
     return Y
 end
 
-# diff_right_compose TODO
-
+# diff_right_compose
 
 # 1. Left semidirect, left action, act on left
 # 5. Right semidirect, left action, act on left
@@ -672,9 +671,9 @@ end
         L::LieGroup{𝔽,<:SemidirectProductGroupOperation{⋆,⋄,<:AbstractLeftGroupActionType,ActionActsOnLeft}}, g, h, X
     )
 
-Compute the differential of the group operation ``⋅∘⋅`` with respect to the left argument.
-This means that we consider the right group operation man ``ρ_h(g) = g ∘ h`` with respect to ``g``
-or the left group operation ``λ_g(h) = g ∘ h`` with respect to its index ``g``.
+Compute the differential of the group operation ``⋅∘⋅`` with respect to the right argument.
+This means that we consider the left group operation man ``λ_g(h) = g ∘ h`` with respect to ``h``
+or the right group operation ``ρ_h(g) = g ∘ h`` with respect to its index ``g``.
 
 $(_doc_semidirect_sub_groups) Let ``σ`` denote a left group action. It here acts on the left.
 
@@ -682,16 +681,16 @@ For the [`LeftSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on ``$(
 have
 
 ```math
-    ρ_{(g_2,h_2)}(g_1,h_1) := (g_1,h_1) ∘ (g_2,h_2) = (g_1 ⋆ g_2, σ_{g_2}(h_1) ⋄ h_2).
+    λ_{(g_1,h_1)}(g_2,h_2) := (g_1,h_1) ∘ (g_2,h_2) = (g_1 ⋆ g_2, σ_{g_2}(h_1) ⋄ h_2).
 ```
 
 such that their differential reads for some ``(X, Y)`` from the Lie algebra that
 
 ```math
-D ρ_{(g_2,h_2)}((g_1,h_1))$(_tex(:bigl))[ (X,Y) $(_tex(:bigr))]
+D λ_{(g_1,h_1)}((g_2,h_2))$(_tex(:bigl))[ (X,Y) $(_tex(:bigr))]
   = $(_tex(:bigl))(
-  Dρ_{g_2}(g_1)[X],
-  Dρ_{h_2}(σ_{g_2}(h_1)[Dσ_{g_2}(h_1)[Y]]
+  Dλ_{g_1}(g_2)[X],
+  Dλ_{σ_{g_2}(h_1)}(h_2)[Y] + Dρ_{h_2}(σ_{g_2}(h_1)) $(_tex(:bigl))[ D_{$(_tex(:Cal, "G"))}σ_{g_2}(h_1)[X] $(_tex(:bigr))]
   $(_tex(:bigr))).
 ```
 
@@ -699,16 +698,16 @@ For the [`RightSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on `` 
 have
 
 ```math
-    ρ_{(h_2,g_2)}(h_1,g_1) := (h_1,g_1) ∘ (h_2,g_2) = (σ_{g_2}(h_1) ⋄ h_2, g_1 ⋆ g_2).
+    λ_{(h_1,g_1)}(h_2,g_2) := (h_1,g_1) ∘ (h_2,g_2) = (σ_{g_2}(h_1) ⋄ h_2, g_1 ⋆ g_2).
 ```
 
 such that their differential reads for some ``(Y, X)`` from the Lie algebra that
 
 ```math
-D ρ_{(h_2,g_2)}((h_1,g_1))$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
+D ρ_{(h_2,g_2)}(h_1,g_1)$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
   = $(_tex(:bigl))(
-  Dρ_{h_2}(σ_{g_2}(h_1)[Dσ_{g_2}(h_1)[Y]],
-  Dρ_{g_2}(g_1)[X],
+  Dλ_{g_1}(g_2)[X],
+  Dλ_{σ_{g_2}(h_1)}(h_2)[Y] + Dρ_{h_2}(σ_{g_2}(h_1)) $(_tex(:bigl))[ D_{$(_tex(:Cal, "G"))}σ_{g_2}(h_1)[X] $(_tex(:bigr))]
   $(_tex(:bigr))).
 ```
 
@@ -725,9 +724,9 @@ diff_right_compose(
         L::LieGroup{𝔽,<:SemidirectProductGroupOperation{⋆,⋄,<:AbstractLeftGroupActionType,ActionActsOnRight}}, g, h, X
     )
 
-Compute the differential of the group operation ``⋅∘⋅`` with respect to the left argument.
-This means that we consider the right group operation man ``ρ_h(g) = g ∘ h`` with respect to ``g``
-or the left group operation ``λ_g(h) = g ∘ h`` with respect to its index ``g``.
+Compute the differential of the group operation ``⋅∘⋅`` with respect to the right argument.
+This means that we consider the left group operation man ``λ_g(h) = g ∘ h`` with respect to ``h``
+or the right group operation ``ρ_h(g) = g ∘ h`` with respect to its index ``g``.
 
 $(_doc_semidirect_sub_groups) Let ``τ`` denote a right group action. It here acts on the left.
 
@@ -735,16 +734,16 @@ For the [`LeftSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on ``$(
 have
 
 ```math
-    ρ_{(g_2,h_2)}(g_1,h_1) := (g_1,h_1) ∘ (g_2,h_2) = (g_1 ⋆ g_2, τ_{g_2^{-1}}(h_1) ⋄ h_2).
+    λ_{(g_1,h_1)}((g_2,h_2)) := (g_1,h_1) ∘ (g_2,h_2) = (g_1 ⋆ g_2, τ_{g_2^{-1}}(h_1) ⋄ h_2).
 ```
 
 such that their differential reads for some ``(X, Y)`` from the Lie algebra that
 
 ```math
-D ρ_{(g_2,h_2)}((g_1,h_1))$(_tex(:bigl))[ (X,Y) $(_tex(:bigr))]
+D λ_{(g_1,h_1)}(g_2,h_2)$(_tex(:bigl))[ (X,Y) $(_tex(:bigr))]
   = $(_tex(:bigl))(
-  Dρ_{g_2}(g_1)[X],
-  Dρ_{h_2}(τ_{g_2^{-1}}(h_1)[Dτ_{g_2^{-1}}(h_1)[Y]]
+  Dλ_{g_1}(g_2)[X],
+  Dλ_{τ_{g_2^{-1}}(h_1)}(h_2)[Y] + Dρ_{h_2}(τ_{g_2^{-1}}(h_1)) $(_tex(:bigl))[ D_{$(_tex(:Cal, "G"))}τ_{g_2^{-1}}(h_1)[X] $(_tex(:bigr))]
   $(_tex(:bigr))).
 ```
 
@@ -752,16 +751,16 @@ For the [`RightSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on `` 
 have
 
 ```math
-    ρ_{(h_2,g_2)}(h_1,g_1) := (h_1,g_1) ∘ (h_2,g_2) = (τ_{g_2^{-1}}(h_1) ⋄ h_2, g_1 ⋆ g_2).
+    λ_{(h_1,g_1)}(h_2,g_2) := (h_1,g_1) ∘ (h_2,g_2) = (τ_{g_2^{-1}}(h_1) ⋄ h_2, g_1 ⋆ g_2).
 ```
 
 such that their differential reads for some ``(Y, X)`` from the Lie algebra that
 
 ```math
-D ρ_{(h_2,g_2)}((h_1,g_1))$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
+D λ_{(h_1,g_1)}(h_2,g_2)$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
   = $(_tex(:bigl))(
-  Dρ_{h_2}(τ_{g_2^{-1}}(h_1)[Dτ_{g_2^{-1}}(h_1)[Y]],
-  Dρ_{g_2}(g_1)[X]
+  Dλ_{τ_{g_2^{-1}}(h_1)}(h_2)[Y] + Dρ_{h_2}(τ_{g_2^{-1}}(h_1)) $(_tex(:bigl))[ D_{$(_tex(:Cal, "G"))}τ_{g_2^{-1}}(h_1)[X] $(_tex(:bigr))],
+  Dλ_{g_1}(g_2)[X],
   $(_tex(:bigr))).
 ```
 
@@ -783,14 +782,17 @@ function diff_right_compose!(
     XG, XH = submanifold_component(spdg, X, Val(g_ind)), submanifold_component(spdg, X, Val(h_ind))
     gG, gH = submanifold_component(SPDG, g, Val(g_ind)), submanifold_component(SPDG, g, Val(h_ind))
     hG, hH = submanifold_component(SPDG, h, Val(g_ind)), submanifold_component(SPDG, h, Val(h_ind))
-    # For right actions we have to invert hG - this allocates when it has to invert
+    # For right actions we have to invert hG (g_2) - this allocates when it has to invert
     hG_mod = _semidirect_maybe_inv(a, G, hG)
-    # we need one allocation to compute the action
-    σg1h2 = apply(a, hG_mod, gH)
-    # Step 1: Compute the argument for the second components diff
-    diff_apply!(a, YH, hG_mod, gH, XH)
+    # one allocation for applying the action
+    # we need one allocation to compute the action (g_2 to h_1)
+    σg2mh1 = apply(a, hG_mod, gH)
+    # Step 1: Compute the argument for the second summand on H - use the memory of YH for the result
+    diff_group_apply!(A, YH, hG_mod, gH, XH)
     # Step 2: Differential of right group compose (argument from 1)
-    diff_right_compose!(H, YH, σg1h2, hH, YH)
+    diff_left_compose!(H, YH, σg2mh1, hH, YH)
+    # Step 3: a second allocation for the other (first) differential, we want to add to that.
+    YH .+= diff_right_compose(H, σg2mh1, hH, XH)
     # last: the plain diff compose on G
     diff_right_compose!(G, YG, gG, hG, XG)
     return Y
@@ -803,9 +805,9 @@ end
         L::LieGroup{𝔽,<:SemidirectProductGroupOperation{⋆,⋄,<:AbstractLeftGroupActionType,ActionActsOnRight}}, g, h, X
     )
 
-Compute the differential of the group operation ``⋅∘⋅`` with respect to the left argument.
-This means that we consider the right group operation man ``ρ_h(g) = g ∘ h`` with respect to ``g``
-or the left group operation ``λ_g(h) = g ∘ h`` with respect to its index ``g``.
+Compute the differential of the group operation ``⋅∘⋅`` with respect to the right argument.
+This means that we consider the left group operation man ``λ_g(h) = g ∘ h`` with respect to ``h``
+or the right group operation ``ρ_h(g) = g ∘ h`` with respect to its index ``g``.
 
 $(_doc_semidirect_sub_groups) Let ``σ`` denote a left group action. It here acts on the right.
 
@@ -813,16 +815,16 @@ For the [`LeftSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on ``$(
 have
 
 ```math
-    ρ_{(g_2,h_2)}(g_1,h_1) := (g_1,h_1) ∘ (g_2,h_2) = (g_1 ⋆ g_2, h_1 ⋄ σ_{g_1}(h_2)).
+    λ_{(g_1,h_1)}(g_2,h_2) := (g_1,h_1) ∘ (g_2,h_2) = (g_1 ⋆ g_2, h_1 ⋄ σ_{g_1}(h_2)).
 ```
 
 such that their differential reads for some ``(X, Y)`` from the Lie algebra that
 
 ```math
-D ρ_{(g_2,h_2)}((g_1,h_1))$(_tex(:bigl))[ (X,Y) $(_tex(:bigr))]
+D λ_{(g_1,h_1)}(g_2,h_2)$(_tex(:bigl))[ (X,Y) $(_tex(:bigr))]
   = $(_tex(:bigl))(
-  Dρ_{g_2}(g_1)[X],
-  Dρ_{σ_{g_1}(h_2)}(h_1)[Y] + Dλ_{h_1}(σ_{g_1}(h_2)) $(_tex(:bigl))[ D_{$(_tex(:Cal, "G"))}σ_{g_1}(h_2)[X] $(_tex(:bigr))]
+  Dλ_{g_1}(g_2)[X],
+  Dλ_{h_1}(σ_{g_1}(h_2)[Dσ_{g_1}(h_2)[Y]]
   $(_tex(:bigr))).
 ```
 
@@ -830,16 +832,16 @@ For the [`RightSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on `` 
 have
 
 ```math
-    ρ_{(h_2,g_2)}(h_1,g_1) := (h_1,g_1) ∘ (h_2,g_2) = (h_1 ⋄ σ_{g_2}(h_2), g_1 ⋆ g_2).
+    λ_{(h_1,g_1)}(h_2,g_2) := (h_1,g_1) ∘ (h_2,g_2) = (h_1 ⋄ σ_{g_2}(h_2), g_1 ⋆ g_2).
 ```
 
 such that their differential reads for some ``(Y, X)`` from the Lie algebra that
 
 ```math
-D ρ_{(h_2,g_2)}((h_1,g_1))$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
+D ρ_{(h_2,g_2)}(h_1,g_1)$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
   = $(_tex(:bigl))(
-  Dρ_{σ_{g_1}(h_2)}(h_1)[Y] + Dλ_{h_1}(σ_{g_1}(h_2)) $(_tex(:bigl))[ D_{$(_tex(:Cal, "G"))}σ_{g_1}(h_2)[X] $(_tex(:bigr))],
-  Dρ_{g_2}(g_1)[X]
+  Dλ_{g_1}(g_2)[X],
+  Dλ_{h_1}(σ_{g_1}(h_2)[Dσ_{g_1}(h_2)[Y]]
   $(_tex(:bigr))).
 ```
 
@@ -856,9 +858,9 @@ diff_right_compose(
         L::LieGroup{𝔽,<:SemidirectProductGroupOperation{⋆,⋄,<:AbstractLeftGroupActionType,ActionActsOnRight}}, g, h, X
     )
 
-Compute the differential of the group operation ``⋅∘⋅`` with respect to the left argument.
-This means that we consider the right group operation man ``ρ_h(g) = g ∘ h`` with respect to ``g``
-or the left group operation ``λ_g(h) = g ∘ h`` with respect to its index ``g``.
+Compute the differential of the group operation ``⋅∘⋅`` with respect to the right argument.
+This means that we consider the left group operation man ``λ_g(h) = g ∘ h`` with respect to ``h``
+or the right group operation ``ρ_h(g) = g ∘ h`` with respect to its index ``g``.
 
 $(_doc_semidirect_sub_groups) Let ``τ`` denote a right group action. It here acts on the right.
 
@@ -866,16 +868,16 @@ For the [`LeftSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on ``$(
 have
 
 ```math
-    ρ_{(g_2,h_2)}(g_1,h_1) := (g_1,h_1) ∘ (g_2,h_2) = (g_1 ⋆ g_2, h_1 ⋄ τ_{g_1^{-1}}(h_2)).
+    λ_{(g_1,h_1)}(g_2,h_2) := (g_1,h_1) ∘ (g_2,h_2) = (g_1 ⋆ g_2, h_1 ⋄ τ_{g_1^{-1}}(h_2)).
 ```
 
 such that their differential reads for some ``(X, Y)`` from the Lie algebra that
 
 ```math
-D ρ_{(g_2,h_2)}((g_1,h_1))$(_tex(:bigl))[ (X,Y) $(_tex(:bigr))]
+D λ_{(g_1,h_1)}(g_2,h_2)$(_tex(:bigl))[ (X,Y) $(_tex(:bigr))]
   = $(_tex(:bigl))(
-  Dρ_{g_2}(g_1)[X],
-  Dρ_{τ_{g_1^{-1}}}(h_1)[Y] + Dλ_{h_1}(τ_{g_1^{-1}}(h_2)) $(_tex(:bigl))[ D_{$(_tex(:Cal, "G"))}τ_{g_1^{-1}}(h_2)[X] $(_tex(:bigr))]
+  Dλ_{g_1}(g_2)[X],
+  Dλ_{h_1}(τ_{g_1^{-1}}(h_2)[Dτ_{g_1^{-1}}(h_2)[Y]]
   $(_tex(:bigr))).
 ```
 
@@ -889,10 +891,10 @@ have
 such that their differential reads for some ``(Y, X)`` from the Lie algebra that
 
 ```math
-D ρ_{(h_2,g_2)}((h_1,g_1))$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
+D ρ_{(h_2,g_2)}(h_1,g_1)$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
   = $(_tex(:bigl))(
-  Dρ_{τ_{g_1^{-1}}}(h_1)[Y] + Dλ_{h_1}(τ_{g_1^{-1}}(h_2)) $(_tex(:bigl))[ D_{$(_tex(:Cal, "G"))}τ_{g_1^{-1}}(h_2)[X] $(_tex(:bigr))],
-  Dρ_{g_2}(g_1)[X]
+  Dλ_{h_1}(τ_{g_1^{-1}}(h_2)[Dτ_{g_1^{-1}}(h_2)[Y]],
+  Dλ_{g_1}(g_2)[X]
   $(_tex(:bigr))).
 ```
 
@@ -918,21 +920,16 @@ function diff_right_compose!(
     hG, hH = submanifold_component(SPDG, h, Val(g_ind)), submanifold_component(SPDG, h, Val(h_ind))
     # For right actions we have to invert gG - this allocates when it has to invert
     gG_mod = _semidirect_maybe_inv(a, G, gG)
-    # one allocation for applying the action
     # we need one allocation to compute the action
-    σg1mh2 = apply(a, gG_mod, hH)
-    # Step 1: Compute the argument for the second summand on H - use the memory of YH for the result
-    diff_group_apply!(A, YH, gG_mod, hH, XH)
-    # Step 2: Differential of right group compose (argument from 1)
-    diff_right_compose!(H, YH, gH, σg1mh2, YH)
-    # Step 3: a second allocation for the other (first) differential, we want to add to that.
-    YH .+= diff_right_compose(H, gH, σg1mh2, XH)
+    σg1h2 = apply(a, gG_mod, hH)
+    # Step 1: Compute the argument for the second components diff
+    diff_apply!(a, YH, gG_mod, hH, XH)
+    # Step 2: Differential of left group compose (argument from 1)
+    diff_right_compose!(H, YH, σg1h2, hH, YH)
     # last: the plain diff compose on G
     diff_right_compose!(G, YG, gG, hG, XG)
     return Y
 end
-
-# // end TODO
 
 # get vector
 
@@ -998,7 +995,7 @@ function inv!(
 end
 
 # 3. Left semidirect, right action, act on left
-# 4 Left semidirect, right action, act on right
+# 4. Left semidirect, right action, act on right
 # 8. Right semidirect, right action, act on right
 # 7. Right semidirect, right action, act on left
 """
