@@ -175,25 +175,25 @@ function RightSemidirectProductLieGroup(
 end
 
 """
-    L1 ⋉ L2
-    ⋉(L1, L2)
+    G ⋉ H
+    ⋉(G, H)
 
-For two [`LieGroups`](@ref) `L1`, `L2`, generate the [`LeftSemidirectProductLieGroup`](@ref)`(L1, L2)`,
-where the corresponding [`default_left_action`](@ref)`(L1, L2)` and [`ActionActsOnLeft`](@ref) are used.
+For two [`LieGroups`](@ref) `G`, `H`, generate the [`LeftSemidirectProductLieGroup`](@ref)`(G, H)`,
+where the corresponding [`default_left_action`](@ref)`(G, H)` and [`ActionActsOnLeft`](@ref) are used.
 """
-function ⋉(L1::LieGroup, L2::LieGroup)
-    return LeftSemidirectProductLieGroup(L1, L2, default_left_action(L1, L2); action_on = ActionActsOnLeft())
+function ⋉(G::LieGroup, H::LieGroup)
+    return LeftSemidirectProductLieGroup(G, H, default_left_action(G, H); action_on = ActionActsOnLeft())
 end
 
 """
-    L1 ⋊ L2
-    ⋊(L1, L2)
+    H ⋊ G
+    ⋊(H, G)
 
-For two [`LieGroups`](@ref) `L1`, `L2`, generate the [`RightSemidirectProductLieGroup`](@ref)`(L1, L2)`,
-where the corresponding [`default_right_action`](@ref)`(L1, L2)` and [`ActionActsOnRight`](@ref) are used.
+For two [`LieGroups`](@ref) `H`, `G`, generate the [`RightSemidirectProductLieGroup`](@ref)`(H, G)`,
+where the corresponding [`default_right_action`](@ref)`(H, G)` and [`ActionActsOnRight`](@ref) are used.
 """
-function ⋊(L1::LieGroup, L2::LieGroup)
-    return RightSemidirectProductLieGroup(L1, L2, default_right_action(L1, L2); action_on = ActionActsOnRight())
+function ⋊(H::LieGroup, G::LieGroup)
+    return RightSemidirectProductLieGroup(H, G, default_right_action(H, G); action_on = ActionActsOnRight())
 end
 
 # A small helper to extract the product manifold, both Lie Groups and the action A
@@ -358,7 +358,7 @@ The [`LeftSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on ``G ⋉ 
 The [`RightSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on ``H ⋊ G`` is given by
 
 ```math
-    (g_1,h_1) ∘ (g_2,h_2) := $(_tex(:bigl))( g_1 ⋆ g_2, h_1 ⋄ τ_{g_1^{-1}}(h_2) $(_tex(:bigr))).
+    (h_1,g_1) ∘ (h_2,g_2) := $(_tex(:bigl))( h_1 ⋄ τ_{g_1^{-1}}(h_2),  g_1 ⋆ g_2 $(_tex(:bigr))).
 ```
 
 See also [`AbstractRightGroupActionType`](@ref) and [`ActionActsOnRight`](@ref).
