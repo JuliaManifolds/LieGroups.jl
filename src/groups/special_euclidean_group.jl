@@ -316,7 +316,7 @@ Return the default left action for the special Euclidean group ``$(_math(:SO))(n
 that is the [`GroupOperationAction`](@ref)`(`[`LeftGroupOperationAction`](@ref)`(G.op))`.
 """
 default_left_action(::SpecialOrthogonalGroup, ::TranslationGroup) =
-    LeftGroupOperationAction()
+    LeftMultiplicationGroupAction()
 
 """
     default_right_action(::TranslationGroup, G::SpecialOrthogonalGroup)
@@ -325,7 +325,7 @@ Return the default right action for the special Euclidean group,
 that is the [`GroupOperationAction`](@ref)`(`[`LeftGroupOperationAction`](@ref)`(G.op))`.
 """
 function default_right_action(::TranslationGroup, ::SpecialOrthogonalGroup)
-    return LeftGroupOperationAction()
+    return LeftMultiplicationGroupAction()
 end
 
 _doc_exp_SE2_id = """
