@@ -1,5 +1,5 @@
 """
-    LeftMultiplicationAction <: AbstractLeftGroupActionType
+    LeftMultiplicationGroupAction <: AbstractLeftGroupActionType
 
 Specify that in a [`GroupAction`](@ref) with Lie group ``$(_tex(:Cal, "G"))``
 and manifold ``$(_tex(:Cal, "M"))``, the group action is given by multiplication
@@ -14,13 +14,13 @@ the family of actions ``σ_g: $(_tex(:Cal, "M")) → $(_tex(:Cal, "M"))`` is giv
 
 where ``*`` denotes the matrix(-vector) multiplication.
 """
-struct LeftMultiplicationAction <: AbstractLeftGroupActionType end
+struct LeftMultiplicationGroupAction <: AbstractLeftGroupActionType end
 
-function apply!(::GroupAction{LeftMultiplicationAction}, q, g, p)
+function apply!(::GroupAction{LeftMultiplicationGroupAction}, q, g, p)
     return Base.mightalias(q, p) ? q .= g * p : mul!(q, g, p)
 end
 
-function diff_apply!(::GroupAction{LeftMultiplicationAction}, Y, g, p, X)
+function diff_apply!(::GroupAction{LeftMultiplicationGroupAction}, Y, g, p, X)
     return Base.mightalias(Y, X) ? Y .= g * X : mul!(Y, g, X)
 end
 
