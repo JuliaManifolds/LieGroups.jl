@@ -312,6 +312,9 @@ end
 """
     default_left_action(G::SpecialOrthogonalGroup, ::TranslationGroup)
 
+
+    TODO Fix docs, it seems it only returned the type?
+
 Return the default left action for the special Euclidean group ``$(_math(:SO))(n) ⋊ $(_math(:T))(n)``,
 that is the [`GroupOperationAction`](@ref)`(`[`LeftGroupOperationAction`](@ref)`(G.op))`.
 """
@@ -320,6 +323,8 @@ default_left_action(::SpecialOrthogonalGroup, ::TranslationGroup) =
 
 """
     default_right_action(::TranslationGroup, G::SpecialOrthogonalGroup)
+
+    TODO Fix docs, it seems it only returned the type?
 
 Return the default right action for the special Euclidean group,
 that is the [`GroupOperationAction`](@ref)`(`[`LeftGroupOperationAction`](@ref)`(G.op))`.
