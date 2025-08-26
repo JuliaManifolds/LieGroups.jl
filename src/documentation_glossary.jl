@@ -233,7 +233,7 @@ define!(
     :RightInverseActionIsLeft,
     """
     ```math
-    σ_g(τ_h(p))
+    σ_g(σ_h(p))
     = τ_{g^{-1}}(τ_{h^{-1}}(p))
     = τ_{h^{-1}g^{-1}}(p)
     = τ_{(gh)^{-1}}(p)
