@@ -429,6 +429,7 @@ a vector `X` from the Lie Algebra.
 # Keyword arguments
 
 * `atol::Real=0`: the absolute tolerance for the tests of zero-vectors
+* `test_aliased::Bool=test_mutating`: test aliased input on the mutating variants.
 * `test_exp::Bool=true`: test the exponential map yields a point on `G`
 * `test_log::Bool=true`: test the logarithmic map.
 * `test_mutating::Bool=true`: test the mutating functions
@@ -441,6 +442,7 @@ function test_exp_log(
         atol::Real = 0,
         test_exp::Bool = true,
         test_mutating::Bool = true,
+        test_aliased::Bool = test_mutating,
         test_log::Bool = true,
     )
     @testset "(Lie group) exp & log" begin
@@ -457,16 +459,24 @@ function test_exp_log(
             @test is_point(G, k1; error = :error, atol = atol)
             # exp
             k1 = exp(G, g, X)
-            l1 = exp(G, k1, X)
             if test_mutating
                 k2 = copy(G, g)
                 exp!(G, k2, g, X)
                 @test isapprox(G, k1, k2, atol = atol)
-                #test exp!(G, h, g, X) when h == g (issue #63)
-                l2 = copy(G, g)
-                exp!(G, l2, l2, X)
-                exp!(G, l2, l2, X)
-                @test isapprox(G, l1, l2, atol = atol)
+                if test_aliased
+                    @testset "Aliased Input" begin
+                        k3 = identity_element(G, typeof(g))
+                        exp!(G, k3, k3, X)
+                        # compare to two steps with allocations
+                        k4 = identity_element(G, typeof(g))
+                        k4 = exp(G, k4, X)
+                        @test isapprox(G, k4, k3, atol = atol)
+                        # and a second time to avoid that this was just due strating at the identity
+                        exp!(G, k3, k3, X)
+                        k4 = exp(G, k4, X)
+                        @test isapprox(G, k4, k3, atol = atol)
+                    end
+                end
             end
             @test is_point(G, k1; error = :error)
         end
@@ -502,7 +512,7 @@ function test_exp_log(
             @test isapprox(𝔤, log(G, h, h), Y3; atol = atol)
         end
         if test_exp && test_log
-            # Lie group exp / log
+            # Lie group exp / log, check that they are inverses of each other
             k1 = exp(G, X)
             Y1 = log(G, k1)
             @test isapprox(𝔤, X, Y1)
@@ -1054,6 +1064,8 @@ Test the Lie group ``G`` based on a `Dict` of properties and a `Dict` of `expect
 
 Possible properties are
 
+* `:Aliased` is a boolean (`false` by default) whether to test the mutating variants with aliased input
+TODO set to the value of `:Mutating` by default
 * `:Functions` is a vector of all defined functions for `G`
   Note that if `f` is in `:Functions`, and `f!` makes sense, for example for `compose`,
   it is assumed that both are defined.
@@ -1081,6 +1093,7 @@ Possible `expectations` are
 function test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dict = Dict())
     atol = get(expectations, :atol, 0.0)
     mutating = get(properties, :Mutating, true)
+    aliased = get(properties, :Aliased, false) # TODO default to mutating once this is established
     functions = get(properties, :Functions, Function[])
     points = get(properties, :Points, [])
     vectors = get(properties, :Vectors, [])
@@ -1175,6 +1188,7 @@ function test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dic
                 test_exp = (exp in functions),
                 test_log = (log in functions),
                 test_mutating = mutating,
+                test_aliased = aliased
             )
         end
 

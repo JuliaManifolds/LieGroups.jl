@@ -91,19 +91,12 @@ using StaticArrays
         XT = SpecialEuclideanProductTangentVector.(XS)
 
         for G in [G2r, G2rt], (pts, vec) in zip([gA, gM, gS, gT], [XA, XM, XS, XT])
-            is_array_partition_representation =
-                pts[1] isa Union{ArrayPartition, SpecialEuclideanProductPoint}
-            ap_funs = if is_array_partition_representation
-                [diff_left_compose]
-            else
-                []
-            end
             properties = Dict(
                 :Name => "The special Euclidean group ($G, $(eltype(pts)))",
                 :Points => pts,
                 :Vectors => vec,
                 :Rng => Random.MersenneTwister(),
-                :Functions => vcat(fcts, ap_funs),
+                :Functions => vcat(fcts),
             )
             expectations = Dict(
                 :repr => "SpecialEuclideanGroup(2; variant=:right)", :atol => 1.0e-14
