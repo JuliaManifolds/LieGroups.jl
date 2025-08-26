@@ -1,6 +1,6 @@
 # for (g, t)
 const LeftSpecialEuclideanGroupOperation = LeftSemidirectProductGroupOperation{
-    <:MatrixMultiplicationGroupOperation, <:AdditionGroupOperation, LeftGroupOperationAction, ActionActsOnLeft,
+    <:MatrixMultiplicationGroupOperation, <:AdditionGroupOperation, LeftGroupOperationAction, <:ActionActsOnRight,
 }
 
 const LeftSpecialEuclideanGroup{T} = LieGroup{
@@ -11,7 +11,7 @@ const LeftSpecialEuclideanGroup{T} = LieGroup{
 
 # for (t, g)
 const RightSpecialEuclideanGroupOperation = RightSemidirectProductGroupOperation{
-    <:AdditionGroupOperation, <:MatrixMultiplicationGroupOperation, LeftGroupOperationAction, ActionActsOnLeft,
+    <:AdditionGroupOperation, <:MatrixMultiplicationGroupOperation, LeftGroupOperationAction, <:ActionActsOnRight,
 }
 const RightSpecialEuclideanGroup{T} = LieGroup{
     ℝ,
@@ -46,10 +46,13 @@ Both these cases can be represented in a single matrix in [affine form](https://
 g = $(_tex(:pmatrix, "r & t", "$(_tex(:vec, "0"))_n^{$(_tex(:transp))} & 1")),
 $(_tex(:qquad)) r ∈ $(_math(:SO))(n), t ∈ $(_math(:T))(n),
 ```
+
 where ``$(_tex(:vec, "0"))_n ∈ ℝ^n`` denotes the vector containing zeros.
 
 We refer also in general to elements on ``$(_math(:SE))(n)`` as ``g``
 and their rotation and translation components as ``r`` and ``t``, respectively.
+
+Note further that in the notation above and in matrix form the default is the [`ActionActsOnRight`](@ref) action.
 
 # Constructor
     SpecialEuclideanGroup(n::Int; variant=:left, kwargs...)
@@ -603,8 +606,6 @@ This computation can be done in-place of `h`.
 Base.inv(G::SpecialEuclideanGroup, g)
 
 @doc "$(_doc_inv_SEn)"
-inv!(G::SpecialEuclideanGroup, h, g)
-
 function _inv!(G::SpecialEuclideanGroup, h::AbstractMatrix, g::AbstractMatrix)
     init_constants!(G, h)
     _inv_SE!(G, h, g)

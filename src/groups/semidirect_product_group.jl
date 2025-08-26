@@ -179,10 +179,10 @@ end
     ⋉(G, H)
 
 For two [`LieGroups`](@ref) `G`, `H`, generate the [`LeftSemidirectProductLieGroup`](@ref)`(G, H)`,
-where the corresponding [`default_left_action`](@ref)`(G, H)` and [`ActionActsOnLeft`](@ref) are used.
+where the corresponding [`default_left_action`](@ref)`(G, H)` and [`ActionActsOnRight`](@ref) are used.
 """
 function ⋉(G::LieGroup, H::LieGroup)
-    return LeftSemidirectProductLieGroup(G, H, default_left_action(G, H); action_on = ActionActsOnLeft())
+    return LeftSemidirectProductLieGroup(G, H, default_left_action(G, H); action_on = ActionActsOnRight())
 end
 
 """
@@ -373,14 +373,14 @@ function _compose!(
     ) where {𝔽, O1, O2, A <: AbstractGroupActionType, AO <: ActionActsOnRight}
     PM, G, H, a, g_ind, h_ind = _semidirect_parts(SDPG)
     # invert for right, copy for left
-    _semidirect_maybe_inv!(a, G, submanifold_component(SDPG, k, Val(g_ind)), submanifold_component(SDPG, g, Val(g_ind)))
+    _semidirect_maybe_inv!(a, G, submanifold_component(PM, k, Val(g_ind)), submanifold_component(PM, g, Val(g_ind)))
     # Note difference from math to code: g=(g_1,h_1), h=(g_2,h_2)=(h1,h2)
     # a) group action (first to avoid side effects in g, set k_2 to σ_{g_1}(h_2)
-    apply!(a, submanifold_component(SDPG, k, Val(h_ind)), submanifold_component(SDPG, g, Val(g_ind)), submanifold_component(SDPG, h, Val(h_ind)))
+    apply!(a, submanifold_component(PM, k, h_ind), submanifold_component(PM, g, g_ind), submanifold_component(PM, h, h_ind))
     # b) group operation on G
-    _compose!(G, submanifold_component(SDPG, k, Val(g_ind)), submanifold_component(SDPG, g, Val(g_ind)), submanifold_component(SDPG, h, Val(g_ind)))
+    _compose!(G, submanifold_component(PM, k, g_ind), submanifold_component(PM, g, g_ind), submanifold_component(PM, h, g_ind))
     # c) group operation on H (not that h_2 is already in k2)
-    _compose!(H, submanifold_component(SDPG, k, Val(h_ind)), submanifold_component(SDPG, g, Val(h_ind)), submanifold_component(SDPG, k, Val(h_ind)))
+    _compose!(H, submanifold_component(PM, k, h_ind), submanifold_component(PM, g, h_ind), submanifold_component(PM, k, h_ind))
     return k
 end
 
