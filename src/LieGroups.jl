@@ -64,6 +64,7 @@ include("group_operations/multiplication_operation_abelian.jl")
 # Actions
 include("group_actions/group_action_interface.jl")
 include("group_actions/group_operation_action.jl")
+include("group_actions/multiplication_action.jl")
 
 # Meta Lie groups
 include("groups/power_group.jl")

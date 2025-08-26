@@ -97,11 +97,11 @@ function apply!(A::GroupAction{InverseRightGroupOperationAction, O, G, G}, k, g,
     return inv_right_compose!(A.group, k, g, h) #apply/compose inv(g) from right
 end
 
-function diff_apply!(A::GroupAction{LeftGroupOperationAction, O, G, G}, Y, g, p, X)  where {O <: AbstractActionActsOnType, G <: LieGroup}
+function diff_apply!(A::GroupAction{LeftGroupOperationAction, O, G, G}, Y, g, p, X) where {O <: AbstractActionActsOnType, G <: LieGroup}
     return diff_right_compose!(A.group, Y, g, p, X)
 end
 function diff_apply!(A::GroupAction{RightGroupOperationAction, O, G, G}, Y, g, p, X) where {O <: AbstractActionActsOnType, G <: LieGroup}
-   return diff_left_compose!(A.group, Y, p, g, X)
+    return diff_left_compose!(A.group, Y, p, g, X)
 end
 function diff_apply!(A::GroupAction{InverseLeftGroupOperationAction, O, G, G}, Y, g, p, X) where {O <: AbstractActionActsOnType, G <: LieGroup}
     return diff_right_compose!(A.group, Y, inv(A.group, g), p, X)
