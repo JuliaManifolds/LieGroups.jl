@@ -73,54 +73,52 @@ struct InverseRightGroupOperationAction <: AbstractLeftGroupActionType end
 Return a [`GroupAction`](@ref) for an [`AbstractGroupActionType`](@ref) `action`
 representing the group operation as an action of the group on itself.
 """
-function GroupOperationAction(G::LieGroup, type::AbstractGroupActionType = LeftGroupOperationAction(), on::AbstractActionActsOnType = ActionActsOnRight())
-    return GroupAction(G, G, type, on)
+function GroupOperationAction(G::LieGroup, type::AbstractGroupActionType = LeftGroupOperationAction())
+    return GroupAction(G, G, type)
 end
 function Base.show(
-        io::IO, GA::GroupAction{A, O, G, G}
-    ) where {A <: AbstractGroupActionType, O <: AbstractActionActsOnType, G <: LieGroup}
-    return print(io, "GroupOperationAction($(GA.group); type=$(GA.type), on=$(GA.on))")
+        io::IO, GA::GroupAction{A, G, M}
+    ) where {A <: AbstractGroupActionType, G <: LieGroup, M <: AbstractManifold}
+    return print(io, "GroupOperationAction($(GA.group); type=$(GA.type)")
 end
 
-function apply!(
-        A::GroupAction{LeftGroupOperationAction, O, G, G}, k, g, h
-    ) where {O <: AbstractActionActsOnType, G <: LieGroup}
+function apply!(A::GroupAction{LeftGroupOperationAction}, k, g, h)
     return compose!(A.group, k, g, h) #apply/compose g from left
 end
-function apply!(A::GroupAction{RightGroupOperationAction, O, G, G}, k, g, h) where {O <: AbstractActionActsOnType, G <: LieGroup}
+function apply!(A::GroupAction{RightGroupOperationAction}, k, g, h)
     return compose!(A.group, k, h, g) #apply/compose g from right
 end
-function apply!(A::GroupAction{InverseLeftGroupOperationAction, O, G, G}, k, g, h) where {O <: AbstractActionActsOnType, G <: LieGroup}
+function apply!(A::GroupAction{InverseLeftGroupOperationAction}, k, g, h)
     return inv_left_compose!(A.group, k, g, h) #apply/compose inv(g) from left
 end
-function apply!(A::GroupAction{InverseRightGroupOperationAction, O, G, G}, k, g, h) where {O <: AbstractActionActsOnType, G <: LieGroup}
+function apply!(A::GroupAction{InverseRightGroupOperationAction}, k, g, h)
     return inv_right_compose!(A.group, k, g, h) #apply/compose inv(g) from right
 end
 
-function diff_apply!(A::GroupAction{LeftGroupOperationAction, O, G, G}, Y, g, p, X) where {O <: AbstractActionActsOnType, G <: LieGroup}
+function diff_apply!(A::GroupAction{LeftGroupOperationAction}, Y, g, p, X)
     return diff_right_compose!(A.group, Y, g, p, X)
 end
-function diff_apply!(A::GroupAction{RightGroupOperationAction, O, G, G}, Y, g, p, X) where {O <: AbstractActionActsOnType, G <: LieGroup}
+function diff_apply!(A::GroupAction{RightGroupOperationAction}, Y, g, p, X)
     return diff_left_compose!(A.group, Y, p, g, X)
 end
-function diff_apply!(A::GroupAction{InverseLeftGroupOperationAction, O, G, G}, Y, g, p, X) where {O <: AbstractActionActsOnType, G <: LieGroup}
+function diff_apply!(A::GroupAction{InverseLeftGroupOperationAction}, Y, g, p, X)
     return diff_right_compose!(A.group, Y, inv(A.group, g), p, X)
 end
-function diff_apply!(A::GroupAction{InverseRightGroupOperationAction, O, G, G}, Y, g, p, X) where {O <: AbstractActionActsOnType, G <: LieGroup}
+function diff_apply!(A::GroupAction{InverseRightGroupOperationAction}, Y, g, p, X)
     return diff_left_compose!(A.group, Y, p, inv(A.group, g), X)
 end
 
-function diff_group_apply!(A::GroupAction{LeftGroupOperationAction, O, G, G}, Y, g, p, X) where {O <: AbstractActionActsOnType, G <: LieGroup}
+function diff_group_apply!(A::GroupAction{LeftGroupOperationAction}, Y, g, p, X)
     return diff_left_compose!(A.group, Y, g, p, X)
 end
-function diff_group_apply!(A::GroupAction{RightGroupOperationAction, O, G, G}, Y, g, p, X) where {O <: AbstractActionActsOnType, G <: LieGroup}
+function diff_group_apply!(A::GroupAction{RightGroupOperationAction}, Y, g, p, X)
     return diff_right_compose!(A.group, Y, p, g, X)
 end
-function diff_group_apply!(A::GroupAction{InverseLeftGroupOperationAction, O, G, G}, Y, g, p, X) where {O <: AbstractActionActsOnType, G <: LieGroup}
+function diff_group_apply!(A::GroupAction{InverseLeftGroupOperationAction}, Y, g, p, X)
     diff_inv!(A.group, Y, g, X)
     return diff_left_compose!(A.group, Y, inv(A.group, g), p, Y)
 end
-function diff_group_apply!(A::GroupAction{InverseRightGroupOperationAction, O, G, G}, Y, g, p, X) where {O <: AbstractActionActsOnType, G <: LieGroup}
+function diff_group_apply!(A::GroupAction{InverseRightGroupOperationAction}, Y, g, p, X)
     diff_inv!(A.group, Y, g, X)
     return diff_right_compose!(A.group, Y, p, inv(A.group, g), Y)
 end
@@ -154,7 +152,7 @@ Base.inv(::InverseRightGroupOperationAction) = RightGroupOperationAction()
     switch(::LeftGroupOperationAction)
 
 Return the [`RightGroupOperationAction`](@ref), that is,
-turns ``σ_g = g$(_math(:∘))h`` into ``τ_g(h) = h$(_math(:∘))g``
+turns ``σ_g(h) = g$(_math(:∘))h`` into ``τ_g(h) = h$(_math(:∘))g``
 """
 switch(::LeftGroupOperationAction) = RightGroupOperationAction()
 
@@ -162,7 +160,7 @@ switch(::LeftGroupOperationAction) = RightGroupOperationAction()
     switch(::RightGroupOperationAction)
 
 Return the [`LeftGroupOperationAction`](@ref), that is,
-turns ``σ_g = h$(_math(:∘))g`` into ``τ_g(h) = g$(_math(:∘))h``
+turns ``τ_g(h) = h$(_math(:∘))g`` into ``τ_g = g$(_math(:∘))h``
 """
 switch(::RightGroupOperationAction) = LeftGroupOperationAction()
 
@@ -178,6 +176,6 @@ switch(::InverseLeftGroupOperationAction) = InverseRightGroupOperationAction()
     switch(::InverseRightGroupOperationAction)
 
 Return the [`InverseLeftGroupOperationAction`](@ref), that is,
-turns ``σ_g = h$(_math(:∘))g^{-1}`` into ``τ_g(h) = g^{-1}$(_math(:∘))h``
+turns ``τ_g = h$(_math(:∘))g^{-1}`` into ``σ_g(h) = g^{-1}$(_math(:∘))h``
 """
 switch(::InverseRightGroupOperationAction) = InverseLeftGroupOperationAction()

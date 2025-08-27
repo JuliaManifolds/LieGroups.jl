@@ -83,7 +83,9 @@ abstract type AbstractRightGroupActionType <: AbstractGroupActionType end
 
 An abstract type representing what an action acts on,
 Most notably these are the [`ActionActsOnLeft`](@ref) and [`ActionActsOnRight`](@ref),
-see their documentations for more details
+see their documentations for more details.
+
+For its practical use see the [`SemidirectProductGroupOperation`](@ref).
 """
 abstract type AbstractActionActsOnType end
 
@@ -106,6 +108,8 @@ where ``⋅`` denotes the group operation on ``$(_tex(:Cal, "H"))``.
 The `Left` in the name of this type refers to the fact that the action is applied to the left element ``h_1``.
 
 Note that this is independent of both the type of action (left or right) and whether the semidirect product is a left or a right semidirect one.
+
+For its practical use see the [`SemidirectProductGroupOperation`](@ref).
 """
 struct ActionActsOnLeft <: AbstractActionActsOnType end
 
@@ -128,11 +132,13 @@ where ``⋅`` denotes the group operation on ``$(_tex(:Cal, "H"))``.
 The `Right` in the name of this type refers to the fact that the action is applied to the right element ``h_2``.
 
 Note that this is independent of both the type of action (left or right) and whether the semidirect product is a left or a right semidirect one.
+
+For its practical use see the [`SemidirectProductGroupOperation`](@ref).
 """
 struct ActionActsOnRight <: AbstractActionActsOnType end
 
 """
-    GroupAction{T<:GroupActionType, S <: AbstractActionActsOnType, L<:LieGroup, M<:AbstractManifold}
+    GroupAction{T<:GroupActionType, L<:LieGroup, M<:AbstractManifold}
 
 Specify a group action of [`AbstractGroupActionType`](@ref) `T` of a [`AbstractLieGroup`](@ref) `G` acting on `M`.
 
@@ -168,7 +174,6 @@ gets “appended” in the composition.
 # Fields
 
 * `type::`[`AbstractGroupActionType`](@ref): The type of the group action.
-* `on::`[`AbstractActionActsOnType`](@ref): The type of object the action acts on.
 * `group::`[`AbstractLieGroup`](@ref): The group acting.
 * `manifold::`$(_link(:AbstractManifold)): The manifold the group acts upon.
 
@@ -176,25 +181,22 @@ See [HilgertNeeb:2012; Section 9.1.3](@cite) for more details.
 
 # Constructors
     GroupAction(
-        group::AbstractLieGroup, manifold::ManifoldsBase.AbstractManifold, type::AbstractGroupActionType,
-        on::AbstractActionActsOnType=ActionActsOnRight()
+        group::AbstractLieGroup, manifold::ManifoldsBase.AbstractManifold, type::AbstractGroupActionType
     )
 Generate a group action where the type of the action and what it acts on are keyword arguments.
 They default to the most common choice, that the [`ActionActsOnRight`](@ref).
 """
 struct GroupAction{
-        T <: AbstractGroupActionType, O <: AbstractActionActsOnType, L <: AbstractLieGroup, M <: ManifoldsBase.AbstractManifold,
+        T <: AbstractGroupActionType, L <: AbstractLieGroup, M <: ManifoldsBase.AbstractManifold,
     }
     type::T
-    on::O
     group::L
     manifold::M
 end
 function GroupAction(
-        group::G, manifold::M, type::T,
-        on::O = ActionActsOnRight(),
-    ) where {G <: AbstractLieGroup, M <: ManifoldsBase.AbstractManifold, T <: AbstractGroupActionType, O <: AbstractActionActsOnType}
-    return GroupAction{T, O, G, M}(type, on, group, manifold)
+        group::G, manifold::M, type::T
+    ) where {G <: AbstractLieGroup, M <: ManifoldsBase.AbstractManifold, T <: AbstractGroupActionType}
+    return GroupAction{T, G, M}(type, group, manifold)
 end
 #
 #
