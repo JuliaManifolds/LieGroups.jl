@@ -981,7 +981,7 @@ $(_doc_semidirect_sub_groups) Let ``σ`` denote a left group action. The inverse
 The inverse for the [`LeftSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on ``G ⋉ H`` is given by
 
 ```math
-(g,h){-1} = $(_tex(:bigl))( g^{-1}, σ_{g^{-1}}(h^{-1}) $(_tex(:bigr))).
+(g,h)^{-1} = $(_tex(:bigl))( g^{-1}, σ_{g^{-1}}(h^{-1}) $(_tex(:bigr))).
 ```
 
 The inverse for the [`RightSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on ``G ⋊ H`` is given by
@@ -1025,7 +1025,7 @@ $(_doc_semidirect_sub_groups) Let ``τ`` denote a right group action. The invers
 The inverse for the [`LeftSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on ``G ⋉ H`` is given by
 
 ```math
-(g,h){-1} = $(_tex(:bigl))( g^{-1}, τ_{g}(h^{-1}) $(_tex(:bigr))).
+(g,h)^{-1} = $(_tex(:bigl))( g^{-1}, τ_{g}(h^{-1}) $(_tex(:bigr))).
 ```
 
 The inverse for the [`RightSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on ``G ⋊ H`` is given by
