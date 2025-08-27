@@ -140,7 +140,8 @@ struct ActionActsOnRight <: AbstractActionActsOnType end
 """
     GroupAction{T<:GroupActionType, L<:LieGroup, M<:AbstractManifold}
 
-Specify a group action of [`AbstractGroupActionType`](@ref) `T` of a [`AbstractLieGroup`](@ref) `G` acting on `M`.
+Specify a group action of [`AbstractGroupActionType`](@ref) `T` of a [`AbstractLieGroup`](@ref) `G`
+acting on an [`AbstractManifold`](@exref `ManifoldsBase.AbstractManifold`) `M`.
 
 Let ``$(_math(:M))`` be a $(_link(:AbstractManifold)) and ``$(_math(:G))`` be a [`AbstractLieGroup`](@ref)
 with group operation ``$(_math(:∘))``.
@@ -215,7 +216,7 @@ This can be performed in-place of `q`.
 # un-comment the preceding line and remove this, once GroupManifolds no longer exists in Manifolds.jl
 @doc "$(_doc_apply)"
 function apply(A::GroupAction, g, p)
-    q = allocate_result(base_manifold(A), apply, g, p)
+    q = allocate_result(base_manifold(A), apply, p, g)
     apply!(A, q, g, p)
     return q
 end

@@ -207,13 +207,13 @@ end
 function _semidirect_parts(SDPG::LieGroup{𝔽, <:LeftSemidirectProductGroupOperation, <:ProductManifold}) where {𝔽}
     PM = SDPG.manifold
     G, H = map(LieGroup, PM.manifolds, SDPG.op.operations)
-    a = GroupAction(G, H, SDPG.op.action_type, SDPG.op.action_on)
+    a = GroupAction(G, H, SDPG.op.action_type)
     return PM, G, H, a, 1, 2
 end
 function _semidirect_parts(SDPG::LieGroup{𝔽, <:RightSemidirectProductGroupOperation, <:ProductManifold}) where {𝔽}
     PM = SDPG.manifold
     H, G = map(LieGroup, PM.manifolds, SDPG.op.operations)
-    a = GroupAction(G, H, SDPG.op.action_type, SDPG.op.action_on)
+    a = GroupAction(G, H, SDPG.op.action_type)
     return PM, G, H, a, 2, 1
 end
 # A major difference between left and right actions is that for right, we have to invert the action while for left we do not
@@ -652,7 +652,7 @@ function diff_left_compose!(
     # we need one allocation to compute the action
     σg1mh2 = apply(a, gG_mod, hH)
     # Step 1: Compute the argument for the second summand on H - use the memory of YH for the result
-    diff_group_apply!(A, YH, gG_mod, hH, XG)
+    diff_group_apply!(a, YH, gG_mod, hH, XG)
     # Step 2: Differential of right group compose (argument from 1)
     diff_right_compose!(H, YH, gH, σg1mh2, YH)
     # Step 3: a second allocation for the other (first) differential, we want to add to that.

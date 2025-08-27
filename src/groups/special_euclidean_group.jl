@@ -1,6 +1,6 @@
 # for (g, t)
 const LeftSpecialEuclideanGroupOperation = LeftSemidirectProductGroupOperation{
-    <:MatrixMultiplicationGroupOperation, <:AdditionGroupOperation, LeftMultiplicationGroupAction, <:ActionActsOnRight,
+    MatrixMultiplicationGroupOperation, AdditionGroupOperation, LeftMultiplicationGroupAction, ActionActsOnRight,
 }
 
 const LeftSpecialEuclideanGroup{T} = LieGroup{
@@ -11,7 +11,7 @@ const LeftSpecialEuclideanGroup{T} = LieGroup{
 
 # for (t, g)
 const RightSpecialEuclideanGroupOperation = RightSemidirectProductGroupOperation{
-    <:AdditionGroupOperation, <:MatrixMultiplicationGroupOperation, LeftMultiplicationGroupAction, <:ActionActsOnRight,
+    AdditionGroupOperation, MatrixMultiplicationGroupOperation, LeftMultiplicationGroupAction, ActionActsOnRight,
 }
 const RightSpecialEuclideanGroup{T} = LieGroup{
     ℝ,
@@ -69,22 +69,9 @@ you can use the `ArrayPartition` from [`RecursiveArrayTools.jl`](https://docs.sc
 or for ``$(_math(:T))(n) ⋊ $(_math(:SO))(n)`` using the `ArrayPartition`s ``(t,r)``;
 which corresponds to setting `variant=:right` in the first constructor.
 """
-const SpecialEuclideanGroup{T} = Union{
-    <:LeftSpecialEuclideanGroup{T}, <:RightSpecialEuclideanGroup{T},
-}
+const SpecialEuclideanGroup{T} = Union{<:LeftSpecialEuclideanGroup{T}, <:RightSpecialEuclideanGroup{T}}
 
-const SpecialEuclideanGroupOperation = Union{
-    <:LeftSemidirectProductGroupOperation{
-        <:MatrixMultiplicationGroupOperation,
-        <:AdditionGroupOperation,
-        LeftGroupOperationAction,
-    },
-    <:RightSemidirectProductGroupOperation{
-        <:AdditionGroupOperation,
-        <:MatrixMultiplicationGroupOperation,
-        LeftGroupOperationAction,
-    },
-}
+const SpecialEuclideanGroupOperation = Union{<:LeftSpecialEuclideanGroupOperation, <:RightSpecialEuclideanGroupOperation}
 
 """
     SpecialEuclideanMatrixPoint <: AbstractLieGroupPoint
@@ -312,11 +299,8 @@ end
 """
     default_left_action(G::SpecialOrthogonalGroup, ::TranslationGroup)
 
-
-    TODO Fix docs, it seems it only returned the type?
-
-Return the default left action for the special Euclidean group ``$(_math(:SO))(n) ⋊ $(_math(:T))(n)``,
-that is the [`GroupOperationAction`](@ref)`(`[`LeftMultiplicationGroupAction`](@ref)`(G.op))`.
+Return the default [`AbstractGroupActionType`](@ref) for the special Euclidean group ``$(_math(:SO))(n) ⋉ $(_math(:T))(n)``,
+which is the [`LeftMultiplicationGroupAction`](@ref)
 """
 default_left_action(::SpecialOrthogonalGroup, ::TranslationGroup) =
     LeftMultiplicationGroupAction()
@@ -324,10 +308,8 @@ default_left_action(::SpecialOrthogonalGroup, ::TranslationGroup) =
 """
     default_right_action(::TranslationGroup, G::SpecialOrthogonalGroup)
 
-    TODO Fix docs, it seems it only returned the type?
-
-Return the default right action for the special Euclidean group,
-that is the [`GroupOperationAction`](@ref)`(`[`LeftMultiplicationGroupAction`](@ref)`(G.op))`.
+Return the default [`AbstractGroupActionType`](@ref) for the special Euclidean group ``$(_math(:T))(n) ⋊ $(_math(:SO))(n)``,
+which is the [`LeftMultiplicationGroupAction`](@ref)
 """
 function default_right_action(::TranslationGroup, ::SpecialOrthogonalGroup)
     return LeftMultiplicationGroupAction()
