@@ -223,12 +223,12 @@ end
 function _semidirect_maybe_inv(::GroupAction{<:AbstractLeftGroupActionType}, G, g)
     return g
 end
-# and in in-place - returns a copy if both are aliased
+# and in in-place
 function _semidirect_maybe_inv!(::GroupAction{<:AbstractRightGroupActionType}, G, k, g)
-    return Base.mightalias(k, g) ? inv(G, g) : inv!(G, k, g)
+    return inv!(G, k, g)
 end
 function _semidirect_maybe_inv!(::GroupAction{<:AbstractLeftGroupActionType}, G, k, g)
-    return Base.mightalias(k, g) ? copy(G, g) : copyto!(G, k, g)
+    return copyto!(G, k, g)
 end
 #
 #
@@ -303,14 +303,19 @@ function _compose!(
         SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, k, g, h
     ) where {𝔽, O1, O2, A <: AbstractGroupActionType, AO <: ActionActsOnLeft}
     PM, G, H, a, g_ind, h_ind = _semidirect_parts(SDPG)
-    if Base.mightalias(k, g) # copy kH to avoid overlap aliased effects
+    if Base.mightalias(k, g) || Base.mightalias(h, g) # k/h may not overlap with g
         kH = copy(H, submanifold_component(SDPG, k, Val(h_ind))) # to
     else # if it does not alias, we can just use kG & kH
         kH = submanifold_component(SDPG, k, Val(h_ind))
     end
+    if Base.mightalias(k, h) || Base.mightalias(k, g) # h/g may not overlap with k
+        kG = copy(G, submanifold_component(SDPG, k, Val(g_ind))) # to
+    else # if it does not alias, we can just use kG & kH
+        kG = submanifold_component(SDPG, k, Val(g_ind))
+    end
     # invert hG for right, copy for left
     # this is inplace if both are not aliased and creates a copy kG otherwise to avoid overwriting hG
-    kG = _semidirect_maybe_inv!(a, G, submanifold_component(SDPG, k, Val(g_ind)), submanifold_component(SDPG, h, Val(g_ind)))
+    _semidirect_maybe_inv!(a, G, kG, submanifold_component(SDPG, h, Val(g_ind)))
     # a) group action  (first to avoid side effects in g, set kH to σ_{kG}(gH), with the above this avoids aliasing
     apply!(a, kH, kG, submanifold_component(SDPG, g, Val(h_ind)))
     # b) group operation on G
@@ -377,16 +382,21 @@ function _compose!(
         SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, k, g, h
     ) where {𝔽, O1, O2, A <: AbstractGroupActionType, AO <: ActionActsOnRight}
     PM, G, H, a, g_ind, h_ind = _semidirect_parts(SDPG)
-    if Base.mightalias(k, g) # copy kH to avoid overlap aliased effects
+    if Base.mightalias(k, g) || Base.mightalias(h, g) # copy kH to avoid overlap aliased effects
         kH = copy(H, submanifold_component(SDPG, k, Val(h_ind))) # to
     else # if it does not alias, we can just use kG & kH
         kH = submanifold_component(SDPG, k, Val(h_ind))
     end
+    if Base.mightalias(k, h) || Base.mightalias(k, g) # copy kH to avoid overlap aliased effects for both
+        kG = copy(G, submanifold_component(SDPG, k, Val(g_ind))) # to
+    else # if it does not alias, we can just use kG & kH
+        kG = submanifold_component(SDPG, k, Val(g_ind))
+    end
     # invert gG for right, copy for left
-    # this is inplace if both are not aliased and creates a copy gG otherwise to avoid overwriting hG
-    kG = _semidirect_maybe_inv!(a, G, submanifold_component(SDPG, g, Val(g_ind)), submanifold_component(SDPG, g, Val(g_ind)))
+    # this is inplace if both are not aliased and creates a copy G otherwise to avoid overwriting hG
+    _semidirect_maybe_inv!(a, G, kG, submanifold_component(SDPG, g, Val(g_ind)))
     # a) group action (first to avoid side effects in g, set kH to σ_{gG}(hH) - since we might have inverted, we have to use kG
-    apply!(a, kH, kG, submanifold_component(PM, h, h_ind))
+    apply!(a, kH, kG, submanifold_component(PM, h, h_ind)) #accidentially overwriting hH is fine, we do not need it.
     # b) group operation on G
     _compose!(G, submanifold_component(PM, k, g_ind), submanifold_component(PM, g, g_ind), submanifold_component(PM, h, g_ind))
     # c) group operation on H (note that the action on hH is already in kH
