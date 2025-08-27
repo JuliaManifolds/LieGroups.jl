@@ -304,7 +304,7 @@ diff_group_apply!(A::GroupAction, q, g, p)
 Return the [`GroupAction`](@ref) representing the inverse of an [`GroupAction`](@ref) of [`AbstractGroupActionType`](@ref) `T`.
 This is usually done by returning the group action with the inverse type of `T`.
 """
-Base.inv(A::GroupAction) = GroupAction(A.group, A.manifold, inv(A.type), A.on)
+Base.inv(A::GroupAction) = GroupAction(A.group, A.manifold, inv(A.type))
 
 """
     inv(::AbstractGroupActionType)
@@ -315,7 +315,7 @@ inverse operation.
 Base.inv(::AbstractGroupActionType)
 
 function Base.show(io::IO, A::GroupAction)
-    return print(io, "GroupAction($(A.group), $(A.manifold), $(A.type), $(A.on))")
+    return print(io, "GroupAction($(A.group), $(A.manifold), $(A.type))")
 end
 
 function switch end
@@ -327,7 +327,7 @@ Return the group operation action representing the similar [`GroupAction`](@ref)
 but acting from the other side. It switches left to right and vice versa.
 This is done by returning the group action with the “switched” type of `T`.
 """
-switch(A::GroupAction) = GroupAction(A.group, A.manifold, switch(A.type), A.on)
+switch(A::GroupAction) = GroupAction(A.group, A.manifold, switch(A.type))
 
 @doc """
     switch(T::AbstractGroupActionType)

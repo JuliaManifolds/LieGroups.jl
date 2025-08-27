@@ -8,8 +8,8 @@ using LieGroupsTestSuite
     M = LieGroupsTestSuite.DummyManifold()
     T = LieGroupsTestSuite.DummyLeftActionType()
     G = LieGroupsTestSuite.DummyLieGroup(M, LieGroupsTestSuite.DummyOperation())
-    a = GroupAction(G, M, T, ActionActsOnRight())
-    @test repr(a) === "GroupAction($G, $M, $T, ActionActsOnRight())"
+    a = GroupAction(G, M, T)
+    @test repr(a) === "GroupAction($G, $M, $T)"
     @test switch(T) === LieGroupsTestSuite.DummyRightActionType()
-    @test switch(a) === GroupAction(G, M, switch(T), ActionActsOnRight())
+    @test switch(a) === GroupAction(G, M, switch(T))
 end

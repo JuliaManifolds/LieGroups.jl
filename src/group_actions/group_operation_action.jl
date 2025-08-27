@@ -77,9 +77,9 @@ function GroupOperationAction(G::LieGroup, type::AbstractGroupActionType = LeftG
     return GroupAction(G, G, type)
 end
 function Base.show(
-        io::IO, GA::GroupAction{A, G, M}
-    ) where {A <: AbstractGroupActionType, G <: LieGroup, M <: AbstractManifold}
-    return print(io, "GroupOperationAction($(GA.group); type=$(GA.type)")
+        io::IO, GA::GroupAction{A, G, G}
+    ) where {A <: AbstractGroupActionType, G <: LieGroup}
+    return print(io, "GroupOperationAction($(GA.group); type=$(GA.type))")
 end
 
 function apply!(A::GroupAction{LeftGroupOperationAction}, k, g, h)

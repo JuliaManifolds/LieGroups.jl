@@ -66,7 +66,7 @@ begin
             ]
             A = GroupOperationAction(G, t)
             properties2[:Name] = "with $A"
-            expectations2[:repr] = "GroupOperationAction($t, $G)"
+            expectations2[:repr] = "GroupOperationAction($G; type=$t)"
             test_group_action(A, properties2, expectations2)
         end
     end
