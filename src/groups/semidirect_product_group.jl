@@ -1044,11 +1044,11 @@ function _inv!(
     PM, G, H, a, g_ind, h_ind = _semidirect_parts(SDPG)
     # (a) compute the inverse in H
     inv!(H, submanifold_component(SDPG, k, Val(h_ind)), submanifold_component(PM, g, Val(h_ind)))
-    # (b) apply the group action w.r.t. g in G (not yet inverted in place) to the inverse from (b)
+    # (b) apply the group action w.r.t. g_g in G (not yet inverted in place) to the inverse g_h from (a)) that is already in k_h; apply it in-place of k_h
     apply!( # Apply the group action with g1^-1 to g2^-1
         a,
         submanifold_component(SDPG, k, Val(h_ind)),
-        submanifold_component(SDPG, k, Val(g_ind)),
+        submanifold_component(SDPG, g, Val(g_ind)),
         submanifold_component(SDPG, k, Val(h_ind)),
         #TODO make sure apply is safe against side effects
     )
