@@ -141,7 +141,7 @@ struct ActionActsOnRight <: AbstractActionActsOnType end
     GroupAction{T<:GroupActionType, L<:LieGroup, M<:AbstractManifold}
 
 Specify a group action of [`AbstractGroupActionType`](@ref) `T` of a [`AbstractLieGroup`](@ref) `G`
-acting on an [`AbstractManifold`](@exref `ManifoldsBase.AbstractManifold`) `M`.
+acting on an $(_link(:AbstractManifold)) `M`.
 
 Let ``$(_math(:M))`` be a $(_link(:AbstractManifold)) and ``$(_math(:G))`` be a [`AbstractLieGroup`](@ref)
 with group operation ``$(_math(:∘))``.

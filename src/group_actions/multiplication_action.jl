@@ -16,6 +16,8 @@ where ``*`` denotes the matrix(-vector) multiplication.
 """
 struct LeftMultiplicationGroupAction <: AbstractLeftGroupActionType end
 
+# TODO: Document
+
 function apply!(::GroupAction{LeftMultiplicationGroupAction}, q, g, p)
     return Base.mightalias(q, p) ? q .= g * p : mul!(q, g, p)
 end

@@ -515,7 +515,7 @@ function test_exp_log(
             # Lie group exp / log, check that they are inverses of each other
             k1 = exp(G, X)
             Y1 = log(G, k1)
-            @test isapprox(𝔤, X, Y1)
+            @test isapprox(𝔤, X, Y1; error = :error, atol = atol)
             if test_mutating
                 k2 = copy(G, g)
                 exp!(G, k2, X)
@@ -526,7 +526,7 @@ function test_exp_log(
             # exp & log
             k1 = exp(G, g, X)
             Y1 = log(G, g, k1)
-            @test isapprox(𝔤, X, Y1)
+            @test isapprox(𝔤, X, Y1; error = :error, atol = atol)
             if test_mutating
                 k2 = copy(G, g)
                 exp!(G, k2, g, X)
