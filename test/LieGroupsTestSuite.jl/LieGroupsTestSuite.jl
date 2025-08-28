@@ -146,6 +146,12 @@ function test_compose(
     )
     @testset "compose" begin
         k1 = compose(G, g, h)
+
+        #test associativity
+        a1 = compose(G, compose(G, g, k1), h)
+        a2 = compose(G, g, compose(G, k1, h))
+        @test isapprox(G, a1, a2; atol = atol)
+
         if test_mutating
             k2 = copy(G, g)
             compose!(G, k2, g, h)

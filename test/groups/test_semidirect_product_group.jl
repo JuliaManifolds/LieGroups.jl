@@ -53,4 +53,52 @@ using LieGroupsTestSuite
         @test Gl.manifold.manifolds[1].manifolds[1] === G1.manifold
         @test Gl.manifold.manifolds[2].manifolds[1] === G2.manifold
     end
+    @testset "8 combinations with (SO(2), ℝ²)" begin
+        struct TestLeftAction <: AbstractLeftGroupActionType end
+        function LieGroups.apply!(A::GroupAction{TestLeftAction}, k, g, h)
+            return k .= g * h
+        end
+
+        struct TestRightAction <: AbstractRightGroupActionType end
+        function LieGroups.apply!(A::GroupAction{TestRightAction}, k, g, h)
+            return k .= inv(A.group, g) * h # (h' * g)'
+        end
+
+        g1 = 1 / sqrt(2) * [1.0 1.0; -1.0 1.0]
+        g2 = [0.0 -1.0; 1.0 0.0]
+        g3 = [1.0 0.0; 0.0 1.0]
+        h1 = [0.1, 0.1]
+        h2 = [0.0, 1.0]
+        h3 = [0.0, 0]
+
+        for action in (TestLeftAction(), TestRightAction()),
+                action_on in (ActionActsOnLeft(), ActionActsOnRight())
+
+            G = LeftSemidirectProductLieGroup(SpecialOrthogonalGroup(2), TranslationGroup(2), action; action_on)
+            p1 = ArrayPartition(copy(g1), copy(h1))
+            p2 = ArrayPartition(copy(g2), copy(h2))
+            p3 = ArrayPartition(copy(g3), copy(h3))
+
+            properties = Dict(
+                :Name => "LeftSemidirectProductLieGroup, $(supertype(typeof(action))), $(action_on)",
+                :Points => [p1, p2, p3],
+                :Functions => [identity_element, is_identity, inv, compose, show],
+            )
+            expectations = Dict(:atol => 1.0e-14)
+
+            test_lie_group(G, properties, expectations)
+
+            G = RightSemidirectProductLieGroup(TranslationGroup(2), SpecialOrthogonalGroup(2), action; action_on)
+            p1 = ArrayPartition(copy(h1), copy(g1))
+            p2 = ArrayPartition(copy(h2), copy(g2))
+            p3 = ArrayPartition(copy(h3), copy(g3))
+            properties = Dict(
+                :Name => "RightSemidirectProductLieGroup, $(supertype(typeof(action))), $(action_on)",
+                :Points => [p1, p2, p3],
+                :Functions => [identity_element, is_identity, inv, compose, show],
+            )
+            expectations = Dict(:atol => 1.0e-14)
+            test_lie_group(G, properties, expectations)
+        end
+    end
 end
