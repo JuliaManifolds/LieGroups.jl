@@ -59,11 +59,15 @@ end
 Test  `adjoint` function for a given Lie group element `g` and a Lie Algebra vector `X`
 
 # Keyword arguments
+* `test_aliased::Bool=test_mutating`: test aliased input on the mutating variants.
 * `expected=missing` provide the value expected. If none is provided, the
   default from `diff_conjugate` is used
 * `test_mutating::Bool=true`: test the mutating functions
 """
-function test_adjoint(G::AbstractLieGroup, g, X; expected = missing, test_mutating::Bool = true)
+function test_adjoint(
+        G::AbstractLieGroup, g, X;
+        expected = missing, test_mutating::Bool = true, test_aliased::Bool = test_mutating
+    )
     @testset "adjoint" begin
         v = if ismissing(expected)
             diff_conjugate(G, g, identity_element(G, typeof(g)), X)
@@ -77,6 +81,11 @@ function test_adjoint(G::AbstractLieGroup, g, X; expected = missing, test_mutati
             Y2 = copy(𝔤, X)
             adjoint!(G, Y2, g, X)
             @test isapprox(𝔤, Y1, Y2)
+            if test_aliased
+                Y3 = copy(𝔤, X)
+                adjoint!(G, Y3, g, Y3)
+                @test isapprox(𝔤, Y1, Y3)
+            end
         end
         @test isapprox(𝔤, Y1, v)
     end
@@ -89,10 +98,14 @@ end
 Test  `apply`.
 
 # Keyword arguments
+* `test_aliased::Bool=test_mutating`: test aliased input on the mutating variants.
 * `expected=missing`: the result of the application of the group action.
 * `test_mutating::Bool=true`: test the mutating functions
 """
-function test_apply(A::GroupAction, g, p; expected = missing, test_mutating::Bool = true)
+function test_apply(
+        A::GroupAction, g, p;
+        expected = missing, test_mutating::Bool = true, test_aliased::Bool = test_mutating
+    )
     return @testset "apply" begin
         q1 = apply(A, g, p)
         M = base_manifold(A)
@@ -101,6 +114,11 @@ function test_apply(A::GroupAction, g, p; expected = missing, test_mutating::Boo
             q2 = copy(M, p)
             apply!(A, q2, g, p)
             @test isapprox(M, q1, q2)
+            if test_aliased
+                q3 = copy(M, p)
+                apply!(A, q3, g, q3)
+                @test isapprox(M, q1, q3)
+            end
         end
         !ismissing(expected) && @test isapprox(M, q1, expected)
     end
@@ -116,19 +134,15 @@ Test  `compose` for given Lie group elements `g`, `h`.
 # Keyword arguments
 
 * `atol::Real=0`: the absolute tolerance for the tests of zero-vectors
-`
+* `test_aliased::Bool=test_mutating`: test aliased input on the mutating variants.
 * `test_identity::Bool=true`: test that composing with the identity yields the identity (requires `identity_element`)
 * `test_inverse::Bool=true`: test that `g^{-1}g` is the identity (requires `inv`, `inv!`, and `is_identity`)
 * `test_mutating::Bool=true`: test the mutating functions
 """
 function test_compose(
-        G::AbstractLieGroup,
-        g,
-        h;
+        G::AbstractLieGroup, g, h;
         atol::Real = 0,
-        test_inverse::Bool = true,
-        test_identity::Bool = true,
-        test_mutating::Bool = true,
+        test_inverse::Bool = true, test_identity::Bool = true, test_mutating::Bool = true, test_aliased::Bool = test_mutating,
     )
     @testset "compose" begin
         k1 = compose(G, g, h)
@@ -164,6 +178,21 @@ function test_compose(
             k3 = copy(G, g)
             compose!(G, k3, e, e)
             @test is_identity(G, k3; atol = atol)
+        end
+        if test_mutating && test_aliased
+            gg = compose(G, g, g)
+            # alias left input and output
+            k4 = copy(G, g)
+            compose!(G, k4, k4, g)
+            @test isapprox(G, k4, gg; atol = atol)
+            # alias right input and output
+            k5 = copy(G, g)
+            compose!(G, k5, g, k5)
+            @test isapprox(G, k5, gg; atol = atol)
+            # alias all three
+            k6 = copy(G, g)
+            compose!(G, k6, k6, k6)
+            @test isapprox(G, k6, gg; atol = atol)
         end
     end
     return nothing
@@ -521,17 +550,6 @@ function test_exp_log(
                 exp!(G, k2, X)
                 Y2 = zero_vector(𝔤, typeof(X))
                 log!(G, Y2, k2)
-                @test isapprox(𝔤, Y1, Y2)
-            end
-            # exp & log
-            k1 = exp(G, g, X)
-            Y1 = log(G, g, k1)
-            @test isapprox(𝔤, X, Y1; error = :error, atol = atol)
-            if test_mutating
-                k2 = copy(G, g)
-                exp!(G, k2, g, X)
-                Y2 = zero_vector(𝔤, typeof(X))
-                log!(G, Y2, g, k2)
                 @test isapprox(𝔤, Y1, Y2)
             end
         end
@@ -1093,7 +1111,7 @@ Possible `expectations` are
 function test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dict = Dict())
     atol = get(expectations, :atol, 0.0)
     mutating = get(properties, :Mutating, true)
-    aliased = get(properties, :Aliased, false) # TODO default to mutating once this is established
+    aliased = get(properties, :Aliased, mutating)
     functions = get(properties, :Functions, Function[])
     points = get(properties, :Points, [])
     vectors = get(properties, :Vectors, [])
@@ -1106,7 +1124,7 @@ function test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dic
         # --- A
         if (adjoint in functions)
             v = get(expectations, :adjoint, missing)
-            test_adjoint(G, points[1], vectors[1]; expected = v, test_mutating = mutating)
+            test_adjoint(G, points[1], vectors[1]; expected = v, test_mutating = mutating, test_aliased = aliased)
         end
         #
         #
@@ -1122,6 +1140,7 @@ function test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dic
                 points[2];
                 test_inverse = ti,
                 test_mutating = mutating,
+                test_aliased = aliased,
                 atol = local_atol,
             )
         end
@@ -1347,6 +1366,7 @@ Possible `expectations` are
 function test_group_action(A::GroupAction, properties::Dict, expectations::Dict = Dict())
     a_tol = get(expectations, :atol, 1.0e-8)
     mutating = get(properties, :Mutating, true)
+    aliased = get(properties, :Aliased, mutating)
     functions = get(properties, :Functions, Function[])
     group_points = get(properties, :GroupPoints, [])
     @assert length(group_points) > 2
@@ -1365,7 +1385,7 @@ function test_group_action(A::GroupAction, properties::Dict, expectations::Dict 
         if (apply in functions)
             v = get(expectations, :apply, missing)
             test_apply(
-                A, group_points[1], manifold_points[1]; expected = v, test_mutating = mutating
+                A, group_points[1], manifold_points[1]; expected = v, test_mutating = mutating, test_aliased = aliased
             )
         end
         if (diff_apply in functions)
