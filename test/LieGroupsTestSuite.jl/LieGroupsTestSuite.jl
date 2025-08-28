@@ -275,10 +275,12 @@ Test  `diff_apply`.
 
 # Keyword arguments
 * `expected=missing`: the result of the application of the group action.
+* `test_aliased::Bool=test_mutating`: test aliased input on the mutating variants.
 * `test_mutating::Bool=true`: test the mutating functions
 """
 function test_diff_apply(
-        A::GroupAction, g, p, X; expected = missing, test_mutating::Bool = true
+        A::GroupAction, g, p, X;
+        expected = missing, test_mutating::Bool = true, test_aliased::Bool = test_mutating
     )
     return @testset "diff_apply" begin
         Y1 = diff_apply(A, g, p, X)
@@ -290,6 +292,11 @@ function test_diff_apply(
             Y2 = copy(M, p, X)
             diff_apply!(A, Y2, g, p, X)
             @test isapprox(M, q, Y1, Y2)
+            if test_aliased
+                Y3 = copy(M, p, X)
+                diff_apply!(A, Y3, g, Y3, X)
+                @test isapprox(M, q, Y1, Y3)
+            end
         end
         !ismissing(expected) && @test isapprox(M, q, Y1, expected)
     end
@@ -302,10 +309,12 @@ Test  `diff_group_apply`.
 
 # Keyword arguments
 * `expected=missing`: the result of the application of the group action.
+* `test_aliased::Bool=test_mutating`: test aliased input on the mutating variants.
 * `test_mutating::Bool=true`: test the mutating functions
 """
 function test_diff_group_apply(
-        A::GroupAction, g, p, X; expected = missing, test_mutating::Bool = true
+        A::GroupAction, g, p, X;
+        expected = missing, test_mutating::Bool = true, test_aliased::Bool = test_mutating
     )
     return @testset "diff_group_apply" begin
         Y1 = diff_group_apply(A, g, p, X)
@@ -316,6 +325,11 @@ function test_diff_group_apply(
             Y2 = copy(𝔤, X)
             diff_group_apply!(A, Y2, g, p, X)
             @test isapprox(𝔤, Y1, Y2)
+            if test_aliased
+                Y3 = copy(𝔤, X)
+                diff_group_apply!(A, Y3, g, p, Y3)
+                @test isapprox(𝔤, Y1, Y3)
+            end
         end
         !ismissing(expected) && @test isapprox(𝔤, Y1, expected)
     end
@@ -329,10 +343,12 @@ Test  `diff_inv`.
 # Keyword arguments
 * `expected=missing`: the result of the differential of the inverse, if not provided,
   only consistency between the allocating and the in-place variant is checked.
+* `test_aliased::Bool=test_mutating`: test aliased input on the mutating variants.
 * `test_mutating::Bool=true`: test the mutating functions
 """
 function test_diff_inv(
-        G::AbstractLieGroup, g, X; expected = missing, test_mutating::Bool = true
+        G::AbstractLieGroup, g, X;
+        expected = missing, test_mutating::Bool = true, test_aliased::Bool = test_mutating
     )
     return @testset "diff_inv" begin
         𝔤 = LieAlgebra(G)
@@ -344,6 +360,11 @@ function test_diff_inv(
             Y2 = zero_vector(𝔤, typeof(X))
             Y2 = diff_inv!(G, Y2, g, X)
             @test isapprox(𝔤, Y1, Y2)
+            if test_aliased
+                Y3 = copy(𝔤, X)
+                diff_inv!(G, Y3, g, Y3)
+                @test isapprox(𝔤, Y1, Y3)
+            end
         end
         if !ismissing(expected)
             @test isapprox(𝔤, Y1, expected)
@@ -359,10 +380,12 @@ Test  `diff_left_compose`.
 # Keyword arguments
 * `expected=missing`: the result of the differential of the compose's left argument,
   if not provided, only consistency between the allocating and the in-place variant is checked.
+* `test_aliased::Bool=test_mutating`: test aliased input on the mutating variants.
 * `test_mutating::Bool=true`: test the mutating functions
 """
 function test_diff_left_compose(
-        G::AbstractLieGroup, g, h, X; expected = missing, test_mutating::Bool = true
+        G::AbstractLieGroup, g, h, X;
+        expected = missing, test_mutating::Bool = true, test_aliased::Bool = test_mutating
     )
     return @testset "diff_left_compose" begin
         𝔤 = LieAlgebra(G)
@@ -374,6 +397,11 @@ function test_diff_left_compose(
             Y2 = zero_vector(𝔤, typeof(X))
             diff_left_compose!(G, Y2, g, h, X)
             @test isapprox(LieAlgebra(G), Y1, Y2)
+            if test_aliased
+                Y3 = copy(LieAlgebra(G), X)
+                diff_left_compose!(G, Y3, g, h, Y3)
+                @test isapprox(LieAlgebra(G), Y1, Y3)
+            end
         end
         if !ismissing(expected)
             @test isapprox(LieAlgebra(G), Y1, expected)
@@ -389,10 +417,12 @@ Test  `diff_right_compose`.
 # Keyword arguments
 * `expected=missing`: the result of the differential of the compose's right argument,
   if not provided, only consistency between the allocating and the in-place variant is checked.
+* `test_aliased::Bool=test_mutating`: test aliased input on the mutating variants.
 * `test_mutating::Bool=true`: test the mutating functions
 """
 function test_diff_right_compose(
-        G::AbstractLieGroup, g, h, X; expected = missing, test_mutating::Bool = true
+        G::AbstractLieGroup, g, h, X;
+        expected = missing, test_mutating::Bool = true, test_aliased::Bool = test_mutating
     )
     return @testset "diff_right_compose" begin
         𝔤 = LieAlgebra(G)
@@ -404,6 +434,11 @@ function test_diff_right_compose(
             Y2 = zero_vector(𝔤, typeof(X))
             diff_right_compose!(G, Y2, g, h, X)
             @test isapprox(𝔤, Y1, Y2)
+            if test_aliased
+                Y3 = copy(𝔤, X)
+                diff_right_compose!(G, Y3, g, h, Y3)
+                @test isapprox(𝔤, Y1, Y3)
+            end
         end
         if !ismissing(expected)
             @test isapprox(𝔤, Y1, expected)
@@ -767,12 +802,13 @@ Test the inverse function, both the allocating and the in-place variant,
 and that the double inverse is the identity.
 
 # Keyword arguments
-
+* `test_aliased::Bool=test_mutating`: test aliased input on the mutating variants.
 * `test_mutating::Bool=true`: test the mutating functions
 * `test_identity::Bool=true`: test that `inv(e) == e`
 """
 function test_inv(
-        G::AbstractLieGroup, g; test_mutating::Bool = true, test_identity::Bool = true
+        G::AbstractLieGroup, g;
+        test_mutating::Bool = true, test_identity::Bool = true, test_aliased::Bool = test_mutating
     )
     @testset "inv" begin
         k1 = inv(G, g)
@@ -786,6 +822,11 @@ function test_inv(
             # continue in-place
             inv!(G, k2, k2)
             @test isapprox(G, k2, g)
+            if test_aliased
+                k3 = copy(G, k2)
+                inv!(G, k3, k3)
+                @test isapprox(G, k3, k1)
+            end
         end
         if test_identity
             e = Identity(G)
@@ -1082,8 +1123,7 @@ Test the Lie group ``G`` based on a `Dict` of properties and a `Dict` of `expect
 
 Possible properties are
 
-* `:Aliased` is a boolean (`false` by default) whether to test the mutating variants with aliased input
-TODO set to the value of `:Mutating` by default
+* `:Aliased` is a boolean (same as `:Mutating` by default) whether to test the mutating variants with aliased input
 * `:Functions` is a vector of all defined functions for `G`
   Note that if `f` is in `:Functions`, and `f!` makes sense, for example for `compose`,
   it is assumed that both are defined.
@@ -1174,20 +1214,25 @@ function test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dic
 
         if (diff_inv in functions)
             v = get(expectations, :diff_inv, missing)
-            test_diff_inv(G, points[1], vectors[1]; expected = v, test_mutating = mutating)
+            test_diff_inv(
+                G, points[1], vectors[1];
+                expected = v, test_mutating = mutating, test_aliased = aliased
+            )
         end
 
         if (diff_left_compose in functions)
             v = get(expectations, :diff_left_compose, missing)
             test_diff_left_compose(
-                G, points[1], points[2], vectors[1]; expected = v, test_mutating = mutating
+                G, points[1], points[2], vectors[1];
+                expected = v, test_mutating = mutating, test_aliased = aliased
             )
         end
 
         if (diff_right_compose in functions)
             v = get(expectations, :diff_right_compose, missing)
             test_diff_right_compose(
-                G, points[1], points[2], vectors[1]; expected = v, test_mutating = mutating
+                G, points[1], points[2], vectors[1];
+                expected = v, test_mutating = mutating, test_aliased = aliased
             )
         end
 
@@ -1207,7 +1252,7 @@ function test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dic
                 test_exp = (exp in functions),
                 test_log = (log in functions),
                 test_mutating = mutating,
-                test_aliased = aliased
+                test_aliased = aliased,
             )
         end
 
@@ -1267,7 +1312,7 @@ function test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dic
             test_inner(G, points[1], vectors[1], vectors[2]; expected = v)
         end
         if (inv in functions)
-            test_inv(G, points[1]; test_mutating = mutating)
+            test_inv(G, points[1]; test_mutating = mutating, test_aliased = aliased)
         end
         if (is_flat in functions)
             isf = get(expectations, :is_flat, missing)
@@ -1397,6 +1442,7 @@ function test_group_action(A::GroupAction, properties::Dict, expectations::Dict 
                 tangent_vectors[1];
                 expected = v,
                 test_mutating = mutating,
+                test_aliased = aliased,
             )
         end
         if (diff_group_apply in functions)
@@ -1408,6 +1454,7 @@ function test_group_action(A::GroupAction, properties::Dict, expectations::Dict 
                 algebra_vectors[1];
                 expected = v,
                 test_mutating = mutating,
+                test_aliased = aliased,
             )
         end
         if (base_lie_group in functions)
