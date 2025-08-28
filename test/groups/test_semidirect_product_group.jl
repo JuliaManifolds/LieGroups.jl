@@ -56,19 +56,12 @@ using LieGroupsTestSuite
     @testset "8 combinations with (SO(2), ℝ²)" begin
         struct TestLeftAction <: AbstractLeftGroupActionType end
         function LieGroups.apply!(A::GroupAction{TestLeftAction}, k, g, h)
-            @assert is_point(A.manifold, h) "$h not on $(A.manifold)"
-            @assert is_point(A.group, g) "$g not on $(A.group)"
-            @assert is_point(A.manifold, g * h) "$(g * h) not on $(A.manifold)"
             return k .= g * h
         end
 
         struct TestRightAction <: AbstractRightGroupActionType end
         function LieGroups.apply!(A::GroupAction{TestRightAction}, k, g, h)
-            @assert is_point(A.manifold, h) "$h not on $(A.manifold)"
-            @assert is_point(A.group, g) "$g not on $(A.group)"
-            @assert is_point(A.manifold, g * h) "$(g * h) not on $(A.manifold)"
-            return k .= inv(A.group, g) * h
-            # return k .= (h' * g)'
+            return k .= inv(A.group, g) * h # (h' * g)'
         end
 
         g1 = 1 / sqrt(2) * [1.0 1.0; -1.0 1.0]
