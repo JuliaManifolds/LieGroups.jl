@@ -79,7 +79,7 @@ using LieGroupsTestSuite
         h3 = [0.0, 0]
 
         for action in (TestLeftAction(), TestRightAction()),
-            action_on in (ActionActsOnLeft(), ActionActsOnRight())
+                action_on in (ActionActsOnLeft(), ActionActsOnRight())
 
             G = LeftSemidirectProductLieGroup(SpecialOrthogonalGroup(2), TranslationGroup(2), action; action_on)
             p1 = ArrayPartition(copy(g1), copy(h1))

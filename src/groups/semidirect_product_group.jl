@@ -303,7 +303,7 @@ function _compose!(
         SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, k, g, h
     ) where {𝔽, O1, O2, A <: AbstractGroupActionType, AO <: ActionActsOnLeft}
     PM, G, H, a, g_ind, h_ind = _semidirect_parts(SDPG)
-    if Base.mightalias(k, g) || Base.mightalias(h, g) || Base.mightalias(k, h)# k/h may not overlap with g
+    if Base.mightalias(k, g) || Base.mightalias(h, g) || Base.mightalias(k, h) # k/h may not overlap with g
         kH = copy(H, submanifold_component(SDPG, k, Val(h_ind))) # to
     else # if it does not alias, we can just use kG & kH
         kH = submanifold_component(SDPG, k, Val(h_ind))
