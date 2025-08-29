@@ -58,18 +58,34 @@ using LieGroupsTestSuite
         function LieGroups.apply!(A::GroupAction{TestLeftAction}, k, g, h)
             return k .= g * h
         end
+        function LieGroups.diff_apply!(A::GroupAction{TestLeftAction}, Y, g, h, X)
+            return Y .= g * X
+        end
+        function LieGroups.diff_group_apply!(A::GroupAction{TestLeftAction}, Y, g, h, X)
+            return Y .= X * h
+        end
 
         struct TestRightAction <: AbstractRightGroupActionType end
         function LieGroups.apply!(A::GroupAction{TestRightAction}, k, g, h)
             return k .= inv(A.group, g) * h # (h' * g)'
         end
-
+        function LieGroups.diff_apply!(A::GroupAction{TestRightAction}, Y, g, h, X)
+            return Y .= inv(A.group, g) * X
+        end
+        function LieGroups.diff_group_apply!(A::GroupAction{TestRightAction}, Y, g, h, X)
+            return Y .= X * h
+        end
         g1 = 1 / sqrt(2) * [1.0 1.0; -1.0 1.0]
         g2 = [0.0 -1.0; 1.0 0.0]
         g3 = [1.0 0.0; 0.0 1.0]
         h1 = [0.1, 0.1]
         h2 = [0.0, 1.0]
         h3 = [0.0, 0]
+
+        X1 = [0.0 -0.23; 0.23 0.0]
+        Y1 = [0.0, 0.12]
+        X1 = [0.0 0.1; -0.1 0.0]
+        Y1 = [0.0, 0.2]
 
         for action in (TestLeftAction(), TestRightAction()),
                 action_on in (ActionActsOnLeft(), ActionActsOnRight())
@@ -78,11 +94,13 @@ using LieGroupsTestSuite
             p1 = ArrayPartition(copy(g1), copy(h1))
             p2 = ArrayPartition(copy(g2), copy(h2))
             p3 = ArrayPartition(copy(g3), copy(h3))
+            V1 = ArrayPartition(copy(X1), copy(Y1))
 
             properties = Dict(
                 :Name => "LeftSemidirectProductLieGroup, $(supertype(typeof(action))), $(action_on)",
                 :Points => [p1, p2, p3],
-                :Functions => [identity_element, is_identity, inv, compose, show],
+                :Vectors => [V1],
+                :Functions => [identity_element, is_identity, inv, compose, diff_left_compose, diff_right_compose, show],
             )
             expectations = Dict(:atol => 1.0e-14)
 
@@ -95,6 +113,7 @@ using LieGroupsTestSuite
             properties = Dict(
                 :Name => "RightSemidirectProductLieGroup, $(supertype(typeof(action))), $(action_on)",
                 :Points => [p1, p2, p3],
+                :Vectors => [V1],
                 :Functions => [identity_element, is_identity, inv, compose, show],
             )
             expectations = Dict(:atol => 1.0e-14)

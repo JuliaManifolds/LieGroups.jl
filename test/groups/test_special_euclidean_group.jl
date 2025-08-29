@@ -10,6 +10,8 @@ using StaticArrays
     𝔰 = sqrt(2)
     fcts = [
         compose,
+        diff_left_compose,
+        diff_right_compose,
         exp,
         get_vector,
         hat,
