@@ -808,7 +808,7 @@ function diff_right_compose!(
     # we need one allocation to compute the action (g_2 to h_1)
     σg2mh1 = apply(a, hG_mod, gH)
     # Step 1: Compute the argument for the second summand on H - use the memory of YH for the result
-    diff_group_apply!(a, YH, hG_mod, gH, XH)
+    diff_group_apply!(a, YH, hG_mod, gH, XG)
     # Step 2: Differential of right group compose (argument from 1)
     diff_left_compose!(H, YH, σg2mh1, hH, YH)
     # Step 3: a second allocation for the other (first) differential, we want to add to that.

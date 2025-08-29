@@ -73,7 +73,8 @@ using LieGroupsTestSuite
             return Y .= inv(A.group, g) * X
         end
         function LieGroups.diff_group_apply!(A::GroupAction{TestRightAction}, Y, g, h, X)
-            return Y .= X * h
+
+            return Y .= diff_inv(A.group, g, X) * h
         end
         g1 = 1 / sqrt(2) * [1.0 1.0; -1.0 1.0]
         g2 = [0.0 -1.0; 1.0 0.0]
