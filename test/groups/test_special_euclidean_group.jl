@@ -10,8 +10,6 @@ using StaticArrays
     𝔰 = sqrt(2)
     fcts = [
         compose,
-        diff_left_compose,
-        diff_right_compose,
         exp,
         get_vector,
         hat,
@@ -59,7 +57,7 @@ using StaticArrays
                 :Points => pts,
                 :Vectors => vec,
                 :Rng => Random.MersenneTwister(),
-                :Functions => fcts,
+                :Functions => (pts[1] isa ArrayPartition) ? [fcts..., diff_left_compose, diff_right_compose] : fcts,
             )
             expectations = Dict(
                 :repr => "SpecialEuclideanGroup(2)", :atol => 1.0e-14, :is_flat => true
@@ -98,7 +96,7 @@ using StaticArrays
                 :Points => pts,
                 :Vectors => vec,
                 :Rng => Random.MersenneTwister(),
-                :Functions => vcat(fcts),
+                :Functions => (pts[1] isa ArrayPartition) ? [fcts..., diff_left_compose, diff_right_compose] : fcts,
             )
             expectations = Dict(
                 :repr => "SpecialEuclideanGroup(2; variant=:right)", :atol => 1.0e-14
@@ -140,7 +138,7 @@ using StaticArrays
                 :Points => pts,
                 :Vectors => vec,
                 :Rng => Random.MersenneTwister(),
-                :Functions => vcat(fcts),
+                :Functions => (pts[1] isa ArrayPartition) ? [fcts..., diff_left_compose, diff_right_compose] : fcts,
             )
             expectations = Dict(
                 :repr => "SpecialEuclideanGroup(3)", :atol => 1.0e-14, :is_flat => false

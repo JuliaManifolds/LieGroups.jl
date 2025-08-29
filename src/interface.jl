@@ -1208,6 +1208,15 @@ macro default_lie_group_fallbacks(TG, Op, TP, TV, gfield::Symbol, Xfield::Symbol
         function ManifoldsBase.allocate_result(::$TG, ::typeof(compose), g::$TP, ::$TP)
             return $TP(allocate(g.$gfield))
         end
+        function ManifoldsBase.allocate_result(::$TG, ::typeof(diff_left_compose), X::$TV, g::$TP, h::$TP)
+            return $TV(allocate(X.$Xfield))
+        end
+        function ManifoldsBase.allocate_result(::$TG, ::typeof(diff_right_compose), X::$TV, g::$TP, h::$TP)
+            return $TV(allocate(X.$Xfield))
+        end
+        function ManifoldsBase.allocate_result(::$TG, ::typeof(diff_inv), X::$TV, g::$TP)
+            return $TV(allocate(X.$Xfield))
+        end
         function ManifoldsBase.allocate_result(::$TG, ::typeof(exp), X::$TV)
             return $TP(allocate(X.$Xfield))
         end
@@ -1235,6 +1244,24 @@ macro default_lie_group_fallbacks(TG, Op, TP, TV, gfield::Symbol, Xfield::Symbol
             LieGroups._compose!(G, k.$gfield, g.$gfield, h.$gfield)
             return k
         end
+        function LieGroups.conjugate!(G::$TG, k::$TP, g::$TP, h::$TP)
+            LieGroups.conjugate!(G, k.$gfield, g.$gfield, h.$gfield)
+            return k
+        end
+
+        function LieGroups.diff_inv!(G::$TG, Y::$TV, g::$TP, X::$TV)
+            LieGroups.diff_inv!(G, Y.$Xfield, g.$gfield, X.$Xfield)
+            return Y
+        end
+        function LieGroups.diff_left_compose!(G::$TG, Y::$TV, g::$TP, h::$TP, X::$TV)
+            LieGroups.diff_left_compose!(G, Y.$Xfield, g.$gfield, h.$gfield, X.$Xfield)
+            return Y
+        end
+        function LieGroups.diff_right_compose!(G::$TG, Y::$TV, g::$TP, h::$TP, X::$TV)
+            LieGroups.diff_right_compose!(G, Y.$Xfield, g.$gfield, h.$gfield, X.$Xfield)
+            return Y
+        end
+
         function LieGroups.exp!(G::$TG, g::$TP, X::$TV)
             LieGroups.exp!(G, g.$gfield, X.$Xfield)
             return g
@@ -1244,12 +1271,8 @@ macro default_lie_group_fallbacks(TG, Op, TP, TV, gfield::Symbol, Xfield::Symbol
             identity_element!(G, g.$gfield)
             return g
         end
-        function LieGroups.inv!(G::$TG, h::$TP, g::$TP)
-            LieGroups.inv!(G, h.$gfield, g.$gfield)
-            return h
-        end
-        function LieGroups.inv!(G::$TG, h::$TP, e::Identity{<:$Op})
-            LieGroups.inv!(G, h.$gfield, e)
+        function LieGroups._inv!(G::$TG, h::$TP, g::$TP)
+            LieGroups._inv!(G, h.$gfield, g.$gfield)
             return h
         end
 
