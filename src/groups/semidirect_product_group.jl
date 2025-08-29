@@ -666,17 +666,19 @@ function diff_left_compose!(
     XG, XH = submanifold_component(sdpg, X, Val(g_ind)), submanifold_component(sdpg, X, Val(h_ind))
     gG, gH = submanifold_component(SDPG, g, Val(g_ind)), submanifold_component(SDPG, g, Val(h_ind))
     hG, hH = submanifold_component(SDPG, h, Val(g_ind)), submanifold_component(SDPG, h, Val(h_ind))
+    # avoid aliasing
+    _YH = Base.mightalias(YH, XH) ? copy(H, hH, YH) : YH
     # For right actions we have to invert gG - this allocates when it has to invert
     gG_mod = _semidirect_maybe_inv(a, G, gG)
     # one allocation for applying the action
     # we need one allocation to compute the action
     σg1mh2 = apply(a, gG_mod, hH)
     # Step 1: Compute the argument for the second summand on H - use the memory of YH for the result
-    diff_group_apply!(a, YH, gG_mod, hH, XG)
+    diff_group_apply!(a, _YH, gG_mod, hH, XG)
     # Step 2: Differential of right group compose (argument from 1)
-    diff_right_compose!(H, YH, gH, σg1mh2, YH)
+    diff_right_compose!(H, _YH, gH, σg1mh2, _YH)
     # Step 3: a second allocation for the other (first) differential, we want to add to that.
-    YH .+= diff_left_compose(H, gH, σg1mh2, XH)
+    YH .= _YH + diff_left_compose(H, gH, σg1mh2, XH)
     # last: the plain diff compose on G
     diff_left_compose!(G, YG, gG, hG, XG)
     return Y
@@ -802,17 +804,19 @@ function diff_right_compose!(
     XG, XH = submanifold_component(sdpg, X, Val(g_ind)), submanifold_component(sdpg, X, Val(h_ind))
     gG, gH = submanifold_component(SDPG, g, Val(g_ind)), submanifold_component(SDPG, g, Val(h_ind))
     hG, hH = submanifold_component(SDPG, h, Val(g_ind)), submanifold_component(SDPG, h, Val(h_ind))
+
+    _YH = Base.mightalias(YH, XH) ? copy(H, hH, YH) : YH
     # For right actions we have to invert hG (g_2) - this allocates when it has to invert
     hG_mod = _semidirect_maybe_inv(a, G, hG)
     # one allocation for applying the action
     # we need one allocation to compute the action (g_2 to h_1)
     σg2mh1 = apply(a, hG_mod, gH)
     # Step 1: Compute the argument for the second summand on H - use the memory of YH for the result
-    diff_group_apply!(a, YH, hG_mod, gH, XG)
+    diff_group_apply!(a, _YH, hG_mod, gH, XG)
     # Step 2: Differential of right group compose (argument from 1)
-    diff_left_compose!(H, YH, σg2mh1, hH, YH)
+    diff_left_compose!(H, _YH, σg2mh1, hH, _YH)
     # Step 3: a second allocation for the other (first) differential, we want to add to that.
-    YH .+= diff_right_compose(H, σg2mh1, hH, XH)
+    YH .= _YH + diff_right_compose(H, σg2mh1, hH, XH)
     # last: the plain diff compose on G
     diff_right_compose!(G, YG, gG, hG, XG)
     return Y
