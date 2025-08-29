@@ -1208,15 +1208,6 @@ macro default_lie_group_fallbacks(TG, Op, TP, TV, gfield::Symbol, Xfield::Symbol
         function ManifoldsBase.allocate_result(::$TG, ::typeof(compose), g::$TP, ::$TP)
             return $TP(allocate(g.$gfield))
         end
-        function ManifoldsBase.allocate_result(::$TG, ::typeof(diff_left_compose), X::$TV, g::$TP, h::$TP)
-            return $TV(allocate(X.$Xfield))
-        end
-        function ManifoldsBase.allocate_result(::$TG, ::typeof(diff_right_compose), X::$TV, g::$TP, h::$TP)
-            return $TV(allocate(X.$Xfield))
-        end
-        function ManifoldsBase.allocate_result(::$TG, ::typeof(diff_inv), X::$TV, g::$TP)
-            return $TV(allocate(X.$Xfield))
-        end
         function ManifoldsBase.allocate_result(::$TG, ::typeof(exp), X::$TV)
             return $TP(allocate(X.$Xfield))
         end
