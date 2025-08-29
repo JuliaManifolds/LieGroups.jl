@@ -108,14 +108,15 @@ using LieGroupsTestSuite
             test_lie_group(G, properties, expectations)
 
             G = RightSemidirectProductLieGroup(TranslationGroup(2), SpecialOrthogonalGroup(2), action; action_on)
-            p1 = ArrayPartition(copy(h1), copy(g1))
-            p2 = ArrayPartition(copy(h2), copy(g2))
-            p3 = ArrayPartition(copy(h3), copy(g3))
+            q1 = ArrayPartition(copy(h1), copy(g1))
+            q2 = ArrayPartition(copy(h2), copy(g2))
+            q3 = ArrayPartition(copy(h3), copy(g3))
+            W1 = ArrayPartition(copy(Y1), copy(X1))
             properties = Dict(
                 :Name => "RightSemidirectProductLieGroup, $(supertype(typeof(action))), $(action_on)",
-                :Points => [p1, p2, p3],
-                :Vectors => [V1],
-                :Functions => [identity_element, is_identity, inv, compose, show],
+                :Points => [q1, q2, q3],
+                :Vectors => [W1],
+                :Functions => [identity_element, is_identity, inv, compose, diff_left_compose, diff_right_compose, show],
             )
             expectations = Dict(:atol => 1.0e-14)
             test_lie_group(G, properties, expectations)

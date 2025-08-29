@@ -221,7 +221,7 @@ function _semidirect_maybe_inv(::GroupAction{<:AbstractRightGroupActionType}, G,
     return inv(G, g)
 end
 function _semidirect_maybe_inv(::GroupAction{<:AbstractLeftGroupActionType}, G, g)
-    return g
+    return copy(G, g)
 end
 # and in in-place
 function _semidirect_maybe_inv!(::GroupAction{<:AbstractRightGroupActionType}, G, k, g)
@@ -844,7 +844,7 @@ such that their differential reads for some ``(X, Y)`` from the Lie algebra that
 D λ_{(g_1,h_1)}(g_2,h_2)$(_tex(:bigl))[ (X,Y) $(_tex(:bigr))]
   = $(_tex(:bigl))(
   Dλ_{g_1}(g_2)[X],
-  Dλ_{h_1}(σ_{g_1}(h_2)[Dσ_{g_1}(h_2)[Y]]
+  Dλ_{h_1}(σ_{g_1}(h_2))[Dσ_{g_1}(h_2)[Y]]
   $(_tex(:bigr))).
 ```
 
@@ -861,7 +861,7 @@ such that their differential reads for some ``(Y, X)`` from the Lie algebra that
 D ρ_{(h_2,g_2)}(h_1,g_1)$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
   = $(_tex(:bigl))(
   Dλ_{g_1}(g_2)[X],
-  Dλ_{h_1}(σ_{g_1}(h_2)[Dσ_{g_1}(h_2)[Y]]
+  Dλ_{h_1}(σ_{g_1}(h_2))[Dσ_{g_1}(h_2)[Y]]
   $(_tex(:bigr))).
 ```
 
@@ -897,7 +897,7 @@ such that their differential reads for some ``(X, Y)`` from the Lie algebra that
 D λ_{(g_1,h_1)}(g_2,h_2)$(_tex(:bigl))[ (X,Y) $(_tex(:bigr))]
   = $(_tex(:bigl))(
   Dλ_{g_1}(g_2)[X],
-  Dλ_{h_1}(τ_{g_1^{-1}}(h_2)[Dτ_{g_1^{-1}}(h_2)[Y]]
+  Dλ_{h_1}(τ_{g_1^{-1}}(h_2))[Dτ_{g_1^{-1}}(h_2)[Y]]
   $(_tex(:bigr))).
 ```
 
@@ -913,7 +913,7 @@ such that their differential reads for some ``(Y, X)`` from the Lie algebra that
 ```math
 D ρ_{(h_2,g_2)}(h_1,g_1)$(_tex(:bigl))[ (Y, X) $(_tex(:bigr))]
   = $(_tex(:bigl))(
-  Dλ_{h_1}(τ_{g_1^{-1}}(h_2)[Dτ_{g_1^{-1}}(h_2)[Y]],
+  Dλ_{h_1}(τ_{g_1^{-1}}(h_2))[Dτ_{g_1^{-1}}(h_2)[Y]],
   Dλ_{g_1}(g_2)[X]
   $(_tex(:bigr))).
 ```
@@ -945,7 +945,7 @@ function diff_right_compose!(
     # Step 1: Compute the argument for the second components diff
     diff_apply!(a, YH, gG_mod, hH, XH)
     # Step 2: Differential of left group compose (argument from 1)
-    diff_right_compose!(H, YH, σg1h2, hH, YH)
+    diff_right_compose!(H, YH, gH, σg1h2, YH)
     # last: the plain diff compose on G
     diff_right_compose!(G, YG, gG, hG, XG)
     return Y
