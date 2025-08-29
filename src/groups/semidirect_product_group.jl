@@ -1027,12 +1027,11 @@ function _inv!(
     # (b) compute the inverse in H
     inv!(H, submanifold_component(SDPG, k, Val(h_ind)), submanifold_component(PM, g, Val(h_ind)))
     # (c) apply the group action w.r.t. the inverse in G (from a) to the inverse from (b)
-    apply!( # Apply the group action with g1^-1 to g2^-1
+    apply!( # Apply the group action with g1^-1 to g2^-1 - works with aliases if apply does
         a,
         submanifold_component(SDPG, k, Val(h_ind)),
         submanifold_component(SDPG, k, Val(g_ind)),
         submanifold_component(SDPG, k, Val(h_ind)),
-        #TODO make sure apply is safe against side effects
     )
     return k
 end
@@ -1074,7 +1073,6 @@ function _inv!(
         submanifold_component(SDPG, k, Val(h_ind)),
         submanifold_component(SDPG, g, Val(g_ind)),
         submanifold_component(SDPG, k, Val(h_ind)),
-        #TODO make sure apply is safe against side effects
     )
     # (c) compute the inverse in G
     inv!(G, submanifold_component(SDPG, k, Val(g_ind)), submanifold_component(PM, g, Val(g_ind)))
