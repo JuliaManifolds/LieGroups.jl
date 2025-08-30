@@ -743,7 +743,7 @@ diff_right_compose(
 # 7. Right semidirect, right action, act on left
 """
     diff_right_compose(
-        L::LieGroup{𝔽,<:SemidirectProductGroupOperation{⋆,⋄,<:AbstractLeftGroupActionType,ActionActsOnRight}}, g, h, X
+        L::LieGroup{𝔽,<:SemidirectProductGroupOperation{⋆,⋄,<:AbstractLeftGroupActionType,ActionActsOnLeft}}, g, h, X
     )
 
 Compute the differential of the group operation ``⋅∘⋅`` with respect to the right argument.
