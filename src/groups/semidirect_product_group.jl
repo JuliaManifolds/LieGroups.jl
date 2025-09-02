@@ -224,11 +224,17 @@ function _semidirect_maybe_inv(::GroupAction{<:AbstractLeftGroupActionType}, G, 
     return copy(G, g)
 end
 # and in in-place
-function _semidirect_maybe_inv!(::GroupAction{<:AbstractRightGroupActionType}, G, k, g)
-    return inv!(G, k, g)
+function _semidirect_maybe_inv!(::Type{ActionActsOnLeft}, ::GroupAction{<:AbstractLeftGroupActionType}, G, k, g)
+    inv!(G, k, g)
 end
-function _semidirect_maybe_inv!(::GroupAction{<:AbstractLeftGroupActionType}, G, k, g)
-    return copyto!(G, k, g)
+function _semidirect_maybe_inv!(::Type{ActionActsOnLeft}, ::GroupAction{<:AbstractRightGroupActionType}, G, k, g)
+    copyto!(G, k, g)
+end
+function _semidirect_maybe_inv!(::Type{ActionActsOnRight}, ::GroupAction{<:AbstractLeftGroupActionType}, G, k, g)
+    copyto!(G, k, g)
+end    
+function _semidirect_maybe_inv!(::Type{ActionActsOnRight}, ::GroupAction{<:AbstractRightGroupActionType}, G, k, g)
+    inv!(G, k, g)
 end
 #
 #
@@ -315,12 +321,7 @@ function _compose!(
     end
     # invert hG for left, copy for right
     # this is inplace if both are not aliased and creates a copy kG otherwise to avoid overwriting hG
-    # _semidirect_maybe_inv!(a, G, kG, submanifold_component(SDPG, h, Val(g_ind)))
-    if A <: AbstractLeftGroupActionType
-        inv!(G, kG, submanifold_component(SDPG, h, Val(g_ind)))
-    else
-        copyto!(G, kG, submanifold_component(SDPG, h, Val(g_ind)))
-    end
+    _semidirect_maybe_inv!(AO, a, G, kG, submanifold_component(SDPG, h, Val(g_ind)))
 
     # a) group action  (first to avoid side effects in g, set kH to σ_{kG}(gH), with the above this avoids aliasing
     apply!(a, kH, kG, submanifold_component(SDPG, g, Val(h_ind)))
@@ -400,12 +401,7 @@ function _compose!(
     end
     # invert gG for right, copy for left
     # this is inplace if both are not aliased and creates a copy G otherwise to avoid overwriting hG
-    # _semidirect_maybe_inv!(a, G, kG, submanifold_component(SDPG, g, Val(g_ind)))
-    if A <: AbstractRightGroupActionType
-        inv!(G, kG, submanifold_component(SDPG, g, Val(g_ind)))
-    else
-        copyto!(G, kG, submanifold_component(SDPG, g, Val(g_ind)))
-    end
+    _semidirect_maybe_inv!(AO, a, G, kG, submanifold_component(SDPG, g, Val(g_ind)))
     # a) group action (first to avoid side effects in g, set kH to σ_{gG}(hH) - since we might have inverted, we have to use kG
     apply!(a, kH, kG, submanifold_component(PM, h, h_ind)) #accidentially overwriting hH is fine, we do not need it.
     # b) group operation on G
