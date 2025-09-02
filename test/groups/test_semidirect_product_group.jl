@@ -79,12 +79,10 @@ using LieGroupsTestSuite
         g1 = 1 / sqrt(2) * [1.0 1.0; -1.0 1.0]
         g2 = [0.0 -1.0; 1.0 0.0]
         g3 = [1.0 0.0; 0.0 1.0]
-        h1 = [0.1, 0.1]
+        h1 = [0.1, 0.2]
         h2 = [0.0, 1.0]
         h3 = [0.0, 0]
 
-        X1 = [0.0 -0.23; 0.23 0.0]
-        Y1 = [0.0, 0.12]
         X1 = [0.0 0.1; -0.1 0.0]
         Y1 = [0.0, 0.2]
 
@@ -103,8 +101,26 @@ using LieGroupsTestSuite
                 :Vectors => [V1],
                 :Functions => [identity_element, is_identity, inv, compose, diff_left_compose, diff_right_compose, show],
             )
-            expectations = Dict(:atol => 1.0e-14)
 
+            H = SpecialOrthogonalGroup(2)
+            N = TranslationGroup(2)
+            if (action == TestLeftAction()) != (action_on == ActionActsOnLeft())
+                # Same side -> forward action -> (g,h)⁻¹ =  (g⁻¹, α(g⁻¹)(h⁻¹)
+                α_g_h = apply(GroupAction(action, H, N), inv(H, g1), inv(N, h1))
+            else
+                # Opposite sides -> inverse action -> (g,h)⁻¹ =  (g⁻¹, α(g⁻¹)⁻¹(h⁻¹)
+                α_g_h = apply(GroupAction(action, H, N), g1, inv(N, h1))
+            end
+            if G.op isa LeftSemidirectProductGroupOperation
+                inv_p1 = ArrayPartition(inv(g1), α_g_h)
+            else
+                inv_p1 = ArrayPartition(α_g_h, inv(g1))
+            end
+
+            expectations = Dict(
+                :atol => 1.0e-14,
+                :inv => ArrayPartition(inv(g1), α_g_h),
+            )
             test_lie_group(G, properties, expectations)
 
             G = RightSemidirectProductLieGroup(TranslationGroup(2), SpecialOrthogonalGroup(2), action; action_on)
@@ -118,7 +134,12 @@ using LieGroupsTestSuite
                 :Vectors => [W1],
                 :Functions => [identity_element, is_identity, inv, compose, diff_left_compose, diff_right_compose, show],
             )
-            expectations = Dict(:atol => 1.0e-14)
+
+            expectations = Dict(
+                :atol => 1.0e-14,
+                :inv => ArrayPartition(α_g_h, inv(g1)),
+            )
+
             test_lie_group(G, properties, expectations)
         end
     end

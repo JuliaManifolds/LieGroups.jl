@@ -811,13 +811,23 @@ and that the double inverse is the identity.
 * `test_aliased::Bool=test_mutating`: test aliased input on the mutating variants.
 * `test_mutating::Bool=true`: test the mutating functions
 * `test_identity::Bool=true`: test that `inv(e) == e`
+* `expected=missing`: the expected value of `inv(G, g)`
+* `atol::Real=0`: the absolute tolerance for the tests.
 """
 function test_inv(
-        G::AbstractLieGroup, g;
-        test_mutating::Bool = true, test_identity::Bool = true, test_aliased::Bool = test_mutating
+        G::AbstractLieGroup,
+        g;
+        test_mutating::Bool = true,
+        test_identity::Bool = true,
+        test_aliased::Bool = test_mutating,
+        expected = missing,
+        atol::Real = 0
     )
     @testset "inv" begin
         k1 = inv(G, g)
+        if !ismissing(expected)
+            @test isapprox(G, k1, expected; atol)
+        end
         @test is_point(G, k1; error = :error)
         g1 = inv(G, k1)
         @test isapprox(G, g, g1)
@@ -1318,7 +1328,16 @@ function test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dic
             test_inner(G, points[1], vectors[1], vectors[2]; expected = v)
         end
         if (inv in functions)
-            test_inv(G, points[1]; test_mutating = mutating, test_aliased = aliased)
+            atol = get(function_atols, inv, atol)
+            inv_g = get(expectations, :inv, missing)
+            test_inv(
+                G,
+                points[1];
+                test_mutating = mutating,
+                test_aliased = aliased,
+                expected = inv_g,
+                atol,
+            )
         end
         if (is_flat in functions)
             isf = get(expectations, :is_flat, missing)
