@@ -399,6 +399,7 @@ function test_diff_left_compose(
         @test is_point(𝔤, Ye; error = :error)
         # check that in-place and allocating agree
         Y1 = diff_left_compose(G, g, h, X)
+        @test is_point(𝔤, Y1; error = :warn)
         if test_mutating
             Y2 = zero_vector(𝔤, typeof(X))
             diff_left_compose!(G, Y2, g, h, X)
@@ -436,6 +437,7 @@ function test_diff_right_compose(
         @test is_point(𝔤, Ye; error = :error)
         # check that in-place and allocating agree
         Y1 = diff_right_compose(G, g, h, X)
+        @test is_point(𝔤, Y1; error = :warn)
         if test_mutating
             Y2 = zero_vector(𝔤, typeof(X))
             diff_right_compose!(G, Y2, g, h, X)

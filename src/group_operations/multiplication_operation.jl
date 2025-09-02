@@ -162,7 +162,7 @@ diff_left_compose(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, g, h
 function diff_left_compose!(
         G::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, Y, g, h, X
     ) where {𝔽}
-    return copyto!(LieAlgebra(G), Y, g * X)
+    return copyto!(LieAlgebra(G), Y, X)
 end
 
 _doc_diff_right_compose_mult = """
@@ -182,7 +182,7 @@ diff_right_compose(
 function diff_right_compose!(
         G::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, Y, g, ::Any, X
     ) where {𝔽}
-    return copyto!(LieAlgebra(G), Y, X * g)
+    return copyto!(LieAlgebra(G), Y, inv(G, g) * X * g)
 end
 
 _doc_exp_mult = """
