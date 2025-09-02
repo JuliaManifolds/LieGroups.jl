@@ -376,7 +376,7 @@ using StaticArrays
         @test is_point(𝔤, YL; error = :error)
         # TODO: Check the above inverse retract, it seems either the pullback
         # or the diff_left_compose (LLR case) has a sign error and gets the H component wrong
-        @test_broken isapprox(𝔤, XL, YL; atol = 1.0e-4, error = :error)
+        @test isapprox(𝔤, XL, YL; atol = 1.0e-4, error = :error)
         YL2 = similar(YL)
         inverse_retract!(G, YL2, gL, kL, dirm)
         @test isapprox(G, YL, YL2)

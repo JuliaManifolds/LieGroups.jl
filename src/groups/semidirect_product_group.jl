@@ -633,7 +633,7 @@ For the [`RightSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on `` 
 have
 
 ```math
-    ρ_{(h_2,g_2)}(h_1,g_1) := (h_1,g_1) ∘ (h_2,g_2) = (h_1 ⋄ σ_{g_2}(h_2), g_1 ⋆ g_2).
+    ρ_{(h_2,g_2)}(h_1,g_1) := (h_1,g_1) ∘ (h_2,g_2) = (h_1 ⋄ σ_{g_1}(h_2), g_1 ⋆ g_2).
 ```
 
 such that their differential reads for some ``(Y, X)`` from the Lie algebra that
@@ -669,12 +669,16 @@ function diff_left_compose!(
     # avoid aliasing
     _YH = Base.mightalias(YH, XH) ? copy(H, hH, YH) : YH
     # For right actions we have to invert gG - this allocates when it has to invert
-    gG_mod = _semidirect_maybe_inv(a, G, gG)
+    # TODO: Check why this uses hG and not gG - verify formulae.
+    hG_mod = _semidirect_maybe_inv(a, G, hG)
     # one allocation for applying the action
     # we need one allocation to compute the action
-    σg1mh2 = apply(a, gG_mod, hH)
+    σg1mh2 = apply(a, hG_mod, gH)
     # Step 1: Compute the argument for the second summand on H - use the memory of YH for the result
-    diff_group_apply!(a, _YH, gG_mod, hH, XG)
+    # TODO: same here: why gH and not hH? (in formulae why do we use σ_g2h1 not σg1h2?
+    # Maybe also check with the analogue right one whether that mizes those up)
+    # Since we act on the right it should be g1h2
+    diff_group_apply!(a, _YH, hG_mod, gH, XG)
     # Step 2: Differential of right group compose (argument from 1)
     diff_right_compose!(H, _YH, gH, σg1mh2, _YH)
     # Step 3: a second allocation for the other (first) differential, we want to add to that.
