@@ -860,7 +860,7 @@ For the [`RightSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on `` 
 have
 
 ```math
-    λ_{(h_1,g_1)}(h_2,g_2) := (h_1,g_1) ∘ (h_2,g_2) = (h_1 ⋄ σ_{g_2}(h_2), g_1 ⋆ g_2).
+    λ_{(h_1,g_1)}(h_2,g_2) := (h_1,g_1) ∘ (h_2,g_2) = (h_1 ⋄ σ_{g_1}(h_2), g_1 ⋆ g_2).
 ```
 
 such that their differential reads for some ``(Y, X)`` from the Lie algebra that
