@@ -1008,10 +1008,10 @@ function get_vector_lie!(
     return X
 end
 
-# 1. Left semidirect, left action, act on left
 # 2. Left semidirect, left action, act on right
-# 5. Right semidirect, left action, act on left
+# 3. Left semidirect, right action, act on left
 # 6. Right semidirect, left action, act on right
+# 7. Right semidirect, right action, act on left
 """
     inv(L::LieGroup{𝔽,<:SemidirectProductGroupOperation{⋆,⋄,<:AbstractLeftGroupActionType,AbstractActionActsOn}}, g)
 
@@ -1069,10 +1069,10 @@ function _inv!(
     return k
 end
 
-# 3. Left semidirect, right action, act on left
+# 1. Left semidirect, left action, act on left
 # 4. Left semidirect, right action, act on right
+# 5. Right semidirect, left action, act on left
 # 8. Right semidirect, right action, act on right
-# 7. Right semidirect, right action, act on left
 """
     inv(L::LieGroup{𝔽,<:SemidirectProductGroupOperation{⋆,⋄,<:AbstractRightGroupActionType,AbstractActionActsOn}}, g)
 
