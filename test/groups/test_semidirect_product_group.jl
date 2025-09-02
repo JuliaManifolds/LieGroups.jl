@@ -143,4 +143,20 @@ using LieGroupsTestSuite
             test_lie_group(G, properties, expectations)
         end
     end
+    # sanity check with matrix representation
+    # reference data for (SO(2), ℝ²) semidirect products
+    R = exp(SpecialOrthogonalGroup(2), [0.0 0.1; -0.1 0.0])
+    t = [0.1, 0.2]
+    l1_mat = vcat([1 0 0], hcat(t, R)) # build the matrix representation for a left action semidirect product - acts on the right component
+    r1_mat = hcat(vcat(R, t'), [0, 0, 1]) # build the matrix representation for a right action semidirect product - acts on the left component
+    # inverse of R should be the same for both cases
+    inv_R = inv(SpecialOrthogonalGroup(2), R)
+    # for t components, use the matrix inverse as reference
+    l_inv_t = inv(l1_mat)[2:3, 1] # extract the translation part
+    r_inv_t = inv(r1_mat)[3, 1:2] # extract the translation part
+    #now compare against [Left|Right]SemidirectProductLieGroup
+    Gl = LeftSemidirectProductLieGroup(SpecialOrthogonalGroup(2), TranslationGroup(2), TestLeftAction(); action_on = ActionActsOnRight())
+    @test isapprox(inv(Gl, ArrayPartition(R, t)), ArrayPartition(inv_R, l_inv_t), atol = 1e-14)
+    Gr = RightSemidirectProductLieGroup(TranslationGroup(2), SpecialOrthogonalGroup(2), TestRightAction(); action_on = ActionActsOnLeft())
+    @test isapprox(inv(Gr, ArrayPartition(t, R)), ArrayPartition(r_inv_t, inv_R), atol = 1e-14)
 end
