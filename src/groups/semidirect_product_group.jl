@@ -227,12 +227,12 @@ end
 # If AO and A are "aligned", we have to invert, otherwise we do not
 function _semidirect_maybe_inv!(::Type{AO}, ::GroupAction{A}, G, k, g) where {AO, A}
     if (A <: AbstractLeftGroupActionType) != (AO == ActionActsOnLeft)
-        # ActionActsOnLeft && AbstractRightGroupActionType ||
-        # ActionActsOnRight && AbstractLeftGroupActionType
+        # act on left && right action ||
+        # act on right && left action
         return copyto!(G, k, g)
     else
-        # ActionActsOnLeft && AbstractLeftGroupActionType ||
-        # ActionActsOnRight && AbstractRightGroupActionType
+        # act on left && left action ||
+        # act on right && right action
         return inv!(G, k, g)
     end
 end
