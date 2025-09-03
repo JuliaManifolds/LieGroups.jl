@@ -153,7 +153,7 @@ _doc_diff_left_compose_mult = """
     diff_left_compose!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, g, h, X)
 
 Compute the differential of the left group multiplication ``λ_g(h) = g$(_math(:∘))h``,
-which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``$(_math(:d))λ_g(h)[X] = $(_math(:Ad))(g)[X] = g^{-1}Xg``.
+which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``$(_math(:d))λ_g(h)[X] = $(_math(:Ad))(g^{-1})[X] = g^{-1}Xg``.
 """
 
 @doc "$(_doc_diff_left_compose_mult)"
