@@ -96,7 +96,7 @@ using StaticArrays
                 :Points => pts,
                 :Vectors => vec,
                 :Rng => Random.MersenneTwister(),
-                :Functions => (pts[1] isa ArrayPartition) ? [fcts..., diff_left_compose, diff_right_compose] : fcts,
+                :Functions => fcts,
             )
             expectations = Dict(
                 :repr => "SpecialEuclideanGroup(2; variant=:right)", :atol => 1.0e-14

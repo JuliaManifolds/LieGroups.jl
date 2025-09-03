@@ -404,6 +404,44 @@ function _compose!(
     return k
 end
 
+# get coordinates
+
+function get_coordinates_lie!(
+        Pr𝔤::LieAlgebra{𝔽, Op, LieGroup{𝔽, Op, M}}, c, X, B::DefaultLieAlgebraOrthogonalBasis
+    ) where {𝔽, Op <: SemidirectProductGroupOperation, M <: ProductManifold}
+    PrG = Pr𝔤.manifold
+    PrM = PrG.manifold
+    dims = map(manifold_dimension, PrM.manifolds)
+    @assert length(c) == sum(dims)
+    dim_ranges = ManifoldsBase._get_dim_ranges(dims)
+    Prc = map(dr -> (@inbounds view(c, dr)), dim_ranges)
+    PrL = LieAlgebra.(LieGroup.(PrM.manifolds, PrG.op.operations))
+    ts = ManifoldsBase.ziptuples(PrL, Prc, submanifold_components(Pr𝔤, X))
+    map(ts) do t
+        return get_coordinates_lie!(t..., B)
+    end
+    return c
+end
+
+# get vector
+
+function get_vector_lie!(
+        Pr𝔤::LieAlgebra{𝔽, Op, LieGroup{𝔽, Op, M}}, X, c, B::DefaultLieAlgebraOrthogonalBasis
+    ) where {𝔽, Op <: SemidirectProductGroupOperation, M <: ProductManifold}
+    PrG = Pr𝔤.manifold
+    PrM = PrG.manifold
+    dims = map(manifold_dimension, PrM.manifolds)
+    @assert length(c) == sum(dims)
+    dim_ranges = ManifoldsBase._get_dim_ranges(dims)
+    Prc = map(dr -> (@inbounds view(c, dr)), dim_ranges)
+    PrL = LieAlgebra.(LieGroup.(PrM.manifolds, PrG.op.operations))
+    ts = ManifoldsBase.ziptuples(PrL, submanifold_components(Pr𝔤, X), Prc)
+    map(ts) do t
+        return get_vector_lie!(t..., B)
+    end
+    return X
+end
+
 # 1. Left semidirect, left action, act on left
 # 2. Left semidirect, left action, act on right
 # 5. Right semidirect, left action, act on left
