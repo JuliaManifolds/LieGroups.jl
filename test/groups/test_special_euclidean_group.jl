@@ -57,7 +57,7 @@ using StaticArrays
                 :Points => pts,
                 :Vectors => vec,
                 :Rng => Random.MersenneTwister(),
-                :Functions => (pts[1] isa ArrayPartition) ? [fcts..., diff_left_compose, diff_right_compose] : fcts,
+                :Functions => fcts,
             )
             expectations = Dict(
                 :repr => "SpecialEuclideanGroup(2)", :atol => 1.0e-14, :is_flat => true
@@ -138,7 +138,7 @@ using StaticArrays
                 :Points => pts,
                 :Vectors => vec,
                 :Rng => Random.MersenneTwister(),
-                :Functions => (pts[1] isa ArrayPartition) ? [fcts..., diff_left_compose, diff_right_compose] : fcts,
+                :Functions => fcts,
             )
             expectations = Dict(
                 :repr => "SpecialEuclideanGroup(3)", :atol => 1.0e-14, :is_flat => false
@@ -351,6 +351,7 @@ using StaticArrays
         X = hat(LieAlgebra(G), SA[1, 0, 0.01], ArrayPartition)
         @test X isa ArrayPartition{Float64, Tuple{Matrix{Float64}, Vector{Float64}}}
     end
+    #= TODO: Move to SO(n) or so where we have diff_compose
     @testset "Retraction and vector transport passthrough" begin
         G = SpecialEuclideanGroup(2)
         𝔤 = LieAlgebra(G)
@@ -386,4 +387,5 @@ using StaticArrays
         vector_transport_to!(G, ZL2, gL, XL, hL, dvm)
         @test isapprox(G, gL, ZL2, ZL)
     end
+    =#
 end
