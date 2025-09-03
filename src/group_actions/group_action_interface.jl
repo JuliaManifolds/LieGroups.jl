@@ -262,7 +262,7 @@ _doc_diff_apply = """
     diff_apply(A::GroupAction, g, p, X)
     diff_apply!(A::GroupAction, Y, g, p, X)
 
-Compute the differential ``D_p α_g(p): T_p$(_math(:M)) → T_{σ_g(p)}$(_math(:M))``.
+Compute the differential ``$(_math(:D))_p α_g(p): T_p$(_math(:M)) → T_{σ_g(p)}$(_math(:M))``.
 """
 
 function diff_apply end
@@ -281,7 +281,7 @@ _doc_diff_group_apply = """
     diff_group_apply(A::GroupAction, g, p, X)
     diff_group_apply!(A::GroupAction, Y, g, p, X)
 
-Compute the differential ``D_{$(_tex(:Cal, "G"))} σ_g(p): $(_math(:𝔤)) → $(_math(:𝔤))``,
+Compute the differential ``$(_math(:d))_{$(_tex(:Cal, "G"))} σ_g(p): $(_math(:𝔤)) → $(_math(:𝔤))``,
 where we use the short hand notation ``σ_p(g) = σ(g,p)`` for a left action,
 and for a right action ``τ_p(g) = τ(g,p)``.
 """

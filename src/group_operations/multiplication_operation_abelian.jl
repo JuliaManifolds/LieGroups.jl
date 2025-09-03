@@ -52,9 +52,9 @@ _doc_diff_conjugate_abelmul = """
     diff_conjugate!(G::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, Y, g, h, X)
 
 Compute the differential of the conjugate ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1} = ghg^{-1}``,
-which simplifies for an [`AbelianMultiplicationGroupOperation`](@ref) to ``D(c_g(h))[X] = X``.
+which simplifies for an [`AbelianMultiplicationGroupOperation`](@ref) to ``$(_math(:d))(c_g(h))[X] = X``.
 
-This can be computed in-place of `Y` if `Y` is `mutable`.
+This can be computed in-place of `Y`.
 """
 
 @doc "$(_doc_diff_conjugate_abelmul)"
@@ -88,13 +88,13 @@ _doc_diff_inv_abelmult = """
     diff_inv(G::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, g, X)
     diff_inv!(G::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, Y, g, X)
 
-Compute the value of the differential ``Dι_{$(_math(:G))}(g)[X]`` of the inversion ``ι_{$(_math(:G))}(g) := g^{-1}`` at ``X ∈ 𝔤``
+Compute the value of the differential ``$(_math(:d))ι_{$(_math(:G))}(g)[X]`` of the inversion ``ι_{$(_math(:G))}(g) := g^{-1}`` at ``X ∈ 𝔤``
 in the [`LieAlgebra`](@ref) ``𝔤`` of the [`LieGroup`](@ref) `G`.
 
-In the abelian case, the computation simplifies to
+In the Abelian case, the computation simplifies to
 
 ```math
-Dι_{$(_math(:G))}(g)[X] = -gXg^{-1} = -X.
+$(_math(:d))ι_{$(_math(:G))}(g)[X] = -gXg^{-1} = -X.
 ```
 
 This can be computed in-place of `Y` if `Y` is `mutable`.
@@ -111,7 +111,7 @@ _doc_diff_left_compose_abelmult = """
 
 Compute the differential of the left group multiplication ``λ_g(h) = g$(_math(:∘))h``.
 
-Due to differences in the representation of some abelian Lie groups, this method wraps a concrete implementation of a specific abelian LieGroup with inputs of type `AbstractArray{<:Any,0}` and supports in-place computation.
+Due to differences in the representation of some Abelian Lie groups, this method wraps a concrete implementation of a specific abelian LieGroup with inputs of type `AbstractArray{<:Any,0}` and supports in-place computation.
 
 This can be computed in-place of `Y` if `Y` is `mutable`.
 """ #
@@ -142,7 +142,7 @@ Compute the differential of the right group multiplication ``ρ_g(h) = h$(_math(
 Due to differences in the representation of some abelian Lie groups, this method wraps a concrete implementation of a specific abelian LieGroup with inputs of type `AbstractArray{<:Any,0}` and supports in-place computation.
 
 This can be computed in-place of `Y` if `Y` is `mutable`.
-""" #
+"""
 
 @doc "$(_doc_diff_right_compose_abelmult)"
 function diff_right_compose(
