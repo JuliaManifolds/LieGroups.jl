@@ -27,7 +27,7 @@ _doc_diff_left_compose_mult_planar_circ = """
 Compute the differential of the left group multiplication ``λ_g(h) = g$(_math(:∘))h`` of the Circle Group,
 represented as two dimensional vectors in ``ℝ^2``.
 
-It simplifies for the [`AbelianMultiplicationGroupOperation`](@ref) to ``Dλ_g(h)[X] = g*X``,
+It simplifies for the [`AbelianMultiplicationGroupOperation`](@ref) to ``$(_math(:d))λ_g(h)[X] = gXf^{-1}``,
 where the multiplication corresponds to the complex multiplication after canonical identification
 of the real plane with the complex plane.
 
@@ -35,7 +35,7 @@ This can be computed in-place of `Y`.
 """
 
 @doc "$(_doc_diff_left_compose_mult_planar_circ)"
-diff_left_compose!(C::_PlanarCircleGroup, Y, g, h, X) = compose!(C, Y, g, X)
+diff_left_compose!(C::_PlanarCircleGroup, Y, g, h, X) = compose!(C, Y, g, compose!(C, Y, X, inv!(C, Y, g)))
 
 @doc "$(_doc_diff_left_compose_mult_planar_circ)"
 diff_left_compose(_PlanarCircleGroup, g, h, X)
@@ -47,13 +47,11 @@ _doc_diff_right_compose_mult_planar_circ = """
 Compute the differential of the right group multiplication ``λ_g(h) = g$(_math(:∘))h`` of the Circle Group,
 represented as two dimensional vectors in ``ℝ^2``.
 
-It simplifies for the [`AbelianMultiplicationGroupOperation`](@ref) to ``Dλ_g(h)[X] = X*g``,
-where the multiplication corresponds to the complex multiplication after canonical identification
-of the real plane with the complex plane.
+It simplifies for the [`AbelianMultiplicationGroupOperation`](@ref) to ``$(_math(:d))λ_g(h)[X] = X``,
 """
 
 @doc "$(_doc_diff_right_compose_mult_planar_circ)"
-diff_right_compose!(C::_PlanarCircleGroup, Y, g, h, X) = compose!(C, Y, X, g)
+diff_right_compose!(C::_PlanarCircleGroup, Y, g, h, X) = copyto!(LieAlgebra(C), Y, X)
 
 _doc_exp_planar_circ = """
     exp(::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Sphere}, X)

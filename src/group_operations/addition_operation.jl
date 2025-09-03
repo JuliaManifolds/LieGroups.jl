@@ -47,8 +47,8 @@ _doc_diff_conjugate_add = """
     diff_conjugate(G::LieGroup{𝔽,AdditionGroupOperation}, g, h, X)
     diff_conjugate!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, X)
 
-Compute the differential of the conjutage ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1} = g+h-g = h``,
-which simplifies for [`AdditionGroupOperation`](@ref) to ``D(c_g(h))[X] = X``.
+Compute the differential of the conjugate ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1} = g+h-g = h``,
+which simplifies for [`AdditionGroupOperation`](@ref) to ``$(_math(:d))(c_g(h))[X] = X``.
 """
 
 @doc "$(_doc_diff_conjugate_add)"
@@ -64,7 +64,7 @@ _doc_diff_inv_add = """
     diff_inv!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, X)
 
 Compute the differential of the inverse operation ``ι_{$(_math(:G))}(g) = g^-1 = -g``,
-which simplifies for [`AdditionGroupOperation`](@ref) to ``Dι_{$(_math(:G))}(g)[X] = -X``
+which simplifies for [`AdditionGroupOperation`](@ref) to ``$(_math(:d))ι_{$(_math(:G))}(g)[X] = -X``
 """
 
 @doc "$(_doc_diff_inv_add)"
@@ -81,7 +81,7 @@ _doc_diff_left_compose_add = """
     diff_left_compose!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, X)
 
 Compute the differential of the left group multiplication ``λ_g(h) = g$(_math(:∘))h``,
-which simplifies for [`AdditionGroupOperation`](@ref) to ``Dλ_g(h)[X] = X``.
+which simplifies for [`AdditionGroupOperation`](@ref) to ``$(_math(:d))λ_g(h)[X] = X``.
 """
 
 @doc "$(_doc_diff_left_compose_add)"
@@ -97,7 +97,7 @@ _doc_diff_right_compose_add = """
     diff_right_compose!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, h, g, X)
 
 Compute the differential of the right group multiplication ``ρ_g(h) = h$(_math(:∘))g``,
-which simplifies for [`AdditionGroupOperation`](@ref) to ``Dρ_g(h)[X] = X``.
+which simplifies for [`AdditionGroupOperation`](@ref) to ``$(_math(:d))ρ_g(h)[X] = X``.
 """
 
 @doc "$(_doc_diff_right_compose_add)"

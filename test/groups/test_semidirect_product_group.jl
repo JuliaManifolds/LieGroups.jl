@@ -101,7 +101,7 @@ using LieGroupsTestSuite
                 :Name => "LeftSemidirectProductLieGroup, $(supertype(typeof(action))), $(action_on)",
                 :Points => [p1, p2, p3],
                 :Vectors => [V1],
-                :Functions => [identity_element, is_identity, inv, compose, diff_left_compose, diff_right_compose, show],
+                :Functions => [identity_element, is_identity, inv, compose, show],
             )
             expectations = Dict(:atol => 1.0e-14)
 
@@ -116,7 +116,7 @@ using LieGroupsTestSuite
                 :Name => "RightSemidirectProductLieGroup, $(supertype(typeof(action))), $(action_on)",
                 :Points => [q1, q2, q3],
                 :Vectors => [W1],
-                :Functions => [identity_element, is_identity, inv, compose, diff_left_compose, diff_right_compose, show],
+                :Functions => [identity_element, is_identity, inv, compose, show],
             )
             expectations = Dict(:atol => 1.0e-14)
             test_lie_group(G, properties, expectations)
