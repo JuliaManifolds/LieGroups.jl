@@ -171,7 +171,7 @@ evaluated at the [`Identity`](@ref) ``h=$(_math(:e))``.
 The operation can be performed in-place of `Y`.
 
 ```math
-  $(_math(:Ad))(g)[X] = D c_g($(_math(:e))) [X], $(_tex(:qquad)) X ∈ $(_math(:𝔤)).
+  $(_math(:Ad))(g)[X] = $(_math(:d)) c_g($(_math(:e))) [X], $(_tex(:qquad)) X ∈ $(_math(:𝔤)).
 ```
 
 see [HilgertNeeb:2012; Section 9.2.3](@cite).
@@ -331,7 +331,7 @@ Compute the differential of the [`conjugate`](@ref) ``c_g(h) = g$(_math(:∘))h$
 on the [`AbstractLieGroup`](@ref) `G`. The operation can be performed in-place of `Y`.
 
 ```math
-  D(c_g(h))[X], $(_tex(:qquad)) X ∈ $(_math(:𝔤)).
+  $(_math(:d))(c_g(h))[X], $(_tex(:qquad)) X ∈ $(_math(:𝔤)).
 ```
 """
 @doc "$(_doc_diff_conjugate)"
@@ -349,8 +349,25 @@ _doc_diff_inv = """
     diff_inv!(G::AbstractLieGroup, Y, g, X)
 
 Compute the differential of the function ``ι_{$(_math(:G))}(g) = g^{-1}``, where
-``Dι_{$(_math(:G))}(g): $(_math(:𝔤)) → $(_math(:𝔤))``.
+``$(_math(:d))ι_{$(_math(:G))}(g): $(_math(:𝔤)) → $(_math(:𝔤))``.
 This can be done in-place of `Y`.
+Note that we represent tangent vectors in the Lie algebra ``𝔤``.
+
+For example on matrix manifolds this means, we use ``X ∈ 𝔤`` and hence ``W = gX ∈ T_g$(_math(:G)))``.
+The (classical) differential ``$(_math(:D))ι_{$(_math(:G))}(g): T_g$(_math(:G))) → T_{g^{-1}}$(_math(:G)))`` reads
+
+```math
+  $(_math(:D))ι_{$(_math(:G))}(g)[W] = -g^{-1}Wg^{-1} = -Xg^{-1} = -g^{-1}(gXg^{-1}) = -g^{-1}$(_math(:Ad))(g)[X] ∈ T_{g^{-1}}$(_math(:G))).
+```
+
+To bring this back to the Lie algebra, we just have to multiply the result with ``g`` from the left
+and obtain
+
+```math
+  $(_math(:d)) ι_{$(_math(:G))}(g)[X] = -$(_math(:Ad))(g)[X] ∈ 𝔤,
+```
+
+where we use ``$(_math(:d))`` to denote the differential in the Lie algebra.
 """
 
 @doc "$_doc_diff_inv"
@@ -367,9 +384,24 @@ _doc_diff_left_compose = """
     diff_left_compose(G::AbstractLieGroup, g, h, X)
     diff_left_compose!(G::AbstractLieGroup, Y, g, h, X)
 
-Compute the differential of the left group multiplication ``λ_g(h) = g$(_math(:∘))h``,
-on the [`AbstractLieGroup`](@ref) `G`, that is Compute ``Dλ_g(h)[X]``, ``X ∈ 𝔤``.
-This can be done in-place of `Y`.
+Compute the differential of the left group multiplication ``λ_g(h) = g$(_math(:∘))h``, on the [`AbstractLieGroup`](@ref) `G`.
+Note that we represent tangent vectors in the Lie algebra ``𝔤``.
+
+For example on matrix manifolds this means, we use ``X ∈ 𝔤`` and hence ``W = gX ∈ T_g$(_math(:G)))``.
+The (classical) differential ``$(_math(:D))λ_g(h): T_g$(_math(:G))) → T_{g$(_math(:∘))h}$(_math(:G)))`` reads
+
+```math
+  $(_math(:D))λ_g(h)[W] = Wh = gXh = gh(h^{-1}Xh) = gh$(_math(:Ad))(h)[X] ∈ T_{gh}$(_math(:G))).
+```
+
+To also bring this back to the Lie algebra, we just have to multiply the result with ``(gh)^{-1}`` from the left
+and obtain
+
+```math
+  $(_math(:d)) λ_g(h)[X] = h^{-1}Xh = $(_math(:Ad))(h)[X] ∈ 𝔤,
+```
+
+where we use ``$(_math(:d))`` to denote the differential in the Lie algebra.
 """
 @doc "$(_doc_diff_left_compose)"
 function diff_left_compose(G::AbstractLieGroup, g, h, X)
@@ -385,9 +417,24 @@ _doc_diff_right_compose = """
     diff_right_compose(G::AbstractLieGroup, h, g, X)
     diff_right_compose!(G::AbstractLieGroup, Y, h, g, X)
 
-Compute the differential of the right group multiplication ``ρ_g(h) = h$(_math(:∘))g``,
-on the [`AbstractLieGroup`](@ref) `G`, that is Compute ``Dρ_g(h)[X]``, ``X ∈ 𝔤``
-This can be done in-place of `Y`.
+Compute the differential of the right group multiplication ``ρ_g(h) = h$(_math(:∘))g``, on the [`AbstractLieGroup`](@ref) `G`.
+Note that we represent tangent vectors in the Lie algebra ``𝔤``.
+
+For example on matrix manifolds this means, we use ``X ∈ 𝔤`` and hence ``W = gX ∈ T_g$(_math(:G)))``.
+The (classical) differential ``$(_math(:D))ρ_h(h): T_g$(_math(:G))) → T_{h$(_math(:∘))g}$(_math(:G)))`` reads
+
+```math
+  $(_math(:D))ρ_g(h)[W] = hW = hgX ∈ T_{hg}$(_math(:G))).
+```
+
+To bring this back to the Lie algebra, we just have to multiply the result with ``(gh)^{-1}`` from the left
+and obtain
+
+```math
+  $(_math(:d)) λ_g(h)[X] = X ∈ 𝔤,
+```
+
+where we use ``$(_math(:d))`` to denote the differential in the Lie algebra.
 """
 @doc "$(_doc_diff_right_compose)"
 function diff_right_compose(G::AbstractLieGroup, h, g, X)
@@ -770,13 +817,13 @@ _doc_jacobian_conjugate = """
 Compute the Jacobian of the [`conjugate`](@ref) ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1}``,
 with respect to an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`) of the [`LieAlgebra`](@ref).
 
-A default is implemented using [`diff_conjugate`](@ref) ``D(c_g(h))[X]``:
+A default is implemented using [`diff_conjugate`](@ref) ``$(_math(:d))(c_g(h))[X]``:
 the ``j``th column of of the Jacobian matrix ``J`` are given by the coefficients of
-the tangent vector `D(c_g(h))[X_j]`` with respect to the basis ``B``,
+the tangent vector ``$(_math(:d))(c_g(h))[X_j]`` with respect to the basis ``B``,
 where ``X_j`` is the ``j``th basis vector of ``B``.
 
 !!! note
-    For the case that `h` is the [`Identity`](@ref) and the relation of ``D(c_g(h))[X]``
+    For the case that `h` is the [`Identity`](@ref) and the relation of ``$(_math(:d))(c_g(h))[X]``
     to the [`adjoint`](@ref) ``$(_math(:Ad))(g)``, the Jacobian then sometimes called “adjoint matrix”,
     e.g. in [SolaDerayAtchuthan:2021](@cite), when choosing as a basis the
     [`DefaultLieAlgebraOrthogonalBasis`](@ref)`()` that is used for [`hat`](@ref) and [`vee`](@ref).

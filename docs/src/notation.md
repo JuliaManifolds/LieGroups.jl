@@ -8,7 +8,8 @@ In this package,the notation introduced in [Manifolds.jl Notation](https://julia
 | ``∘`` | a group operation | | |
 | ``c_g:\mathcal G → \mathcal G`` | the conjugation map (with `g`) | | |
 | ``Df(p)[X]`` | the differential of a map `f` at point `p` in direction `X` | | |
-| ``D_af`` | the differential of a map `f` with respect to a certain parameter. | | |
+| ``\mathrm{d}f`` | the differential of a map `f` as a function on the Lie group and the differential on the Lie algebra. | | |
+| ``\mathrm{D}_af`` | the differential of a map `f`. An index is used to indicate a certain parameter. If ``f`` is defined on or maps into the Lie group, this differential indicates the one with respect to tangent spaces  | | |
 | ``\mathrm{e}`` | identity element of a group | | |
 | ``\exp_{\mathcal G}(X)`` | The Lie group exponential function | | |
 | ``\exp_g(X)`` | The Lie group exponential map (w.r.t. a Cartan Schouten connection) | | |
