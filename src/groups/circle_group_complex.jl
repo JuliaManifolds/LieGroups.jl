@@ -24,15 +24,15 @@ Compute the differential of the left group multiplication ``λ_g(h) = g$(_math(:
 The formula reads
 
 ```math
-   $(_math(:d)) λ_g(h) = gXg^{-1}.
+   $(_math(:d)) λ_g(h) = gXg^{-1} = X.
 ```
 
-This can be computed in-place of `Y`.
+since the group operation is abelian. This can be computed in-place of `Y` if `Y` is `mutable`.
 """
 
 @doc "$(_doc_diff_left_compose_complex_circ)"
 function diff_left_compose(::_ComplexCircleGroup, g::Number, h::Any, X::Number)
-    return g * X * g^(-1)
+    return X
 end
 
 _doc_diff_right_compose_complex_circ = """
