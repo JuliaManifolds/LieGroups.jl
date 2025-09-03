@@ -27,7 +27,7 @@ The formula reads
    $(_math(:d)) λ_g(h) = gXg^{-1} = X.
 ```
 
-since the group operation is abelian. This can be computed in-place of `Y` if `Y` is `mutable`.
+since the group operation is abelian. This can be computed in-place of `Y` if `Y` is mutable.
 """
 
 @doc "$(_doc_diff_left_compose_complex_circ)"
