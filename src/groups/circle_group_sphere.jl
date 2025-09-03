@@ -35,7 +35,7 @@ This can be computed in-place of `Y`.
 """
 
 @doc "$(_doc_diff_left_compose_mult_planar_circ)"
-diff_left_compose!(C::_PlanarCircleGroup, Y, g, h, X) = compose!(C, Y, g, compose!(C, Y, X, inv(C, Y, g)))
+diff_left_compose!(C::_PlanarCircleGroup, Y, g, h, X) = compose!(C, Y, g, compose!(C, Y, X, inv!(C, Y, g)))
 
 @doc "$(_doc_diff_left_compose_mult_planar_circ)"
 diff_left_compose(_PlanarCircleGroup, g, h, X)
