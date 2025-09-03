@@ -391,14 +391,14 @@ For example on matrix manifolds this means, we use ``X ∈ 𝔤`` and hence ``W 
 The (classical) differential ``$(_math(:D))λ_g(h): T_g$(_math(:G))) → T_{g$(_math(:∘))h}$(_math(:G)))`` reads
 
 ```math
-  $(_math(:D))λ_g(h)[W] = Wh = gXh = gh(h^{-1}Xh) = gh$(_math(:Ad))(h)[X] ∈ T_{gh}$(_math(:G))).
+  $(_math(:D))λ_g(h)[W] = Wh = gXh = gh(h^{-1}Xh) = gh$(_math(:Ad))(h^{-1})[X] ∈ T_{gh}$(_math(:G))).
 ```
 
 To also bring this back to the Lie algebra, we just have to multiply the result with ``(gh)^{-1}`` from the left
 and obtain
 
 ```math
-  $(_math(:d)) λ_g(h)[X] = h^{-1}Xh = $(_math(:Ad))(h)[X] ∈ 𝔤,
+  $(_math(:d)) λ_g(h)[X] = h^{-1}Xh = $(_math(:Ad))(h^{-1})[X] ∈ 𝔤,
 ```
 
 where we use ``$(_math(:d))`` to denote the differential in the Lie algebra.
