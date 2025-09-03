@@ -59,6 +59,7 @@ define!(
     (lines...) -> raw"\begin{aligned} " * join(lines, raw"\\ ") * raw"\end{aligned}",
 )
 define!(:LaTeX, :big, raw"\big")
+define!(:LaTeX, :big, raw"\big")
 define!(:LaTeX, :bigl, raw"\bigl")
 define!(:LaTeX, :bigr, raw"\bigr")
 define!(:LaTeX, :Big, raw"\Big")

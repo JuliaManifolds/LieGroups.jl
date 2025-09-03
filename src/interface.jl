@@ -353,11 +353,11 @@ Compute the differential of the function ``ι_{$(_math(:G))}(g) = g^{-1}``, wher
 This can be done in-place of `Y`.
 Note that we represent tangent vectors in the Lie algebra ``𝔤``.
 
-For example on matrix manifolds this means, we use ``X ∈ 𝔤`` and hence ``W = gX ∈ T_g$(_tex("Cal","G"))``.
-The (classical) differential ``Dι_{$(_math(:G))}(g): T_g$(_tex("Cal","G")) → T_{g^{-1}}$(_tex("Cal","G"))`` reads
+For example on matrix manifolds this means, we use ``X ∈ 𝔤`` and hence ``W = gX ∈ T_g$(_math(:G)))``.
+The (classical) differential ``Dι_{$(_math(:G))}(g): T_g$(_math(:G))) → T_{g^{-1}}$(_math(:G)))`` reads
 
 ```math
-  Dι_{$(_math(:G))}(g)[W] = -g^{-1}Wg^{-1} = -Xg^{-1} = -g^{-1}(gXg^{-1}) = -g^{-1}$(_math(:Ad))(g)[X] ∈ T_{g^{-1}}$(_tex("Cal","G")).
+  Dι_{$(_math(:G))}(g)[W] = -g^{-1}Wg^{-1} = -Xg^{-1} = -g^{-1}(gXg^{-1}) = -g^{-1}$(_math(:Ad))(g)[X] ∈ T_{g^{-1}}$(_math(:G))).
 ```
 
 To bring this back to the Lie algebra, we just have to multiply the result with ``g`` from the left
@@ -368,26 +368,6 @@ and obtain
 ```
 
 where we use ``d`` to denote the differential in the Lie algebra.
-"""
-
-@doc "$_doc_diff_inv"
-function diff_inv(G::AbstractLieGroup, g, X)
-```math
-  d ι_{$(_math(:G))}(g)[X] = -X ∈ 𝔤,
-```
-
-where we use ``d`` to denote the differential in the Lie algebra.
-
-"""
-
-@doc "$_doc_diff_inv"
-function diff_inv(G::AbstractLieGroup, g, X)
-```math
-  d ι_g(g)[X] = -X ∈ 𝔤,
-```
-
-where we use ``d`` to denote the differential in the Lie algebra.
-
 """
 
 @doc "$_doc_diff_inv"
@@ -407,11 +387,11 @@ _doc_diff_left_compose = """
 Compute the differential of the left group multiplication ``λ_g(h) = g$(_math(:∘))h``, on the [`AbstractLieGroup`](@ref) `G`.
 Note that we represent tangent vectors in the Lie algebra ``𝔤``.
 
-For example on matrix manifolds this means, we use ``X ∈ 𝔤`` and hence ``W = gX ∈ T_g$(_tex("Cal","G"))``.
-The (classical) differential ``Dλ_g(h): T_g$(_tex("Cal","G")) → T_{g$(_math(:∘))h}$(_tex("Cal","G"))`` reads
+For example on matrix manifolds this means, we use ``X ∈ 𝔤`` and hence ``W = gX ∈ T_g$(_math(:G)))``.
+The (classical) differential ``Dλ_g(h): T_g$(_math(:G))) → T_{g$(_math(:∘))h}$(_math(:G)))`` reads
 
 ```math
-  Dλ_g(h)[W] = Wh = gXh = gh(h^{-1}Xh) = gh$(_math(:Ad))(h)[X] ∈ T_{gh}$(_tex("Cal","G")).
+  Dλ_g(h)[W] = Wh = gXh = gh(h^{-1}Xh) = gh$(_math(:Ad))(h)[X] ∈ T_{gh}$(_math(:G))).
 ```
 
 To also bring this back to the Lie algebra, we just have to multiply the result with ``(gh)^{-1}`` from the left
@@ -440,11 +420,11 @@ _doc_diff_right_compose = """
 Compute the differential of the right group multiplication ``ρ_g(h) = h$(_math(:∘))g``, on the [`AbstractLieGroup`](@ref) `G`.
 Note that we represent tangent vectors in the Lie algebra ``𝔤``.
 
-For example on matrix manifolds this means, we use ``X ∈ 𝔤`` and hence ``W = gX ∈ T_g$(_tex("Cal","G"))``.
-The (classical) differential ``Dρ_h(h): T_g$(_tex("Cal","G")) → T_{h$(_math(:∘))g}$(_tex("Cal","G"))`` reads
+For example on matrix manifolds this means, we use ``X ∈ 𝔤`` and hence ``W = gX ∈ T_g$(_math(:G)))``.
+The (classical) differential ``Dρ_h(h): T_g$(_math(:G))) → T_{h$(_math(:∘))g}$(_math(:G)))`` reads
 
 ```math
-  Dρ_g(h)[W] = hW = hgX ∈ T_{hg}$(_tex("Cal","G")).
+  Dρ_g(h)[W] = hW = hgX ∈ T_{hg}$(_math(:G))).
 ```
 
 To bring this back to the Lie algebra, we just have to multiply the result with ``(gh)^{-1}`` from the left
