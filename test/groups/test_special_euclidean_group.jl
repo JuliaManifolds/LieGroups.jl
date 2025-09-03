@@ -351,41 +351,4 @@ using StaticArrays
         X = hat(LieAlgebra(G), SA[1, 0, 0.01], ArrayPartition)
         @test X isa ArrayPartition{Float64, Tuple{Matrix{Float64}, Vector{Float64}}}
     end
-    #= TODO: Move to SO(n) or so where we have diff_compose
-    @testset "Retraction and vector transport passthrough" begin
-        G = SpecialEuclideanGroup(2)
-        𝔤 = LieAlgebra(G)
-        gL = ArrayPartition(1 / 𝔰 * [1.0 1.0; -1.0 1.0], [1.0, 0.0])
-        hL = ArrayPartition([0.0 -1.0; 1.0 0.0], [0.0, 1.0])
-        XL = ArrayPartition([0.0 -0.23; 0.23 0.0], [0.0, 1.0])
-        drm = BaseManifoldRetraction(default_retraction_method(base_manifold(G)))
-        dirm = BaseManifoldInverseRetraction(
-            default_inverse_retraction_method(base_manifold(G))
-        )
-        dvm = BaseManifoldVectorTransportMethod(
-            default_vector_transport_method(base_manifold(G))
-        )
-        kL = retract(G, gL, XL, drm)
-        @test is_point(G, kL; error = :error)
-        kL2 = similar(kL)
-        retract!(G, kL2, gL, XL, drm)
-        @test isapprox(G, kL, kL2)
-
-        # Check formula again for this to be equal do X.
-        # If we apply another pullback, this seems to be right, so we have to check where we accidentally pushforward once too much?
-        YL = inverse_retract(G, gL, kL, dirm)
-        @test is_point(𝔤, YL; error = :error)
-        @test isapprox(𝔤, XL, YL; atol = 1.0e-4, error = :error)
-        YL2 = similar(YL)
-        inverse_retract!(G, YL2, gL, kL, dirm)
-        @test isapprox(G, YL, YL2)
-
-        ZL = vector_transport_to(G, gL, XL, hL, dvm)
-        @test is_point(𝔤, ZL; error = :error)
-
-        ZL2 = similar(ZL)
-        vector_transport_to!(G, ZL2, gL, XL, hL, dvm)
-        @test isapprox(G, gL, ZL2, ZL)
-    end
-    =#
 end
