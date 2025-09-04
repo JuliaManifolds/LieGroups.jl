@@ -116,7 +116,7 @@ in the [`LieAlgebra`](@ref) ``𝔤`` of the [`LieGroup`](@ref) `G`.
 The formula is given by
 
 ```math
-$(_math(:d))ι_{$(_math(:G))}(g)[X] = $(_math(:Ad))(g)[X] = -g^{$(_tex(:transp))}Xg^{-1} = ,
+$(_math(:d))ι_{$(_math(:G))}(g)[X] = $(_math(:Ad))(g)[X] = -g^{$(_tex(:transp))}Xg^{-1},
 ```
 
 which stems from using the differential of the inverse from [Giles:2008](@cite) given by
