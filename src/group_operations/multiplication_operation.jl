@@ -174,7 +174,7 @@ diff_left_compose(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, g, h
 function diff_left_compose!(
         G::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, Y, g, h, X
     ) where {𝔽}
-    return copyto!(LieAlgebra(G), Y, g * X * inv(g))
+    return copyto!(LieAlgebra(G), Y, h * (X / h))
 end
 
 _doc_diff_right_compose_mult = """
@@ -197,9 +197,9 @@ diff_right_compose(
 
 @doc "$(_doc_diff_right_compose_mult)"
 function diff_right_compose!(
-        G::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, Y, g, ::Any, X
+        G::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, Y, g, h, X
     ) where {𝔽}
-    return copyto!(LieAlgebra(G), Y, X * g)
+    return copyto!(LieAlgebra(G), Y, X)
 end
 
 _doc_exp_mult = """
@@ -373,3 +373,10 @@ function LinearAlgebra.mul!(
 end
 
 Base.one(e::Identity{<:AbstractMultiplicationGroupOperation}) = e
+
+function push_forward_tangent!(G::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, Y, g, X; kwargs...) where {𝔽}
+    return copyto!(Y, g * X)
+end
+function pull_back_tangent!(G::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, Y, g, X; kwargs...) where {𝔽}
+    return copyto!(Y, g \ X)
+end

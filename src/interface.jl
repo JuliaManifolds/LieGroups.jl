@@ -1020,12 +1020,9 @@ function pull_back_tangent(G::AbstractLieGroup, g, X; e = identity_element(G, ty
     return pull_back_tangent!(G, Y, g, X)
 end
 
+function pull_back_tangent! end
 @doc "$(_doc_pull_back_t)"
-function pull_back_tangent!(G::AbstractLieGroup, Y, g, X; e = identity_element(G, typeof(g)))
-    identity_element!(G, e)
-    diff_left_compose!(G, Y, e, inv(G, g), X)
-    return Y
-end
+pull_back_tangent!(G::AbstractLieGroup, Y, g, X; e = identity_element(G, typeof(g)))
 
 _doc_push_fwd_t = """
     push_forward_tangent(G::AnstractLieGroup, g, X)
@@ -1052,14 +1049,9 @@ function push_forward_tangent(G::AbstractLieGroup, g, X; e = identity_element(G,
     return push_forward_tangent!(G, Y, g, X; e = e)
 end
 
+function push_forward_tangent! end
 @doc "$(_doc_push_fwd_t)"
-function push_forward_tangent!(
-        G::AbstractLieGroup, Y, g, X; e = identity_element(G, typeof(g))
-    )
-    identity_element!(G, e)
-    diff_left_compose!(G, Y, e, g, X)
-    return Y
-end
+push_forward_tangent!(G::AbstractLieGroup, Y, g, X; e = identity_element(G, typeof(g)))
 
 @doc "$(_doc_rand)"
 Random.rand(::AbstractLieGroup; kwargs...)

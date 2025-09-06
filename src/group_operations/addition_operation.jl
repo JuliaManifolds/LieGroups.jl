@@ -246,3 +246,10 @@ function ManifoldsBase.log!(
     ) where {𝔽}
     return fill!(X, 0)
 end
+
+function push_forward_tangent!(G::LieGroup{𝔽, AdditionGroupOperation}, Y, g, X) where {𝔽}
+    return copyto!(Y, X)
+end
+function pull_back_tangent!(G::LieGroup{𝔽, AdditionGroupOperation}, Y, g, X) where {𝔽}
+    return copyto!(Y, X)
+end
