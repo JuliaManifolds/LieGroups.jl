@@ -19,6 +19,9 @@ struct LeftMultiplicationGroupAction <: AbstractLeftGroupActionType end
 function apply!(::GroupAction{LeftMultiplicationGroupAction}, q, g, p)
     return Base.mightalias(q, p) ? q .= g * p : mul!(q, g, p)
 end
+#=
+# I (kellertuer)  am not sure about these – they should be tested and checked once we
+# have a use case for them.
 
 function diff_apply!(::GroupAction{LeftMultiplicationGroupAction}, Y, g, p, X)
     return Base.mightalias(Y, X) ? Y .= g * X : mul!(Y, g, X)
@@ -27,3 +30,4 @@ end
 function diff_group_apply!(::GroupAction{LeftMultiplicationGroupAction}, Y, g, p, X)
     return Base.mightalias(Y, X) ? Y .= X * p : mul!(Y, X, p)
 end
+=#
