@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Fixed an issue where internally the product manifold in a `SemidirectProductLieGroup` was accidentally splashed
 * make `×` and `ProductLieGroup` behave the same way as `×` and `ProductManifold` do
 * Fixed an issue, where `exp!(G, h, g, X)` would return a wrong result if the input `g`and the output `h`are aliased (#63).
+* Fixed issues with the documentation of `diff_left_compose` and `diff_right_compose` that were inconsistent
+* fixed `push_forward_tangent` and `pull_back_tangent` which on general Lie groups provided a wrong default.
 
 ## [0.1.3] 2025-08-04
 
