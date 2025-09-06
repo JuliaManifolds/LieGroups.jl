@@ -153,7 +153,7 @@ _doc_diff_left_compose_mult = """
     diff_left_compose!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, g, h, X)
 
 Compute the differential of the left group multiplication ``λ_g(h) = g$(_math(:∘))h``,
-which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``$(_math(:d))λ_g(h)[X] = X``.
+which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``$(_math(:d))ρ_g(h)[X] = X``.
 """
 
 @doc "$(_doc_diff_left_compose_mult)"
@@ -171,7 +171,7 @@ _doc_diff_right_compose_mult = """
     diff_right_compose!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, h, g, X)
 
 Compute the differential of the right group multiplication ``ρ_g(h) = h$(_math(:∘))g``,
-which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``$(_math(:d))ρ_g(h)[X] = $(_math(:Ad))(g^{-1})[X] = g^{-1}Xg``.
+which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``$(_math(:d))λ_g(h)[X] = $(_math(:Ad))(h^{-1})[X] = h^{-1}Xh``.
 """
 
 @doc "$(_doc_diff_right_compose_mult)"
@@ -181,9 +181,9 @@ diff_right_compose(
 
 @doc "$(_doc_diff_right_compose_mult)"
 function diff_right_compose!(
-        G::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, Y, h, g, X
+        G::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, Y, h, ::Any, X
     ) where {𝔽}
-    return copyto!(LieAlgebra(G), Y, inv(G, g) * X * g)
+    return copyto!(LieAlgebra(G), Y, inv(G, h) * X * h)
 end
 
 _doc_exp_mult = """
