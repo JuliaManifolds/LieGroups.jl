@@ -217,12 +217,6 @@ function _semidirect_parts(SDPG::LieGroup{𝔽, <:RightSemidirectProductGroupOpe
     return PM, G, H, a, 2, 1
 end
 # A major difference between left and right actions is that for right, we have to invert the action while for left we do not
-function _semidirect_maybe_inv(::GroupAction{<:AbstractRightGroupActionType}, G, g)
-    return inv(G, g)
-end
-function _semidirect_maybe_inv(::GroupAction{<:AbstractLeftGroupActionType}, G, g)
-    return copy(G, g)
-end
 # and in in-place
 function _semidirect_maybe_inv!(::GroupAction{<:AbstractRightGroupActionType}, G, k, g)
     return inv!(G, k, g)
