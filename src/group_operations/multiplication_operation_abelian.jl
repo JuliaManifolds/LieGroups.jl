@@ -109,9 +109,14 @@ _doc_diff_left_compose_abelmult = """
     diff_left_compose(G::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, g, h, X)
     diff_left_compose!(G::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, Y, g, h, X)
 
-Compute the differential of the left group multiplication ``λ_g(h) = g$(_math(:∘))h``.
+Compute the differential of the group operation ``g$(_math(:∘))h``, on an [`AbstractLieGroup`](@ref) `G`
+with respect to its first (left) argument `g`.
 
-Due to differences in the representation of some Abelian Lie groups, this method wraps a concrete implementation of a specific abelian LieGroup with inputs of type `AbstractArray{<:Any,0}` and supports in-place computation.
+Another interpretation is to consider a function where we do a fixed multiplication from the right with `h`.
+i..e. the right group multiplication function ``ρ_h(g) = g$(_math(:∘))h``.
+
+The differential simplifies for an [`AbelianMultiplicationGroupOperation`](@ref) to the identity, i.e.
+``$(_math(:d))ρ_h(g)[X] = X``.
 
 This can be computed in-place of `Y` if `Y` is `mutable`.
 """ #
@@ -130,18 +135,21 @@ end
 function diff_left_compose!(
         G::LieGroup{𝔽, <:AbelianMultiplicationGroupOperation}, Y, g, h, X
     ) where {𝔽}
-    return copyto!(LieAlgebra(G), Y, diff_left_compose(G, g, h, X))
+    return copyto!(LieAlgebra(G), Y, X)
 end
 
 _doc_diff_right_compose_abelmult = """
     diff_right_compose(G::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, g, h, X)
     diff_right_compose!(G::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, Y, g, h, X)
 
-Compute the differential of the right group multiplication ``ρ_g(h) = h$(_math(:∘))g``.
+Compute the differential of the group operation ``g$(_math(:∘))h``, on an [`AbstractLieGroup`](@ref) `G`
+with respect to its second (right) argument `h`.
 
-Due to differences in the representation of some abelian Lie groups, this method wraps a concrete implementation of a specific abelian LieGroup with inputs of type `AbstractArray{<:Any,0}` and supports in-place computation.
+Another interpretation is to consider a function where we do a fixed multiplication from the left with `g`.
+i..e. the left group multiplication function ``λ_g(h) = g$(_math(:∘))h``.
 
-This can be computed in-place of `Y` if `Y` is `mutable`.
+The differential simplifies for an [`AbelianMultiplicationGroupOperation`](@ref) to the identity, i.e.
+``$(_math(:d))λ_g(h)[X] = X``.
 """
 
 @doc "$(_doc_diff_right_compose_abelmult)"
@@ -158,7 +166,7 @@ end
 function diff_right_compose!(
         G::LieGroup{𝔽, <:AbelianMultiplicationGroupOperation}, Y, g, h, X
     ) where {𝔽}
-    return copyto!(LieAlgebra(G), Y, diff_right_compose(G, g, h, X))
+    return copyto!(LieAlgebra(G), Y, X)
 end
 
 _doc_exp_abelmult = """

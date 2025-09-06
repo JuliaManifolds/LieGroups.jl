@@ -152,8 +152,19 @@ _doc_diff_left_compose_mult = """
     diff_left_compose(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g, h, X)
     diff_left_compose!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, g, h, X)
 
-Compute the differential of the left group multiplication ``λ_g(h) = g$(_math(:∘))h``,
-which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``$(_math(:d))λ_g(h)[X] = $(_math(:Ad))(g)[X] = gXg^{-1}``.
+Compute the differential of the group operation ``g$(_math(:∘))h``, on an [`AbstractLieGroup`](@ref) `G`
+with respect to its first (left) argument `g`.
+
+Another interpretation is to consider a function where we do a fixed multiplication from the right with `h`.
+i..e. the right group multiplication function ``ρ_h(g) = g$(_math(:∘))h``.
+
+The differential simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to
+
+```math
+$(_math(:d)) ρ_h(g)[X] = h^{-1}Xh = $(_math(:Ad))(h^{-1})[X] ∈ 𝔤,
+```
+
+where ``$(_math(:Ad))`` denotes the [`adjoint`](@ref).
 """
 
 @doc "$(_doc_diff_left_compose_mult)"
@@ -170,8 +181,13 @@ _doc_diff_right_compose_mult = """
     diff_right_compose(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, h, g, X)
     diff_right_compose!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, h, g, X)
 
-Compute the differential of the right group multiplication ``ρ_g(h) = h$(_math(:∘))g``,
-which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``$(_math(:d))ρ_g(h)[X] = X``.
+Compute the differential of the group operation ``g$(_math(:∘))h``, on an [`AbstractLieGroup`](@ref) `G`
+with respect to its second (right) argument `h`.
+
+Another interpretation is to consider a function where we do a fixed multiplication from the left with `g`.
+i..e. the left group multiplication function ``λ_g(h) = g$(_math(:∘))h``.
+
+It reads for an [`AbstractMultiplicationGroupOperation`](@ref) ``$(_math(:d))λ_g(h)[X] = X``.
 """
 
 @doc "$(_doc_diff_right_compose_mult)"
