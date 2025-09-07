@@ -93,8 +93,8 @@ function diff_left_compose!(G::LieGroup{𝔽, AdditionGroupOperation}, Y, g, h, 
 end
 
 _doc_diff_right_compose_add = """
-    diff_right_compose(G::LieGroup{𝔽,AdditionGroupOperation}, h, g, X)
-    diff_right_compose!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, h, g, X)
+    diff_right_compose(G::LieGroup{𝔽,AdditionGroupOperation}, g, h, X)
+    diff_right_compose!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, X)
 
 Compute the differential of the group operation ``g$(_math(:∘))h``, on an [`AbstractLieGroup`](@ref) `G`
 with respect to its second (right) argument `h`.
@@ -106,7 +106,7 @@ For the [`AdditionGroupOperation`](@ref) it reads ``$(_math(:d))λ_g(h)[X] = X``
 """
 
 @doc "$(_doc_diff_right_compose_add)"
-diff_right_compose(::LieGroup{𝔽, AdditionGroupOperation}, ::Any, ::Any, ::Any) where {𝔽}
+diff_right_compose(::LieGroup{𝔽, AdditionGroupOperation}, g, h, X) where {𝔽}
 
 @doc "$(_doc_diff_right_compose_add)"
 function diff_right_compose!(G::LieGroup{𝔽, AdditionGroupOperation}, Y, g, h, X) where {𝔽}

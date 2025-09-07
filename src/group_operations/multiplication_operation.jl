@@ -178,8 +178,8 @@ function diff_left_compose!(
 end
 
 _doc_diff_right_compose_mult = """
-    diff_right_compose(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, h, g, X)
-    diff_right_compose!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, h, g, X)
+    diff_right_compose(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g, h, X)
+    diff_right_compose!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, g, h, X)
 
 Compute the differential of the group operation ``g$(_math(:∘))h``, on an [`AbstractLieGroup`](@ref) `G`
 with respect to its second (right) argument `h`.
@@ -191,9 +191,7 @@ It reads for an [`AbstractMultiplicationGroupOperation`](@ref) ``$(_math(:d))λ_
 """
 
 @doc "$(_doc_diff_right_compose_mult)"
-diff_right_compose(
-    ::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any
-) where {𝔽}
+diff_right_compose(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, g, h, X) where {𝔽}
 
 @doc "$(_doc_diff_right_compose_mult)"
 function diff_right_compose!(

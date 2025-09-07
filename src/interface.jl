@@ -421,8 +421,8 @@ function diff_left_compose! end
 diff_left_compose!(::AbstractLieGroup, Y, g, h, X)
 
 _doc_diff_right_compose = """
-    diff_right_compose(G::AbstractLieGroup, h, g, X)
-    diff_right_compose!(G::AbstractLieGroup, Y, h, g, X)
+    diff_right_compose(G::AbstractLieGroup, g, h, X)
+    diff_right_compose!(G::AbstractLieGroup, Y, g, h, X)
 
 Compute the differential of the group operation ``g$(_math(:∘))h``, on an [`AbstractLieGroup`](@ref) `G`
 with respect to its second (right) argument `h`.
@@ -449,9 +449,9 @@ $(_math(:d)) λ_g(h)[X] = X ∈ 𝔤.
 ```
 """
 @doc "$(_doc_diff_right_compose)"
-function diff_right_compose(G::AbstractLieGroup, h, g, X)
-    Y = ManifoldsBase.allocate_result(G, diff_right_compose, X, h, g)
-    return diff_right_compose!(G, Y, h, g, X)
+function diff_right_compose(G::AbstractLieGroup, g, h, X)
+    Y = ManifoldsBase.allocate_result(G, diff_right_compose, X, g, h)
+    return diff_right_compose!(G, Y, g, h, X)
 end
 
 function diff_right_compose! end
