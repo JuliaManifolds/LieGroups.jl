@@ -76,17 +76,25 @@ using LieGroupsTestSuite
 
             return Y .= diff_inv(A.group, g, X) * h
         end
-        g1 = 1 / sqrt(2) * [1.0 1.0; -1.0 1.0]
+        g1 = exp(SpecialOrthogonalGroup(2), [0.0 0.1; -0.1 0.0])
         g2 = [0.0 -1.0; 1.0 0.0]
         g3 = [1.0 0.0; 0.0 1.0]
-        h1 = [0.1, 0.1]
+        h1 = [0.1, 0.2]
         h2 = [0.0, 1.0]
         h3 = [0.0, 0]
 
-        X1 = [0.0 -0.23; 0.23 0.0]
-        Y1 = [0.0, 0.12]
         X1 = [0.0 0.1; -0.1 0.0]
         Y1 = [0.0, 0.2]
+
+        # sanity check inv with matrix representation
+        # reference data for (SO(2), ℝ²) semidirect products
+        l1_mat = vcat([1 0 0], hcat(h1, g1)) # build the matrix representation for a left action semidirect product - acts on the right component
+        r1_mat = hcat(vcat(g1, h1'), [0, 0, 1]) # build the matrix representation for a right action semidirect product - acts on the left component
+        # inverse of R should be the same for both cases
+        inv_g1 = inv(SpecialOrthogonalGroup(2), g1)
+        # for t components, use the matrix inverse as reference
+        l_inv_h1 = inv(l1_mat)[2:3, 1] # extract the translation part
+        r_inv_h1 = inv(r1_mat)[3, 1:2] # extract the translation part
 
         for action in (TestLeftAction(), TestRightAction()),
                 action_on in (ActionActsOnLeft(), ActionActsOnRight())
@@ -103,8 +111,30 @@ using LieGroupsTestSuite
                 :Vectors => [V1],
                 :Functions => [identity_element, is_identity, inv, compose, show],
             )
-            expectations = Dict(:atol => 1.0e-14)
 
+            # use the matrix inverse as reference
+            if action_on == ActionActsOnLeft()
+                inv_h1 = r_inv_h1 # the standard right action semidirectproduct acts on the left side
+            else
+                inv_h1 = l_inv_h1 # the standard left action semidirectproduct acts on the right side
+            end
+
+            # also compare the matrix inverse h-component to the applied action
+            H = SpecialOrthogonalGroup(2)
+            N = TranslationGroup(2)
+            if (action == TestLeftAction()) != (action_on == ActionActsOnLeft())
+                # left right || right left -> (g,h)⁻¹ =  (g⁻¹, α(g⁻¹)(h⁻¹)
+                α_g_h = apply(GroupAction(action, H, N), inv(H, g1), inv(N, h1))
+            else
+                # left left || right right -> inverse action -> (g,h)⁻¹ =  (g⁻¹, α(g⁻¹)⁻¹(h⁻¹)
+                α_g_h = apply(GroupAction(action, H, N), g1, inv(N, h1))
+            end
+            @test isapprox(α_g_h, inv_h1)
+
+            expectations = Dict(
+                :atol => 1.0e-14,
+                :inv => ArrayPartition(inv_g1, inv_h1),
+            )
             test_lie_group(G, properties, expectations)
 
             G = RightSemidirectProductLieGroup(TranslationGroup(2), SpecialOrthogonalGroup(2), action; action_on)
@@ -118,7 +148,12 @@ using LieGroupsTestSuite
                 :Vectors => [W1],
                 :Functions => [identity_element, is_identity, inv, compose, show],
             )
-            expectations = Dict(:atol => 1.0e-14)
+
+            expectations = Dict(
+                :atol => 1.0e-14,
+                :inv => ArrayPartition(inv_h1, inv_g1),
+            )
+
             test_lie_group(G, properties, expectations)
         end
     end
