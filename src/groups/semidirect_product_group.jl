@@ -448,25 +448,59 @@ end
 # 6. Right semidirect, left action, act on right
 # 7. Right semidirect, right action, act on left
 """
-    inv(L::LieGroup{𝔽,<:SemidirectProductGroupOperation{⋆,⋄,<:AbstractLeftGroupActionType,AbstractActionActsOn}}, g)
+    inv(L::LieGroup{𝔽,<:SemidirectProductGroupOperation{⋆,⋄,A,AO}}, g)
 
-$(_doc_semidirect_sub_groups) Let ``σ`` denote a left group action. The inverse is the same for both [`ActionActsOnLeft`](@ref) and [`ActionActsOnRight`](@ref).
+Where `{A <: AbstractGroupActionType, AO <: AbstractActionActsOnType}`
+$(_doc_semidirect_sub_groups)
 
-The inverse for the [`LeftSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on ``G ⋉ H`` is given by
+# Inverse in Semidirect Product Groups
 
+Let ``σ`` denote a left group action (`<:AbstractLeftGroupActionType`) and ``τ`` a right group action (`<:AbstractRightGroupActionType`).  
+Let `AO` be the type indicating whether the action is applied on the left (`ActionActsOnLeft`) or right (`ActionActsOnRight`).
+
+The formulas for the inverse depend on whether the action act on the left or on the right as follows:
+
+**Left semidirect product (`LeftSemidirectProductGroupOperation`)**:
+- Acting on the left (`AO <: ActionActsOnLeft`):
 ```math
-(g,h)^{-1} = $(_tex(:bigl))( g^{-1}, σ_{g^{-1}}(h^{-1}) $(_tex(:bigr))).
+(g, h)^{-1} = (g^{-1}, σ_{g}(h^{-1}))
+```
+```math
+(g, h)^{-1} = (g^{-1}, τ_{g^{-1}}(h^{-1}))
+```
+- Acting on the right (`AO <: ActionActsOnRight`):
+```math
+(g, h)^{-1} = (g^{-1}, σ_{g^{-1}}(h^{-1}))
+```
+```math
+(g, h)^{-1} = (g^{-1}, τ_{g}(h^{-1}))
 ```
 
-The inverse for the [`RightSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on ``G ⋊ H`` is given by
-
+**Right semidirect product (`RightSemidirectProductGroupOperation`)**:
+- Acting on the left (`AO <: ActionActsOnLeft`):
 ```math
-(h,g)^{-1} = $(_tex(:bigl))( σ_{g^{-1}} (h^{-1}), g^{-1} $(_tex(:bigr)))
+(h, g)^{-1} = (σ_{g}(h^{-1}), g^{-1})
 ```
+```math
+(h, g)^{-1} = (τ_{g^{-1}}(h^{-1}), g^{-1})
+```
+- Acting on the right (`AO <: ActionActsOnRight`):
+```math
+(h, g)^{-1} = (σ_{g^{-1}}(h^{-1}), g^{-1})
+```
+```math
+(h, g)^{-1} = (τ_{g}(h^{-1}), g^{-1})
+```
+
+**Note:**  
+- The formulas above match the conventions in [HilgertNeeb:2012; Definition 9.2.22](@cite) with `σ = α`.
+- The relationship between left and right actions is ``σ_g := τ_{g^{-1}}``.
+
+See also: [`AbstractLeftGroupActionType`](@ref), [`AbstractRightGroupActionType`](@ref), [`ActionActsOnLeft`](@ref), [`ActionActsOnRight`](@ref)
 """
 inv(
     SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, ::Any,
-) where {𝔽, O1, O2, A <: AbstractLeftGroupActionType, AO <: AbstractActionActsOnType}
+) where {𝔽, O1, O2, A <: AbstractGroupActionType, AO <: AbstractActionActsOnType}
 
 function _inv!(
         SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, k, g
@@ -508,26 +542,6 @@ end
 # 4. Left semidirect, right action, act on right
 # 5. Right semidirect, left action, act on left
 # 8. Right semidirect, right action, act on right
-"""
-    inv(L::LieGroup{𝔽,<:SemidirectProductGroupOperation{⋆,⋄,<:AbstractRightGroupActionType,AbstractActionActsOn}}, g)
-
-$(_doc_semidirect_sub_groups) Let ``τ`` denote a right group action. The inverse is the same for both [`ActionActsOnLeft`](@ref) and [`ActionActsOnRight`](@ref).
-
-The inverse for the [`LeftSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on ``G ⋉ H`` is given by
-
-```math
-(g,h)^{-1} = $(_tex(:bigl))( g^{-1}, τ_{g}(h^{-1}) $(_tex(:bigr))).
-```
-
-The inverse for the [`RightSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on ``G ⋊ H`` is given by
-
-```math
-(h,g)^{-1} = $(_tex(:bigl))( τ_{g}(h^{-1}), g^{-1} $(_tex(:bigr)))
-```
-"""
-inv(
-    SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, ::Any,
-) where {𝔽, O1, O2, A <: AbstractRightGroupActionType, AO <: AbstractActionActsOnType}
 
 function _inv!(
         SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, k, g
