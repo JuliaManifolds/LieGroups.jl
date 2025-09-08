@@ -1,4 +1,4 @@
-using LieGroups, Random, Test
+using LieGroups, Random, Test, ManifoldsBase
 
 s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 !(s in LOAD_PATH) && (push!(LOAD_PATH, s))
@@ -122,5 +122,36 @@ using StaticArrays
         X = log(G, g1, g2)
         @test X isa SMatrix{3, 3, Float64, 9}
         @test X ≈ log(G.manifold, g1, g2)
+    end
+
+    @testset "Retraction and vector transport passthrough" begin
+        G = SpecialOrthogonalGroup(2)
+        M = base_manifold(G)
+        𝔤 = LieAlgebra(G)
+        g = 1 / sqrt(2) * [1.0 1.0; -1.0 1.0]
+        h = [0.0 -1.0; 1.0 0.0]
+        X = [0.0 -0.23; 0.23 0.0]
+        drm = BaseManifoldRetraction(default_retraction_method(M))
+        dirm = BaseManifoldInverseRetraction(default_inverse_retraction_method(M))
+        dvm = BaseManifoldVectorTransportMethod(default_vector_transport_method(M))
+        k = retract(G, g, X, drm)
+        @test is_point(G, k; error = :error)
+        k2 = similar(k)
+        retract!(G, k2, g, X, drm)
+        @test isapprox(G, k, k2)
+
+        Y = inverse_retract(G, g, k, dirm)
+        @test is_point(𝔤, Y; error = :error)
+        @test isapprox(𝔤, X, Y)
+        Y2 = similar(Y)
+        inverse_retract!(G, Y2, g, k, dirm)
+        @test isapprox(G, Y, Y2)
+
+        Z = vector_transport_to(G, g, X, h, dvm)
+        @test is_point(𝔤, Z; error = :error)
+
+        Z2 = similar(Z)
+        vector_transport_to!(G, Z2, g, X, h, dvm)
+        @test isapprox(G, g, Z2, Z)
     end
 end

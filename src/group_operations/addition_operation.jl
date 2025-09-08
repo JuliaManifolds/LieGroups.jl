@@ -80,8 +80,8 @@ _doc_diff_left_compose_add = """
     diff_left_compose(G::LieGroup{𝔽,AdditionGroupOperation}, g, h, X)
     diff_left_compose!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, X)
 
-Compute the differential of the left group multiplication ``λ_g(h) = g$(_math(:∘))h``,
-which simplifies for [`AdditionGroupOperation`](@ref) to ``$(_math(:d))λ_g(h)[X] = X``.
+Compute the differential of the the group operation ``g+h`` with respect to the left argument `g`.
+Here it simplifies for [`AdditionGroupOperation`](@ref) to ``$(_math(:d))ρ_h(g)[X] = X``.
 """
 
 @doc "$(_doc_diff_left_compose_add)"
@@ -93,15 +93,20 @@ function diff_left_compose!(G::LieGroup{𝔽, AdditionGroupOperation}, Y, g, h, 
 end
 
 _doc_diff_right_compose_add = """
-    diff_right_compose(G::LieGroup{𝔽,AdditionGroupOperation}, h, g, X)
-    diff_right_compose!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, h, g, X)
+    diff_right_compose(G::LieGroup{𝔽,AdditionGroupOperation}, g, h, X)
+    diff_right_compose!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, X)
 
-Compute the differential of the right group multiplication ``ρ_g(h) = h$(_math(:∘))g``,
-which simplifies for [`AdditionGroupOperation`](@ref) to ``$(_math(:d))ρ_g(h)[X] = X``.
+Compute the differential of the group operation ``g$(_math(:∘))h``, on an [`AbstractLieGroup`](@ref) `G`
+with respect to its second (right) argument `h`.
+
+Another interpretation is to consider a function where we do a fixed multiplication from the left with `g`.
+i..e. the left group multiplication function ``λ_g(h) = g$(_math(:∘))h`` (where the _left_ refers to the fixed argument ``g``.).
+
+For the [`AdditionGroupOperation`](@ref) it reads ``$(_math(:d))λ_g(h)[X] = X``.
 """
 
 @doc "$(_doc_diff_right_compose_add)"
-diff_right_compose(::LieGroup{𝔽, AdditionGroupOperation}, ::Any, ::Any, ::Any) where {𝔽}
+diff_right_compose(::LieGroup{𝔽, AdditionGroupOperation}, g, h, X) where {𝔽}
 
 @doc "$(_doc_diff_right_compose_add)"
 function diff_right_compose!(G::LieGroup{𝔽, AdditionGroupOperation}, Y, g, h, X) where {𝔽}
@@ -240,4 +245,11 @@ function ManifoldsBase.log!(
         ::LieGroup{𝔽, AdditionGroupOperation}, X, ::Identity{AdditionGroupOperation}
     ) where {𝔽}
     return fill!(X, 0)
+end
+
+function push_forward_tangent!(G::LieGroup{𝔽, AdditionGroupOperation}, Y, g, X) where {𝔽}
+    return copyto!(Y, X)
+end
+function pull_back_tangent!(G::LieGroup{𝔽, AdditionGroupOperation}, Y, g, X) where {𝔽}
+    return copyto!(Y, X)
 end

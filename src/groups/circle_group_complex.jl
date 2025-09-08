@@ -19,12 +19,12 @@ _doc_diff_left_compose_complex_circ = """
     diff_left_compose(::LieGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, g, h, X)
     diff_left_compose(::LieGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, Y, g, h, X)
 
-Compute the differential of the left group multiplication ``λ_g(h) = g$(_math(:∘))h``.
+Compute the differential of the group operation ``gh`` with respeect to the lefy argument `g`.
 
 The formula reads
 
 ```math
-   $(_math(:d)) λ_g(h) = gXg^{-1} = X.
+   $(_math(:d)) ρ_h(g) = X.
 ```
 
 since the group operation is abelian. This can be computed in-place of `Y` if `Y` is mutable.
@@ -39,12 +39,13 @@ _doc_diff_right_compose_complex_circ = """
     diff_right_compose(::LieGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, g, h, X)
     diff_right_compose(::LieGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, Y, g, h, X)
 
-Compute the differential of the right group multiplication ``ρ_g(h) = h$(_math(:∘))g``.
-On the complex circle the differential simplifies to the ordinary complex multiplication
-```math
-    $(_math(:d))ρ_g(h) = X.
-```
+Compute the differential of the group operation ``g$(_math(:∘))h``, on an [`AbstractLieGroup`](@ref) `G`
+with respect to its second (right) argument `h`.
 
+Another interpretation is to consider a function where we do a fixed multiplication from the left with `g`.
+i..e. the left group multiplication function ``λ_g(h) = g$(_math(:∘))h``.
+
+It simplifies for the [`AbelianMultiplicationGroupOperation`](@ref) to ``$(_math(:d))λ_g(h)[X] = X``.
 This can be computed in-place of `Y`.
 """
 

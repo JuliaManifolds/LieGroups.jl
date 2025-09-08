@@ -176,7 +176,7 @@ The operation can be performed in-place of `Y`.
 
 see [HilgertNeeb:2012; Section 9.2.3](@cite).
 
-On matrix Lie groups the adjoint reads ``$(_math(:Ad))(g)[X] = g$(_math(:∘))X$(_math(:∘))g^{-1}``.
+On matrix Lie groups the adjoint reads ``$(_math(:Ad))(g)[X] = gXg^{-1}``.
 """
 
 @doc "$(_doc_adjoint)"
@@ -384,24 +384,31 @@ _doc_diff_left_compose = """
     diff_left_compose(G::AbstractLieGroup, g, h, X)
     diff_left_compose!(G::AbstractLieGroup, Y, g, h, X)
 
-Compute the differential of the left group multiplication ``λ_g(h) = g$(_math(:∘))h``, on the [`AbstractLieGroup`](@ref) `G`.
-Note that we represent tangent vectors in the Lie algebra ``𝔤``.
+Compute the differential of the group operation ``g$(_math(:∘))h``, on an [`AbstractLieGroup`](@ref) `G`
+with respect to its first (left) argument `g`.
 
-For example on matrix manifolds this means, we use ``X ∈ 𝔤`` and hence ``W = gX ∈ T_g$(_math(:G)))``.
-The (classical) differential ``$(_math(:D))λ_g(h): T_g$(_math(:G))) → T_{g$(_math(:∘))h}$(_math(:G)))`` reads
+Another interpretation is to consider a function where we do a fixed multiplication from the right with `h`.
+i..e. the right group multiplication function ``ρ_h(g) = g$(_math(:∘))h`` (where the _right_ refers to the fixed argument ``h``).
+
+In this notation, this function computes the differential ``$(_math(:d))ρ_h: 𝔤 → 𝔤``.
+
+For example on matrix Lie groups this means that for ``X ∈ 𝔤`` we can start with ``W = gX ∈ T_g$(_math(:G)))``
+and compute the (classical) differential ``$(_math(:D))ρ_h(g): T_g$(_math(:G))) → T_{g$(_math(:∘))h}$(_math(:G)))``.
+
+It reads
 
 ```math
-  $(_math(:D))λ_g(h)[W] = Wh = gXh = gh(h^{-1}Xh) = gh$(_math(:Ad))(h)[X] ∈ T_{gh}$(_math(:G))).
+  $(_math(:D))ρ_h(g)[W] = Wh = gXh ∈ T_{g$(_math(:∘))h}$(_math(:G))).
 ```
 
-To also bring this back to the Lie algebra, we just have to multiply the result with ``(gh)^{-1}`` from the left
-and obtain
+To obtain the Lie group differential ``$(_math(:d))ρ_h(g)`` we have to multiply the result with ``(gh)^{-1}``
+from the left and move from ``W`` to ``X``. The differential reads
 
 ```math
-  $(_math(:d)) λ_g(h)[X] = h^{-1}Xh = $(_math(:Ad))(h)[X] ∈ 𝔤,
+$(_math(:d)) ρ_h(g)[X] = h^{-1}Xh = $(_math(:Ad))(h^{-1})[X] ∈ 𝔤,
 ```
 
-where we use ``$(_math(:d))`` to denote the differential in the Lie algebra.
+where ``$(_math(:Ad))`` denotes the [`adjoint`](@ref).
 """
 @doc "$(_doc_diff_left_compose)"
 function diff_left_compose(G::AbstractLieGroup, g, h, X)
@@ -414,32 +421,37 @@ function diff_left_compose! end
 diff_left_compose!(::AbstractLieGroup, Y, g, h, X)
 
 _doc_diff_right_compose = """
-    diff_right_compose(G::AbstractLieGroup, h, g, X)
-    diff_right_compose!(G::AbstractLieGroup, Y, h, g, X)
+    diff_right_compose(G::AbstractLieGroup, g, h, X)
+    diff_right_compose!(G::AbstractLieGroup, Y, g, h, X)
 
-Compute the differential of the right group multiplication ``ρ_g(h) = h$(_math(:∘))g``, on the [`AbstractLieGroup`](@ref) `G`.
-Note that we represent tangent vectors in the Lie algebra ``𝔤``.
+Compute the differential of the group operation ``g$(_math(:∘))h``, on an [`AbstractLieGroup`](@ref) `G`
+with respect to its second (right) argument `h`.
 
-For example on matrix manifolds this means, we use ``X ∈ 𝔤`` and hence ``W = gX ∈ T_g$(_math(:G)))``.
-The (classical) differential ``$(_math(:D))ρ_h(h): T_g$(_math(:G))) → T_{h$(_math(:∘))g}$(_math(:G)))`` reads
+Another interpretation is to consider a function where we do a fixed multiplication from the left with `g`.
+i..e. the left group multiplication function ``λ_g(h) = g$(_math(:∘))h`` (where the _left_ refers to the fixed argument ``g``.).
+
+In this notation, this function ``$(_math(:d))λ_g: 𝔤 → 𝔤``.
+
+For example on matrix Lie groups this means that for ``X ∈ 𝔤`` we can start with ``W = hX ∈ T_h$(_math(:G)))``
+and compute the (classical) differential ``$(_math(:D))λ_g(h): T_h$(_math(:G))) → T_{g$(_math(:∘))h}$(_math(:G)))``.
+
+It reads
 
 ```math
-  $(_math(:D))ρ_g(h)[W] = hW = hgX ∈ T_{hg}$(_math(:G))).
+  $(_math(:D))λ_g(h)[W] = gW = ghX ∈ T_{g$(_math(:∘))h}$(_math(:G))).
 ```
 
-To bring this back to the Lie algebra, we just have to multiply the result with ``(gh)^{-1}`` from the left
-and obtain
+To obtain the Lie group differential ``$(_math(:d))λ_g(h)`` we have to multiply the result with ``(gh)^{-1}``
+from the left and move from ``W`` to ``X``. Then the differential just simplifies to the identity. It reads
 
 ```math
-  $(_math(:d)) λ_g(h)[X] = X ∈ 𝔤,
+$(_math(:d)) λ_g(h)[X] = X ∈ 𝔤.
 ```
-
-where we use ``$(_math(:d))`` to denote the differential in the Lie algebra.
 """
 @doc "$(_doc_diff_right_compose)"
-function diff_right_compose(G::AbstractLieGroup, h, g, X)
-    Y = ManifoldsBase.allocate_result(G, diff_right_compose, X, h, g)
-    return diff_right_compose!(G, Y, h, g, X)
+function diff_right_compose(G::AbstractLieGroup, g, h, X)
+    Y = ManifoldsBase.allocate_result(G, diff_right_compose, X, g, h)
+    return diff_right_compose!(G, Y, g, h, X)
 end
 
 function diff_right_compose! end
@@ -1008,12 +1020,9 @@ function pull_back_tangent(G::AbstractLieGroup, g, X; e = identity_element(G, ty
     return pull_back_tangent!(G, Y, g, X)
 end
 
+function pull_back_tangent! end
 @doc "$(_doc_pull_back_t)"
-function pull_back_tangent!(G::AbstractLieGroup, Y, g, X; e = identity_element(G, typeof(g)))
-    identity_element!(G, e)
-    diff_left_compose!(G, Y, e, inv(G, g), X)
-    return Y
-end
+pull_back_tangent!(G::AbstractLieGroup, Y, g, X; e = identity_element(G, typeof(g)))
 
 _doc_push_fwd_t = """
     push_forward_tangent(G::AnstractLieGroup, g, X)
@@ -1040,14 +1049,9 @@ function push_forward_tangent(G::AbstractLieGroup, g, X; e = identity_element(G,
     return push_forward_tangent!(G, Y, g, X; e = e)
 end
 
+function push_forward_tangent! end
 @doc "$(_doc_push_fwd_t)"
-function push_forward_tangent!(
-        G::AbstractLieGroup, Y, g, X; e = identity_element(G, typeof(g))
-    )
-    identity_element!(G, e)
-    diff_left_compose!(G, Y, e, g, X)
-    return Y
-end
+push_forward_tangent!(G::AbstractLieGroup, Y, g, X; e = identity_element(G, typeof(g)))
 
 @doc "$(_doc_rand)"
 Random.rand(::AbstractLieGroup; kwargs...)
