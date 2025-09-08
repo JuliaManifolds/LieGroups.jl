@@ -258,13 +258,13 @@ $(_doc_semidirect_sub_groups) Let ``σ`` denote a left group action. It here act
 The [`LeftSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on ``G ⋉ H`` is given by
 
 ```math
-    (g_1,h_1) ∘ (g_2,h_2) := $(_tex(:bigl))( g_1 ⋆ g_2, σ_{g_2}(h_1) ⋄ h_2 $(_tex(:bigr))).
+    (g_1,h_1) ∘ (g_2,h_2) := $(_tex(:bigl))( g_1 ⋆ g_2, σ_{g_2^{-1}}(h_1) ⋄ h_2 $(_tex(:bigr))).
 ```
 
 The [`RightSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on ``H ⋊ G`` is given by
 
 ```math
-    (h_1,g_1) ∘ (h_2,g_2) := $(_tex(:bigl))( σ_{g_2}(h_1) ⋄ h_2, g_1 ⋆ g_2 $(_tex(:bigr))).
+    (h_1,g_1) ∘ (h_2,g_2) := $(_tex(:bigl))( σ_{g_2^{-1}}(h_1) ⋄ h_2, g_1 ⋆ g_2 $(_tex(:bigr))).
 ```
 
 See also [`AbstractLeftGroupActionType`](@ref) and [`ActionActsOnLeft`](@ref).
@@ -283,13 +283,13 @@ $(_doc_semidirect_sub_groups) Let ``τ`` denote a right group action. It here ac
 The [`LeftSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on ``G ⋉ H`` is given by
 
 ```math
-    (g_1,h_1) ∘ (g_2,h_2) := $(_tex(:bigl))( g_1 ⋆ g_2, τ_{g_2^{-1}}(h_1) ⋄ h_2 $(_tex(:bigr))).
+    (g_1,h_1) ∘ (g_2,h_2) := $(_tex(:bigl))( g_1 ⋆ g_2, τ_{g_2}(h_1) ⋄ h_2 $(_tex(:bigr))).
 ```
 
 The [`RightSemidirectProductGroupOperation`](@ref) ``$(_math(:∘))`` on ``H ⋊ G`` is given by
 
 ```math
-    (h_1,g_1) ∘ (h_2,g_2) := $(_tex(:bigl))( τ_{g_2^{-1}}(h_1) ⋄ h_2, g_1 ⋆ g_2 $(_tex(:bigr))).
+    (h_1,g_1) ∘ (h_2,g_2) := $(_tex(:bigl))( τ_{g_2}(h_1) ⋄ h_2, g_1 ⋆ g_2 $(_tex(:bigr))).
 ```
 
 See also [`AbstractRightGroupActionType`](@ref) and [`ActionActsOnLeft`](@ref).
