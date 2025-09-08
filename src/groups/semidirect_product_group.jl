@@ -443,10 +443,6 @@ function get_vector_lie!(
     return X
 end
 
-# 2. Left semidirect, left action, act on right
-# 3. Left semidirect, right action, act on left
-# 6. Right semidirect, left action, act on right
-# 7. Right semidirect, right action, act on left
 """
     inv(L::LieGroup{𝔽,<:SemidirectProductGroupOperation{⋆,⋄,A,AO}}, g)
 
@@ -502,6 +498,8 @@ inv(
     SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, ::Any,
 ) where {𝔽, O1, O2, A <: AbstractGroupActionType, AO <: AbstractActionActsOnType}
 
+# 2. Left semidirect, left action, act on right
+# 6. Right semidirect, left action, act on right
 function _inv!(
         SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, k, g
     ) where {𝔽, O1, O2, A <: AbstractLeftGroupActionType, AO <: ActionActsOnRight}
@@ -520,6 +518,8 @@ function _inv!(
     return k
 end
 
+# 3. Left semidirect, right action, act on left
+# 7. Right semidirect, right action, act on left
 function _inv!(
         SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, k, g
     ) where {𝔽, O1, O2, A <: AbstractRightGroupActionType, AO <: ActionActsOnLeft}
@@ -539,10 +539,7 @@ function _inv!(
 end
 
 # 1. Left semidirect, left action, act on left
-# 4. Left semidirect, right action, act on right
 # 5. Right semidirect, left action, act on left
-# 8. Right semidirect, right action, act on right
-
 function _inv!(
         SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, k, g
     ) where {𝔽, O1, O2, A <: AbstractLeftGroupActionType, AO <: ActionActsOnLeft}
@@ -561,6 +558,8 @@ function _inv!(
     return k
 end
 
+# 4. Left semidirect, right action, act on right
+# 8. Right semidirect, right action, act on right
 function _inv!(
         SDPG::LieGroup{𝔽, <:SemidirectProductGroupOperation{O1, O2, A, AO}, <:ProductManifold}, k, g
     ) where {𝔽, O1, O2, A <: AbstractRightGroupActionType, AO <: ActionActsOnRight}
