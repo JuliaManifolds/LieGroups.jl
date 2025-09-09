@@ -116,7 +116,7 @@ function ManifoldsBase.exp!(
         g::ArrayPartition,
         X::ArrayPartition,
     )
-    # This is up to the dispatch types a nearly copy of the matrix case, since
+    # This is up to the dispatch types a nearly copy of the matrix case,
     # but we can skip to initialise the constant areas
     LieGroups._exp_SE2!(G, g, X)
     return g
@@ -145,7 +145,7 @@ function LieGroups.identity_element!(G::LieGroups.SpecialEuclideanGroup, g::Arra
     return g
 end
 
-function LieGroups.inv!(G::SpecialEuclideanGroup, h::ArrayPartition, g::ArrayPartition)
+function LieGroups._inv!(G::SpecialEuclideanGroup, h::ArrayPartition, g::ArrayPartition)
     LieGroups._inv_SE!(G, h, g)
     return h
 end

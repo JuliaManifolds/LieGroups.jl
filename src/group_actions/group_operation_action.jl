@@ -68,18 +68,18 @@ for its inverse ``(σ_h)^{-1}`` see [`InverseLeftGroupOperationAction`](@ref).
 struct InverseRightGroupOperationAction <: AbstractLeftGroupActionType end
 
 """
-    GroupOperationAction(action::AbstractGroupActionType, group::LieGroup)
+    GroupOperationAction(group::LieGroup, action=LeftGroupOperationAction(), on=ActionActsOnLeft())
 
 Return a [`GroupAction`](@ref) for an [`AbstractGroupActionType`](@ref) `action`
 representing the group operation as an action of the group on itself.
 """
-function GroupOperationAction(action::AbstractGroupActionType, G::LieGroup)
-    return GroupAction(action, G, G)
+function GroupOperationAction(G::LieGroup, type::AbstractGroupActionType = LeftGroupOperationAction())
+    return GroupAction(G, G, type)
 end
 function Base.show(
         io::IO, GA::GroupAction{A, G, G}
     ) where {A <: AbstractGroupActionType, G <: LieGroup}
-    return print(io, "GroupOperationAction($(GA.type), $(GA.group))")
+    return print(io, "GroupOperationAction($(GA.group); type=$(GA.type))")
 end
 
 function apply!(A::GroupAction{LeftGroupOperationAction}, k, g, h)
@@ -152,7 +152,7 @@ Base.inv(::InverseRightGroupOperationAction) = RightGroupOperationAction()
     switch(::LeftGroupOperationAction)
 
 Return the [`RightGroupOperationAction`](@ref), that is,
-turns ``σ_g = g$(_math(:∘))h`` into ``τ_g(h) = h$(_math(:∘))g``
+turns ``σ_g(h) = g$(_math(:∘))h`` into ``τ_g(h) = h$(_math(:∘))g``
 """
 switch(::LeftGroupOperationAction) = RightGroupOperationAction()
 
@@ -160,7 +160,7 @@ switch(::LeftGroupOperationAction) = RightGroupOperationAction()
     switch(::RightGroupOperationAction)
 
 Return the [`LeftGroupOperationAction`](@ref), that is,
-turns ``σ_g = h$(_math(:∘))g`` into ``τ_g(h) = g$(_math(:∘))h``
+turns ``τ_g(h) = h$(_math(:∘))g`` into ``τ_g = g$(_math(:∘))h``
 """
 switch(::RightGroupOperationAction) = LeftGroupOperationAction()
 
@@ -176,6 +176,6 @@ switch(::InverseLeftGroupOperationAction) = InverseRightGroupOperationAction()
     switch(::InverseRightGroupOperationAction)
 
 Return the [`InverseLeftGroupOperationAction`](@ref), that is,
-turns ``σ_g = h$(_math(:∘))g^{-1}`` into ``τ_g(h) = g^{-1}$(_math(:∘))h``
+turns ``τ_g = h$(_math(:∘))g^{-1}`` into ``σ_g(h) = g^{-1}$(_math(:∘))h``
 """
 switch(::InverseRightGroupOperationAction) = InverseLeftGroupOperationAction()

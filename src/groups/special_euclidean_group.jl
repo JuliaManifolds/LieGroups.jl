@@ -1,6 +1,6 @@
 # for (g, t)
 const LeftSpecialEuclideanGroupOperation = LeftSemidirectProductGroupOperation{
-    <:MatrixMultiplicationGroupOperation, <:AdditionGroupOperation, LeftGroupOperationAction,
+    MatrixMultiplicationGroupOperation, AdditionGroupOperation, LeftMultiplicationGroupAction, ActionActsOnRight,
 }
 
 const LeftSpecialEuclideanGroup{T} = LieGroup{
@@ -11,7 +11,7 @@ const LeftSpecialEuclideanGroup{T} = LieGroup{
 
 # for (t, g)
 const RightSpecialEuclideanGroupOperation = RightSemidirectProductGroupOperation{
-    <:AdditionGroupOperation, <:MatrixMultiplicationGroupOperation, LeftGroupOperationAction,
+    AdditionGroupOperation, MatrixMultiplicationGroupOperation, LeftMultiplicationGroupAction, ActionActsOnRight,
 }
 const RightSpecialEuclideanGroup{T} = LieGroup{
     ℝ,
@@ -46,10 +46,13 @@ Both these cases can be represented in a single matrix in [affine form](https://
 g = $(_tex(:pmatrix, "r & t", "$(_tex(:vec, "0"))_n^{$(_tex(:transp))} & 1")),
 $(_tex(:qquad)) r ∈ $(_math(:SO))(n), t ∈ $(_math(:T))(n),
 ```
+
 where ``$(_tex(:vec, "0"))_n ∈ ℝ^n`` denotes the vector containing zeros.
 
 We refer also in general to elements on ``$(_math(:SE))(n)`` as ``g``
 and their rotation and translation components as ``r`` and ``t``, respectively.
+
+Note further that in the notation above and in matrix form the default is the [`ActionActsOnRight`](@ref) action.
 
 # Constructor
     SpecialEuclideanGroup(n::Int; variant=:left, kwargs...)
@@ -66,22 +69,9 @@ you can use the `ArrayPartition` from [`RecursiveArrayTools.jl`](https://docs.sc
 or for ``$(_math(:T))(n) ⋊ $(_math(:SO))(n)`` using the `ArrayPartition`s ``(t,r)``;
 which corresponds to setting `variant=:right` in the first constructor.
 """
-const SpecialEuclideanGroup{T} = Union{
-    <:LeftSpecialEuclideanGroup{T}, <:RightSpecialEuclideanGroup{T},
-}
+const SpecialEuclideanGroup{T} = Union{<:LeftSpecialEuclideanGroup{T}, <:RightSpecialEuclideanGroup{T}}
 
-const SpecialEuclideanGroupOperation = Union{
-    <:LeftSemidirectProductGroupOperation{
-        <:MatrixMultiplicationGroupOperation,
-        <:AdditionGroupOperation,
-        LeftGroupOperationAction,
-    },
-    <:RightSemidirectProductGroupOperation{
-        <:AdditionGroupOperation,
-        <:MatrixMultiplicationGroupOperation,
-        LeftGroupOperationAction,
-    },
-}
+const SpecialEuclideanGroupOperation = Union{<:LeftSpecialEuclideanGroupOperation, <:RightSpecialEuclideanGroupOperation}
 
 """
     SpecialEuclideanMatrixPoint <: AbstractLieGroupPoint
@@ -309,20 +299,20 @@ end
 """
     default_left_action(G::SpecialOrthogonalGroup, ::TranslationGroup)
 
-Return the default left action for the special Euclidean group ``$(_math(:SO))(n) ⋊ $(_math(:T))(n)``,
-that is the [`GroupOperationAction`](@ref)`(`[`LeftGroupOperationAction`](@ref)`(G.op))`.
+Return the default [`AbstractGroupActionType`](@ref) for the special Euclidean group ``$(_math(:SO))(n) ⋉ $(_math(:T))(n)``,
+which is the [`LeftMultiplicationGroupAction`](@ref)
 """
 default_left_action(::SpecialOrthogonalGroup, ::TranslationGroup) =
-    LeftGroupOperationAction()
+    LeftMultiplicationGroupAction()
 
 """
     default_right_action(::TranslationGroup, G::SpecialOrthogonalGroup)
 
-Return the default right action for the special Euclidean group,
-that is the [`GroupOperationAction`](@ref)`(`[`LeftGroupOperationAction`](@ref)`(G.op))`.
+Return the default [`AbstractGroupActionType`](@ref) for the special Euclidean group ``$(_math(:T))(n) ⋊ $(_math(:SO))(n)``,
+which is the [`LeftMultiplicationGroupAction`](@ref)
 """
 function default_right_action(::TranslationGroup, ::SpecialOrthogonalGroup)
-    return LeftGroupOperationAction()
+    return LeftMultiplicationGroupAction()
 end
 
 _doc_exp_SE2_id = """
@@ -603,7 +593,7 @@ This computation can be done in-place of `h`.
 Base.inv(G::SpecialEuclideanGroup, g)
 
 @doc "$(_doc_inv_SEn)"
-function inv!(G::SpecialEuclideanGroup, h::AbstractMatrix, g::AbstractMatrix)
+function _inv!(G::SpecialEuclideanGroup, h::AbstractMatrix, g::AbstractMatrix)
     init_constants!(G, h)
     _inv_SE!(G, h, g)
     return h
@@ -615,14 +605,6 @@ function _inv_SE!(G::SpecialEuclideanGroup, h, g)
     th = submanifold_component(G, h, :Translation)
     copyto!(rh, transpose(rg))
     return copyto!(th, -rh * tg)
-end
-
-function inv!(
-        G::SpecialEuclideanGroup,
-        q::AbstractMatrix,
-        ::Identity{<:SpecialEuclideanGroupOperation},
-    )
-    return identity_element!(G, q)
 end
 
 function ManifoldsBase.isapprox(

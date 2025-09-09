@@ -268,7 +268,7 @@ function ManifoldsBase.inner(
     )
 end
 
-function inv!(
+function _inv!(
         PoG::LieGroup{𝔽, Op, M}, h, g
     ) where {𝔽, Op <: PowerGroupOperation, M <: ManifoldsBase.AbstractPowerManifold}
     PM = PoG.manifold
