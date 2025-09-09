@@ -216,7 +216,7 @@ This can be performed in-place of `q`.
 # un-comment the preceding line and remove this, once GroupManifolds no longer exists in Manifolds.jl
 @doc "$(_doc_apply)"
 function apply(A::GroupAction, g, p)
-    q = allocate_result(base_manifold(A), apply, p, g)
+    q = allocate_result(base_manifold(A), apply, p)
     apply!(A, q, g, p)
     return q
 end
