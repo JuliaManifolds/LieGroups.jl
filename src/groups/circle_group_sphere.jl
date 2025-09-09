@@ -24,36 +24,34 @@ _doc_diff_left_compose_mult_planar_circ = """
     diff_left_compose(G::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Sphere}, g, h, X)
     diff_left_compose!(G::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Sphere}, Y, g, h, X)
 
-Compute the differential of the left group multiplication ``λ_g(h) = g$(_math(:∘))h`` of the Circle Group,
-represented as two dimensional vectors in ``ℝ^2``.
+Compute the differential of the group operation ``gh`` with respect to the left argument ``g``.
 
-It simplifies for the [`AbelianMultiplicationGroupOperation`](@ref) to ``Dλ_g(h)[X] = g*X``,
-where the multiplication corresponds to the complex multiplication after canonical identification
-of the real plane with the complex plane.
+Here it simplifies for [`AbelianMultiplicationGroupOperation`](@ref) to ``$(_math(:d))ρ_h(g)[X] = X``.
 
 This can be computed in-place of `Y`.
 """
 
 @doc "$(_doc_diff_left_compose_mult_planar_circ)"
-diff_left_compose!(C::_PlanarCircleGroup, Y, g, h, X) = compose!(C, Y, g, X)
+diff_left_compose!(C::_PlanarCircleGroup, Y, g, h, X) = copyto!(LieAlgebra(C), Y, X)
 
 @doc "$(_doc_diff_left_compose_mult_planar_circ)"
-diff_left_compose(_PlanarCircleGroup, g, h, X)
+diff_left_compose(::_PlanarCircleGroup, g, h, X)
 
 _doc_diff_right_compose_mult_planar_circ = """
     diff_right_compose(G::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Sphere}, g, h, X)
     diff_right_compose!(G::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Sphere}, Y, g, h, X)
 
-Compute the differential of the right group multiplication ``λ_g(h) = g$(_math(:∘))h`` of the Circle Group,
-represented as two dimensional vectors in ``ℝ^2``.
+Compute the differential of the group operation ``g$(_math(:∘))h``, on an [`AbstractLieGroup`](@ref) `G`
+with respect to its second (right) argument `h`.
 
-It simplifies for the [`AbelianMultiplicationGroupOperation`](@ref) to ``Dλ_g(h)[X] = X*g``,
-where the multiplication corresponds to the complex multiplication after canonical identification
-of the real plane with the complex plane.
+Another interpretation is to consider a function where we do a fixed multiplication from the left with `g`.
+i..e. the left group multiplication function ``λ_g(h) = g$(_math(:∘))h``.
+
+It simplifies for the [`AbelianMultiplicationGroupOperation`](@ref) to ``$(_math(:d))λ_g(h)[X] = X``,
 """
 
 @doc "$(_doc_diff_right_compose_mult_planar_circ)"
-diff_right_compose!(C::_PlanarCircleGroup, Y, g, h, X) = compose!(C, Y, X, g)
+diff_right_compose!(C::_PlanarCircleGroup, Y, g, h, X) = copyto!(LieAlgebra(C), Y, X)
 
 _doc_exp_planar_circ = """
     exp(::LieGroup{ℝ, AbelianMultiplicationGroupOperation, Sphere}, X)
@@ -103,16 +101,10 @@ function identity_element!(::_PlanarCircleGroup, p::V) where {T, V <: AbstractVe
     return p
 end
 
-function inv!(::_PlanarCircleGroup, q, p)
+function _inv!(::_PlanarCircleGroup, q, p)
     q[1] = p[1]
     q[2] = -p[2]
     return q
-end
-
-function inv!(
-        G::PG, q, ::Identity{AbelianMultiplicationGroupOperation}
-    ) where {PG <: _PlanarCircleGroup}
-    return identity_element!(G, q)
 end
 
 function inv_left_compose!(C::_PlanarCircleGroup, k, g, h)

@@ -89,7 +89,7 @@ _doc_diff_conjugate_mul = """
     diff_conjugate!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, g, h, X)
 
 Compute the differential of the conjugate ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1} = ghg^{-1}``,
-which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``D(c_g(h))[X] = gXg^{-1}``.
+which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref)to ``$(_math(:d))(c_g(h))[X] = gXg^{-1}``.
 """
 
 @doc "$(_doc_diff_conjugate_mul)"
@@ -107,23 +107,26 @@ function diff_conjugate!(
 end
 
 _doc_diff_inv_mult = """
-    diff_inv(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g, X)
-    diff_inv!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, g, X)
+    diff_inv(G::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, g, X)
+    diff_inv!(G::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, Y, g, X)
 
-Compute the value of differential ``Dι_{$(_math(:G))}(g)[X]`` of matrix inversion ``ι_{$(_math(:G))}(g) := g^{-1}`` at ``X ∈ 𝔤``
+Compute the value of differential ``$(_math(:d))ι_{$(_math(:G))}(g)[X]`` of matrix inversion ``ι_{$(_math(:G))}(g) := g^{-1}`` at ``X ∈ 𝔤``
 in the [`LieAlgebra`](@ref) ``𝔤`` of the [`LieGroup`](@ref) `G`.
 
-The formula is given by
+The (classical) differential ``$(_math(:D))ι_{$(_math(:G))}(g): T_g$(_math(:G)) → T_{g^{-1}}$(_math(:G))`` reads
 
 ```math
-Dι_{$(_math(:G))}(g)[X] = -g^{$(_tex(:transp))}Xg^{-1},
+  $(_math(:D))ι_{$(_math(:G))}(g)[W] = -g^{-1}Wg^{-1} = -Xg^{-1} = -g^{-1}(gXg^{-1}) = -g^{-1}$(_math(:Ad))(g)[X] = V ∈ T_{g^{-1}}$(_math(:G)),
 ```
 
-which stems from using the differential of the inverse from [Giles:2008](@cite) given by
-``D(g^{-1})[X] = -g^{-1}Xg^{-1}`` composed with the push forward of the left composition
-``Dλ_$(_math(:e))(g)[X] = gX`` mapping from the Liea algebra into the tangent space at ``g``,
-and its adjoint ``D^*λ_$(_math(:e))(g)[X] = g^{$(_tex(:transp))}X``.
-Then we get ``g^{$(_tex(:transp))}(g^{-1}(gX)g^{-1})`` which simplifies to ``-g^{$(_tex(:transp))}Xg^{-1}`` from above.
+see e.g. [Giles:2008](@cite). To bring this back to the Lie algebra, we Write ``V = g^{-1}Y ∈ T_{g^{-1}}$(_math(:G))``
+for some ``Y ∈ 𝔤`` and obtain
+
+```math
+  $(_math(:d)) ι_{$(_math(:G))}(g)[X] = -$(_math(:Ad))(g)[X] ∈ 𝔤,
+```
+
+where we use ``$(_math(:d))`` to denote the differential in the Lie algebra.
 """
 
 @doc "$(_doc_diff_inv_mult)"
@@ -140,9 +143,8 @@ end
 
 @doc "$(_doc_diff_inv_mult)"
 function diff_inv!(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, Y, p, X) where {𝔽}
-    p_inv = inv(p)
-    Z = X * p_inv
-    mul!(Y, p', Z)
+    Z = X / p
+    mul!(Y, p, Z)
     Y .*= -1
     return Y
 end
@@ -151,8 +153,19 @@ _doc_diff_left_compose_mult = """
     diff_left_compose(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g, h, X)
     diff_left_compose!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, g, h, X)
 
-Compute the differential of the left group multiplication ``λ_g(h) = g$(_math(:∘))h``,
-which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``Dλ_g(h)[X] = gX``.
+Compute the differential of the group operation ``g$(_math(:∘))h``, on an [`AbstractLieGroup`](@ref) `G`
+with respect to its first (left) argument `g`.
+
+Another interpretation is to consider a function where we do a fixed multiplication from the right with `h`.
+i..e. the right group multiplication function ``ρ_h(g) = g$(_math(:∘))h``.
+
+The differential simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to
+
+```math
+$(_math(:d)) ρ_h(g)[X] = h^{-1}Xh = $(_math(:Ad))(h^{-1})[X] ∈ 𝔤,
+```
+
+where ``$(_math(:Ad))`` denotes the [`adjoint`](@ref).
 """
 
 @doc "$(_doc_diff_left_compose_mult)"
@@ -162,27 +175,30 @@ diff_left_compose(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, g, h
 function diff_left_compose!(
         G::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, Y, g, h, X
     ) where {𝔽}
-    return copyto!(LieAlgebra(G), Y, g * X)
+    return copyto!(LieAlgebra(G), Y, (h \ X) * h)
 end
 
 _doc_diff_right_compose_mult = """
-    diff_right_compose(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, h, g, X)
-    diff_right_compose!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, h, g, X)
+    diff_right_compose(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g, h, X)
+    diff_right_compose!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, g, h, X)
 
-Compute the differential of the right group multiplication ``ρ_g(h) = h$(_math(:∘))g``,
-which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``Dρ_g(h)[X] = Xg``.
+Compute the differential of the group operation ``g$(_math(:∘))h``, on an [`AbstractLieGroup`](@ref) `G`
+with respect to its second (right) argument `h`.
+
+Another interpretation is to consider a function where we do a fixed multiplication from the left with `g`.
+i..e. the left group multiplication function ``λ_g(h) = g$(_math(:∘))h``.
+
+It reads for an [`AbstractMultiplicationGroupOperation`](@ref) ``$(_math(:d))λ_g(h)[X] = X``.
 """
 
 @doc "$(_doc_diff_right_compose_mult)"
-diff_right_compose(
-    ::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, ::Any, ::Any, ::Any
-) where {𝔽}
+diff_right_compose(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, g, h, X) where {𝔽}
 
 @doc "$(_doc_diff_right_compose_mult)"
 function diff_right_compose!(
-        G::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, Y, g, ::Any, X
+        G::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, Y, g, h, X
     ) where {𝔽}
-    return copyto!(LieAlgebra(G), Y, X * g)
+    return copyto!(LieAlgebra(G), Y, X)
 end
 
 _doc_exp_mult = """
@@ -250,14 +266,11 @@ simplifies to the multiplicative inverse ``g^{-1}``. This can be done in-place o
 Base.inv(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, ::Any) where {𝔽}
 
 @doc "$(_doc_inv_mult)"
-function inv!(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, h, g) where {𝔽}
+inv!(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, h, g) where {𝔽}
+
+function _inv!(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, h, g) where {𝔽}
     copyto!(h, inv(g))
     return h
-end
-function inv!(
-        G::LieGroup{𝔽, O}, q, ::Identity{O}
-    ) where {𝔽, O <: AbstractMultiplicationGroupOperation}
-    return identity_element!(G, q)
 end
 
 # Compute g^{-1}h more efficient than inverting g
@@ -359,3 +372,10 @@ function LinearAlgebra.mul!(
 end
 
 Base.one(e::Identity{<:AbstractMultiplicationGroupOperation}) = e
+
+function push_forward_tangent!(G::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, Y, g, X; kwargs...) where {𝔽}
+    return copyto!(Y, g * X)
+end
+function pull_back_tangent!(G::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, Y, g, X; kwargs...) where {𝔽}
+    return copyto!(Y, g \ X)
+end

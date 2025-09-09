@@ -7,11 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.4] unreleased
 
+### Added
+
+* Introduce a `AbstractActionActsOnType` to distinguish, what previously was called “side”,
+  i.e. whether an action acts on the left (`ActionActsOnLeft`) or right (`ActionActsOnRight`)
+* Introduce `_inv` and `_inv!` functions for the inverse operation to work the same way as `_compose` and `_compose!`, respectively.
+* introduce a `LeftMultiplicationGroupAction` to represent left multiplication actions on Lie groups. While this is a bit more of a technical
+  name, it replaces the old `ComplexPlanarRotation`, `QuaternionRotation`, and `RotationAction`, since in the `GroupAction` this type is coupled with a group and a manifold anyway.
+
 ### Fixed
 
 * Fixed an issue where internally the product manifold in a `SemidirectProductLieGroup` was accidentally splashed
 * make `×` and `ProductLieGroup` behave the same way as `×` and `ProductManifold` do
 * Fixed an issue, where `exp!(G, h, g, X)` would return a wrong result if the input `g`and the output `h`are aliased (#63).
+* Fixed issues with the documentation of `diff_left_compose` and `diff_right_compose` that were inconsistent
+* fixed `push_forward_tangent` and `pull_back_tangent` which on general Lie groups provided a wrong default.
 
 ## [0.1.3] 2025-08-04
 
@@ -152,7 +162,7 @@ Compared to `Manifolds.jl`
 ### Added
 
 * Finishes most of the work on the interface for the `LieGroup` type and the new `LieAlgebra` type.
-* Finishes a generic implementation of a `SemiDirectProductGroupOperation`
+* Finishes a generic implementation of a `SemidirectProductGroupOperation`
 * All details will be detailed in the next release
 
 ## Old Changelog pre 0.0.3

@@ -19,10 +19,10 @@ using LieGroupsTestSuite
     M = LieGroupsTestSuite.DummyManifold()
     op = LieGroupsTestSuite.DummyOperation()
     G = LieGroup(M, op)
-    A1 = GroupOperationAction(a1, G)
-    A2 = GroupOperationAction(a2, G)
-    A3 = GroupOperationAction(a3, G)
-    A4 = GroupOperationAction(a4, G)
+    A1 = GroupOperationAction(G, a1)
+    A2 = GroupOperationAction(G, a2)
+    A3 = GroupOperationAction(G, a3)
+    A4 = GroupOperationAction(G, a4)
     @test inv(A1) == A3
     @test inv(A2) == A4
     @test inv(A3) == A1

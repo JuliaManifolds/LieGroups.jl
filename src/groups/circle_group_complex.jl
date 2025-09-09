@@ -19,36 +19,39 @@ _doc_diff_left_compose_complex_circ = """
     diff_left_compose(::LieGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, g, h, X)
     diff_left_compose(::LieGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, Y, g, h, X)
 
-Compute the differential of the left group multiplication ``λ_g(h) = g$(_math(:∘))h``.
-On the complex circle the differential simplifies to the ordinary complex multiplication
+Compute the differential of the group operation ``gh`` with respeect to the lefy argument `g`.
+
+The formula reads
+
 ```math
-    λ_g(h) = g ⋅ X.
+   $(_math(:d)) ρ_h(g) = X.
 ```
 
-This can be computed in-place of `Y` if `Y` is `mutable`.
+since the group operation is abelian. This can be computed in-place of `Y` if `Y` is mutable.
 """
 
 @doc "$(_doc_diff_left_compose_complex_circ)"
 function diff_left_compose(::_ComplexCircleGroup, g::Number, h::Any, X::Number)
-    return g * X
+    return X
 end
 
 _doc_diff_right_compose_complex_circ = """
     diff_right_compose(::LieGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, g, h, X)
     diff_right_compose(::LieGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, Y, g, h, X)
 
-Compute the differential of the right group multiplication ``ρ_g(h) = h$(_math(:∘))g``.
-On the complex circle the differential simplifies to the ordinary complex multiplication
-```math
-    ρ_g(h) = X ⋅ g.
-```
+Compute the differential of the group operation ``g$(_math(:∘))h``, on an [`AbstractLieGroup`](@ref) `G`
+with respect to its second (right) argument `h`.
 
-This can be computed in-place of `Y` if `Y` is `mutable` due to the wrapper defined in the [`AbelianMultiplicationGroupOperation`](@ref).
+Another interpretation is to consider a function where we do a fixed multiplication from the left with `g`.
+i..e. the left group multiplication function ``λ_g(h) = g$(_math(:∘))h``.
+
+It simplifies for the [`AbelianMultiplicationGroupOperation`](@ref) to ``$(_math(:d))λ_g(h)[X] = X``.
+This can be computed in-place of `Y`.
 """
 
 @doc "$(_doc_diff_right_compose_complex_circ)"
 function diff_right_compose(::_ComplexCircleGroup, g::Number, h::Any, X::Number)
-    return X * g
+    return X
 end
 
 _doc_exp_complex_circ = """
