@@ -31,11 +31,11 @@ end
 
 const LeftSpecialGalileanGroupOperation = LeftSemidirectProductGroupOperation{
     LeftSemidirectProductGroupOperation{
-        MatrixMultiplicationGroupOperation, AdditionGroupOperation, LeftMultiplicationGroupAction, ActionActsOnRight
+        MatrixMultiplicationGroupOperation, AdditionGroupOperation, LeftMultiplicationGroupAction, ActionActsOnRight,
     },
     ProductGroupOperation{Tuple{AdditionGroupOperation, AdditionGroupOperation}},
     RotationBoostAction,
-    ActionActsOnRight
+    ActionActsOnRight,
 }
 
 const SpecialGalileanGroup{T} = LieGroup{
