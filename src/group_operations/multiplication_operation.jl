@@ -143,9 +143,8 @@ end
 
 @doc "$(_doc_diff_inv_mult)"
 function diff_inv!(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, Y, p, X) where {𝔽}
-    p_inv = inv(p)
-    Z = X * p_inv
-    mul!(Y, p', Z)
+    Z = X / p
+    mul!(Y, p, Z)
     Y .*= -1
     return Y
 end
