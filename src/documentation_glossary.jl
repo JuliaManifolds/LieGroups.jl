@@ -59,6 +59,7 @@ define!(
     (lines...) -> raw"\begin{aligned} " * join(lines, raw"\\ ") * raw"\end{aligned}",
 )
 define!(:LaTeX, :big, raw"\big")
+define!(:LaTeX, :big, raw"\big")
 define!(:LaTeX, :bigl, raw"\bigl")
 define!(:LaTeX, :bigr, raw"\bigr")
 define!(:LaTeX, :Big, raw"\Big")
@@ -146,6 +147,12 @@ _math(args...; kwargs...) = glossary(:Math, args...; kwargs...)
 define!(:Math, :Adjoint, :symbol, raw"\mathrm{Ad}")
 define!(:Math, :Adjoint, :description, "the adjoint operation")
 define!(:Math, :Ad, _math(:Adjoint, :symbol))
+define!(:Math, :d, :symbol, raw"\mathrm{d}")
+define!(:Math, :d, :description, "the Lie algebra derivative operator")
+define!(:Math, :d, _math(:d, :symbol))
+define!(:Math, :D, :symbol, raw"\mathrm{D}")
+define!(:Math, :D, :description, "the derivative operator")
+define!(:Math, :D, _math(:D, :symbol))
 define!(:Math, :GroupAction, :symbol, "⋅")
 define!(:Math, :GroupAction, :description, "a Lie Group Action")
 define!(:Math, :⋅, _math(:GroupAction, :symbol))
@@ -220,9 +227,9 @@ define!(
     """
     ```math
     τ_g(τ_h(p))
-    = σ^{$(_tex(:rm, "L"))}_{g^{-1}}(σ^{$(_tex(:rm, "L"))}_{h^{-1}}(p))
-    = σ^{$(_tex(:rm, "L"))}_{g^{-1}h^{-1}}(p)
-    = σ^{$(_tex(:rm, "L"))}_{(hg)^{-1}}(p)
+    = σ_{g^{-1}}(σ_{h^{-1}}(p))
+    = σ_{g^{-1}h^{-1}}(p)
+    = σ_{(hg)^{-1}}(p)
     τ_{hg}(p).
     ```
     """,
@@ -233,11 +240,11 @@ define!(
     :RightInverseActionIsLeft,
     """
     ```math
-    τ_g(τ_h(p))
-    = σ^{$(_tex(:rm, "R"))}_{g^{-1}}(σ^{$(_tex(:rm, "R"))}_{h^{-1}}(p))
-    = σ^{$(_tex(:rm, "R"))}_{h^{-1}g^{-1}}(p)
-    = σ^{$(_tex(:rm, "R"))}_{(gh)^{-1}}(p)
-    τ_{gh}(p).
+    σ_g(σ_h(p))
+    = τ_{g^{-1}}(τ_{h^{-1}}(p))
+    = τ_{h^{-1}g^{-1}}(p)
+    = τ_{(gh)^{-1}}(p)
+    σ_{gh}(p).
     ```
     """,
 )

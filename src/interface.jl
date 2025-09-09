@@ -171,12 +171,12 @@ evaluated at the [`Identity`](@ref) ``h=$(_math(:e))``.
 The operation can be performed in-place of `Y`.
 
 ```math
-  $(_math(:Ad))(g)[X] = D c_g($(_math(:e))) [X], $(_tex(:qquad)) X ∈ $(_math(:𝔤)).
+  $(_math(:Ad))(g)[X] = $(_math(:d)) c_g($(_math(:e))) [X], $(_tex(:qquad)) X ∈ $(_math(:𝔤)).
 ```
 
 see [HilgertNeeb:2012; Section 9.2.3](@cite).
 
-On matrix Lie groups the adjoint reads ``$(_math(:Ad))(g)[X] = g$(_math(:∘))X$(_math(:∘))g^{-1}``.
+On matrix Lie groups the adjoint reads ``$(_math(:Ad))(g)[X] = gXg^{-1}``.
 """
 
 @doc "$(_doc_adjoint)"
@@ -331,7 +331,7 @@ Compute the differential of the [`conjugate`](@ref) ``c_g(h) = g$(_math(:∘))h$
 on the [`AbstractLieGroup`](@ref) `G`. The operation can be performed in-place of `Y`.
 
 ```math
-  D(c_g(h))[X], $(_tex(:qquad)) X ∈ $(_math(:𝔤)).
+  $(_math(:d))(c_g(h))[X], $(_tex(:qquad)) X ∈ $(_math(:𝔤)).
 ```
 """
 @doc "$(_doc_diff_conjugate)"
@@ -349,8 +349,25 @@ _doc_diff_inv = """
     diff_inv!(G::AbstractLieGroup, Y, g, X)
 
 Compute the differential of the function ``ι_{$(_math(:G))}(g) = g^{-1}``, where
-``Dι_{$(_math(:G))}(g): $(_math(:𝔤)) → $(_math(:𝔤))``.
+``$(_math(:d))ι_{$(_math(:G))}(g): $(_math(:𝔤)) → $(_math(:𝔤))``.
 This can be done in-place of `Y`.
+Note that we represent tangent vectors in the Lie algebra ``𝔤``.
+
+For example on matrix manifolds this means, we use ``X ∈ 𝔤`` and hence ``W = gX ∈ T_g$(_math(:G))``.
+The (classical) differential ``$(_math(:D))ι_{$(_math(:G))}(g): T_g$(_math(:G)) → T_{g^{-1}}$(_math(:G))`` reads
+
+```math
+  $(_math(:D))ι_{$(_math(:G))}(g)[W] = -g^{-1}Wg^{-1} = -Xg^{-1} = -g^{-1}(gXg^{-1}) = -g^{-1}$(_math(:Ad))(g)[X] = V ∈ T_{g^{-1}}$(_math(:G)),
+```
+
+see e.g. [Giles:2008](@cite). To bring this back to the Lie algebra, we Write ``V = g^{-1}Y ∈ T_{g^{-1}}$(_math(:G))``
+for some ``Y ∈ 𝔤`` and obtain
+
+```math
+  $(_math(:d)) ι_{$(_math(:G))}(g)[X] = -$(_math(:Ad))(g)[X] ∈ 𝔤,
+```
+
+where we use ``$(_math(:d))`` to denote the differential in the Lie algebra.
 """
 
 @doc "$_doc_diff_inv"
@@ -367,9 +384,33 @@ _doc_diff_left_compose = """
     diff_left_compose(G::AbstractLieGroup, g, h, X)
     diff_left_compose!(G::AbstractLieGroup, Y, g, h, X)
 
-Compute the differential of the left group multiplication ``λ_g(h) = g$(_math(:∘))h``,
-on the [`AbstractLieGroup`](@ref) `G`, that is Compute ``Dλ_g(h)[X]``, ``X ∈ 𝔤``.
-This can be done in-place of `Y`.
+Compute the differential of the group operation ``g$(_math(:∘))h``, on an [`AbstractLieGroup`](@ref) `G`
+with respect to its first (left) argument `g`.
+
+Another interpretation is to consider a function where we do a fixed multiplication from the right with `h`.
+i..e. the right group multiplication function ``ρ_h(g) = g$(_math(:∘))h`` (where the _right_ refers to the fixed argument ``h``).
+
+In this notation, this function computes the differential ``$(_math(:d))ρ_h: 𝔤 → 𝔤``.
+
+For example on matrix Lie groups this means that for ``X ∈ 𝔤`` we can start with ``W = gX ∈ T_g$(_math(:G))``
+and compute the (classical) differential ``$(_math(:D))ρ_h(g): T_g$(_math(:G)) → T_{g$(_math(:∘))h}$(_math(:G))``.
+
+It reads
+
+```math
+  $(_math(:D))ρ_h(g)[W] = Wh = gXh = V ∈ T_{g$(_math(:∘))h}$(_math(:G)).
+```
+
+To obtain the Lie group differential ``$(_math(:d))ρ_h(g)`` we have to “pull back” ``V``
+from the tangent space ``T_{g$(_math(:∘))h}$(_math(:G))`` to the Lie algebra ``𝔤``.
+We use the same identification, that we can write ``V = ghY ∈ T_{g$(_math(:∘))h}$(_math(:G))``.
+This means in practice that with ``V = gXh = gh(h^{-1}Xh)`` differential reads
+
+```math
+$(_math(:d)) ρ_h(g)[X] = h^{-1}Xh = $(_math(:Ad))(h^{-1})[X] ∈ 𝔤,
+```
+
+where ``$(_math(:Ad))`` denotes the [`adjoint`](@ref).
 """
 @doc "$(_doc_diff_left_compose)"
 function diff_left_compose(G::AbstractLieGroup, g, h, X)
@@ -382,17 +423,37 @@ function diff_left_compose! end
 diff_left_compose!(::AbstractLieGroup, Y, g, h, X)
 
 _doc_diff_right_compose = """
-    diff_right_compose(G::AbstractLieGroup, h, g, X)
-    diff_right_compose!(G::AbstractLieGroup, Y, h, g, X)
+    diff_right_compose(G::AbstractLieGroup, g, h, X)
+    diff_right_compose!(G::AbstractLieGroup, Y, g, h, X)
 
-Compute the differential of the right group multiplication ``ρ_g(h) = h$(_math(:∘))g``,
-on the [`AbstractLieGroup`](@ref) `G`, that is Compute ``Dρ_g(h)[X]``, ``X ∈ 𝔤``
-This can be done in-place of `Y`.
+Compute the differential of the group operation ``g$(_math(:∘))h``, on an [`AbstractLieGroup`](@ref) `G`
+with respect to its second (right) argument `h`.
+
+Another interpretation is to consider a function where we do a fixed multiplication from the left with `g`.
+i..e. the left group multiplication function ``λ_g(h) = g$(_math(:∘))h`` (where the _left_ refers to the fixed argument ``g``.).
+
+In this notation, this function ``$(_math(:d))λ_g: 𝔤 → 𝔤``.
+
+For example on matrix Lie groups this means that for ``X ∈ 𝔤`` we can start with ``W = hX ∈ T_h$(_math(:G))``
+and compute the (classical) differential ``$(_math(:D))λ_g(h): T_h$(_math(:G)) → T_{g$(_math(:∘))h}$(_math(:G))``.
+
+It reads
+
+```math
+  $(_math(:D))λ_g(h)[W] = gW = ghX ∈ T_{g$(_math(:∘))h}$(_math(:G)).
+```
+
+To obtain the Lie group differential ``$(_math(:d))λ_g(h)`` we have to multiply the result with ``(gh)^{-1}``
+from the left and move from ``W`` to ``X``. Then the differential just simplifies to the identity. It reads
+
+```math
+$(_math(:d)) λ_g(h)[X] = X ∈ 𝔤.
+```
 """
 @doc "$(_doc_diff_right_compose)"
-function diff_right_compose(G::AbstractLieGroup, h, g, X)
-    Y = ManifoldsBase.allocate_result(G, diff_right_compose, X, h, g)
-    return diff_right_compose!(G, Y, h, g, X)
+function diff_right_compose(G::AbstractLieGroup, g, h, X)
+    Y = ManifoldsBase.allocate_result(G, diff_right_compose, X, g, h)
+    return diff_right_compose!(G, Y, g, h, X)
 end
 
 function diff_right_compose! end
@@ -428,9 +489,14 @@ ManifoldsBase.exp(G::AbstractLieGroup, ::Any, ::Any)
 
 @doc "$_doc_exp"
 function ManifoldsBase.exp!(G::AbstractLieGroup, h, g, X)
-    exp!(G, h, X)
-    compose!(G, h, g, h)
-    return h
+    if Base.mightalias(g, h)
+        compose!(G, h, g, exp(G, X))
+        return h
+    else
+        exp!(G, h, X)
+        compose!(G, h, g, h)
+        return h
+    end
 end
 
 _doc_exponential = """
@@ -537,17 +603,24 @@ on the [`AbstractLieGroup`](@ref) ``$(_math(:G))``,
 that is, return the unique element ``h=g^{-1}`` such that ``h$(_math(:∘))g=$(_math(:e))``, where ``$(_math(:e))`` denotes the [`Identity`](@ref).
 
 This can be done in-place of `h`, without side effects, that is you can do `inv!(G, g, g)`.
+
+!!! info
+    This function also handles the case where `g` is the [`Identity`](@ref)`(G)`.
+    Since this would lead to ambiguities when implementing a new group operations,
+    this function calls `_inv` and `_inv!`, respectively, which is meant for the actual computation of
+    group operations on (non-[`Identity`](@ref)` but maybe its numerical representation) elements.
 """
 
 @doc "$_doc_inv"
-function Base.inv(G::AbstractLieGroup, g)
+Base.inv(G::AbstractLieGroup, g) = _inv(G, g)
+function _inv(G::AbstractLieGroup, g)
     h = allocate_result(G, inv, g)
-    return inv!(G, h, g)
+    return inv!(G, h, g)  # while we could go to _inv! as well, someone might just have done inv!
 end
 
 function inv! end
 @doc "$_doc_inv"
-inv!(G::AbstractLieGroup, h, g)
+inv!(G::AbstractLieGroup, h, g) = _inv!(G, h, g)
 
 function Base.inv(
         ::AbstractLieGroup{𝔽, O}, e::Identity{O}
@@ -560,6 +633,8 @@ function inv!(
     ) where {𝔽, O <: AbstractGroupOperation}
     return identity_element!(G, g)
 end
+
+function _inv! end
 
 _doc_inv_left_compose = """
     inv_left_compose(G::AbstractLieGroup, g, h)
@@ -757,13 +832,13 @@ _doc_jacobian_conjugate = """
 Compute the Jacobian of the [`conjugate`](@ref) ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1}``,
 with respect to an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`) of the [`LieAlgebra`](@ref).
 
-A default is implemented using [`diff_conjugate`](@ref) ``D(c_g(h))[X]``:
+A default is implemented using [`diff_conjugate`](@ref) ``$(_math(:d))(c_g(h))[X]``:
 the ``j``th column of of the Jacobian matrix ``J`` are given by the coefficients of
-the tangent vector `D(c_g(h))[X_j]`` with respect to the basis ``B``,
+the tangent vector ``$(_math(:d))(c_g(h))[X_j]`` with respect to the basis ``B``,
 where ``X_j`` is the ``j``th basis vector of ``B``.
 
 !!! note
-    For the case that `h` is the [`Identity`](@ref) and the relation of ``D(c_g(h))[X]``
+    For the case that `h` is the [`Identity`](@ref) and the relation of ``$(_math(:d))(c_g(h))[X]``
     to the [`adjoint`](@ref) ``$(_math(:Ad))(g)``, the Jacobian then sometimes called “adjoint matrix”,
     e.g. in [SolaDerayAtchuthan:2021](@cite), when choosing as a basis the
     [`DefaultLieAlgebraOrthogonalBasis`](@ref)`()` that is used for [`hat`](@ref) and [`vee`](@ref).
@@ -971,12 +1046,9 @@ function pull_back_tangent(G::AbstractLieGroup, g, X; e = identity_element(G, ty
     return pull_back_tangent!(G, Y, g, X)
 end
 
+function pull_back_tangent! end
 @doc "$(_doc_pull_back_t)"
-function pull_back_tangent!(G::AbstractLieGroup, Y, g, X; e = identity_element(G, typeof(g)))
-    identity_element!(G, e)
-    diff_left_compose!(G, Y, e, inv(G, g), X)
-    return Y
-end
+pull_back_tangent!(G::AbstractLieGroup, Y, g, X; e = identity_element(G, typeof(g)))
 
 _doc_push_fwd_t = """
     push_forward_tangent(G::AnstractLieGroup, g, X)
@@ -1003,14 +1075,9 @@ function push_forward_tangent(G::AbstractLieGroup, g, X; e = identity_element(G,
     return push_forward_tangent!(G, Y, g, X; e = e)
 end
 
+function push_forward_tangent! end
 @doc "$(_doc_push_fwd_t)"
-function push_forward_tangent!(
-        G::AbstractLieGroup, Y, g, X; e = identity_element(G, typeof(g))
-    )
-    identity_element!(G, e)
-    diff_left_compose!(G, Y, e, g, X)
-    return Y
-end
+push_forward_tangent!(G::AbstractLieGroup, Y, g, X; e = identity_element(G, typeof(g)))
 
 @doc "$(_doc_rand)"
 Random.rand(::AbstractLieGroup; kwargs...)
@@ -1245,6 +1312,24 @@ macro default_lie_group_fallbacks(TG, Op, TP, TV, gfield::Symbol, Xfield::Symbol
             LieGroups._compose!(G, k.$gfield, g.$gfield, h.$gfield)
             return k
         end
+        function LieGroups.conjugate!(G::$TG, k::$TP, g::$TP, h::$TP)
+            LieGroups.conjugate!(G, k.$gfield, g.$gfield, h.$gfield)
+            return k
+        end
+
+        function LieGroups.diff_inv!(G::$TG, Y::$TV, g::$TP, X::$TV)
+            LieGroups.diff_inv!(G, Y.$Xfield, g.$gfield, X.$Xfield)
+            return Y
+        end
+        function LieGroups.diff_left_compose!(G::$TG, Y::$TV, g::$TP, h::$TP, X::$TV)
+            LieGroups.diff_left_compose!(G, Y.$Xfield, g.$gfield, h.$gfield, X.$Xfield)
+            return Y
+        end
+        function LieGroups.diff_right_compose!(G::$TG, Y::$TV, g::$TP, h::$TP, X::$TV)
+            LieGroups.diff_right_compose!(G, Y.$Xfield, g.$gfield, h.$gfield, X.$Xfield)
+            return Y
+        end
+
         function LieGroups.exp!(G::$TG, g::$TP, X::$TV)
             LieGroups.exp!(G, g.$gfield, X.$Xfield)
             return g
@@ -1254,12 +1339,8 @@ macro default_lie_group_fallbacks(TG, Op, TP, TV, gfield::Symbol, Xfield::Symbol
             identity_element!(G, g.$gfield)
             return g
         end
-        function LieGroups.inv!(G::$TG, h::$TP, g::$TP)
-            LieGroups.inv!(G, h.$gfield, g.$gfield)
-            return h
-        end
-        function LieGroups.inv!(G::$TG, h::$TP, e::Identity{<:$Op})
-            LieGroups.inv!(G, h.$gfield, e)
+        function LieGroups._inv!(G::$TG, h::$TP, g::$TP)
+            LieGroups._inv!(G, h.$gfield, g.$gfield)
             return h
         end
 

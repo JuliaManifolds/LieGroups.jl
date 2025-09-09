@@ -9,11 +9,6 @@ An abstract supertype for group action types, which are used within a [`GroupAct
 """
 abstract type AbstractGroupActionType end
 
-_note_action_argument_order = """
-!!! note
-    In function definitions we follow the idea of the family of actions and use the order `(M, g, p)` in function signatures.
-"""
-
 @doc """
     AbstractLeftGroupActionType <: AbstractGroupActionType
 
@@ -37,58 +32,116 @@ we obtain from the second property as
 
 and see that ``g`` appears on the left.
 
-To emphasize the side the group operation is acting from, we sometimes write ``σ^{$(_tex(:rm, "L"))}``.
-If the action is clear from context we write ``σ(g, p) = g $(_math(:act)) p``.
+When writing about general group actions, the symbol ``α`` is often used. The order of arguments then follows the same as the one of the left action.
+Most often we use the index notation ``α_g(p)``.
+The definition of functions also follows this notation, i.e. we use e.g. `apply(A, g, p)`
 
-One notable example of a left action is the inverse of an action of [`AbstractRightGroupActionType`](@ref) ``σ^{$(_tex(:rm, "R"))}``,
-which is given by ``τ_g = (σ^{$(_tex(:rm, "R"))}_g)^{-1} = σ^{$(_tex(:rm, "R"))}_{g^{-1}}``.
+One notable example of a left action is the inverse of an action of [`AbstractRightGroupActionType`](@ref) ``τ``,
+which is given by ``σ_g = (τ_g)^{-1} = τ_{g^{-1}}``.
 We obtain
 
 $(_note(:RightInverseActionIsLeft))
-
-$(_note_action_argument_order)
 """
 abstract type AbstractLeftGroupActionType <: AbstractGroupActionType end
 
 @doc """
     AbstractRightGroupActionType <: AbstractGroupActionType
 
-A type representing a (smooth) group action ``σ: $(_math(:M)) × $(_math(:G)) → $(_math(:M))``
+A type representing a (smooth) group action ``τ: $(_math(:M)) × $(_math(:G)) → $(_math(:M))``
 of a [`AbstractLieGroup`](@ref) ``$(_math(:G))`` acting (from the right) on an $(_link(:AbstractManifold)) ``$(_math(:M))``.
 with the following properties
 
-1. ``σ(p, $(_math(:e))) = p`` holds for all ``p ∈ $(_math(:M))``
-2. ``σ(σ(p, g), h) = σ(p, g$(_math(:∘))h)`` holds for all ``g,h ∈ $(_math(:G))``, ``p ∈ $(_math(:M))``
+1. ``τ(p, $(_math(:e))) = p`` holds for all ``p ∈ $(_math(:M))``
+2. ``τ(τ(p, g), h) = τ(τ(p, g), h)`` holds for all ``g,h ∈ $(_math(:G))``, ``p ∈ $(_math(:M))``
 
 where ``$(_math(:∘))`` denotes the group operation of the [`AbstractLieGroup`](@ref) ``$(_math(:G))``.
 See also [HilgertNeeb:2012; Remark 9.1.12](@cite).
 
-The type of action can be seen a bit better when writing the action as a family ``σ_g(p)``:
+The type of action can be seen a bit better when writing the action as a family ``τ_g(p)``:
 we obtain from the second property as
 
 ```math
-  σ_g(σ_h(p)) = σ_{hg}(p)
+  τ_g(τ_h(p)) = τ_{hg}(p)
 ```
 
 and see that ``g`` appears on the right.
 
-To emphasize the side the group operation is acting from, we sometimes write ``σ^{$(_tex(:rm, "R"))}``.
-If the action is clear from context we write ``σ(p, g) = p $(_math(:act)) g``.
+When writing about general group actions, the symbol ``α`` is often used.
+In that case the order of arguments follows either the one from the left action, but most often we use the index notation.
+The definition of functions also follows this notation, i.e. we use e.g. `apply(A, g, p)`
 
-One notable example of a right action is the inverse of an action of  [`AbstractLeftGroupActionType`](@ref) ``σ^{$(_tex(:rm, "L"))}``,
-which is given by ``τ_g = (σ^{$(_tex(:rm, "L"))}_g)^{-1} = σ^{$(_tex(:rm, "L"))}_{g^{-1}}``.
+One notable example of a right action is the inverse of an action of [`AbstractLeftGroupActionType`](@ref) ``σ``,
+which is given by ``τ_g = (σ_g)^{-1} = σ_{g^{-1}}``.
 We obtain
 
 $(_note(:LeftInverseActionIsRight))
-
-$(_note_action_argument_order)
 """
 abstract type AbstractRightGroupActionType <: AbstractGroupActionType end
 
 """
+    AbstractActionActsOnType
+
+An abstract type representing what an action acts on,
+Most notably these are the [`ActionActsOnLeft`](@ref) and [`ActionActsOnRight`](@ref),
+see their documentations for more details.
+
+For its practical use see the [`SemidirectProductGroupOperation`](@ref).
+"""
+abstract type AbstractActionActsOnType end
+
+"""
+    ActionActsOnLeft <: AbstractActionActsOnType
+
+An [`AbstractActionActsOnType`](@ref) representing that an action acts on the left.
+
+This is meant in the following way: Given a [`GroupAction`](@ref) ``α: $(_math(:G)) × $(_tex(:Cal, "H")) → $(_tex(:Cal, "H"))``
+where a Lie group ``$(_math(:G))`` acts on another Lie group ``$(_tex(:Cal, "H"))`` with an arbitrary action.
+
+Then, e.g. within the definition of the [`LeftSemidirectProductGroupOperation`](@ref) or [`RightSemidirectProductGroupOperation`](@ref),
+we have two choices where the group action ``α`` acts on, namely:
+Let ``g ∈ $(_math(:G))`` and ``h_1,h_2 ∈ $(_tex(:Cal, "H"))`` be given, then this type represents the variant
+
+```math
+α_g(h_1) ⋅ h_2,
+```
+where ``⋅`` denotes the group operation on ``$(_tex(:Cal, "H"))``.
+The `Left` in the name of this type refers to the fact that the action is applied to the left element ``h_1``.
+
+Note that this is independent of both the type of action (left or right) and whether the semidirect product is a left or a right semidirect one.
+
+For its practical use see the [`SemidirectProductGroupOperation`](@ref).
+"""
+struct ActionActsOnLeft <: AbstractActionActsOnType end
+
+"""
+    ActionActsOnRight <: AbstractActionActsOnType
+
+An [`AbstractActionActsOnType`](@ref) representing that an action acts on the right.
+
+This is meant in the following way: Given a [`GroupAction`](@ref) ``α: $(_math(:G)) × $(_tex(:Cal, "H")) → $(_tex(:Cal, "H"))``
+where a Lie group ``$(_math(:G))`` acts on another Lie group ``$(_tex(:Cal, "H"))`` with an arbitrary action.
+
+Then, e.g. within the definition of the [`LeftSemidirectProductGroupOperation`](@ref) or [`RightSemidirectProductGroupOperation`](@ref),
+we have two choices where the group action ``α`` acts on, namely:
+Let ``g ∈ $(_math(:G))`` and ``h_1,h_2 ∈ $(_tex(:Cal, "H"))`` be given, then this type represents the variant
+
+```math
+h_1 ⋅ α_g(h_2),
+```
+where ``⋅`` denotes the group operation on ``$(_tex(:Cal, "H"))``.
+The `Right` in the name of this type refers to the fact that the action is applied to the right element ``h_2``.
+
+Note that this is independent of both the type of action (left or right) and whether the semidirect product is a left or a right semidirect one.
+
+For its practical use see the [`SemidirectProductGroupOperation`](@ref).
+"""
+struct ActionActsOnRight <: AbstractActionActsOnType end
+
+"""
     GroupAction{T<:GroupActionType, L<:LieGroup, M<:AbstractManifold}
 
-Specify a group action of [`AbstractGroupActionType`](@ref) `T` of a [`AbstractLieGroup`](@ref) `G` acting on `M`.
+Specify a group action of [`AbstractGroupActionType`](@ref) `T` of a [`AbstractLieGroup`](@ref) `G`
+acting on an $(_link(:AbstractManifold)) `M`.
 
 Let ``$(_math(:M))`` be a $(_link(:AbstractManifold)) and ``$(_math(:G))`` be a [`AbstractLieGroup`](@ref)
 with group operation ``$(_math(:∘))``.
@@ -96,23 +149,43 @@ with group operation ``$(_math(:∘))``.
 A (smooth) action of the group ``$(_math(:G))`` on the manifold ``$(_math(:M))`` is a map
 
 ```math
-σ: $(_math(:G)) × $(_math(:M)) → $(_math(:M))
+α: $(_math(:G)) × $(_math(:M)) → $(_math(:M))
 ```
 
 with the properties
 
-* ``σ($(_math(:e)), p) = p`` holds for all ``p ∈ $(_math(:M))``
-* ``σ(g, σ(h, p)) = σ(g$(_math(:∘))h, p)`` holds for all ``g,h ∈ $(_math(:G))``, ``p ∈ $(_math(:M))``
+**Identity.** ``α($(_math(:e)), p) = p`` holds for all ``p ∈ $(_math(:M))``
 
+**Compatibility.**
+If ``α`` is a [``AbstractLeftGroupActionType``](@ref) we usually denote it by ``σ`` and the compatibility reads
+
+```math
+σ_g(σ_h(p)) = σ_{g$(_math(:∘))h}(p) $(_tex(:text, " holds for all")) g,h ∈ $(_math(:G)) $(_tex(:text, " and")) p ∈ $(_math(:M))
+```
+
+If ``α`` is a [``AbstractRightGroupActionType``](@ref) we usually denote it by ``τ`` and the compatibility reads
+
+```math
+τ_g(τ_h(p)) = τ_{h$(_math(:∘))g}(p)`` holds for all ``g,h ∈ $(_math(:G)) $(_tex(:text, " for all")) p ∈ $(_math(:M))
+```
+
+_intuitively_ the left/right property of an action specifies on which side the “outer” group actions element ``g``
+gets “appended” in the composition.
 
 # Fields
 
-* `type::T`: The type of the group action.
-* `group::L`: The group acting.
-* `manifold::M`: The manifold the group acts upon.
+* `type::`[`AbstractGroupActionType`](@ref): The type of the group action.
+* `group::`[`AbstractLieGroup`](@ref): The group acting.
+* `manifold::`$(_link(:AbstractManifold)): The manifold the group acts upon.
 
 See [HilgertNeeb:2012; Section 9.1.3](@cite) for more details.
 
+# Constructors
+    GroupAction(
+        group::AbstractLieGroup, manifold::ManifoldsBase.AbstractManifold, type::AbstractGroupActionType
+    )
+Generate a group action where the type of the action and what it acts on are keyword arguments.
+They default to the most common choice, that the [`ActionActsOnRight`](@ref).
 """
 struct GroupAction{
         T <: AbstractGroupActionType, L <: AbstractLieGroup, M <: ManifoldsBase.AbstractManifold,
@@ -121,14 +194,18 @@ struct GroupAction{
     group::L
     manifold::M
 end
-
+function GroupAction(
+        group::G, manifold::M, type::T
+    ) where {G <: AbstractLieGroup, M <: ManifoldsBase.AbstractManifold, T <: AbstractGroupActionType}
+    return GroupAction{T, G, M}(type, group, manifold)
+end
 #
 #
 # Functions
 
 _doc_apply = """
-    apply(A::GroupAction{T, L, M}, g, p)
-    apply!(A::GroupAction{T, L, M}, q, g, p)
+    apply(A::GroupAction{T}, g, p)
+    apply!(A::GroupAction{T}, q, g, p)
 
 Apply the group action induced by ``g ∈ $(_math(:G))`` to ``p ∈ $(_math(:M))``,
 where the kind of group action is indicated by the [`AbstractGroupActionType`](@ref) `T`.
@@ -139,7 +216,7 @@ This can be performed in-place of `q`.
 # un-comment the preceding line and remove this, once GroupManifolds no longer exists in Manifolds.jl
 @doc "$(_doc_apply)"
 function apply(A::GroupAction, g, p)
-    q = allocate_result(base_manifold(A), apply, p)
+    q = allocate_result(base_manifold(A), apply, p, g)
     apply!(A, q, g, p)
     return q
 end
@@ -182,11 +259,10 @@ Return the default right action for a Lie group `G` acting on a manifold `M`.
 default_right_action(N::AbstractLieGroup, M::AbstractManifold)
 
 _doc_diff_apply = """
-    diff_apply(A::GroupAction{T, L, M}, g, p, X)
-    diff_apply!(A::GroupAction{T, L, M}, Y, g, p, X)
+    diff_apply(A::GroupAction, g, p, X)
+    diff_apply!(A::GroupAction, Y, g, p, X)
 
-Compute the differential ``D_p σ_g(p): T_p$(_math(:M)) → T_{σ_g(p)}$(_math(:M))``,
-where for a left group action we have ``σ_g(p) = σ(g,p)``, for a right action ``σ_g(p) = σ(p, g)``.
+Compute the differential ``$(_math(:D))_p α_g(p): T_p$(_math(:M)) → T_{σ_g(p)}$(_math(:M))``.
 """
 
 function diff_apply end
@@ -202,12 +278,12 @@ function diff_apply! end
 diff_apply!(A::GroupAction, q, g, p)
 
 _doc_diff_group_apply = """
-    diff_group_apply(A::GroupAction{T, L, M}, g, p, X)
-    diff_group_apply!(A::GroupAction{T, L, M}, Y, g, p, X)
+    diff_group_apply(A::GroupAction, g, p, X)
+    diff_group_apply!(A::GroupAction, Y, g, p, X)
 
-Compute the differential ``D_g σ_g(p): $(_math(:𝔤)) → $(_math(:𝔤))``,
+Compute the differential ``$(_math(:d))_{$(_tex(:Cal, "G"))} σ_g(p): $(_math(:𝔤)) → $(_math(:𝔤))``,
 where we use the short hand notation ``σ_p(g) = σ(g,p)`` for a left action,
-and for a right action ``σ_p(g) = σ(p, g)``.
+and for a right action ``τ_p(g) = τ(g,p)``.
 """
 
 function diff_group_apply end
@@ -228,7 +304,7 @@ diff_group_apply!(A::GroupAction, q, g, p)
 Return the [`GroupAction`](@ref) representing the inverse of an [`GroupAction`](@ref) of [`AbstractGroupActionType`](@ref) `T`.
 This is usually done by returning the group action with the inverse type of `T`.
 """
-Base.inv(A::GroupAction) = GroupAction(inv(A.type), A.group, A.manifold)
+Base.inv(A::GroupAction) = GroupAction(A.group, A.manifold, inv(A.type))
 
 """
     inv(::AbstractGroupActionType)
@@ -239,7 +315,7 @@ inverse operation.
 Base.inv(::AbstractGroupActionType)
 
 function Base.show(io::IO, A::GroupAction)
-    return print(io, "GroupAction($(A.type), $(A.group), $(A.manifold))")
+    return print(io, "GroupAction($(A.group), $(A.manifold), $(A.type))")
 end
 
 function switch end
@@ -251,7 +327,7 @@ Return the group operation action representing the similar [`GroupAction`](@ref)
 but acting from the other side. It switches left to right and vice versa.
 This is done by returning the group action with the “switched” type of `T`.
 """
-switch(A::GroupAction) = GroupAction(switch(A.type), A.group, A.manifold)
+switch(A::GroupAction) = GroupAction(A.group, A.manifold, switch(A.type))
 
 @doc """
     switch(T::AbstractGroupActionType)

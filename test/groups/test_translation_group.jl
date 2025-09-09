@@ -64,9 +64,10 @@ begin
                 InverseLeftGroupOperationAction(),
                 InverseRightGroupOperationAction(),
             ]
-            A = GroupOperationAction(t, G)
+            A = GroupOperationAction(G, t)
             properties2[:Name] = "with $A"
-            expectations2[:repr] = "GroupOperationAction($t, $G)"
+            properties2[:Aliased] = false # + does not work aliased, hence apply! does not, here, either.
+            expectations2[:repr] = "GroupOperationAction($G; type=$t)"
             test_group_action(A, properties2, expectations2)
         end
     end

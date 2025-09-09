@@ -70,13 +70,11 @@ _doc_diff_inv_real_circle = """
     diff_inv(G::LieGroup{ℝ, AdditionGroupOperation, Circle{ℝ}}, g, X)
     diff_inv!(G::LieGroup{ℝ, AdditionGroupOperation, Circle{ℝ}}, Y, g, X)
 
-Compute the the differential ``Dι_{$(_math(:G))}([g])[X]`` of the inversion ``ι_{$(_math(:G))}([g]) := [g]^{-1} = [-g]`` at ``X ∈ 𝔤``
+Compute the the differential ``$(_math(:d))ι_{$(_math(:G))}([g])[X]`` of the inversion ``ι_{$(_math(:G))}([g]) := [g]^{-1} = [-g]`` at ``X ∈ 𝔤``
 in the [`LieAlgebra`](@ref) ``𝔤`` of the [real `CircleGroup`](@ref circle-group-real) `G` ``=$(_math(:G))``.
 
-The computation simplifies due to commutativity to
-
 ```math
-Dι_{$(_math(:G))}([g])[X] = -X.
+$(_math(:d))ι_{$(_math(:G))}([g])[X] = -X.
 ```
 
 This can be computed in-place of `Y` if `Y` is `mutable`.

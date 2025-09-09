@@ -78,12 +78,7 @@ function identity_element(G::SpecialOrthogonalGroup, ::Type{<:AbstractMatrix{T}}
     return identity_element!(G, e)
 end
 
-inv!(G::SpecialOrthogonalGroup, k, g) = copyto!(G, k, transpose(g))
-function inv!(
-        G::SpecialOrthogonalGroup, q, ::Identity{O}
-    ) where {O <: AbstractMultiplicationGroupOperation}
-    return identity_element!(G, q)
-end
+_inv!(G::SpecialOrthogonalGroup, k, g) = copyto!(G, k, transpose(g))
 
 @doc "$(_doc_log_O2_id)"
 ManifoldsBase.log(::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, g)
@@ -103,6 +98,8 @@ ManifoldsBase.log(::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}
 @doc "$(_doc_log_O4_id)"
 ManifoldsBase.log!(::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{4}}}, X, g)
 
+#
+# Since the manifold also uses the Lie algebra to represent tangent vectors push forward and pull back are the identity.
 pull_back_tangent!(::SpecialOrthogonalGroup, Y, g, X; kwargs...) = copyto!(Y, X)
 push_forward_tangent!(::SpecialOrthogonalGroup, Y, g, X; kwargs...) = copyto!(Y, X)
 

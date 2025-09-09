@@ -22,6 +22,12 @@ Pages = ["group_operation_action.jl"]
 Order = [:type, :function]
 ```
 
+```@autodocs
+Modules = [LieGroups]
+Pages = ["multiplication_action.jl"]
+Order = [:type, :function]
+```
+
 ## Literature
 
 ```@bibliography
