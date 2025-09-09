@@ -31,10 +31,11 @@ end
 
 const LeftSpecialGalileanGroupOperation = LeftSemidirectProductGroupOperation{
     LeftSemidirectProductGroupOperation{
-        MatrixMultiplicationGroupOperation, AdditionGroupOperation, LeftGroupOperationAction,
+        MatrixMultiplicationGroupOperation, AdditionGroupOperation, LeftMultiplicationGroupAction, ActionActsOnRight
     },
     ProductGroupOperation{Tuple{AdditionGroupOperation, AdditionGroupOperation}},
     RotationBoostAction,
+    ActionActsOnRight
 }
 
 const SpecialGalileanGroup{T} = LieGroup{
@@ -77,6 +78,6 @@ function SpecialGalileanGroup(n::Int)
     N = TranslationGroup(n) × TranslationGroup(1)
     return LieGroup(
         ProductManifold(G.manifold, N.manifold),
-        LeftSemidirectProductGroupOperation(G.op, N.op, RotationBoostAction()),
+        LeftSemidirectProductGroupOperation(G.op, N.op, RotationBoostAction(), ActionActsOnRight())
     )
 end
