@@ -894,8 +894,8 @@ function jacobian_exp_argument(
     return jacobian_exp_argument!(G, J, g, X, B)
 end
 
-
-"$(_doc_jac_exp_arg)"
+function jacobian_exp_argument! end
+@doc "$(_doc_jac_exp_arg)"
 jacobian_exp_argument!(
     G::AbstractLieGroup, J, g, X,
     B::AbstractBasis = DefaultLieAlgebraOrthogonalBasis()
