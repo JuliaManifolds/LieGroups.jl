@@ -113,18 +113,20 @@ _doc_diff_inv_mult = """
 Compute the value of differential ``$(_math(:d))ι_{$(_math(:G))}(g)[X]`` of matrix inversion ``ι_{$(_math(:G))}(g) := g^{-1}`` at ``X ∈ 𝔤``
 in the [`LieAlgebra`](@ref) ``𝔤`` of the [`LieGroup`](@ref) `G`.
 
-The formula is given by
+The (classical) differential ``$(_math(:D))ι_{$(_math(:G))}(g): T_g$(_math(:G))) → T_{g^{-1}}$(_math(:G)))`` reads
 
 ```math
-$(_math(:d))ι_{$(_math(:G))}(g)[X] = $(_math(:Ad))(g)[X] = -g^{$(_tex(:transp))}Xg^{-1},
+  $(_math(:D))ι_{$(_math(:G))}(g)[W] = -g^{-1}Wg^{-1} = -Xg^{-1} = -g^{-1}(gXg^{-1}) = -g^{-1}$(_math(:Ad))(g)[X] = V ∈ T_{g^{-1}}$(_math(:G))),
 ```
 
-which stems from using the differential of the inverse from [Giles:2008](@cite) given by
-``$(_math(:D))(g^{-1})[X] = -g^{-1}Xg^{-1}``.
-We compose this with the push forward of the left composition
-``$(_math(:D))λ_{$(_math(:e))}(g)[X] = gX`` mapping from the Lie algebra into the tangent space at ``g``,
-and its adjoint ``$(_math(:D))^*λ_{$(_math(:e))}(g)[X] = g^{$(_tex(:transp))}X``.
-Then we get ``g^{$(_tex(:transp))}(g^{-1}(gX)g^{-1})``. This overall simplifies to the formula above.
+see e.g. [Giles:2008](@cite). To bring this back to the Lie algebra, we Write ``V = g^{-1}Y ∈ T_{g^{-1}}$(_math(:G)))``
+for some ``Y ∈ 𝔤`` and obtain
+
+```math
+  $(_math(:d)) ι_{$(_math(:G))}(g)[X] = -$(_math(:Ad))(g)[X] ∈ 𝔤,
+```
+
+where we use ``$(_math(:d))`` to denote the differential in the Lie algebra.
 """
 
 @doc "$(_doc_diff_inv_mult)"

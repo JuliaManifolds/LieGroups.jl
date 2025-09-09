@@ -357,11 +357,11 @@ For example on matrix manifolds this means, we use ``X ∈ 𝔤`` and hence ``W 
 The (classical) differential ``$(_math(:D))ι_{$(_math(:G))}(g): T_g$(_math(:G))) → T_{g^{-1}}$(_math(:G)))`` reads
 
 ```math
-  $(_math(:D))ι_{$(_math(:G))}(g)[W] = -g^{-1}Wg^{-1} = -Xg^{-1} = -g^{-1}(gXg^{-1}) = -g^{-1}$(_math(:Ad))(g)[X] ∈ T_{g^{-1}}$(_math(:G))).
+  $(_math(:D))ι_{$(_math(:G))}(g)[W] = -g^{-1}Wg^{-1} = -Xg^{-1} = -g^{-1}(gXg^{-1}) = -g^{-1}$(_math(:Ad))(g)[X] = V ∈ T_{g^{-1}}$(_math(:G))),
 ```
 
-To bring this back to the Lie algebra, we just have to multiply the result with ``g`` from the left
-and obtain
+see e.g. [Giles:2008](@cite). To bring this back to the Lie algebra, we Write ``V = g^{-1}Y ∈ T_{g^{-1}}$(_math(:G)))``
+for some ``Y ∈ 𝔤`` and obtain
 
 ```math
   $(_math(:d)) ι_{$(_math(:G))}(g)[X] = -$(_math(:Ad))(g)[X] ∈ 𝔤,
@@ -398,11 +398,13 @@ and compute the (classical) differential ``$(_math(:D))ρ_h(g): T_g$(_math(:G)))
 It reads
 
 ```math
-  $(_math(:D))ρ_h(g)[W] = Wh = gXh ∈ T_{g$(_math(:∘))h}$(_math(:G))).
+  $(_math(:D))ρ_h(g)[W] = Wh = gXh = V ∈ T_{g$(_math(:∘))h}$(_math(:G))).
 ```
 
-To obtain the Lie group differential ``$(_math(:d))ρ_h(g)`` we have to multiply the result with ``(gh)^{-1}``
-from the left and move from ``W`` to ``X``. The differential reads
+To obtain the Lie group differential ``$(_math(:d))ρ_h(g)`` we have to “pull back” ``V``
+from the tangent space ``T_{g$(_math(:∘))h}$(_math(:G)))`` to the Lie algebra ``𝔤``.
+We use the same identification, that we can write ``V = ghY ∈ T_{g$(_math(:∘))h}$(_math(:G)))``.
+This means in practice that with ``V = gXh = gh(h^{-1}Xh)`` differential reads
 
 ```math
 $(_math(:d)) ρ_h(g)[X] = h^{-1}Xh = $(_math(:Ad))(h^{-1})[X] ∈ 𝔤,
