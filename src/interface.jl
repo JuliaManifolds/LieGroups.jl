@@ -353,14 +353,14 @@ Compute the differential of the function ``ι_{$(_math(:G))}(g) = g^{-1}``, wher
 This can be done in-place of `Y`.
 Note that we represent tangent vectors in the Lie algebra ``𝔤``.
 
-For example on matrix manifolds this means, we use ``X ∈ 𝔤`` and hence ``W = gX ∈ T_g$(_math(:G)))``.
-The (classical) differential ``$(_math(:D))ι_{$(_math(:G))}(g): T_g$(_math(:G))) → T_{g^{-1}}$(_math(:G)))`` reads
+For example on matrix manifolds this means, we use ``X ∈ 𝔤`` and hence ``W = gX ∈ T_g$(_math(:G))``.
+The (classical) differential ``$(_math(:D))ι_{$(_math(:G))}(g): T_g$(_math(:G)) → T_{g^{-1}}$(_math(:G))`` reads
 
 ```math
-  $(_math(:D))ι_{$(_math(:G))}(g)[W] = -g^{-1}Wg^{-1} = -Xg^{-1} = -g^{-1}(gXg^{-1}) = -g^{-1}$(_math(:Ad))(g)[X] = V ∈ T_{g^{-1}}$(_math(:G))),
+  $(_math(:D))ι_{$(_math(:G))}(g)[W] = -g^{-1}Wg^{-1} = -Xg^{-1} = -g^{-1}(gXg^{-1}) = -g^{-1}$(_math(:Ad))(g)[X] = V ∈ T_{g^{-1}}$(_math(:G)),
 ```
 
-see e.g. [Giles:2008](@cite). To bring this back to the Lie algebra, we Write ``V = g^{-1}Y ∈ T_{g^{-1}}$(_math(:G)))``
+see e.g. [Giles:2008](@cite). To bring this back to the Lie algebra, we Write ``V = g^{-1}Y ∈ T_{g^{-1}}$(_math(:G))``
 for some ``Y ∈ 𝔤`` and obtain
 
 ```math
@@ -392,18 +392,18 @@ i..e. the right group multiplication function ``ρ_h(g) = g$(_math(:∘))h`` (wh
 
 In this notation, this function computes the differential ``$(_math(:d))ρ_h: 𝔤 → 𝔤``.
 
-For example on matrix Lie groups this means that for ``X ∈ 𝔤`` we can start with ``W = gX ∈ T_g$(_math(:G)))``
-and compute the (classical) differential ``$(_math(:D))ρ_h(g): T_g$(_math(:G))) → T_{g$(_math(:∘))h}$(_math(:G)))``.
+For example on matrix Lie groups this means that for ``X ∈ 𝔤`` we can start with ``W = gX ∈ T_g$(_math(:G))``
+and compute the (classical) differential ``$(_math(:D))ρ_h(g): T_g$(_math(:G)) → T_{g$(_math(:∘))h}$(_math(:G))``.
 
 It reads
 
 ```math
-  $(_math(:D))ρ_h(g)[W] = Wh = gXh = V ∈ T_{g$(_math(:∘))h}$(_math(:G))).
+  $(_math(:D))ρ_h(g)[W] = Wh = gXh = V ∈ T_{g$(_math(:∘))h}$(_math(:G)).
 ```
 
 To obtain the Lie group differential ``$(_math(:d))ρ_h(g)`` we have to “pull back” ``V``
-from the tangent space ``T_{g$(_math(:∘))h}$(_math(:G)))`` to the Lie algebra ``𝔤``.
-We use the same identification, that we can write ``V = ghY ∈ T_{g$(_math(:∘))h}$(_math(:G)))``.
+from the tangent space ``T_{g$(_math(:∘))h}$(_math(:G))`` to the Lie algebra ``𝔤``.
+We use the same identification, that we can write ``V = ghY ∈ T_{g$(_math(:∘))h}$(_math(:G))``.
 This means in practice that with ``V = gXh = gh(h^{-1}Xh)`` differential reads
 
 ```math
@@ -434,13 +434,13 @@ i..e. the left group multiplication function ``λ_g(h) = g$(_math(:∘))h`` (whe
 
 In this notation, this function ``$(_math(:d))λ_g: 𝔤 → 𝔤``.
 
-For example on matrix Lie groups this means that for ``X ∈ 𝔤`` we can start with ``W = hX ∈ T_h$(_math(:G)))``
-and compute the (classical) differential ``$(_math(:D))λ_g(h): T_h$(_math(:G))) → T_{g$(_math(:∘))h}$(_math(:G)))``.
+For example on matrix Lie groups this means that for ``X ∈ 𝔤`` we can start with ``W = hX ∈ T_h$(_math(:G))``
+and compute the (classical) differential ``$(_math(:D))λ_g(h): T_h$(_math(:G)) → T_{g$(_math(:∘))h}$(_math(:G))``.
 
 It reads
 
 ```math
-  $(_math(:D))λ_g(h)[W] = gW = ghX ∈ T_{g$(_math(:∘))h}$(_math(:G))).
+  $(_math(:D))λ_g(h)[W] = gW = ghX ∈ T_{g$(_math(:∘))h}$(_math(:G)).
 ```
 
 To obtain the Lie group differential ``$(_math(:d))λ_g(h)`` we have to multiply the result with ``(gh)^{-1}``

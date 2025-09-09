@@ -113,13 +113,13 @@ _doc_diff_inv_mult = """
 Compute the value of differential ``$(_math(:d))ι_{$(_math(:G))}(g)[X]`` of matrix inversion ``ι_{$(_math(:G))}(g) := g^{-1}`` at ``X ∈ 𝔤``
 in the [`LieAlgebra`](@ref) ``𝔤`` of the [`LieGroup`](@ref) `G`.
 
-The (classical) differential ``$(_math(:D))ι_{$(_math(:G))}(g): T_g$(_math(:G))) → T_{g^{-1}}$(_math(:G)))`` reads
+The (classical) differential ``$(_math(:D))ι_{$(_math(:G))}(g): T_g$(_math(:G)) → T_{g^{-1}}$(_math(:G))`` reads
 
 ```math
-  $(_math(:D))ι_{$(_math(:G))}(g)[W] = -g^{-1}Wg^{-1} = -Xg^{-1} = -g^{-1}(gXg^{-1}) = -g^{-1}$(_math(:Ad))(g)[X] = V ∈ T_{g^{-1}}$(_math(:G))),
+  $(_math(:D))ι_{$(_math(:G))}(g)[W] = -g^{-1}Wg^{-1} = -Xg^{-1} = -g^{-1}(gXg^{-1}) = -g^{-1}$(_math(:Ad))(g)[X] = V ∈ T_{g^{-1}}$(_math(:G)),
 ```
 
-see e.g. [Giles:2008](@cite). To bring this back to the Lie algebra, we Write ``V = g^{-1}Y ∈ T_{g^{-1}}$(_math(:G)))``
+see e.g. [Giles:2008](@cite). To bring this back to the Lie algebra, we Write ``V = g^{-1}Y ∈ T_{g^{-1}}$(_math(:G))``
 for some ``Y ∈ 𝔤`` and obtain
 
 ```math
