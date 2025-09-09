@@ -69,8 +69,8 @@ R & v & p \\\\
 0 & 0 & 1
 \\end{bmatrix} \\subset \\mathbb{R}^{5\\times 5}
 ```
-ArrayPartition representation:  
-``SGal(3) = ((R, v), (p, t))``  
+ArrayPartition representation:
+``SGal(3) = ((R, v), (p, t))``
 [Kelly:2025](@cite)
 """
 function SpecialGalileanGroup(n::Int)
@@ -81,3 +81,34 @@ function SpecialGalileanGroup(n::Int)
         LeftSemidirectProductGroupOperation(G.op, N.op, RotationBoostAction(), ActionActsOnRight())
     )
 end
+
+#
+#
+# doc strings
+
+
+_doc_SGal3_exp = """
+    LieGroups.exp!(M::SpecialGalileanGroup, h, X)
+    LieGroups.exp(M::SpecialGalileanGroup, X)
+
+Compute the exponential map on the [`SpecialGalileanGroup`](@ref)`(3)`,
+where `X` is an element of the Lie algebra represented as an `ArrayPartition`.
+
+## TODO
+Formulae and description here
+
+The computation can be done in-place of `h`.
+
+!!! note "Technical Detail"
+    The default implementation requires `RecursiveArrayTools.jl` to be loaded.
+"""
+
+@doc "$(_doc_SGal3_exp)"
+ManifoldsBase.exp!(
+        ::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, h, X,
+    )
+
+@doc "$(_doc_SGal3_exp)"
+LieGroups.exp(
+        ::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, X
+    )
