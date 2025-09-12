@@ -69,8 +69,12 @@ R & v & p \\\\
 0 & 0 & 1
 \\end{bmatrix} \\subset \\mathbb{R}^{5\\times 5}
 ```
-ArrayPartition representation:
-``SGal(3) = ((R, v), (p, t))``
+And the ArrayPartition representation as:
+``((R, v), (p, t))``
+
+!!! note "Technical Detail"
+    The ArrayPartition (default) implementation requires `RecursiveArrayTools.jl` to be loaded.
+
 [Kelly:2025](@cite)
 """
 function SpecialGalileanGroup(n::Int)
@@ -86,29 +90,46 @@ end
 #
 # doc strings
 
-
 _doc_SGal3_exp = """
-    LieGroups.exp!(M::SpecialGalileanGroup, h, X)
     LieGroups.exp(M::SpecialGalileanGroup, X)
+    LieGroups.exp!(M::SpecialGalileanGroup, h, X)
 
-Compute the exponential map on the [`SpecialGalileanGroup`](@ref)`(3)`,
+Compute the Lie group exponential function on the [`SpecialGalileanGroup`](@ref)`(3)`,
 where `X` is an element of the Lie algebra represented as an `ArrayPartition`.
 
-## TODO
-Formulae and description here
+The closed-form expression for the matrix exponential from [Kelly:2025; section 6](@cite) is used.
 
 The computation can be done in-place of `h`.
-
-!!! note "Technical Detail"
-    The default implementation requires `RecursiveArrayTools.jl` to be loaded.
 """
 
 @doc "$(_doc_SGal3_exp)"
 ManifoldsBase.exp!(
-        ::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, h, X,
-    )
+    ::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, h, X,
+)
 
 @doc "$(_doc_SGal3_exp)"
 LieGroups.exp(
-        ::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, X
-    )
+    ::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, X
+)
+
+_doc_SGal3_log = """
+    LieGroups.log(M::SpecialGalileanGroup, g)
+    LieGroups.log!(M::SpecialGalileanGroup, X, g)
+
+Compute the Lie group logarithm function on the [`SpecialGalileanGroup`](@ref)`(3)`,
+where `g` is a group element represented as an `ArrayPartition`.    
+
+The closed-form expression from [Kelly:2025; section 6](@cite) is used.
+
+The computation can be done in-place of `X`.
+"""
+
+@doc "$(_doc_SGal3_log)"
+LieGroups.log(
+    ::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, g
+)
+
+@doc "$(_doc_SGal3_log)"
+ManifoldsBase.log!(
+    ::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, X, g,
+)

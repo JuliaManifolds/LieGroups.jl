@@ -38,20 +38,6 @@ function _P(θ⃗)
     end
 end
 
-_doc_SGal3_exp = """
-    LieGroups.exp!(M::SpecialGalileanGroup, h, X)
-    LieGroups.exp(M::SpecialGalileanGroup, X)
-
-Compute the exponential map on the [`SpecialGalileanGroup`](@ref)`(3)`,
-where `X` is an element of the Lie algebra represented as an `ArrayPartition`.
-
-## TODO
-Formulae and description here
-
-The computation can be done in-place of `h`.
-"""
-
-@doc "$(_doc_SGal3_exp)"
 function LieGroups.exp!(
         ::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
         h::ArrayPartition,
@@ -77,7 +63,6 @@ function LieGroups.exp!(
     return h
 end
 
-@doc "$(_doc_SGal3_exp)"
 function LieGroups.exp(
         ::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
         X::ArrayPartition{T}
