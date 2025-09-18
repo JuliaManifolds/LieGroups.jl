@@ -36,11 +36,12 @@ The list is alphabetical, but first lists types, then functions
 | `RightForwardAction` | [`AbstractRightGroupActionType`](@ref) and [`ActionActsOnLeft`](@ref) | This tuple form has been discontinued. |
 | `RightSide` | [`ActionActsOnRight`](@ref) | |
 | `RotationAction` | [`LeftMultiplicationGroupAction`](@ref) | a slightly more general type for all actions that are implemented by (matrix) multiplication |
+| `RotationTranslationActionOnVector` | [`LeftMultiplicationGroupAction`](@ref) | e.g. in a [`GroupAction`](@ref) with [`SpecialEuclideanGroup`](@ref) and [`Euclidean`](@extref `Manifolds.Euclidean`)`(n)`. |
 | `SemidirectProductGroup(G, H, a)` | [`LeftSemidirectProductLieGroup`](@ref)`(G, H, a)` | While this staid the same, there is now also the [`default_left_action`](@ref)`(G,H)`. When this agrees with `a` you can use the short hand `G⋉H` to generate this semidirect product. Analogously there now also exists the [`RightSemidirectProductLieGroup`](@ref)`(G,H)` with[`default_left_action`](@ref)`(G,H)` that allows for the short cut `G⋊H` |
 | `SpecialEuclidean(n)` | `SpecialEuclideanGroup(n; variant=:right)` | |
 | `VeeOrthogonalBasis` | [`DefaultLieAlgebraOrthogonalBasis`](@ref) | |
 | `adjoint_action` | [`adjoint`](@ref) | now implemented with a default, when you provide [`diff_conjugate!`](@ref).
-| `adjoint_matrix(G, p, b)` | [`jacobian_conjugate`](@ref)`(G, p, e, b)` | `e` is either the [`Identity`](@ref)`(G)` or its [`identity_matrix`](@ref)`(G)` |
+| `adjoint_matrix(G, p, b)` | [`jacobian_conjugate`](@ref)`(G, p, e, b)` | `e` is either the [`Identity`](@ref)`(G)` or its [`identity_element`](@ref)`(G)` |
 | `apply_diff` | [`diff_apply`](@ref) | modifiers (diff) come first, consistent with [`ManifoldsDiff.jl`](https://juliamanifolds.github.io/ManifoldDiff.jl/stable/) |
 | `apply_diff_group` | [`diff_group_apply`](@ref) | modifiers (diff/group) come first, consistent with [`ManifoldsDiff.jl`](https://juliamanifolds.github.io/ManifoldDiff.jl/stable/) |
 | | [`conjugate`](@ref), [`diff_conjugate`](@ref) | a new function to model ``c_g: \mathcal G → \mathcal G`` given by ``c_g(h) = g∘h∘g^{-1}`` |

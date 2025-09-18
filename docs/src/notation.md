@@ -27,7 +27,7 @@ In this package,the notation introduced in [Manifolds.jl Notation](https://julia
 
 ## About differentials and Jacobians
 
-For a function defined on a [manifold](@exref `ManifoldsBase.AbstractManifold`) ``f:\mathcal M → \mathcal N``, the differential at a point ``p ∈ \mathcal M`` is a map between the tangent spaces
+For a function defined on a [manifold](@extref `ManifoldsBase.AbstractManifold`) ``f:\mathcal M → \mathcal N``, the differential at a point ``p ∈ \mathcal M`` is a map between the tangent spaces
 
 ```
 Df(p) : T_p\mathcal M → T_{f(p)}\mathcal N.
@@ -44,7 +44,7 @@ one alternate way to define this differential on the Lie algebra is to consider 
 where we use a different notation on purpose. This second notation is the default throughout `LieGroups.jl`.
 
 The Jacobian ``\operatorname{J}_f(p)`` of ``f`` at ``p`` is the matrix representation of the differential with respect to a basis of each of the tangent spaces.
-For the default representation ``\mathrm{d}f(g)`` we have to choose a basis of the [Lie algebra](@ref LieAlgebras) ``\mathfrak g``.
+For the default representation ``\mathrm{d}f(g)`` we have to choose a basis of the [Lie algebra](@ref LieAlgebra) ``\mathfrak g``.
 Throughout `LieGroups.jl` this is the [`DefaultLieAlgebraOrthogonalBasis`](@ref).
 
 ## About left and right Jacobians

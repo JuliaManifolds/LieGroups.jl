@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Introduce `_inv` and `_inv!` functions for the inverse operation to work the same way as `_compose` and `_compose!`, respectively.
 * introduce a `LeftMultiplicationGroupAction` to represent left multiplication actions on Lie groups. While this is a bit more of a technical
   name, it replaces the old `ComplexPlanarRotation`, `QuaternionRotation`, and `RotationAction`, since in the `GroupAction` this type is coupled with a group and a manifold anyway.
+* further methods for the `LeftMultiplicationGroupAction` to cover the previous functionality of e.g.
+  * `RotationTranslationActionOnVector`
 
 ### Fixed
 

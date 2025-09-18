@@ -3,6 +3,7 @@ module LieGroupsRecursiveArrayToolsExt
 using LieGroups
 using RecursiveArrayTools: ArrayPartition
 using LinearAlgebra
+using Manifolds
 using ManifoldsBase
 using ManifoldsBase: base_manifold, submanifold_components, submanifold_component
 
