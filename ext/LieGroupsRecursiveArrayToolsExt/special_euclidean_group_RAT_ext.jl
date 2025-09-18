@@ -4,49 +4,37 @@ LieGroups._check_matrix_affine(::ArrayPartition, ::Int; kwargs...) = nothing
 #
 # Action
 #
-_doc_apple_SE_Rn = raw"""
-    apply(::GroupAction{LieGroups.LeftMultiplicationGroupAction,SpecialEuclidean,Euclidean},
-        g::ArrayPartition, p
-    )
-    apply!(
-        ::GroupAction{LieGroups.LeftMultiplicationGroupAction, <:SpecialEuclidean, <:Euclidean}, q, g::ArrayPartition, p
-    )
 
-Given the Lie group [`SpecialEuclidean`](@ref)  and the manifold ``\mathbb{R}^n`` [`Euclidean`](@ref),
-this action performs both the rotation and translation on a vector ``p ∈ \mathbb{R}^n``,
-that is, for ``g = (R, t) ∈ SE(n)``, the action computes
-
-```math
-q = g ⋅ p = Rp + t,
-```
-
-where the name of the action, [`LeftMultiplicationGroupAction`](@ref), indicates that the group element `g` acts on the left of the vector `p`,
-and directly yields a multiplication if interpreted in homogeneous coordinates.
-"""
-
-@doc "$(_doc_apple_SE_Rn)"
-LieGroups.apply(
-    ::GroupAction{LieGroups.LeftMultiplicationGroupAction, <:LieGroups.SpecialEuclideanGroup, <:Manifolds.Euclidean}, g::ArrayPartition, p
-)
-
-@doc "$(_doc_apple_SE_Rn)"
-LieGroups.apply!(
-    ::GroupAction{LieGroups.LeftMultiplicationGroupAction, <:LieGroups.SpecialEuclideanGroup, <:Manifolds.Euclidean}, q, g::ArrayPartition, p
-)
-
+# (a) SE(n) on R^n
+# Euclidean was imported to LieGroups, so we can access it from there.
 function LieGroups.apply!(
-        ::GroupAction{LieGroups.LeftMultiplicationGroupAction, <:LieGroups.LeftSpecialEuclideanGroup, <:Manifolds.Euclidean}, q, g::ArrayPartition, p
+        ::GroupAction{LeftMultiplicationGroupAction, <:LieGroups.LeftSpecialEuclideanGroup, <:LieGroups.Euclidean}, q, g::ArrayPartition, p
     )
-    mul!(q, a.x[1], p)
-    q .+= a.x[2]
+    mul!(q, g.x[1], p)
+    q .+= g.x[2]
     return q
 end
 function LieGroups.apply!(
-        ::GroupAction{LieGroups.LeftMultiplicationGroupAction, <:LieGroups.RightSpecialEuclideanGroup, <:Manifolds.Euclidean}, q, g::ArrayPartition, p
+        ::GroupAction{LieGroups.LeftMultiplicationGroupAction, <:LieGroups.RightSpecialEuclideanGroup, <:LieGroups.Euclidean}, q, g::ArrayPartition, p
     )
-    mul!(q, a.x[2], p)
-    q .+= a.x[1]
+    mul!(q, g.x[2], p)
+    q .+= g.x[1]
     return q
+end
+
+function LieGroups.diff_apply!(
+        ::GroupAction{LieGroups.LeftMultiplicationGroupAction, <:LieGroups.LeftSpecialEuclideanGroup, <:LieGroups.Euclidean},
+        Y, g::ArrayPartition, p, X
+    )
+    mul!(Y, g.x[1], X)
+    return Y
+end
+function LieGroups.diff_apply!(
+        ::GroupAction{LieGroups.LeftMultiplicationGroupAction, <:LieGroups.RightSpecialEuclideanGroup, <:LieGroups.Euclidean},
+        Y, g::ArrayPartition, p, X
+    )
+    mul!(Y, g.x[2], X)
+    return Y
 end
 #
 # Conversions

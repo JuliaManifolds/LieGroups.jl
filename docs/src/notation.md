@@ -29,17 +29,19 @@ In this package,the notation introduced in [Manifolds.jl Notation](https://julia
 
 For a function defined on a [manifold](@extref `ManifoldsBase.AbstractManifold`) ``f:\mathcal M → \mathcal N``, the differential at a point ``p ∈ \mathcal M`` is a map between the tangent spaces
 
-```
+```math
 Df(p) : T_p\mathcal M → T_{f(p)}\mathcal N.
 ```
 
-For the case where ``\mathcal M = \mathcal N = \mathcal G`` is a [`AbstractLieGroup`](@ref), the differential can be expressed in terms of the Lie algebra ``\mathfrak g`` as
+This is the default in  [`Manifolds.jl`](@extref Manifolds :std:doc:`index`).
 
-```
-\mathrm{d}f(g) : \mathfrak g → \mathfrak g,
+For the case where ``\mathcal M = \mathcal N = \mathcal G`` is an [`AbstractLieGroup`](@ref), the differential can be expressed in terms of the Lie algebra ``\mathfrak g`` as
+
+```math
+\mathrm{d}f(g) : \mathfrak g → \mathfrak g.
 ```
 
-one alternate way to define this differential on the Lie algebra is to consider the differential ``Dg(p)`` of ``g(q) = f(q⋅p)⋅f(p)^{-1}``.
+An alternate way to define this differential on the Lie algebra is to consider the (usual) differential ``Dg(p)`` of ``g(q) = f(q⋅p)⋅f(p)^{-1}``.
 
 where we use a different notation on purpose. This second notation is the default throughout `LieGroups.jl`.
 
