@@ -38,6 +38,7 @@ The list is alphabetical, but first lists types, then functions
 | `RotationAction` | [`LeftMultiplicationGroupAction`](@ref) | a slightly more general type for all actions that are implemented by (matrix) multiplication |
 | `SemidirectProductGroup(G, H, a)` | [`LeftSemidirectProductLieGroup`](@ref)`(G, H, a)` | While this staid the same, there is now also the [`default_left_action`](@ref)`(G,H)`. When this agrees with `a` you can use the short hand `G⋉H` to generate this semidirect product. Analogously there now also exists the [`RightSemidirectProductLieGroup`](@ref)`(G,H)` with[`default_left_action`](@ref)`(G,H)` that allows for the short cut `G⋊H` |
 | `SpecialEuclidean(n)` | `SpecialEuclideanGroup(n; variant=:right)` | |
+| `VeeOrthogonalBasis` | [`DefaultLieAlgebraOrthogonalBasis`](@ref) | |
 | `adjoint_action` | [`adjoint`](@ref) | now implemented with a default, when you provide [`diff_conjugate!`](@ref).
 | `adjoint_matrix(G, p, b)` | [`jacobian_conjugate`](@ref)`(G, p, e, b)` | `e` is either the [`Identity`](@ref)`(G)` or its [`identity_matrix`](@ref)`(G)` |
 | `apply_diff` | [`diff_apply`](@ref) | modifiers (diff) come first, consistent with [`ManifoldsDiff.jl`](https://juliamanifolds.github.io/ManifoldDiff.jl/stable/) |
@@ -63,7 +64,6 @@ The list is alphabetical, but first lists types, then functions
 | `translate(G, g, h)` | [`compose`](@ref)`(G, g, h)` | unified to `compose` |
 | `translate_diff(G, g, X, c)` | [`diff_left_compose`](@ref)`(G, g, h, X)`, [`diff_right_compose`](@ref)`(G, g, h, X)` | for compose ``g∘h`` the functions now specify whether the derivative is taken w.r.t. to the left (`g`) or right (`h`) argument |
 | `vee(G, p, X)` | [`vee`](@ref vee(G::LieAlgebra, X))`(`[`LieAlgebra`](@ref)`(G), X)` | hat/vee moved to using the new [`LieAlgebra`](@ref). The old format should still work. |
-| `VeeOrthogonalBasis` | [`DefaultLieAlgebraOrthogonalBasis`](@ref) | |
 
 ## Further notable changes
 
