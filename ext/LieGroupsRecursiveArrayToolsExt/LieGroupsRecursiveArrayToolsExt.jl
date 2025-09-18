@@ -1,6 +1,8 @@
 module LieGroupsRecursiveArrayToolsExt
 
 using LieGroups
+# As long as Manifolds.jl exports these, we have to specify them here specifically
+using LieGroups: identity_element, identity_element!
 using RecursiveArrayTools: ArrayPartition
 using LinearAlgebra
 using Manifolds

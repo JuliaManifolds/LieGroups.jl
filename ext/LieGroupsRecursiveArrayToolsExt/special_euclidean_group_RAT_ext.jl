@@ -25,8 +25,8 @@ and directly yields a multiplication if interpreted in homogeneous coordinates.
 """
 
 @doc "$(_doc_apple_SE_Rn)"
-LieGroups.apply!(
-    ::GroupAction{LieGroups.LeftMultiplicationGroupAction, <:LieGroups.SpecialEuclideanGroup, <:Manifolds.Euclidean}, q, g::ArrayPartition, p
+LieGroups.apply(
+    ::GroupAction{LieGroups.LeftMultiplicationGroupAction, <:LieGroups.SpecialEuclideanGroup, <:Manifolds.Euclidean}, g::ArrayPartition, p
 )
 
 @doc "$(_doc_apple_SE_Rn)"
