@@ -5,7 +5,9 @@ This module provides tools and dummy structures to test functionality provided
 within `LieGroups.jl`.
 
 For every test function, several interactions to other functions can be activated.
+
 The following functions are expected to be available, since their defaults just pass through to the manifold
+
 * `is_point` both on the Lie group `G` and the Lie algebra `𝔤`
 * `isapprox(G, g, h)` and `isapprox(𝔤, X, Y)`
 * `copy(G, g)`
@@ -1137,7 +1139,7 @@ end
 """
     test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dict)
 
-Test the Lie group ``G`` based on a `Dict` of properties and a `Dict` of `expectations
+Test the [`AbstractLieGroup`](@ref) ``G`` based on a `Dict` of properties and a `Dict` of `expectations`.
 
 Possible properties are
 
@@ -1153,10 +1155,10 @@ Possible properties are
 
 Possible `expectations` are
 
-* `:adjoint` for the result of `conjgate` in the case where `diff_conjugate` is not implemented
+* `:adjoint` for the result of `'conjugate` in the case where `diff_conjugate` is not implemented
 * `:atol => 0.0` a global absolute tolerance
 * `:atols -> Dict()` a dictionary `function -> atol` for specific function tested.
-* `:conjugate` for the result of `conjgate
+* `:conjugate` for the result of `conjugate
 * `:conjugate_default => false` to activate the test of the default implementation of `conjugate`
 * `:diff_inv` for the result of `diff_inv` with respect to the first point and the first vector.
 * `:diff_left_compose` for the result of `diff_left_compose` with respect to the first two points and the first vector.
@@ -1410,9 +1412,9 @@ function test_lie_group(G::AbstractLieGroup, properties::Dict, expectations::Dic
 end
 
 """
-    test_group_action(G::AbstractLieGroup, properties::Dict, expectations::Dict)
+    test_group_action(A::GroupAction, properties::Dict, expectations::Dict)
 
-Test the Lie group ``G`` based on a `Dict` of properties and a `Dict` of `expectations`.
+Test the [`GroupAction`](@ref) ``A`` based on a `Dict` of `properties` and a `Dict` of `expectations`.
 
 Possible properties are
 
