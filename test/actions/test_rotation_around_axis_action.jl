@@ -1,5 +1,5 @@
 using LieGroups, Test
-using Manifolds
+using Manifolds: Circle, Euclidean, ℝ
 
 s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 !(s in LOAD_PATH) && (push!(LOAD_PATH, s))
