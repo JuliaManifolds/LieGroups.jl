@@ -212,8 +212,7 @@ where the kind of group action is indicated by the [`AbstractGroupActionType`](@
 This can be performed in-place of `q`.
 """
 
-# function apply end
-# un-comment the preceding line and remove this, once GroupManifolds no longer exists in Manifolds.jl
+function apply end
 @doc "$(_doc_apply)"
 function apply(A::GroupAction, g, p)
     q = allocate_result(base_manifold(A), apply, p, g)
@@ -221,8 +220,7 @@ function apply(A::GroupAction, g, p)
     return q
 end
 
-# Define `function apply! end` here as well
-# un-comment (remove this comment) when removing this function from Manifolds.jl
+function apply! end
 @doc "$(_doc_apply)"
 apply!(A::GroupAction, q, g, p)
 

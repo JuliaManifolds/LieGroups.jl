@@ -48,7 +48,6 @@ using StaticArrays
 # = Compatibility (and a bit of type piracy for now)
 # The following imports are necessary to use Manifolds.jl 0.10 with Lie groups
 # The line is removed when the Groups are removed from possibly 0.11
-import Manifolds: apply, apply!, compose, identity_element, is_identity
 # Both define the following structs, so these for now lead to asking for explicit prefixes
 # Manifolds: Identity, TranslationGroup
 #

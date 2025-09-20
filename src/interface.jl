@@ -214,6 +214,7 @@ function ManifoldsBase.check_vector(G::AbstractLieGroup, g::P, X; kwargs...) whe
 end
 
 # compose g ∘ h
+function compose end
 _doc_compose = """
     compose(G::AbstractLieGroup, g, h)
     compose!(G::AbstractLieGroup, k, g, h)
@@ -567,6 +568,7 @@ function ManifoldsBase.get_vector!(
     return get_vector!(LieAlgebra(G), X, c, B)
 end
 
+function identity_element end
 _doc_identity_element = """
     identity_element(G::AbstractLieGroup)
     identity_element(G::AbstractLieGroup, T)
