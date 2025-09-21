@@ -1,5 +1,5 @@
 """
-    RowwiseAction{A<:AbstractGroupActionType} <: AbstractGroupActionType
+    RowwiseGroupAction{A<:AbstractGroupActionType} <: AbstractGroupActionType
 
 A type for an action that applies a group action row-wise on a manifold, where a row-wise
 interpretation makes sense, e.g. a matrix-manifold.
@@ -8,8 +8,16 @@ interpretation makes sense, e.g. a matrix-manifold.
 * `action::A`: The group action to be applied row-wise.
 
 # Constructor
-    RowwiseAction(action::AbstractGroupActionType)
+    RowwiseGroupAction(action::AbstractGroupActionType)
 """
-struct RowwiseAction{A <: AbstractGroupActionType} <: AbstractGroupActionType
+struct RowwiseGroupAction{A <: AbstractGroupActionType} <: AbstractGroupActionType
     action::A
+end
+
+function apply(::GroupAction{RowwiseGroupAction{<:LeftMultiplicationGroupAction}}, g, p)
+    return (g * p')'
+end
+function apply!(a::GroupAction{RowwiseGroupAction}, q, g, p)
+    b = GroupAction(a.action, a.group, a.manifold)
+    return map((qrow, prow) -> apply!(b, qrow, g, prow), eachrow(q), eachrow(p))
 end

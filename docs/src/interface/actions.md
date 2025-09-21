@@ -24,7 +24,19 @@ Order = [:type, :function]
 
 ```@autodocs
 Modules = [LieGroups]
+Pages = ["columnwise_action.jl"]
+Order = [:type, :function]
+```
+
+```@autodocs
+Modules = [LieGroups]
 Pages = ["multiplication_action.jl"]
+Order = [:type, :function]
+```
+
+```@autodocs
+Modules = [LieGroups]
+Pages = ["rowwise_action.jl"]
 Order = [:type, :function]
 ```
 

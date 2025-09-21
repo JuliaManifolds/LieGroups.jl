@@ -1,7 +1,7 @@
 @doc raw"""
     RotationAroundAxisAction(axis::AbstractVector)
 
-Space of actions of the circle group [`RealCircleGroup`](@ref) on $ℝ^3$ around given `axis`.
+Space of actions of the circle group [`CircleGroup`](@ref) on $ℝ^3$ around given `axis`.
 """
 struct RotationAroundAxisAction{TA <: AbstractVector} <: AbstractLeftGroupActionType
     axis::TA
@@ -16,11 +16,13 @@ end
 @doc raw"""
     apply(A::GroupAction{<:RotationAroundAxisAction}, θ, p)
 
-Rotate point `p` from [`Euclidean(3)`](@ref) manifold around axis `A.axis` by angle `θ`.
+Rotate point `p` from [`Euclidean`](@extref `Manifolds.Euclidean`) manifold around axis `A.axis` by angle `θ`.
 The formula reads
+
 ````math
 p_{rot} = (\cos(θ))p + (k×p) \sin(θ) + k (k⋅p) (1-\cos(θ)),
 ````
+
 where ``k`` is the vector `A.type.axis` and `⋅` is the dot product.
 """
 apply(A::GroupAction{<:RotationAroundAxisAction}, θ, p)

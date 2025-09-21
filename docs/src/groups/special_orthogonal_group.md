@@ -13,3 +13,11 @@ Modules = [LieGroups]
 Pages = ["groups/special_orthogonal_group.jl"]
 Order = [:function]
 ```
+
+# Specific actions
+
+```@autodocs
+Modules = [LieGroups]
+Pages = ["group_actions/rotation_around_axis_action.jl"]
+Order = [:type, :function]
+```

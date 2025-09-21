@@ -17,11 +17,13 @@ Lie algebra elements (vectors) always `X, Y`.
 
 New functions and types in this package are only mentioned, if they are worth a comment and if something changed.
 
-The list is alphabetical, but first lists types, then functions
+The list lists first types, then functions. Within both blocks, the order is alphabetical
 
 | `Manifolds.jl` | `LieGroups.jl` | Comment |
 |:---------- |:---------- |:-------------- |
 | `AdditionOperation` | [`AdditionGroupOperation`](@ref) | |
+| `ColumnwiseMultiplicationAction` | [`ColumnwiseGroupAction`](@ref)`(`[`LeftMultiplicationGroupAction`](@ref)`)` | within a [`GroupAction`](@ref)`(action, group, manifold)` |
+| `ColumnwiseSpecialEuclideanAction` | [`ColumnwiseGroupAction`](@ref)`(`[`LeftMultiplicationGroupAction`](@ref)`)` | within a within a [`GroupAction`](@ref)`(action, `[`SpecialEuclideanGroup`](@ref)`, `[`Euclidean`](@extref `Manifolds.Euclidean`)`(n)`. |
 | `ComplexPlanarRotation` | [`LeftMultiplicationGroupAction`](@ref) | a slightly more general type for all actions that are implemented by (matrix) multiplication |
 | `GroupActionSide` | [`AbstractActionActsOnType`](@ref) | Switching to a new, hopefully more descriptive naming. |
 | `LeftBackwardAction` | [`AbstractRightGroupActionType`](@ref) and [`ActionActsOnRight`](@ref) | This tuple form has been discontinued. |
@@ -37,6 +39,7 @@ The list is alphabetical, but first lists types, then functions
 | `RightSide` | [`ActionActsOnRight`](@ref) | |
 | `RotationAction` | [`LeftMultiplicationGroupAction`](@ref) | a slightly more general type for all actions that are implemented by (matrix) multiplication |
 | `RotationTranslationActionOnVector` | [`LeftMultiplicationGroupAction`](@ref) | e.g. in a [`GroupAction`](@ref) with [`SpecialEuclideanGroup`](@ref) and [`Euclidean`](@extref `Manifolds.Euclidean`)`(n)`. |
+| `RowwiseMultiplicationAction` | [`RowwiseGroupAction`](@ref)`(`[`LeftMultiplicationGroupAction`](@ref)`)` | |
 | `SemidirectProductGroup(G, H, a)` | [`LeftSemidirectProductLieGroup`](@ref)`(G, H, a)` | While this staid the same, there is now also the [`default_left_action`](@ref)`(G,H)`. When this agrees with `a` you can use the short hand `G⋉H` to generate this semidirect product. Analogously there now also exists the [`RightSemidirectProductLieGroup`](@ref)`(G,H)` with[`default_left_action`](@ref)`(G,H)` that allows for the short cut `G⋊H` |
 | `SpecialEuclidean(n)` | `SpecialEuclideanGroup(n; variant=:right)` | |
 | `VeeOrthogonalBasis` | [`DefaultLieAlgebraOrthogonalBasis`](@ref) | |

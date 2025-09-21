@@ -63,10 +63,11 @@ include("group_operations/multiplication_operation_abelian.jl")
 
 # Actions
 include("group_actions/group_action_interface.jl")
-include("group_actions/columnwise_action.jl")
 include("group_actions/group_operation_action.jl")
 include("group_actions/multiplication_action.jl")
 include("group_actions/rotation_around_axis_action.jl")
+# These might use some of the above so we include them second
+include("group_actions/columnwise_action.jl")
 include("group_actions/rowwise_action.jl")
 
 # Meta Lie groups
@@ -114,7 +115,7 @@ export PowerGroupOperation, ProductGroupOperation
 export LeftSemidirectProductGroupOperation, RightSemidirectProductGroupOperation
 
 #
-#1,
+#
 # Group Actions
 export AbstractGroupActionType
 export AbstractLeftGroupActionType, AbstractRightGroupActionType
@@ -124,7 +125,7 @@ export LeftMultiplicationGroupAction
 export InverseLeftGroupOperationAction, InverseRightGroupOperationAction
 export AbstractActionActsOnType, ActionActsOnLeft, ActionActsOnRight
 export RotationAroundAxisAction
-export ColumnwiseAction, RowwiseAction
+export ColumnwiseGroupAction, RowwiseGroupAction
 
 #
 #
