@@ -201,12 +201,7 @@ function LieGroups.compose(::SpecialGalileanGroup, g::ArrayPartition, h::ArrayPa
 end
 
 # Dev NOTE: hat and vee use a different bases order than that of the underlining semidirect + direct product groups,
-# therefore, get_vector_lie and get_coordinates_lie are implemented explicitly.
-# """
-#     LieGroups.get_vector_lie(::typeof(LieAlgebra(SpecialGalileanGroup(3))), c, ::DefaultLieAlgebraOrthogonalBasis)
-# Return a vector representation of the Lie algebra element `c` in the SpecialGalileanGroup(3).
-# The basis is defined in eq 14 of [Kelly:2025](@cite).
-# """
+# therefore, get_vector_lie and get_coordinates_lie are implemented explicitly. see hat/vee docstrings for details.
 function LieGroups.get_vector_lie(
         ::typeof(LieAlgebra(SpecialGalileanGroup(3))),
         c::SVector{10, T},
@@ -248,10 +243,6 @@ function LieGroups.get_vector_lie!(
     return X
 end
 
-# """
-#     LieGroups.get_coordinates_lie(::typeof(LieAlgebra(SpecialGalileanGroup(3))), X, ::DefaultLieAlgebraOrthogonalBasis)
-# Return the coordinates of the Lie algebra element `X` for the SpecialGalileanGroup(3). The basis is defined in eq 14 of [Kelly:2025](@cite).
-# """
 function LieGroups.get_coordinates_lie(
         ::typeof(LieAlgebra(SpecialGalileanGroup(3))),
         X::ArrayPartition{
@@ -263,10 +254,10 @@ function LieGroups.get_coordinates_lie(
         ::DefaultLieAlgebraOrthogonalBasis
     ) where {T <: Real}
     return SVector{10, T}(
-        X.x[2].x[1][1],   # ν aΔt
+        X.x[2].x[1][1],   # ρ vΔt
         X.x[2].x[1][2],
         X.x[2].x[1][3],
-        X.x[1].x[2][1],   # ρ vΔt
+        X.x[1].x[2][1],   # ν aΔt
         X.x[1].x[2][2],
         X.x[1].x[2][3],
         X.x[1].x[1][3, 2], # θ⃗ₓ[3,2]
@@ -282,15 +273,15 @@ function LieGroups.get_coordinates_lie!(
         X::ArrayPartition,
         ::DefaultLieAlgebraOrthogonalBasis
     )
-    c[1] = X.x[2].x[1][1]   # ν aΔt
+    c[1] = X.x[2].x[1][1]   # ρ vΔt
     c[2] = X.x[2].x[1][2]
     c[3] = X.x[2].x[1][3]
-    c[4] = X.x[1].x[2][1]   # ρ vΔt
+    c[4] = X.x[1].x[2][1]   # ν aΔt
     c[5] = X.x[1].x[2][2]
     c[6] = X.x[1].x[2][3]
     c[7] = X.x[1].x[1][3, 2] # θ⃗ₓ[3,2]
     c[8] = X.x[1].x[1][1, 3] # θ⃗ₓ[1,3]
     c[9] = X.x[1].x[1][2, 1] # θ⃗ₓ[2,1]
-    c[10] = X.x[2].x[2][]    # Δt
+    c[10] = X.x[2].x[2][]   # Δt
     return c
 end

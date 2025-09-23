@@ -133,3 +133,66 @@ LieGroups.log(
 ManifoldsBase.log!(
     ::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, X, g,
 )
+
+_doc_hat_special_galilean = """
+    X = hat(𝔤::LieAlgebra{ℝ,LeftSpecialGalileanGroupOperation,<:SpecialGalileanGroup}, c)
+    hat!(𝔤::LieAlgebra{ℝ,LeftSpecialGalileanGroupOperation,<:SpecialGalileanGroup}, X, c)
+
+Compute the hat map ``(⋅)^{\\wedge} : ℝ^{10} → 𝔤`` that turns a vector of coordinates `c`
+into a tangent vector in the Lie algebra.
+
+```math
+\\begin{bmatrix}
+\\rho \\\\ \\nu \\\\ \\phi \\\\ \\iota
+\\end{bmatrix}^\\wedge
+=
+\\begin{bmatrix}
+\\phi^\\wedge & \\nu & \\rho \\\\
+0 & 0 & \\iota \\\\
+0 & 0 & 0
+\\end{bmatrix}
+\\in \\mathbb{R}^{5\\times 5}
+```
+The basis is defined in eq 14 of [Kelly:2025](@cite).
+
+This can be computed in-place of `X`.
+"""
+
+@doc "$(_doc_hat_special_galilean)"
+ManifoldsBase.hat(::typeof(LieAlgebra(SpecialGalileanGroup(3))), c)
+
+@doc "$(_doc_hat_special_galilean)"
+ManifoldsBase.hat!(::typeof(LieAlgebra(SpecialGalileanGroup(3))), X, c)
+
+_doc_vee_special_galilean = """
+    c = vee(𝔤::LieAlgebra{ℝ,<:LeftSpecialGalileanGroupOperation,<:SpecialGalileanGroup}, X)
+    vee!(𝔤::LieAlgebra{ℝ,LeftSpecialGalileanGroupOperation,<:SpecialGalileanGroup}, c, X)
+
+Compute the vee map ``(⋅)^{\\vee}: $(_math(:𝔤)) →  ℝ^{10}`` that maps a tangent vector
+from the Lie algebra to a vector of coordinates `c`.
+
+```math
+\\begin{bmatrix}
+\\phi^\\wedge & \\nu & \\rho \\\\
+0 & 0 & \\iota \\\\
+0 & 0 & 0
+\\end{bmatrix}^\\vee =
+\\begin{bmatrix}
+\\rho \\\\ \\nu \\\\ \\phi \\\\ \\iota
+\\end{bmatrix}
+\\in \\mathbb{R}^{10}
+```
+The basis is defined in eq 14 of [Kelly:2025](@cite).
+
+This can be computed in-place of `c`.
+"""
+
+@doc "$(_doc_vee_special_galilean)"
+ManifoldsBase.vee(
+    ::typeof(LieAlgebra(SpecialGalileanGroup(3))), X
+)
+
+@doc "$(_doc_vee_special_galilean)"
+ManifoldsBase.vee!(
+    ::typeof(LieAlgebra(SpecialGalileanGroup(3))), c, X
+)
