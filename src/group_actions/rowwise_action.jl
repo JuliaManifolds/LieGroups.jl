@@ -14,10 +14,11 @@ struct RowwiseGroupAction{A <: AbstractGroupActionType} <: AbstractGroupActionTy
     action::A
 end
 
-function apply(::GroupAction{RowwiseGroupAction{<:LeftMultiplicationGroupAction}}, g, p)
+function apply(::GroupAction{RowwiseGroupAction{LeftMultiplicationGroupAction}}, g, p)
     return (g * p')'
 end
-function apply!(a::GroupAction{RowwiseGroupAction}, q, g, p)
-    b = GroupAction(a.action, a.group, a.manifold)
-    return map((qrow, prow) -> apply!(b, qrow, g, prow), eachrow(q), eachrow(p))
+function apply!(a::GroupAction{RowwiseGroupAction{LeftMultiplicationGroupAction}}, q, g, p)
+    b = GroupAction(a.type.action, a.group, a.manifold)
+    map((qrow, prow) -> apply!(b, qrow, g, prow), eachrow(q), eachrow(p))
+    return q
 end
