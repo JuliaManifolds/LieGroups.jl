@@ -23,6 +23,7 @@ end
     end
     @testset "Generic Group Actions" begin
         include_test("actions/test_action_interface.jl")
+        include_test("actions/test_addition_action.jl")
         include_test("actions/test_operation_action.jl")
         include_test("actions/test_rotation_around_axis_action.jl")
         include_test("actions/test_columnwise_action.jl")
