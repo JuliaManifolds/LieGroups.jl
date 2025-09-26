@@ -23,6 +23,7 @@ The list lists first types, then functions. Within both blocks, the order is alp
 |:---------- |:---------- |:-------------- |
 | `AdditionOperation` | [`AdditionGroupOperation`](@ref) | |
 | `ColumnwiseMultiplicationAction` | [`ColumnwiseGroupAction`](@ref)`(`[`LeftMultiplicationGroupAction`](@ref)`)` | within a [`GroupAction`](@ref)`(action, group, manifold)` |
+| `ColumnwiseSpecialEuclideanAction` |  [`ColumnwiseGroupAction`](@ref)`(`[`LeftMultiplicationGroupAction`](@ref)`)` | within a [`GroupAction`](@ref)`(action, group, manifold)`, where the `group`is a [`SpecialEuclideanGroup`](@ref) |
 | `ColumnwiseSpecialEuclideanAction` | [`ColumnwiseGroupAction`](@ref)`(`[`LeftMultiplicationGroupAction`](@ref)`)` | within a within a [`GroupAction`](@ref)`(action, `[`SpecialEuclideanGroup`](@ref)`, `[`Euclidean`](@extref `Manifolds.Euclidean`)`(n)`. |
 | `ComplexPlanarRotation` | [`LeftMultiplicationGroupAction`](@ref) | a slightly more general type for all actions that are implemented by (matrix) multiplication |
 | `GroupActionSide` | [`AbstractActionActsOnType`](@ref) | Switching to a new, hopefully more descriptive naming. |
@@ -42,6 +43,7 @@ The list lists first types, then functions. Within both blocks, the order is alp
 | `RowwiseMultiplicationAction` | [`RowwiseGroupAction`](@ref)`(`[`LeftMultiplicationGroupAction`](@ref)`)` | |
 | `SemidirectProductGroup(G, H, a)` | [`LeftSemidirectProductLieGroup`](@ref)`(G, H, a)` | While this staid the same, there is now also the [`default_left_action`](@ref)`(G,H)`. When this agrees with `a` you can use the short hand `G⋉H` to generate this semidirect product. Analogously there now also exists the [`RightSemidirectProductLieGroup`](@ref)`(G,H)` with[`default_left_action`](@ref)`(G,H)` that allows for the short cut `G⋊H` |
 | `SpecialEuclidean(n)` | `SpecialEuclideanGroup(n; variant=:right)` | |
+| `TranslationAction` | [`AdditionGroupAction`](@ref) | this slightly more general name allows to reuse the action in other contexts easier |
 | `VeeOrthogonalBasis` | [`DefaultLieAlgebraOrthogonalBasis`](@ref) | |
 | `adjoint_action` | [`adjoint`](@ref) | now implemented with a default, when you provide [`diff_conjugate!`](@ref).
 | `adjoint_matrix(G, p, b)` | [`jacobian_conjugate`](@ref)`(G, p, e, b)` | `e` is either the [`Identity`](@ref)`(G)` or its [`identity_element`](@ref)`(G)` |

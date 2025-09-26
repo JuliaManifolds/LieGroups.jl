@@ -63,6 +63,7 @@ include("group_operations/multiplication_operation_abelian.jl")
 
 # Actions
 include("group_actions/group_action_interface.jl")
+include("group_actions/addition_action.jl")
 include("group_actions/group_operation_action.jl")
 include("group_actions/multiplication_action.jl")
 include("group_actions/rotation_around_axis_action.jl")
@@ -119,6 +120,7 @@ export LeftSemidirectProductGroupOperation, RightSemidirectProductGroupOperation
 # Group Actions
 export AbstractGroupActionType
 export AbstractLeftGroupActionType, AbstractRightGroupActionType
+export AdditionGroupAction
 export LeftGroupOperationAction, RightGroupOperationAction
 export GroupAction, GroupOperationAction
 export LeftMultiplicationGroupAction
