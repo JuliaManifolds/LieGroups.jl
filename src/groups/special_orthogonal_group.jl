@@ -80,6 +80,58 @@ end
 
 _inv!(G::SpecialOrthogonalGroup, k, g) = copyto!(G, k, transpose(g))
 
+
+_doc_jacobian_exp_SO2 = """
+    jacobian_exp(M::Rotations{TypeParameter{Tuple{2}}}, g, X, ::DefaultLieAlgebraOrthogonalBasis)
+    jacobian_exp!(M::Rotations{TypeParameter{Tuple{2}}}, J, g, X, ::DefaultLieAlgebraOrthogonalBasis)
+
+Compute Jacobian of the Lie group exponential in a basis of the Lie algebra on the [`SpecialOrthogonalGroup`](@ref)`(2)` manifold.
+
+It is equal to matrix ``[1]``, see [SolaDerayAtchuthan:2021](@cite), Appendix A.
+"""
+
+@doc "$(_doc_jacobian_exp_SO2)"
+jacobian_exp(::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, p, X, basis = DefaultLieAlgebraOrthogonalBasis())
+
+@doc "$(_doc_jacobian_exp_SO2)"
+function jacobian_exp!(
+        ::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, J::AbstractMatrix, p, X, ::DefaultLieAlgebraOrthogonalBasis
+    )
+    J .= 1
+    return J
+end
+
+_doc_jacobian_exp_SO3 = raw"""
+    jacobian_exp(M::Rotations{TypeParameter{Tuple{3}}}, p, X, ::DefaultLieAlgebraOrthogonalBasis)
+    jacobian_exp!(M::Rotations{TypeParameter{Tuple{3}}}, J, p, X, ::DefaultLieAlgebraOrthogonalBasis)
+
+Compute Jacobian of the Lie group exponential in a basis of the Lie algebra on the [`Rotations`](@ref)`(3)` manifold. The formula reads
+
+````math
+J = 𝕀 + \frac{\cos(θ) - 1}{θ^2} X + \frac{θ - \sin(θ)}{θ^3} X^2,
+````
+
+where ``θ`` is the norm of `X`.
+It is adapted from [Chirikjian:2012](@cite), Eq. (10.86), to `LieGroups.jl` conventions.
+"""
+
+@doc "$(_doc_jacobian_exp_SO3)"
+jacobian_exp(M::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, p, X, basis = DefaultLieAlgebraOrthogonalBasis())
+
+@doc "$(_doc_jacobian_exp_SO3)"
+function jacobian_exp!(
+        M::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, J::AbstractMatrix, p, X, ::DefaultLieAlgebraOrthogonalBasis
+    )
+    θ = norm(M, p, X) / sqrt(2)
+    copyto!(J, I)
+    if θ ≉ 0
+        a = (cos(θ) - 1) / θ^2
+        b = (θ - sin(θ)) / θ^3
+        J .+= a .* X .+ b .* (X^2)
+    end
+    return J
+end
+
 @doc "$(_doc_log_O2_id)"
 ManifoldsBase.log(::SpecialOrthogonalGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, g)
 

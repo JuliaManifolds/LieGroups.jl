@@ -878,25 +878,25 @@ function jacobian_conjugate!(
     return J
 end
 
-_doc_jac_exp_arg = """
-    jacobian_exp_argument(G::AbstractLieGroup, g, X, b)
-    jacobian_exp_argument!(G::AbstractLieGroup, J, g, X, b)
+_doc_jac_exp = """
+    jacobian_exp(G::AbstractLieGroup, g, X, b)
+    jacobian_exp!(G::AbstractLieGroup, J, g, X, b)
 
 Compute the Jacobian of the [`exp`](@ref) ``$(_tex(:exp))_g(X)`` with respect to
 an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`) of the [`LieAlgebra`](@ref).
 """
 
-"$(_doc_jac_exp_arg)"
-function jacobian_exp_argument(
+"$(_doc_jac_exp)"
+function jacobian_exp(
         G::AbstractLieGroup, g, X, B::AbstractBasis = DefaultLieAlgebraOrthogonalBasis()
     )
-    J = ManifoldsBase.allocate_result(G, jacobian_exp_argument, g, X, B)
-    return jacobian_exp_argument!(G, J, g, X, B)
+    J = ManifoldsBase.allocate_result(G, jacobian_exp, g, X, B)
+    return jacobian_exp!(G, J, g, X, B)
 end
 
-function jacobian_exp_argument! end
-@doc "$(_doc_jac_exp_arg)"
-jacobian_exp_argument!(
+function jacobian_exp! end
+@doc "$(_doc_jac_exp)"
+jacobian_exp!(
     G::AbstractLieGroup, J, g, X,
     B::AbstractBasis = DefaultLieAlgebraOrthogonalBasis()
 )
@@ -1253,6 +1253,10 @@ function ManifoldsBase.allocate_result(
     return ManifoldsBase.allocate_result(base_manifold(G), ManifoldsBase.exp, args...)
 end
 function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(jacobian_conjugate), g, h, B)
+    n = number_of_coordinates(G.manifold, B)
+    return zeros(float(number_eltype(g)), n, n)
+end
+function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(jacobian_exp), g, X, B)
     n = number_of_coordinates(G.manifold, B)
     return zeros(float(number_eltype(g)), n, n)
 end

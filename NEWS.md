@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 * mention `adjoint_matrix` in the transition documentation (#52)
-* introduce `jacobian_exp_argument`
+* introduce `jacobian_exp` for the Jacobian of the exponential function.
 * Introduce a `AbstractActionActsOnType` to distinguish, what previously was called “side”,
   i.e. whether an action acts on the left (`ActionActsOnLeft`) or right (`ActionActsOnRight`)
 * Introduce `_inv` and `_inv!` functions for the inverse operation to work the same way as `_compose` and `_compose!`, respectively.
