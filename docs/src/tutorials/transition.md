@@ -24,7 +24,6 @@ The list lists first types, then functions. Within both blocks, the order is alp
 | `AdditionOperation` | [`AdditionGroupOperation`](@ref) | |
 | `ColumnwiseMultiplicationAction` | [`ColumnwiseGroupAction`](@ref)`(`[`LeftMultiplicationGroupAction`](@ref)`)` | within a [`GroupAction`](@ref)`(action, group, manifold)` |
 | `ColumnwiseSpecialEuclideanAction` |  [`ColumnwiseGroupAction`](@ref)`(`[`LeftMultiplicationGroupAction`](@ref)`)` | within a [`GroupAction`](@ref)`(action, group, manifold)`, where the `group`is a [`SpecialEuclideanGroup`](@ref) |
-| `ColumnwiseSpecialEuclideanAction` | [`ColumnwiseGroupAction`](@ref)`(`[`LeftMultiplicationGroupAction`](@ref)`)` | within a within a [`GroupAction`](@ref)`(action, `[`SpecialEuclideanGroup`](@ref)`, `[`Euclidean`](@extref `Manifolds.Euclidean`)`(n)`. |
 | `ComplexPlanarRotation` | [`LeftMultiplicationGroupAction`](@ref) | a slightly more general type for all actions that are implemented by (matrix) multiplication |
 | `GroupActionSide` | [`AbstractActionActsOnType`](@ref) | Switching to a new, hopefully more descriptive naming. |
 | `LeftBackwardAction` | [`AbstractRightGroupActionType`](@ref) and [`ActionActsOnRight`](@ref) | This tuple form has been discontinued. |
