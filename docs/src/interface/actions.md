@@ -42,6 +42,12 @@ Order = [:type, :function]
 
 ```@autodocs
 Modules = [LieGroups]
+Pages = ["group_actions/rotation_around_axis_action.jl"]
+Order = [:type, :function]
+```
+
+```@autodocs
+Modules = [LieGroups]
 Pages = ["rowwise_action.jl"]
 Order = [:type, :function]
 ```
