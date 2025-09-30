@@ -74,6 +74,13 @@ R & v & p \\\\
 And the ArrayPartition representation as:
 ``((R, v), (p, t))``
 
+The group operation ([`compose`](@ref)) is given by:
+```math
+((R_1, v_1), (p_1, t_1)) \\circ ((R_2, v_2), (p_2, t_2))
+= ((R_1 R_2, v_1 + R_1 v_2), (p_1 + v_1 t_2 + R_1 p_2, t_1 + t_2))
+``` 
+and the identity element ([`identity_element`](@ref)) is ``((I_n, \\mathbf{0}), (\\mathbf{0}, 0))``.
+
 !!! note "Technical Detail"
     The ArrayPartition (default) implementation requires `RecursiveArrayTools.jl` to be loaded. The matrix representation is not implemented yet.
 
