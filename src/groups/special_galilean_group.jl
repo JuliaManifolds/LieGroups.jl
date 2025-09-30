@@ -1,15 +1,17 @@
 """
     RotationBoostAction
 
-The group action of the semidirect product of spatial rotations and velocity boosts (SO(n) ⋉ ℝⁿ) on the space of events (position, time).
+The group action of the semidirect product of spatial rotations and velocity boosts (``(R, v) \\in SO(n) ⋉ ℝⁿ``) 
+on the space of events (position, time) (``(p, t) \\in ℝⁿ × ℝ``).
+See [Kelly:2025; section 4.1](@cite) and [`apply!`](@ref).
 """
 struct RotationBoostAction <: AbstractLeftGroupActionType end
 
 """
     LieGroups.apply!(A::GroupAction{RotationBoostAction}, k, g, h)
 
-Apply the action of the rotation-boost semidirect product group (SO(n) ⋉ ℝⁿ) on an event (x, t).
-Given group element `g = (R, v)` and event `h = (x, t)`, computes the transformed event `k = (R*x + v*t, t)`.
+Apply the action of the rotation-boost semidirect product group (SO(n) ⋉ ℝⁿ) on an event ``(p, t)``.
+Given group element ``g = (R, v)`` and event ``h = (p, t)``, computes the transformed event ``k = (Rp + vt, t)``.
 See [Kelly:2025; section 4.1](@cite).
 """
 function LieGroups.apply!(A::GroupAction{RotationBoostAction}, k, g, h)
