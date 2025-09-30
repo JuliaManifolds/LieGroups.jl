@@ -73,7 +73,7 @@ And the ArrayPartition representation as:
 ``((R, v), (p, t))``
 
 !!! note "Technical Detail"
-    The ArrayPartition (default) implementation requires `RecursiveArrayTools.jl` to be loaded.
+    The ArrayPartition (default) implementation requires `RecursiveArrayTools.jl` to be loaded. The matrix representation is not implemented yet.
 
 [Kelly:2025](@cite)
 """
@@ -95,9 +95,37 @@ _doc_SGal3_exp = """
     LieGroups.exp!(M::SpecialGalileanGroup, h, X)
 
 Compute the Lie group exponential function on the [`SpecialGalileanGroup`](@ref)`(3)`,
-where `X` is an element of the Lie algebra represented as an `ArrayPartition`.
+where `X` is an element of the Lie algebra.
 
 The closed-form expression for the matrix exponential from [Kelly:2025; section 6](@cite) is used.
+
+```math
+\\exp X
+=
+\\exp{\\begin{bmatrix}
+\\boldsymbol{\\phi}^\\wedge & \\nu & \\rho \\\\
+0 & 0 & \\iota \\\\
+0 & 0 & 0
+\\end{bmatrix}}
+= \\begin{bmatrix}
+C & Dν & Dρ + Eνι \\\\
+0 & 1 & ι \\\\
+0 & 0 & 1
+\\end{bmatrix},
+```
+where
+```math
+C = I_3 + \\sin(\\phi)\\, \\mathbf{u}^{\\wedge} + \\bigl(1 - \\cos(\\phi)\\bigr)\\, \\mathbf{u}^{\\wedge}\\mathbf{u}^{\\wedge}, \\\\
+
+D = I_3 + \\frac{1 - \\cos(\\phi)}{\\phi} \\, \\mathbf{u}^{\\wedge}
++ \\frac{\\phi - \\sin(\\phi)}{\\phi} \\, \\mathbf{u}^{\\wedge}\\mathbf{u}^{\\wedge}, \\\\
+
+E = \\tfrac12 I_3
++ \\frac{\\phi - \\sin(\\phi)}{\\phi^2} \\, \\mathbf{u}^{\\wedge}
++ \\frac{\\phi^2 + 2\\cos(\\phi) - 2}{2\\phi^2} \\, \\mathbf{u}^{\\wedge}\\mathbf{u}^{\\wedge}.
+```
+``\\boldsymbol{\\phi}=\\phi \\mathbf{u}`` is the angle-axis rotation parameterization with
+``\\phi = \\|\\boldsymbol{\\phi}\\|`` and ``\\mathbf{u} = \\boldsymbol{\\phi}/\\phi``. 
 
 The computation can be done in-place of `h`.
 """
@@ -117,7 +145,7 @@ _doc_SGal3_log = """
     LieGroups.log!(M::SpecialGalileanGroup, X, g)
 
 Compute the Lie group logarithm function on the [`SpecialGalileanGroup`](@ref)`(3)`,
-where `g` is a group element represented as an `ArrayPartition`.    
+where `g` is a group element.
 
 The closed-form expression from [Kelly:2025; section 6](@cite) is used.
 
