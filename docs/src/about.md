@@ -14,6 +14,7 @@ Thanks to the following contributors to `LieGroups.jl`:
 
 * [Paula Conrad](https://github.com/plc99) and [Leonard Schreiter](https://github.com/LeoSchreiter) implemented the [Circle group](@ref CircleGroup) as part of their student assistant project.
 * [Olivier Verdier](https://www.olivierverdier.com) helped in the design and some mathematical explanations
+* [Johannes Terblanche](https://github.com/Affie) implemented the [SpecialGalileanGroup](@ref SpecialGalileanGroup).
 
 as well as [contributors](https://github.com/JuliaManifolds/LieGroups.jl/graphs/contributors) providing small extensions, finding small bugs and mistakes and fixing them by opening [PR](https://github.com/JuliaManifolds/LieGroups.jl/pulls)s. Thanks to all of you.
 
