@@ -130,6 +130,7 @@ export GeneralLinearGroup
 export HeisenbergGroup
 export OrthogonalGroup
 export SpecialEuclideanGroup, SpecialLinearGroup
+export SpecialGalileanGroup
 export SpecialOrthogonalGroup, SpecialUnitaryGroup
 export SymplecticGroup
 export TranslationGroup
