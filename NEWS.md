@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   name, it replaces the old `ComplexPlanarRotation`, `QuaternionRotation`, and `RotationAction`, since in the `GroupAction` this type is coupled with a group and a manifold anyway.
 * further methods for the `LeftMultiplicationGroupAction` to cover the previous functionality of e.g.
   * `RotationTranslationActionOnVector`
+* Add the Special Galilean Group (#60)
 
 ### Fixed
 

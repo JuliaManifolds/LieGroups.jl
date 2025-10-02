@@ -10,6 +10,7 @@ using ManifoldsBase: base_manifold, submanifold_components, submanifold_componen
 
 
 include("special_euclidean_group_RAT_ext.jl")
+include("special_galilean_group_RAT_ext.jl")
 
 function LieGroups.identity_element(
         G::LieGroup{𝔽, <:LieGroups.AbstractProductGroupOperation}, ::Type{ArrayPartition}

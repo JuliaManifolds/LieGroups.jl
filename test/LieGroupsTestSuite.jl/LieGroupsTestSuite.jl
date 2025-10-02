@@ -694,7 +694,7 @@ function test_identity_element(
             e = identity_element(G, identity_type)
         end
         if !ismissing(expected_value)
-            @test injectivity_radius(G) == expected_value
+            @test identity_element(G) == expected_value
         end
         if test_mutating
             e2 = copy(G, e)
