@@ -2,6 +2,41 @@
 LieGroups._check_matrix_affine(::ArrayPartition, ::Int; kwargs...) = nothing
 
 #
+# Action
+#
+
+# (a) SE(n) on R^n
+# Euclidean was imported to LieGroups, so we can access it from there.
+function LieGroups.apply!(
+        ::GroupAction{LeftMultiplicationGroupAction, <:LieGroups.LeftSpecialEuclideanGroup, <:LieGroups.Euclidean}, q, g::ArrayPartition, p
+    )
+    mul!(q, g.x[1], p)
+    q .+= g.x[2]
+    return q
+end
+function LieGroups.apply!(
+        ::GroupAction{LieGroups.LeftMultiplicationGroupAction, <:LieGroups.RightSpecialEuclideanGroup, <:LieGroups.Euclidean}, q, g::ArrayPartition, p
+    )
+    mul!(q, g.x[2], p)
+    q .+= g.x[1]
+    return q
+end
+
+function LieGroups.diff_apply!(
+        ::GroupAction{LieGroups.LeftMultiplicationGroupAction, <:LieGroups.LeftSpecialEuclideanGroup, <:LieGroups.Euclidean},
+        Y, g::ArrayPartition, p, X
+    )
+    mul!(Y, g.x[1], X)
+    return Y
+end
+function LieGroups.diff_apply!(
+        ::GroupAction{LieGroups.LeftMultiplicationGroupAction, <:LieGroups.RightSpecialEuclideanGroup, <:LieGroups.Euclidean},
+        Y, g::ArrayPartition, p, X
+    )
+    mul!(Y, g.x[2], X)
+    return Y
+end
+#
 # Conversions
 #
 Base.convert(::Type{<:ArrayPartition}, g::SpecialEuclideanProductPoint) = g.value

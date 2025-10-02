@@ -45,9 +45,10 @@ using StaticArrays
     expectations = Dict(
         :repr => "SpecialOrthogonalGroup(2)", :lie_bracket => zero(X1), :atol => 1.0e-10
     )
+    Gf = SpecialOrthogonalGroup(2; parameter = :field)
+    test_lie_group(Gf, properties, expectations)
+    push!(properties[:Functions], jacobian_exp)
     test_lie_group(G, properties, expectations)
-    G2 = SpecialOrthogonalGroup(2; parameter = :field)
-    test_lie_group(G2, properties, expectations)
     #
     #
     # SO(3)
@@ -66,9 +67,10 @@ using StaticArrays
         :Functions => [exp, hat, log, show, vee],
     )
     expectations2 = Dict(:repr => "SpecialOrthogonalGroup(3)", :atols => Dict(exp => 1.0e-14))
+    Hf = SpecialOrthogonalGroup(3; parameter = :field)
+    test_lie_group(Hf, properties2, expectations2)
+    push!(properties2[:Functions], jacobian_exp)
     test_lie_group(H, properties2, expectations2)
-    H2 = SpecialOrthogonalGroup(3; parameter = :field)
-    test_lie_group(H2, properties2, expectations2)
     # One special case – maybe add to test suite?
     # Hit cosθ = -1
     e = Identity(H)

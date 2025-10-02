@@ -23,7 +23,11 @@ end
     end
     @testset "Generic Group Actions" begin
         include_test("actions/test_action_interface.jl")
+        include_test("actions/test_addition_action.jl")
         include_test("actions/test_operation_action.jl")
+        include_test("actions/test_rotation_around_axis_action.jl")
+        include_test("actions/test_columnwise_action.jl")
+        include_test("actions/test_rowwise_action.jl")
     end
     @testset "Lie Groups" begin
         @testset "Meta Lie Groups" begin
@@ -38,6 +42,7 @@ end
         include_test("groups/test_special_linear_group.jl")
         include_test("groups/test_special_orthogonal_group.jl")
         include_test("groups/test_special_euclidean_group.jl")
+        include_test("groups/test_special_galilean_group.jl")
         include_test("groups/test_special_unitary_group.jl")
         include_test("groups/test_symplectic_group.jl")
         include_test("groups/test_translation_group.jl")

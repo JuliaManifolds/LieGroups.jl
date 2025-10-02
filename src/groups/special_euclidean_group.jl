@@ -297,7 +297,7 @@ function Base.convert(::Type{<:SpecialEuclideanMatrixTangentVector}, X::Abstract
 end
 
 """
-    default_left_action(G::SpecialOrthogonalGroup, ::TranslationGroup)
+    default_left_action(::SpecialOrthogonalGroup, ::TranslationGroup)
 
 Return the default [`AbstractGroupActionType`](@ref) for the special Euclidean group ``$(_math(:SO))(n) ⋉ $(_math(:T))(n)``,
 which is the [`LeftMultiplicationGroupAction`](@ref)
@@ -306,7 +306,7 @@ default_left_action(::SpecialOrthogonalGroup, ::TranslationGroup) =
     LeftMultiplicationGroupAction()
 
 """
-    default_right_action(::TranslationGroup, G::SpecialOrthogonalGroup)
+    default_right_action(::TranslationGroup, ::SpecialOrthogonalGroup)
 
 Return the default [`AbstractGroupActionType`](@ref) for the special Euclidean group ``$(_math(:T))(n) ⋊ $(_math(:SO))(n)``,
 which is the [`LeftMultiplicationGroupAction`](@ref)
@@ -1011,4 +1011,78 @@ function ManifoldsBase.zero_vector!(
     zero_vector!(LieAlgebra(SO3), Y)
     zero_vector!(LieAlgebra(T3), v)
     return X
+end
+
+#
+# Group Action SE(n) on R^n
+# on Matrices this is done in homogeneous coordinates - or by cutting the matrix accordingly
+#
+_doc_apple_SE_Rn = """
+    apply(::GroupAction{LeftMultiplicationGroupAction, <:SpecialEuclideanGroup, <:Euclidean}, g, p)
+    apply!(::GroupAction{LeftMultiplicationGroupAction, <:SpecialEuclideanGroup, <:Euclidean}, q, g, p)
+
+Given the Lie group [`SpecialEuclideanGroup`](@ref)  and the [`Euclidean`](@extref `Manifolds.Euclidean`) manifold ``ℝ^n``,
+this action performs both the rotation and translation on a vector ``p ∈ ℝ^n``,
+that is, for ``g = (R, t) ∈ $(_math(:SE))(n)``, the action is given by
+
+```math
+q = σ_g(p) = g ⋅ p = Rp + t,
+```
+
+where the name of the action, [`LeftMultiplicationGroupAction`](@ref), indicates that the group element `g` acts on the left of the vector `p`,
+and directly yields a multiplication if interpreted in homogeneous coordinates.
+"""
+
+@doc "$(_doc_apple_SE_Rn)"
+apply(::GroupAction{LeftMultiplicationGroupAction, <:SpecialEuclideanGroup, <:Euclidean}, g, p)
+
+@doc "$(_doc_apple_SE_Rn)"
+apply!(::GroupAction{LeftMultiplicationGroupAction, <:SpecialEuclideanGroup, <:Euclidean}, q, g, p)
+
+function apply!(
+        A::GroupAction{LeftMultiplicationGroupAction, <:SpecialEuclideanGroup, <:Euclidean}, q, g, p
+    )
+    Rn = A.manifold
+    n = get_parameter(Rn.size)[1]
+    mul!(q, g[1:n, 1:n], p)
+    q .+= g[1:n, (n + 1)]
+    return q
+end
+
+_doc_diff_apply_SE_Rn = """
+    diff_apply(::GroupAction{LeftMultiplicationGroupAction,SpecialEuclideanGroup,Euclidean}, g, p, X)
+    diff_apply!(::GroupAction{LeftMultiplicationGroupAction,SpecialEuclideanGroup,Euclidean}, Y, g, p, X)
+
+Given the Lie group [`SpecialEuclideanGroup`](@ref)  and the [`Euclidean`](@extref `Manifolds.Euclidean`) manifold ``ℝ^n``,
+the differential of the group action
+this action performs both the rotation and translation on a vector ``p ∈ ℝ^n``,
+that is, for ``g = (R, t) ∈ $(_math(:SE))(n)``, the differential is given by
+
+
+```math
+Y = Dσ_g(p)[X] = RX,
+```
+
+where the name of the action, [`LeftMultiplicationGroupAction`](@ref), indicates that the group element `g` acts on the left of the vector `p`,
+and directly yields a multiplication if interpreted in homogeneous coordinates.
+"""
+
+@doc "$(LieGroups._doc_diff_apply_SE_Rn)"
+LieGroups.diff_apply(
+    ::GroupAction{LeftMultiplicationGroupAction, <:SpecialEuclideanGroup, <:Euclidean}, g, p, X
+)
+
+@doc "$(_doc_diff_apply_SE_Rn)"
+diff_apply!(
+    ::GroupAction{LeftMultiplicationGroupAction, <:SpecialEuclideanGroup, <:Euclidean}, Y, g, p, X
+)
+
+function diff_apply!(
+        A::GroupAction{LeftMultiplicationGroupAction, <:SpecialEuclideanGroup, <:Euclidean},
+        Y, g, p, X
+    )
+    Rn = A.manifold
+    n = get_parameter(Rn.size)[1]
+    mul!(Y, g[1:n, 1:n], X)
+    return Y
 end

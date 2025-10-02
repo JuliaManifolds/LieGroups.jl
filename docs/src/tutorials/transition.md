@@ -17,11 +17,13 @@ Lie algebra elements (vectors) always `X, Y`.
 
 New functions and types in this package are only mentioned, if they are worth a comment and if something changed.
 
-The list is alphabetical, but first lists types, then functions
+The list lists first types, then functions. Within both blocks, the order is alphabetical
 
 | `Manifolds.jl` | `LieGroups.jl` | Comment |
 |:---------- |:---------- |:-------------- |
 | `AdditionOperation` | [`AdditionGroupOperation`](@ref) | |
+| `ColumnwiseMultiplicationAction` | [`ColumnwiseGroupAction`](@ref)`(`[`LeftMultiplicationGroupAction`](@ref)`)` | within a [`GroupAction`](@ref)`(action, group, manifold)` |
+| `ColumnwiseSpecialEuclideanAction` |  [`ColumnwiseGroupAction`](@ref)`(`[`LeftMultiplicationGroupAction`](@ref)`)` | within a [`GroupAction`](@ref)`(action, group, manifold)`, where the `group`is a [`SpecialEuclideanGroup`](@ref) |
 | `ComplexPlanarRotation` | [`LeftMultiplicationGroupAction`](@ref) | a slightly more general type for all actions that are implemented by (matrix) multiplication |
 | `GroupActionSide` | [`AbstractActionActsOnType`](@ref) | Switching to a new, hopefully more descriptive naming. |
 | `LeftBackwardAction` | [`AbstractRightGroupActionType`](@ref) and [`ActionActsOnRight`](@ref) | This tuple form has been discontinued. |
@@ -36,9 +38,15 @@ The list is alphabetical, but first lists types, then functions
 | `RightForwardAction` | [`AbstractRightGroupActionType`](@ref) and [`ActionActsOnLeft`](@ref) | This tuple form has been discontinued. |
 | `RightSide` | [`ActionActsOnRight`](@ref) | |
 | `RotationAction` | [`LeftMultiplicationGroupAction`](@ref) | a slightly more general type for all actions that are implemented by (matrix) multiplication |
+| `RotationTranslationActionOnVector` | [`LeftMultiplicationGroupAction`](@ref) | e.g. in a [`GroupAction`](@ref) with [`SpecialEuclideanGroup`](@ref) and [`Euclidean`](@extref `Manifolds.Euclidean`)`(n)`. |
+| `RowwiseMultiplicationAction` | [`RowwiseGroupAction`](@ref)`(`[`LeftMultiplicationGroupAction`](@ref)`)` | |
 | `SemidirectProductGroup(G, H, a)` | [`LeftSemidirectProductLieGroup`](@ref)`(G, H, a)` | While this staid the same, there is now also the [`default_left_action`](@ref)`(G,H)`. When this agrees with `a` you can use the short hand `G⋉H` to generate this semidirect product. Analogously there now also exists the [`RightSemidirectProductLieGroup`](@ref)`(G,H)` with[`default_left_action`](@ref)`(G,H)` that allows for the short cut `G⋊H` |
-| `SpecialEuclidean(n)` | `SpecialEuclideanGroup(n; variant=:right)` | |
+| `SpecialEuclidean(n)` | [`SpecialEuclideanGroup`](@ref)`(n; variant=:right)` | |
+| `SpecialEuclideanInGeneralLinear(n)` | [`SpecialEuclideanGroup`](@ref)`(n; variant=:right)` | now supports both `ArrayPartition` and matrix representations. Point and tangent vectors can be converted between them using `convert`, which replaces old `project` and `embed` on `SpecialEuclideanInGeneralLinear`, see [`SpecialEuclideanMatrixPoint`](@ref), [`SpecialEuclideanMatrixTangentVector`](@ref), [`SpecialEuclideanProductPoint`](@ref) and [`SpecialEuclideanProductTangentVector`](@ref). |
+| `TranslationAction` | [`AdditionGroupAction`](@ref) | this slightly more general name allows to reuse the action in other contexts easier |
+| `VeeOrthogonalBasis` | [`DefaultLieAlgebraOrthogonalBasis`](@ref) | |
 | `adjoint_action` | [`adjoint`](@ref) | now implemented with a default, when you provide [`diff_conjugate!`](@ref).
+| `adjoint_matrix(G, p, b)` | [`jacobian_conjugate`](@ref)`(G, p, e, b)` | `e` is either the [`Identity`](@ref)`(G)` or its [`identity_element`](@ref)`(G)` |
 | `apply_diff` | [`diff_apply`](@ref) | modifiers (diff) come first, consistent with [`ManifoldsDiff.jl`](https://juliamanifolds.github.io/ManifoldDiff.jl/stable/) |
 | `apply_diff_group` | [`diff_group_apply`](@ref) | modifiers (diff/group) come first, consistent with [`ManifoldsDiff.jl`](https://juliamanifolds.github.io/ManifoldDiff.jl/stable/) |
 | | [`conjugate`](@ref), [`diff_conjugate`](@ref) | a new function to model ``c_g: \mathcal G → \mathcal G`` given by ``c_g(h) = g∘h∘g^{-1}`` |
@@ -53,6 +61,7 @@ The list is alphabetical, but first lists types, then functions
 | `inverse_translate(G, g, h, c)` | [`inv_left_compose`](@ref)`(G, g, h)`, [`inv_right_compose`](@ref)`(G, g, h)` | compute ``g^{-1}∘h`` and ``g∘h^{-1}``, resp. |
 | `inverse_translate_diff(G, g, h, X, LeftForwardAction())` | - | discontinued, use `diff_left_compose(G, inv(G,g), h)` |
 | `inverse_translate_diff(G, g, h, X, RightBackwardAction())` | - | discontinued, use `diff_left_compose(G, h, inv(G,g))` |
+| `jacobian_exp_argument(G, g, X, b)` | [`jacobian_exp`](@ref)`(G, g, X, b)` | the Jacobian of the exponential map w.r.t. an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`) of the [`LieAlgebra`](@ref). The old name is resevered for the Riemannian exponential map. |
 | `log(G, g, h)` | `log(`[`base_manifold`](@ref base_manifold(G::LieGroup))`(G), g, h)` | you can now access the previous defaults on the internal manifold whenever they do not agree with the invariant one |
 | `log_inv(G, g, h)` | [`log`](@ref log(G::LieGroup, g, h))`(G, g, h)` | the logarithmic map invariant to the group operation is the default on Lie groups here |
 | `log_lie(G, g)` | [`log`](@ref log(G::LieGroup, g))`(G, g)` | the (matrix/Lie group) logarithm |
@@ -62,7 +71,6 @@ The list is alphabetical, but first lists types, then functions
 | `translate(G, g, h)` | [`compose`](@ref)`(G, g, h)` | unified to `compose` |
 | `translate_diff(G, g, X, c)` | [`diff_left_compose`](@ref)`(G, g, h, X)`, [`diff_right_compose`](@ref)`(G, g, h, X)` | for compose ``g∘h`` the functions now specify whether the derivative is taken w.r.t. to the left (`g`) or right (`h`) argument |
 | `vee(G, p, X)` | [`vee`](@ref vee(G::LieAlgebra, X))`(`[`LieAlgebra`](@ref)`(G), X)` | hat/vee moved to using the new [`LieAlgebra`](@ref). The old format should still work. |
-| `VeeOrthogonalBasis` | [`DefaultLieAlgebraOrthogonalBasis`](@ref) | |
 
 ## Further notable changes
 

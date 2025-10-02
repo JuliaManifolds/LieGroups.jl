@@ -5,15 +5,20 @@ All notable Changes to the Julia package `LieGroups.jl` will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.4] unreleased
+## [0.1.4] 2025-10-02
 
 ### Added
 
+* mention `adjoint_matrix` in the transition documentation (#52)
+* introduce `jacobian_exp` for the Jacobian of the exponential function.
 * Introduce a `AbstractActionActsOnType` to distinguish, what previously was called “side”,
   i.e. whether an action acts on the left (`ActionActsOnLeft`) or right (`ActionActsOnRight`)
 * Introduce `_inv` and `_inv!` functions for the inverse operation to work the same way as `_compose` and `_compose!`, respectively.
 * introduce a `LeftMultiplicationGroupAction` to represent left multiplication actions on Lie groups. While this is a bit more of a technical
   name, it replaces the old `ComplexPlanarRotation`, `QuaternionRotation`, and `RotationAction`, since in the `GroupAction` this type is coupled with a group and a manifold anyway.
+* further methods for the `LeftMultiplicationGroupAction` to cover the previous functionality of e.g.
+  * `RotationTranslationActionOnVector`
+* Add the Special Galilean Group (#60)
 
 ### Fixed
 
@@ -22,6 +27,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Fixed an issue, where `exp!(G, h, g, X)` would return a wrong result if the input `g`and the output `h`are aliased (#63).
 * Fixed issues with the documentation of `diff_left_compose` and `diff_right_compose` that were inconsistent
 * fixed `push_forward_tangent` and `pull_back_tangent` which on general Lie groups provided a wrong default.
+* fixes an allocation bug for `apply` and `diff_apply` (#52)
+
 
 ## [0.1.3] 2025-08-04
 
