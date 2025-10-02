@@ -41,7 +41,8 @@ The list lists first types, then functions. Within both blocks, the order is alp
 | `RotationTranslationActionOnVector` | [`LeftMultiplicationGroupAction`](@ref) | e.g. in a [`GroupAction`](@ref) with [`SpecialEuclideanGroup`](@ref) and [`Euclidean`](@extref `Manifolds.Euclidean`)`(n)`. |
 | `RowwiseMultiplicationAction` | [`RowwiseGroupAction`](@ref)`(`[`LeftMultiplicationGroupAction`](@ref)`)` | |
 | `SemidirectProductGroup(G, H, a)` | [`LeftSemidirectProductLieGroup`](@ref)`(G, H, a)` | While this staid the same, there is now also the [`default_left_action`](@ref)`(G,H)`. When this agrees with `a` you can use the short hand `G⋉H` to generate this semidirect product. Analogously there now also exists the [`RightSemidirectProductLieGroup`](@ref)`(G,H)` with[`default_left_action`](@ref)`(G,H)` that allows for the short cut `G⋊H` |
-| `SpecialEuclidean(n)` | `SpecialEuclideanGroup(n; variant=:right)` | |
+| `SpecialEuclidean(n)` | [`SpecialEuclideanGroup`](@ref)`(n; variant=:right)` | |
+| `SpecialEuclideanInGeneralLinear(n)` | [`SpecialEuclideanGroup`](@ref)`(n; variant=:right)` | now supports both `ArrayPartition` and matrix representations. Point and tangent vectors can be converted between them using `convert`, which replaces old `project` and `embed` on `SpecialEuclideanInGeneralLinear`, see [`SpecialEuclideanMatrixPoint`](@ref), [`SpecialEuclideanMatrixTangentVector`](@ref), [`SpecialEuclideanProductPoint`](@ref) and [`SpecialEuclideanProductTangentVector`](@ref). |
 | `TranslationAction` | [`AdditionGroupAction`](@ref) | this slightly more general name allows to reuse the action in other contexts easier |
 | `VeeOrthogonalBasis` | [`DefaultLieAlgebraOrthogonalBasis`](@ref) | |
 | `adjoint_action` | [`adjoint`](@ref) | now implemented with a default, when you provide [`diff_conjugate!`](@ref).
