@@ -2,7 +2,7 @@
     LeftMultiplicationGroupAction <: AbstractLeftGroupActionType
 
 Specify that in a [`GroupAction`](@ref) with Lie group ``$(_tex(:Cal, "G"))``
-and manifold ``$(_tex(:Cal, "M"))``, the group action is given by multiplication
+and manifold ``$(_tex(:Cal, "M"))``, where the group action is given by multiplication
 from the left:
 
 Given an element ``g ∈ $(_tex(:Cal, "G"))`` and a point ``p ∈ $(_tex(:Cal, "M"))``,

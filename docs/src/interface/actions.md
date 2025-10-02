@@ -18,13 +18,37 @@ Order = [:function]
 
 ```@autodocs
 Modules = [LieGroups]
+Pages = ["addition_action.jl"]
+Order = [:type, :function]
+```
+
+```@autodocs
+Modules = [LieGroups]
 Pages = ["group_operation_action.jl"]
 Order = [:type, :function]
 ```
 
 ```@autodocs
 Modules = [LieGroups]
+Pages = ["columnwise_action.jl"]
+Order = [:type, :function]
+```
+
+```@autodocs
+Modules = [LieGroups]
 Pages = ["multiplication_action.jl"]
+Order = [:type, :function]
+```
+
+```@autodocs
+Modules = [LieGroups]
+Pages = ["group_actions/rotation_around_axis_action.jl"]
+Order = [:type, :function]
+```
+
+```@autodocs
+Modules = [LieGroups]
+Pages = ["rowwise_action.jl"]
 Order = [:type, :function]
 ```
 

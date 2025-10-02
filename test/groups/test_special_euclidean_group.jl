@@ -1,4 +1,5 @@
 using LieGroups, ManifoldsBase, Random, Test, RecursiveArrayTools
+using Manifolds: Euclidean
 
 s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 !(s in LOAD_PATH) && (push!(LOAD_PATH, s))
@@ -7,7 +8,6 @@ using LieGroupsTestSuite
 using StaticArrays
 
 @testset "Special Euclidean" begin
-    𝔰 = sqrt(2)
     fcts = [
         compose,
         exp,
@@ -31,10 +31,10 @@ using StaticArrays
     @testset "SE(2)" begin
         G2f = SpecialEuclideanGroup(2)
         G2l = SpecialEuclideanGroup(2; parameter = :type)
-        g1 = 1 / 𝔰 .* [1.0 1.0 𝔰; -1.0 1.0 0.0; 0.0 0.0 𝔰]
+        g1 = 1 / sqrt(2) .* [1.0 1.0 sqrt(2); -1.0 1.0 0.0; 0.0 0.0 sqrt(2)]
         g2 = [0.0 -1.0 0.0; 1.0 0.0 1.0; 0.0 0.0 1.0]
         g3 = [1.0 0.0 1.0; 0.0 1.0 1.0; 0.0 0.0 1.0]
-        gL1 = ArrayPartition(1 / 𝔰 * [1.0 1.0; -1.0 1.0], [1.0, 0.0])
+        gL1 = ArrayPartition(1 / sqrt(2) * [1.0 1.0; -1.0 1.0], [1.0, 0.0])
         gL2 = ArrayPartition([0.0 -1.0; 1.0 0.0], [0.0, 1.0])
         gL3 = ArrayPartition([1.0 0.0; 0.0 1.0], [1.0, 1.0])
         X1 = [0.0 -0.23 0.0; 0.23 0.0 1.0; 0.0 0.0 0.0]
@@ -79,7 +79,7 @@ using StaticArrays
         G2rt =
             TranslationGroup(2; parameter = :type) ⋊
             SpecialOrthogonalGroup(2; parameter = :type)
-        gR1 = ArrayPartition([1.0, 0.0], 1 / 𝔰 * [1.0 1.0; -1.0 1.0])
+        gR1 = ArrayPartition([1.0, 0.0], 1 / sqrt(2) * [1.0 1.0; -1.0 1.0])
         gR2 = ArrayPartition([0.0, 1.0], [0.0 -1.0; 1.0 0.0])
         gR3 = ArrayPartition([1.0, 1.0], [1.0 0.0; 0.0 1.0])
         XR1 = ArrayPartition([0.0, 1.0], [0.0 -0.23; 0.23 0.0])
@@ -110,11 +110,11 @@ using StaticArrays
     @testset "SE(3)" begin
         G3f = SpecialEuclideanGroup(3)
         G3p = SpecialEuclideanGroup(3; parameter = :type)
-        h1 = 1 / 𝔰 .* [1.0 1.0 0.0 1.0; -1.0 1.0 0.0 0.0; 0.0 0.0 𝔰 0.0; 0.0 0.0 0.0 𝔰]
+        h1 = 1 / sqrt(2) .* [1.0 1.0 0.0 1.0; -1.0 1.0 0.0 0.0; 0.0 0.0 sqrt(2) 0.0; 0.0 0.0 0.0 sqrt(2)]
         h2 = [0.0 -1.0 0.0 0.0; 1.0 0.0 0.0 1.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0]
         h3 = [1.0 0.0 0.0 1.0; 0.0 1.0 0.0 1.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0]
         hL1 = ArrayPartition(
-            1 / 𝔰 * [1.0 1.0 0.0; -1.0 1.0 0.0; 0.0 0.0 𝔰], [1 / 𝔰, 0.0, 0.0]
+            1 / sqrt(2) * [1.0 1.0 0.0; -1.0 1.0 0.0; 0.0 0.0 sqrt(2)], [1 / sqrt(2), 0.0, 0.0]
         )
         hL2 = ArrayPartition([0.0 -1.0 0.0; 1.0 0.0 0.0; 0.0 0.0 1.0], [0.0, 1.0, 0.0])
         hL3 = ArrayPartition([1.0 0.0 0.0; 0.0 1.0 0.0; 0.0 0.0 1.0], [1.0, 1.0, 0.0])
@@ -171,8 +171,8 @@ using StaticArrays
     # Conversions
     @testset "Conversions between representations and indexing" begin
         G2l = SpecialEuclideanGroup(2)
-        g1 = 1 / 𝔰 .* [1.0 1.0 𝔰; -1.0 1.0 0.0; 0.0 0.0 𝔰]
-        g2 = ArrayPartition(1 / 𝔰 * [1.0 1.0; -1.0 1.0], [1.0, 0.0])
+        g1 = 1 / sqrt(2) .* [1.0 1.0 sqrt(2); -1.0 1.0 0.0; 0.0 0.0 sqrt(2)]
+        g2 = ArrayPartition(1 / sqrt(2) * [1.0 1.0; -1.0 1.0], [1.0, 0.0])
         g3 = SpecialEuclideanMatrixPoint(g1)
         g4 = SpecialEuclideanProductPoint(g2)
         X1 = [0.0 -0.23 0.0; 0.23 0.0 1.0; 0.0 0.0 0.0]
@@ -182,7 +182,7 @@ using StaticArrays
 
         # Test also right semi to array
         G2r = SpecialEuclideanGroup(2; variant = :right)
-        g2r = ArrayPartition([1.0, 0.0], 1 / 𝔰 * [1.0 1.0; -1.0 1.0])
+        g2r = ArrayPartition([1.0, 0.0], 1 / sqrt(2) * [1.0 1.0; -1.0 1.0])
         g4r = SpecialEuclideanProductPoint(g2r)
         X2r = ArrayPartition([0.0, 1.0], [0.0 -0.23; 0.23 0.0])
         X4r = SpecialEuclideanProductTangentVector(X2r)
@@ -350,5 +350,44 @@ using StaticArrays
 
         X = hat(LieAlgebra(G), SA[1, 0, 0.01], ArrayPartition)
         @test X isa ArrayPartition{Float64, Tuple{Matrix{Float64}, Vector{Float64}}}
+    end
+    @testset "The Group Action of SE(2) on ℝ²" begin
+        G = SpecialEuclideanGroup(2)
+        Gr = SpecialEuclideanGroup(2; variant = :right)
+        M = Euclidean(2)
+        A = GroupAction(LeftMultiplicationGroupAction(), G, M)
+        Ar = GroupAction(LeftMultiplicationGroupAction(), Gr, M)
+        # Default form: Matrix multiplication
+        g = (1 / sqrt(2)) .* [1.0 1.0 sqrt(2); -1.0 1.0 0.0; 0.0 0.0 sqrt(2)]
+        p = [1.0, 0.0]
+        X = [0.23, 0.1]
+        q = zero(p)
+        Y = zero(X)
+        gp = apply(A, g, p)
+        apply!(A, q, g, p)
+        @test gp == q
+        Xp = diff_apply(A, g, X, p)
+        diff_apply!(A, Y, g, X, p)
+        @test Xp == Y
+        # Left variant: Rotation part first
+        gL = ArrayPartition((1 / sqrt(2)) * [1.0 1.0; -1.0 1.0], [1.0, 0.0])
+        gpL = apply(A, gL, p)
+        apply!(A, q, gL, p)
+        @test gpL == q
+        @test gpL ≈ gp
+        XpL = diff_apply(A, gL, X, p)
+        diff_apply!(A, Y, gL, X, p)
+        @test XpL == Y
+        @test XpL ≈ Xp
+        # Right variant: Translation part first
+        gR = ArrayPartition([1.0, 0.0], (1 / sqrt(2)) * [1.0 1.0; -1.0 1.0])
+        gpR = apply(Ar, gR, p)
+        apply!(Ar, q, gR, p)
+        @test gpR == q
+        @test gpR ≈ gp
+        XpR = diff_apply(Ar, gR, X, p)
+        diff_apply!(Ar, Y, gR, X, p)
+        @test XpR == Y
+        @test XpR ≈ Xp
     end
 end

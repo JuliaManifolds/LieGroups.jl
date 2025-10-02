@@ -63,8 +63,13 @@ include("group_operations/multiplication_operation_abelian.jl")
 
 # Actions
 include("group_actions/group_action_interface.jl")
+include("group_actions/addition_action.jl")
 include("group_actions/group_operation_action.jl")
 include("group_actions/multiplication_action.jl")
+include("group_actions/rotation_around_axis_action.jl")
+# These might use some of the above so we include them second
+include("group_actions/columnwise_action.jl")
+include("group_actions/rowwise_action.jl")
 
 # Meta Lie groups
 include("groups/power_group.jl")
@@ -112,15 +117,18 @@ export PowerGroupOperation, ProductGroupOperation
 export LeftSemidirectProductGroupOperation, RightSemidirectProductGroupOperation
 
 #
-#1,
+#
 # Group Actions
 export AbstractGroupActionType
 export AbstractLeftGroupActionType, AbstractRightGroupActionType
+export AdditionGroupAction
 export LeftGroupOperationAction, RightGroupOperationAction
 export GroupAction, GroupOperationAction
 export LeftMultiplicationGroupAction
 export InverseLeftGroupOperationAction, InverseRightGroupOperationAction
 export AbstractActionActsOnType, ActionActsOnLeft, ActionActsOnRight
+export RotationAroundAxisAction
+export ColumnwiseGroupAction, RowwiseGroupAction
 
 #
 #
@@ -170,6 +178,7 @@ export identity_element, identity_element!, is_identity, inner
 export inv, inv!, diff_inv, diff_inv!
 export injectivity_radius
 export jacobian_conjugate, jacobian_conjugate!
+export jacobian_exp, jacobian_exp!
 export lie_bracket, lie_bracket!, log, log!
 export manifold_dimension
 export norm, number_of_coordinates

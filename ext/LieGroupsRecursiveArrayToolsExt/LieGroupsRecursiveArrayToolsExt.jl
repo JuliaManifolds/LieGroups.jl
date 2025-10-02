@@ -1,10 +1,13 @@
 module LieGroupsRecursiveArrayToolsExt
 
 using LieGroups
+# As long as Manifolds.jl exports these, we have to specify them here specifically
 using RecursiveArrayTools: ArrayPartition
 using LinearAlgebra
 using ManifoldsBase
 using ManifoldsBase: base_manifold, submanifold_components, submanifold_component
+# Specify those that are imported twice to use the ones from LieGroups
+
 
 include("special_euclidean_group_RAT_ext.jl")
 include("special_galilean_group_RAT_ext.jl")
