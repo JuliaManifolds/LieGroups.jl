@@ -6,7 +6,7 @@ const LeftSpecialEuclideanGroupOperation = LeftSemidirectProductGroupOperation{
 const LeftSpecialEuclideanGroup{T} = LieGroup{
     ℝ,
     <:LeftSpecialEuclideanGroupOperation,
-    <:ProductManifold{ℝ, Tuple{<:Rotations{T}, <:Euclidean{T, ℝ}}},
+    <:ProductManifold{ℝ, Tuple{<:Rotations{T}, <:Euclidean{ℝ, T}}},
 }
 
 # for (t, g)
@@ -16,7 +16,7 @@ const RightSpecialEuclideanGroupOperation = RightSemidirectProductGroupOperation
 const RightSpecialEuclideanGroup{T} = LieGroup{
     ℝ,
     <:RightSpecialEuclideanGroupOperation,
-    <:ProductManifold{ℝ, Tuple{<:Euclidean{T, ℝ}, <:Rotations{T}}},
+    <:ProductManifold{ℝ, Tuple{<:Euclidean{ℝ, T}, <:Rotations{T}}},
 }
 
 """

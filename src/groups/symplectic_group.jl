@@ -23,12 +23,12 @@ where ``⋅^+`` denotes the [`symplectic_inverse`](@extref `Manifolds.symplectic
 See [BendokatZimmermann:2021; Section 2](@cite) for more information.
 """
 const SymplecticGroup{𝔽, T} = LieGroup{
-    𝔽, MatrixMultiplicationGroupOperation, SymplecticMatrices{T, 𝔽},
+    𝔽, MatrixMultiplicationGroupOperation, SymplecticMatrices{𝔽, T},
 }
 
 function SymplecticGroup(n::Int, field::AbstractNumbers = ℝ; kwargs...)
     S = SymplecticMatrices(n, field; kwargs...)
-    return SymplecticGroup{field, typeof(S).parameters[1]}(
+    return SymplecticGroup{field, typeof(S).parameters[2]}(
         S, MatrixMultiplicationGroupOperation()
     )
 end

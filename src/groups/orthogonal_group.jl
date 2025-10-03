@@ -16,7 +16,7 @@ const OrthogonalGroup{T} = LieGroup{
 
 function OrthogonalGroup(n::Int; kwargs...)
     R = OrthogonalMatrices(n; kwargs...)
-    return OrthogonalGroup{typeof(R).parameters[1]}(R, MatrixMultiplicationGroupOperation())
+    return OrthogonalGroup{typeof(R).parameters[2]}(R, MatrixMultiplicationGroupOperation())
 end
 
 const OrthogonalLieAlgebra{T} = LieAlgebra{
