@@ -298,7 +298,7 @@ convention, the differential transforms vectors
 
 # See also
 
-[`apply`](@ref), [`apply_diff`](@ref)
+[`apply`](@ref), [`diff_apply`](@ref)
 """
 
 function diff_group_apply end
