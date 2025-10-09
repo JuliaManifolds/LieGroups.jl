@@ -7,7 +7,7 @@ using LieGroupsTestSuite
 
 @testset "Rowwise Actions" begin
     G = SpecialOrthogonalGroup(3)
-    M = Euclidean(3)
+    M = Euclidean(3, 3)
     cga = RowwiseGroupAction(LeftMultiplicationGroupAction())
     a = GroupAction(cga, G, M)
     s = 1 / sqrt(2)

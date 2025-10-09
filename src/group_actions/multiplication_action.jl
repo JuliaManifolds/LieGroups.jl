@@ -26,8 +26,8 @@ end
 function diff_apply!(::GroupAction{LeftMultiplicationGroupAction}, Y, g, p, X)
     return Base.mightalias(Y, X) ? Y .= g * X : mul!(Y, g, X)
 end
+=#
 
-function diff_group_apply!(::GroupAction{LeftMultiplicationGroupAction}, Y, g, p, X)
+function diff_group_apply!(::GroupAction{LeftMultiplicationGroupAction}, Y, ::Identity{MatrixMultiplicationGroupOperation}, p, X)
     return Base.mightalias(Y, X) ? Y .= X * p : mul!(Y, X, p)
 end
-=#
