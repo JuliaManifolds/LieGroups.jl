@@ -1,7 +1,7 @@
 name = "LieGroups"
 uuid = "6774de46-80ba-43f8-ba42-e41071ccfc5f"
 authors = ["Seth Axen <seth.axen@gmail.com>", "Mateusz Baran <mateuszbaran89@gmail.com>", "Ronny Bergmann <git@ronnybergmann.net>", "Yueh-Hua Tu", "Olivier Verdier <olivier.verdier@gmail.com>"]
-version = "0.1.4"
+version = "0.1.5"
 
 [deps]
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
@@ -20,8 +20,8 @@ LieGroupsRecursiveArrayToolsExt = "RecursiveArrayTools"
 [compat]
 Aqua = "0.8"
 LinearAlgebra = "1.10"
-Manifolds = "0.10.16"
-ManifoldsBase = "1.2"
+Manifolds = "0.11"
+ManifoldsBase = "2"
 Quaternions = "0.7.6"
 Random = "1.10"
 RecursiveArrayTools = "2, 3"

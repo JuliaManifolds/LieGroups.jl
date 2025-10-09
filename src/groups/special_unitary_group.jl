@@ -13,12 +13,12 @@ All keyword arguments in `kwargs...` are passed on to [`Rotations`](@extref `Man
 const SpecialUnitaryGroup{T} = LieGroup{
     ManifoldsBase.ℂ,
     MatrixMultiplicationGroupOperation,
-    GeneralUnitaryMatrices{T, ℂ, DeterminantOneMatrixType},
+    GeneralUnitaryMatrices{ℂ, T, DeterminantOneMatrixType},
 }
 
 function SpecialUnitaryGroup(n::Int; kwargs...)
     GU = GeneralUnitaryMatrices(n, ℂ, DeterminantOneMatrixType; kwargs...)
-    return SpecialUnitaryGroup{typeof(GU).parameters[1]}(
+    return SpecialUnitaryGroup{typeof(GU).parameters[2]}(
         GU, MatrixMultiplicationGroupOperation()
     )
 end

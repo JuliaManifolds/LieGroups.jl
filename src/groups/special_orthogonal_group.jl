@@ -16,7 +16,7 @@ const SpecialOrthogonalGroup{T} = LieGroup{
 
 function SpecialOrthogonalGroup(n::Int; kwargs...)
     R = Rotations(n; kwargs...)
-    return SpecialOrthogonalGroup{typeof(R).parameters[1]}(
+    return SpecialOrthogonalGroup{typeof(R).parameters[2]}(
         R, MatrixMultiplicationGroupOperation()
     )
 end

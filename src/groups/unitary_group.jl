@@ -1,5 +1,5 @@
 """
-    UnitaryGroup{T}
+    UnitaryGroup{𝔽, T}
 
 The special orthogonal group ``$(_math(:U))(n)`` is the Lie group consisting of the [`MatrixMultiplicationGroupOperation`](@ref) on the
 manifold of rotations [`UnitaryMatrices`](@extref `Manifolds.GeneralUnitaryMatrices`) with absolute value of the determinant equal to one.
@@ -11,12 +11,12 @@ Generate unitary group ``$(_math(:U))(n)``.
 All keyword arguments in `kwargs...` are passed on to [`Rotations`](@extref `Manifolds.Rotations`) as well.
 """
 const UnitaryGroup{𝔽, T} = LieGroup{
-    𝔽, MatrixMultiplicationGroupOperation, UnitaryMatrices{T, 𝔽},
+    𝔽, MatrixMultiplicationGroupOperation, UnitaryMatrices{𝔽, T},
 }
 
 function UnitaryGroup(n::Int, 𝔽::AbstractNumbers = ManifoldsBase.ℂ; kwargs...)
     U = UnitaryMatrices(n, 𝔽; kwargs...)
-    return UnitaryGroup{𝔽, typeof(U).parameters[1]}(U, MatrixMultiplicationGroupOperation())
+    return UnitaryGroup{𝔽, typeof(U).parameters[2]}(U, MatrixMultiplicationGroupOperation())
 end
 
 function ManifoldsBase.check_size(
@@ -118,7 +118,7 @@ implementations where
 * certain functions are the same for all sizes `T` as long as the field `𝔽` is the same
 """
 const CommonUnitarySubGroup{𝔽, T} = LieGroup{
-    𝔽, MatrixMultiplicationGroupOperation, <:GeneralUnitaryMatrices{T, 𝔽},
+    𝔽, MatrixMultiplicationGroupOperation, <:GeneralUnitaryMatrices{𝔽, T},
 }
 
 #

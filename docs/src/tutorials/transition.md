@@ -1,6 +1,6 @@
 # Transition from `GroupManifolds` in `Manifolds.jl`
 
-One predecessor of `LieGroups.jl` are the [`GroupManifold`](@extref `Manifolds.GroupManifold`)s in `Manifolds.jl`.
+One predecessor of `LieGroups.jl` are the `GroupManifold`s in `Manifolds.jl`.
 While this package provides the same features, one reason for a new package is,
 that a “restart” offers the opportunity to put the main focus for the functions in this package
 really on Lie groups.

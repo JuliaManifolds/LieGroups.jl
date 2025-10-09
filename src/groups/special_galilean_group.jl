@@ -46,11 +46,11 @@ const SpecialGalileanGroup{T} = LieGroup{
     <:ProductManifold{
         ℝ,
         Tuple{
-            <:ProductManifold{ℝ, Tuple{<:Rotations{T}, <:Euclidean{T, ℝ}}},
+            <:ProductManifold{ℝ, Tuple{<:Rotations{T}, <:Euclidean{ℝ, T}}},
             <:ProductManifold{
                 ℝ,
                 Tuple{
-                    <:Euclidean{T, ℝ}, <:Euclidean{ManifoldsBase.TypeParameter{Tuple{1}}, ℝ},
+                    <:Euclidean{ℝ, T}, <:Euclidean{ℝ, ManifoldsBase.TypeParameter{Tuple{1}}},
                 },
             },
         },

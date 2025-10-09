@@ -1,18 +1,18 @@
 #
 #circle group represented as vectors in ℝ^2, operation: adding angles in the unit circle
 #
-function CircleGroup(M::Sphere{ManifoldsBase.TypeParameter{Tuple{1}}, ℝ})
+function CircleGroup(M::Sphere{ℝ, ManifoldsBase.TypeParameter{Tuple{1}}})
     return LieGroup{ℝ, AbelianMultiplicationGroupOperation, typeof(M)}(
         M, AbelianMultiplicationGroupOperation()
     )
 end
 
-function CircleGroup(::Euclidean{ManifoldsBase.TypeParameter{Tuple{2}}, ℝ})
+function CircleGroup(::Euclidean{ℝ, ManifoldsBase.TypeParameter{Tuple{2}}})
     return CircleGroup(Sphere(1))
 end
 
 const _PlanarCircleGroup = LieGroup{
-    ℝ, AbelianMultiplicationGroupOperation, <:Sphere{ManifoldsBase.TypeParameter{Tuple{1}}, ℝ},
+    ℝ, AbelianMultiplicationGroupOperation, <:Sphere{ℝ, ManifoldsBase.TypeParameter{Tuple{1}}},
 }
 
 #=
