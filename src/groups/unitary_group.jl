@@ -1,5 +1,5 @@
 """
-    UnitaryGroup{T}
+    UnitaryGroup{𝔽, T}
 
 The special orthogonal group ``$(_math(:U))(n)`` is the Lie group consisting of the [`MatrixMultiplicationGroupOperation`](@ref) on the
 manifold of rotations [`UnitaryMatrices`](@extref `Manifolds.GeneralUnitaryMatrices`) with absolute value of the determinant equal to one.
