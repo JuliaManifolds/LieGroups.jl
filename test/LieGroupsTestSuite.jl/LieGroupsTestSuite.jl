@@ -339,6 +339,8 @@ function test_diff_group_apply(
                 @test isapprox(𝔤, Y1, Y3)
             end
         end
+        e = Identity(G)
+        @test is_vector(G, e, diff_group_apply(A, e, p, X))
         !ismissing(expected) && @test isapprox(𝔤, Y1, expected)
     end
 end

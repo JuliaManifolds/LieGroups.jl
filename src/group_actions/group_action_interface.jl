@@ -277,19 +277,39 @@ function diff_apply! end
 @doc "$(_doc_diff_apply)"
 diff_apply!(A::GroupAction, q, g, p)
 
-_doc_diff_group_apply = """
+_doc_diff_group_apply = raw"""
     diff_group_apply(A::GroupAction, g, p, X)
     diff_group_apply!(A::GroupAction, Y, g, p, X)
 
-Compute the differential ``$(_math(:d))_{$(_tex(:Cal, "G"))} σ_g(p): $(_math(:𝔤)) → $(_math(:𝔤))``,
-where we use the short hand notation ``σ_p(g) = σ(g,p)`` for a left action,
-and for a right action ``τ_p(g) = τ(g,p)``.
+
+Compute the value of differential of action [`GroupAction`](@ref) `A` on vector `X`,
+where element `g` is acting on `p`, with respect to the group element.
+
+Let ``\mathcal G`` be the group acting on manifold ``\mathcal M`` by the action `A`.
+The action is of element ``g ∈ \mathcal G`` on a point ``p ∈ \mathcal M``.
+The differential transforms vector `X` from the tangent space at `a ∈ \mathcal G`,
+``X ∈ T_a \mathcal G`` into a tangent space of the manifold ``\mathcal M``.
+When action on element `p` is written as ``\mathrm{d}τ^p``, with the specified left or right
+convention, the differential transforms vectors
+
+````math
+(\mathrm{d}τ^p) : T_{a} \mathcal G → T_{τ_a p} \mathcal M
+````
+
+# See also
+
+[`apply`](@ref), [`apply_diff`](@ref)
 """
 
 function diff_group_apply end
 @doc "$(_doc_diff_group_apply)"
 function diff_group_apply(A::GroupAction, g, p, X)
-    Y = allocate_result(base_manifold(A), apply, g, X)
+    Y = allocate_result(base_manifold(A), diff_group_apply, g, X)
+    diff_group_apply!(A, Y, g, p, X)
+    return Y
+end
+function diff_group_apply(A::GroupAction, g::Identity, p, X)
+    Y = allocate_on(A.group, TangentSpaceType())
     diff_group_apply!(A, Y, g, p, X)
     return Y
 end
