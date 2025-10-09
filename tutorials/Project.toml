@@ -8,7 +8,7 @@ Rotations = "6038ab10-8711-5258-84ad-4b1120ba62dc"
 LieGroups = {path = ".."}
 
 [compat]
-LieGroups = "0.1"
-Manifolds = "0.10.14"
+LieGroups = "0.1.5"
+Manifolds = "0.11"
 RecursiveArrayTools = "3.31"
 Rotations = "1.7"
