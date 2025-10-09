@@ -25,7 +25,7 @@ end
         include_test("actions/test_action_interface.jl")
         include_test("actions/test_addition_action.jl")
         include_test("actions/test_operation_action.jl")
-        include_test("actions/multiplication_action.jl")
+        include_test("actions/test_multiplication_action.jl")
         include_test("actions/test_rotation_around_axis_action.jl")
         include_test("actions/test_columnwise_action.jl")
         include_test("actions/test_rowwise_action.jl")
