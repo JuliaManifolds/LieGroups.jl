@@ -1003,7 +1003,7 @@ see also [`rand(::LieAlgebra; kwargs...)`](@ref)
 
 For both cases, you can provide the type ``T`` for the tangent vector and/or point ``PT``,
 if you want to generate a random point in a certain representation.
-For the in-place variants the type is inferred from `pX´ and `X`, respectively.
+For the in-place variants the type is inferred from `pX` and `X`, respectively.
 """
 
 function ManifoldsBase.project!(G::AbstractLieGroup, g, p)
