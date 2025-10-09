@@ -22,3 +22,13 @@ function apply!(a::GroupAction{ColumnwiseGroupAction{LeftMultiplicationGroupActi
     map((qcol, pcol) -> apply!(b, qcol, g, pcol), eachcol(q), eachcol(p))
     return q
 end
+
+function diff_group_apply!(
+        ::GroupAction{ColumnwiseGroupAction{LeftMultiplicationGroupAction}},
+        Y,
+        ::Identity{MatrixMultiplicationGroupOperation},
+        p,
+        X,
+    )
+    return Base.mightalias(Y, X) ? Y .= X * p : mul!(Y, X, p)
+end
