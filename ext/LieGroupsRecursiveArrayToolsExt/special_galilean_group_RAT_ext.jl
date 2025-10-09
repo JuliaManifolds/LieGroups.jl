@@ -2,7 +2,7 @@ using LieGroups: SpecialGalileanGroup
 using StaticArrays
 using LinearAlgebra
 
-# Internal function to compute the skew-symmetric matrix as an SMatrix used for perfomance.
+# Internal function to compute the skew-symmetric matrix as an SMatrix used for performance.
 # Can be replaced with hat(SO(3), v) once that works without allocations.
 function _skew(v::AbstractVector{T}) where {T <: Real}
     return SMatrix{3, 3, T}(0, v[3], -v[2], -v[3], 0, v[1], v[2], -v[1], 0)
