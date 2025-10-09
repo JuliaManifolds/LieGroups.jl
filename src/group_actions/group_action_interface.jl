@@ -309,7 +309,7 @@ function diff_group_apply(A::GroupAction, g, p, X)
     return Y
 end
 function diff_group_apply(A::GroupAction, g::Identity, p, X)
-    Y = allocate_on(A.group, TangentSpaceType())
+    Y = allocate_on(A.manifold, TangentSpaceType())
     diff_group_apply!(A, Y, g, p, X)
     return Y
 end
