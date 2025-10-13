@@ -34,7 +34,8 @@ using Manifolds: base_manifold
 
 import LinearAlgebra: adjoint, adjoint!
 using ManifoldsBase:
-    AbstractBasis, AbstractNumbers, RealNumbers, ComplexNumbers, QuaternionNumbers, ℍ, ℝ, ℂ
+    AbstractBasis, AbstractMetric, AbstractNumbers,
+    RealNumbers, ComplexNumbers, QuaternionNumbers, ℍ, ℝ, ℂ
 using ManifoldsBase:
     allocate_result,
     get_parameter,
@@ -64,6 +65,7 @@ include("group_actions/columnwise_action.jl")
 include("group_actions/rowwise_action.jl")
 
 # Meta Lie groups
+include("groups/metric_group.jl")
 include("groups/power_group.jl")
 include("groups/product_group.jl")
 include("groups/semidirect_product_group.jl")
@@ -92,6 +94,7 @@ include("groups/special_galilean_group.jl")
 
 export AbstractLieGroup
 export LieGroup, LieAlgebra
+export MetricLieGroup
 export PowerLieGroup, ProductLieGroup
 export LeftSemidirectProductLieGroup, RightSemidirectProductLieGroup
 export ValidationLieGroup
@@ -141,6 +144,7 @@ export AbstractLieGroupPoint, AbstractLieAlgebraTangentVector
 export SpecialEuclideanMatrixPoint, SpecialEuclideanMatrixTangentVector
 export SpecialEuclideanProductPoint, SpecialEuclideanProductTangentVector
 export ValidationMPoint, ValidationLieAlgebraTangentVector
+
 
 export BaseManifoldInverseRetraction,
     BaseManifoldRetraction, BaseManifoldVectorTransportMethod

@@ -1,0 +1,91 @@
+"""
+    MetricLieGroup{𝔽,M<:AbstractLieGroup{𝔽},G<:AbstractMetric} <: AbstractDecoratorManifold{𝔽}
+
+Equip an [`AbstractLieGroup`](@ref) `L` explicitly with an [`AbstractMetric`](@extref `ManifoldsBase.AbstractMetric`) `G`.
+
+By default every [`AbstractLieGroup`](@ref) `L` is assumed to implicitly
+implement all functions on their [`LieAlgebra`](@ref) with respect to a metric,
+that corresponds to a certain “default metric”, either because it is a widely recognized metric
+or because the first implementation within `LieGroups.jl` was done with respect to this metric.
+
+This default is usually indicated by checking that [`metric(L)`](@extref `Manifolds`) returns [`DefaultMetric`](@exref `Manifolds.DefaultMetric`).
+
+This decorator type allows to explicitly equip the Lie group with a different metric.
+Note that for any functions unrelated to the metric, this new Lie group will simply forward
+to the Lie group that is internally stored.
+This for example includes group operations like [`compose`], `inv`, or `identity_element`,
+or functions that are anyways passed on to the inner manifold like [`manifold_dimension`](@extref `ManifoldsBase.manifold_dimension`).
+
+# Constructor
+
+    MetricManifold(M, G)
+
+Generate the [`AbstractLieGroup`](https://juliamanifolds.github.io/Manifolds.jl/latest/interface.html#ManifoldsBase.AbstractLieGroup) `M` as a manifold with the `AbstractMetric` `G`.
+"""
+struct MetricLieGroup{
+        𝔽,
+        O <: AbstractGroupOperation,
+        M <: ManifoldsBase.AbstractManifold{𝔽},
+        L <: LieGroup{𝔽, O, M},
+        G <: AbstractMetric,
+    } <: AbstractLieGroup{𝔽, O, M}
+    lie_group::L
+    metric::G
+end
+
+function ManifoldsBase.submanifold_component(G::MetricLieGroup, g, i::Val)
+    return submanifold_component(base_lie_group(G), g, i)
+end
+function ManifoldsBase.submanifold_component(G::MetricLieGroup, g, i::Integer)
+    return submanifold_component(base_lie_group(G), g, i)
+end
+function ManifoldsBase.submanifold_components(G::MetricLieGroup, g)
+    return submanifold_components(G.lie_group, g)
+end
+
+#
+#
+# passthrough for group operations
+
+Identity(G::MetricLieGroup) = Identity(G.lie_group)
+
+adjoint(G::MetricLieGroup, g, X) = adjoind(G.lie_group, g, X)
+adjoint!(G::MetricLieGroup, Y, g, X) = adjoint!(G.lie_group, Y, g, X)
+
+base_lie_group(G::MetricLieGroup) = G.lie_group
+ManifoldsBase.base_manifold(G::MetricLieGroup) = base_manifold(base_lie_group(G))
+
+_compose(G::MetricLieGroup, k, g, h) = compose(base_lie_group(G), k, g, h)
+_compose!(G::MetricLieGroup, g, h) = compose!(base_lie_group(G), g, h)
+
+conjugate(G::MetricLieGroup, g, h) = conjugate(base_lie_group(G), g, h)
+conjugate!(G::MetricLieGroup, k, g, h) = conjugate!(base_lie_group(G), k, g, h)
+
+diff_conjugate(G::MetricLieGroup, g, X) = diff_conjugate(base_lie_group(G), g, X)
+diff_conjugate!(G::MetricLieGroup, Y, g, X) = diff_conjugate!(base_lie_group(G), Y, g, X)
+
+diff_inv(G::MetricLieGroup, g, X) = diff_inv(base_lie_group(G), g, X)
+diff_inv!(G::MetricLieGroup, Y, g, X) = diff_inv!(base_lie_group(G), Y, g, X)
+
+diff_left_compose(G::MetricLieGroup, g, X) = diff_left_compose(base_lie_group(G), g, X)
+diff_left_compose!(G::MetricLieGroup, Y, g, X) = diff_left_compose!(base_lie_group(G), Y, g, X)
+
+diff_right_compose(G::MetricLieGroup, g, X) = diff_right_compose(base_lie_group(G), g, X)
+diff_right_compose!(G::MetricLieGroup, Y, g, X) = diff_right_compose!(base_lie_group(G), Y, g, X)
+
+function identity_element(G::MetricLieGroup)
+    return identity_element(base_lie_group(G))
+end
+function identity_element!(G::MetricLieGroup, e)
+    return identity_element!(base_lie_group(G), e)
+end
+
+
+_inv(G::MetricLieGroup, g) = inv(base_lie_group(G), g)
+_inv!(G::MetricLieGroup, g) = inv!(base_lie_group(G), g)
+
+_inv_left_compose(G::MetricLieGroup, h, g) = _inv_left_compose(base_lie_group(G), h, g)
+_inv_left_compose!(G::MetricLieGroup, k, h, g) = _inv_left_compose!(base_lie_group(G), k, h, g)
+
+_inv_right_compose(G::MetricLieGroup, h, g) = _inv_right_compose(base_lie_group(G), h, g)
+_inv_right_compose!(G::MetricLieGroup, k, h, g) = _inv_right_compose!(base_lie_group(G), k, h, g)
