@@ -8,13 +8,13 @@ implement all functions on their [`LieAlgebra`](@ref) with respect to a metric,
 that corresponds to a certain “default metric”, either because it is a widely recognized metric
 or because the first implementation within `LieGroups.jl` was done with respect to this metric.
 
-This default is usually indicated by checking that [`metric(L)`](@extref `Manifolds`) returns [`DefaultMetric`](@exref `Manifolds.DefaultMetric`).
+This default is usually indicated by checking that [`metric(L)`](@extref `Manifolds`) returns [`DefaultMetric`](@extref `Manifolds.DefaultMetric`).
 
 This decorator type allows to explicitly equip the Lie group with a different metric.
 Note that for any functions unrelated to the metric, this new Lie group will simply forward
 to the Lie group that is internally stored.
 This for example includes group operations like [`compose`], `inv`, or `identity_element`,
-or functions that are anyways passed on to the inner manifold like [`manifold_dimension`](@extref `ManifoldsBase.manifold_dimension`).
+or functions that are already otherwise passed on to the inner manifold like [`manifold_dimension`](@extref `ManifoldsBase.manifold_dimension-Tuple{AbstractManifold}`).
 
 # Constructor
 
