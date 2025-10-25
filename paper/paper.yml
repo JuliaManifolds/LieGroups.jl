@@ -1,0 +1,15 @@
+title: "Groups and smooth geometry using LieGroups.jl"
+keywords:
+  - Julia
+  - Riemannian manifolds
+  - Lie groups
+  - Differential geometry
+authors:
+  - name: Ronny Bergmann
+    orcid: 0000-0001-8342-7218
+    affiliation: 1
+affiliations:
+  - name: Department of Mathematical Sciences, Norwegian University of Science and Technology, Trondheim, Norway
+    index: 1
+date:
+bibliography: ref.bib
