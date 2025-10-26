@@ -24,11 +24,39 @@
 
 \section{Introduction}
 
+In many situations, one encounters data that does not reside in a vector space.
+For example in robotics, the configuration space of a rigid body in three-dimensional
+space is given by the special Euclidean group \(\mathrm{SE}(3)\),
+consisiting of all translations and rotations.
+A subset of these is the space of rotations, given by the special orthogonal group \(\mathrm{SO}(3)\),
+or more generally \(\mathrm{SO}(n)\) in \(n\)-dimensional space.
+
+These spaces are examples of Lie groups, formally defined as a smooth manifold equipped with a group structure.
+
+The package \verb|LieGroups.jl| aims to provide an easy access to using Lie groups within
+the Julia programming language \cite{bezanson2017julia} by providing an interface to define
+and work with Lie groups, as well as providing a library of Lie groups, that can directly be used.
+
+This paper aims to provide an overview of the main features of \verb|LieGroups.jl|.
+After introducing the necessary notation in Section~\ref{sec:Notation},
+we present the interface in Section~\ref{sec:Interface}, split into the Lie group, the Lie algebra, and group actions.
+In Section~\ref{sec:LieGroups}, we present an overview of currently implemented Lie groups.
+Finally, in Section~\ref{sec:Example}, we demonstrate how to get started and use \verb|LieGroups|.
+
+\section{Notation}\label{sec:Notation}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.1875\textwidth]{logo.png}
+    \caption{Logo of \texttt{LieGroups.jl}.}
+    \label{fig:liegroups_logo}
+\end{figure}
+
+
+\section{The interface}\label{sec:Interface}
+
 \cite{Bergmann:2022}, \cite{AxenBaranBergmannRzecki:2023}.
 
-\section{Notation}
-
-\section{The interface}
 \subsection{Lie groups}
 
 \cite{HilgertNeeb:2012}
@@ -36,7 +64,7 @@
 \subsection{Lie algebras}
 \subsection{Group actions}
 
-\section{Implemented Lie groups}
+\section{Implemented Lie groups}\label{sec:LieGroups}
 \begin{table}[tbp]
     \centering
     \caption{Implemented Lie groups in \texttt{LieGroups.jl} as of version 0.1.6}
@@ -67,7 +95,7 @@
     \end{tabular}
 \end{table}
 
-\section{An example how to use {\texttt{LieGroups.jl}}}
+\section{An example how to use {\texttt{LieGroups.jl}}}\label{sec:Example}
 
 \cite{LieGroups.jl}
 \input{bib.tex}
