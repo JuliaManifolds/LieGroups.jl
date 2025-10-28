@@ -1,7 +1,7 @@
 name = "LieGroups"
 uuid = "6774de46-80ba-43f8-ba42-e41071ccfc5f"
 authors = ["Seth Axen <seth.axen@gmail.com>", "Mateusz Baran <mateuszbaran89@gmail.com>", "Ronny Bergmann <git@ronnybergmann.net>", "Yueh-Hua Tu", "Olivier Verdier <olivier.verdier@gmail.com>"]
-version = "0.1.6"
+version = "0.1.7"
 
 [deps]
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
