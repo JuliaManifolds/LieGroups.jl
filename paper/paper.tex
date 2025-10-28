@@ -201,8 +201,9 @@ It is always possible to override these by defining a new group operation type a
 
 To avoid unnecessary allocations, the identity element can be used without allocations, calling \verb|e = IdentityElement(G)| or \verb|IdentityElement(op)| where \verb|op| is the group operation of \verb|G|. If the actual value is needed, one can call
 
-\verb|identity_element(G)| or \verb|identity_element(G, typeof(g))|, where \verb|g| is an element of the group. The first variant will always generate a point in the default representation of the group, while the latter will generate a point in the same representation as \verb|g|.%
-\footnote{The in-place variant \texttt{identity\_element!(G, e::T)} infers the representation from the type \texttt{T} of \texttt{e}.}
+\verb|identity_element(G)| or \verb|identity_element(G, typeof(g))|, where \verb|g| is an element of the group. The first variant will always generate a point in the default representation of the group, while the latter will generate a point in the same representation as \verb|g|%
+%\footnote{The in-place variant \texttt{identity\_element!(G, e::T)} infers the representation from the type \texttt{T} of \texttt{e}.}
+.
 
 The two central functions are \verb|compose(G, g, h)|
 %\footnote{in-place variant \texttt{compose!(G, k, g, h)}.}
@@ -263,7 +264,9 @@ A major difference to the usual representation of tangent vectors on the underly
 Given a Lie group \verb|G|, we obtain the Lie algebra by calling $\frak g$ \verb|= LieAlgebra(G)|.
 To access the Lie group again, use \verb|base_lie_group(|$\frak g$\verb|)|. Similarly \verb|base_manifold(|$\frak g$\verb|)| returns the underlying manifold of the Lie group.\\
 As a technical detail, the Lie algebra is modelled as a tangent space\footnote{see the documentation of~\href{https://juliamanifolds.github.io/ManifoldsBase.jl/stable/metamanifolds/\#ManifoldsBase.TangentSpace}{ManifoldsBase.TangentSpace}} using the already mentioned \verb|Identity(G)| as base point.
-A zero vector is generated via \verb|zero_vector(|$\frak g$\verb|)| for the default representation and \verb|zero_vector(|$\frak g$\verb|, T)| for a specific representation type \verb|T|.\footnote{the in-place variant \texttt{zero\_vector!($\frak g$, X::T)} can infer the type \texttt{T} of \texttt{X} automatically.}
+A zero vector is generated via \verb|zero_vector(|$\frak g$\verb|)| for the default representation and \verb|zero_vector(|$\frak g$\verb|, T)| for a specific representation type \verb|T|%
+%\footnote{the in-place variant \texttt{zero\_vector!($\frak g$, X::T)} can infer the type \texttt{T} of \texttt{X} automatically.}
+.
 
 The main topological function is to test the validity of a tangent vector \verb|is_vector(|$\frak g$\verb|, X; error=:none)| using the same \verb|error=| keyword as \verb|is_point| on the Lie group.
 
@@ -274,17 +277,26 @@ The inner product and norm on the Lie algebra are available as \verb|inner(|$\fr
 Furthermore, there are two functions to convert between a coordinate-free representation of $X$ as a tangent vector and its representation in coordinates of a basis.
 
 Given a vector $c \in \mathbb R^n$, we obtain the tangent vector by calling \verb|get_vector(|$\frak g$\verb|, c, b)| where \verb|b| is a basis of the tangent space, i.e.\ a subtype of \verb|AbstractBasis| and defaults within \verb|LieGroups.jl| to \verb|DefaultLieAlgebraOrthogonalBasis()|.
-When a Lie group has different representations of points and tangent vectors, these are distinguished by calling \verb|get_vector(|$\frak g$\verb|, c, b, T)| specifying the tangent vector type
-\footnote{the in-place variant \texttt{get\_vector!($\frak g$, X::T, c, b)} can infer the type \texttt{T} of \texttt{X} directly.}
+When a Lie group has different representations of points and tangent vectors, these are distinguished by calling \verb|get_vector(|$\frak g$\verb|, c, b, T)| specifying the tangent vector type%
+%\footnote{the in-place variant \texttt{get\_vector!($\frak g$, X::T, c, b)} can infer the type \texttt{T} of \texttt{X} directly.}
+.
 Given a tangent vector $X \in \frak g$, we obtain its coordinates by calling \verb|get_coordinates(|$\frak g$\verb|, X, B)|%
 %\footnote{in-place variant \texttt{get\_coordinates!($\frak g$, c, X, b)}}
 , where the Basis is again optional.
 
-For the case of the default, the \verb|DefaultLieAlgebraOrthogonalBasis()| the more commonly used names \verb|hat(|$\frak g$\verb|, c)|\footnote{in-place variant \texttt{hat!($\frak g$, X::T, c)}} (again with an optional vector type \verb|T|) and \verb|vee(|$\frak g$\verb|, X)|\footnote{in-place variant \texttt{vee!($\frak g$, c, X)}} are implemented
+For the case of the default, the \verb|DefaultLieAlgebraOrthogonalBasis()| the more commonly used names \verb|hat(|$\frak g$\verb|, c)|
+%\footnote{in-place variant \texttt{hat!($\frak g$, X::T, c)}}
+(again with an optional vector type \verb|T|) and \verb|vee(|$\frak g$\verb|, X)|
+%\footnote{in-place variant \texttt{vee!($\frak g$, c, X)}}
+are implemented
 
 \subsubsection*{Push forward and pull back of tangent vectors}
-To the representation of a tangent vector $X \in \frak g$ to be represented in the tangent space at $g \in \mathcal G$ we have to use the push forward of the left multiplication with $g$, i.e.\ $D\lambda_g(e)[X]$. This is implemented as \verb|push_forward_tangent(G, g, X)|\footnote{in-place variant \texttt{push\_forward\_tangent!(G, Y, g, X)}.}
-Conversely, to represent a tangent vector $Y \in T_g\mathcal G$ back in the Lie algebra $\frak g$, we have to use the pull back of the left multiplication with $g^{-1}$, i.e.\ $D\lambda_{g^{-1}}(g)[Y]$. This is implemented as \verb|pull_back_tangent(G, g, Y)|\footnote{in-place variant \texttt{pull\_back\_tangent!(G, X, g, Y)}.}
+To the representation of a tangent vector $X \in \frak g$ to be represented in the tangent space at $g \in \mathcal G$ we have to use the push forward of the left multiplication with $g$, i.e.\ $D\lambda_g(e)[X]$. This is implemented as \verb|push_forward_tangent(G, g, X)|%
+%\footnote{in-place variant \texttt{push\_forward\_tangent!(G, Y, g, X)}.}
+.
+Conversely, to represent a tangent vector $Y \in T_g\mathcal G$ back in the Lie algebra $\frak g$, we have to use the pull back of the left multiplication with $g^{-1}$, i.e.\ $D\lambda_{g^{-1}}(g)[Y]$. This is implemented as \verb|pull_back_tangent(G, g, Y)|%
+%\footnote{in-place variant \texttt{pull\_back\_tangent!(G, X, g, Y)}.}
+.
 
 \subsubsection*{Jacobians}
 On Euclidean space, the terms differential and Jacobian are often used interchangeably. Within differential geometry, the differential (or push forward) of a smooth map $f\colon \mathcal M \to \mathcal N$ between two manifolds is a map between the corresponding tangent spaces. We denote it by $Df(p)\colon T_p\mathcal M \to T_{f(p)}\mathcal N$, where $p \in \mathcal M$.
@@ -293,7 +305,11 @@ However, in the coordinate-free representation of tangent vectors, there is no m
 But as soon as we choose bases for the tangent spaces and we represent tangent vectors in coordinates (cf.~\verb|get_coordinates| previously), we can represent the differential as a matrix, called the Jacobian matrix.
 
 Currently for both \verb|exp| as well as \verb|conjugate|, the Jacobian is implemented. Note that for \verb|exp|, the domain is the Lie algebra. Since that is a vector space, its tangent space(s) can be identified with the Lie algebra again. Hence both Jacobians are maps from the Lie algebra to itself. The signatures are
-\verb|jacobian_exp(G, p, X, b)|\footnote{in-place variant \texttt{jacobian\_exp!($\frak g$, J, p, X, b)}} and \verb|jacobian_conjugate(G, g, X, b)|\footnote{in-place variant \texttt{jacobian\_conjugate!($\frak g$, J, g, X, b)}}, where \verb|b| is again the basis to represent the tangent vectors in coordinates and defaults to \verb|DefaultLieAlgebraOrthogonalBasis()|.
+\verb|jacobian_exp(G, p, X, b)|
+%\footnote{in-place variant \texttt{jacobian\_exp!($\frak g$, J, p, X, b)}}
+and \verb|jacobian_conjugate(G, g, X, b)|%
+%\footnote{in-place variant \texttt{jacobian\_conjugate!($\frak g$, J, g, X, b)}}
+, where \verb|b| is again the basis to represent the tangent vectors in coordinates and defaults to \verb|DefaultLieAlgebraOrthogonalBasis()|.
 
 \subsection{Group actions}
 
@@ -319,17 +335,27 @@ Currently for both \verb|exp| as well as \verb|conjugate|, the Jacobian is imple
 Group actions as defined in Subsection~\ref{subsec:GroupActions} are implemented as a struct \verb|GroupAction{G, M, A} <: AbstractGroupAction| containing the Lie group \verb|G <: AbstractLieGroup|, the manifold \verb|M|, and a group action tpe \verb|A| in order to distinguish possible different ways a group could act on a manifold.
 Table~\ref{tab:GroupActionTypes} summarizes the currently available group action types in \verb|LieGroups.jl|.
 
-the main functions then are \verb|apply(a::GroupAction, g, p)|%
-\footnote{in-place variant \texttt{apply!(a::GroupAction, q, g, p)}.}
-to compute \(\sigma(g, p)\) for a group action \verb|a|, where $g\in \mathcal G$ and $p \in \mathcal M$, as well as its differential \verb|diff_apply(a::GroupAction, g, p, X)|%
-\footnote{in-place variant \texttt{diff\_apply!(a::GroupAction, Y, g, p, X)}.}
-to compute \(D\sigma(g, p)[X]\) for a tangent vector \(X \in T_p\mathcal M\) with respect to the manifold argument as well as \verb|diff_group_apply(a::GroupAction, g, p, Y)|%
-\footnote{in-place variant \texttt{diff\_group\_apply!(a::GroupAction, Z, g, p, Y)}.}
+the main functions then are \verb|apply(a::GroupAction, g, p)|
+%\footnote{in-place variant \texttt{apply!(a::GroupAction, q, g, p)}.}
+to compute \(\sigma(g, p)\) for a group action \verb|a|, where $g\in \mathcal G$ and $p \in \mathcal M$, as well as its differential \verb|diff_apply(a::GroupAction, g, p, X)|
+%\footnote{in-place variant \texttt{diff\_apply!(a::GroupAction, Y, g, p, X)}.}
+to compute \(D\sigma(g, p)[X]\) for a tangent vector \(X \in T_p\mathcal M\) with respect to the manifold argument as well as \verb|diff_group_apply(a::GroupAction, g, p, Y)|
+%\footnote{in-place variant \texttt{diff\_group\_apply!(a::GroupAction, Z, g, p, Y)}.}
 to compute \(D\sigma(g, p)[Y]\) for a Lie algebra element \(Y \in \frak g\).
 
 Due to the property that \(\sigma(g^{-1}, \sigma(g, p)) = p\) for all \(g \in \mathcal{G}\) and \(p \in \mathcal{M}\), there is also an inverse group action available $\sigma^{-1}(g, p) = \sigma(g^{-1}, p)$, which can be obtained by calling \verb|inv(a)|.
 
-{\color{red} TODO: Discuss left and right group actions here?}
+Note that while the group action $\sigma(g, \sigmaæ(h, p)) = \sigma(g \cdot h, p)$ “appends” a new action (w.r.t.~$g$) on the left, for the inverse we have
+\begin{align*}
+        \sigma^{-1}(g, \sigma^{-1}(h, p))
+        &= \sigma(g^{-1}\cdot h^{-1}, p)
+        = \sigma((h \cdot g)^{-1}, p)
+        \\
+        &= \sigma^{-1}(h \cdot g, p)
+\end{align*}
+for all \(g, h \in \mathcal{G}\). This is a so-called right action.
+Similarly for a right group action the inverse is a left group action.
+This is tanken into account when using \verb|apply|.
 
 \section{Implemented Lie groups}\label{sec:LieGroups}
 
@@ -438,6 +464,8 @@ For all three representations, one can access the component semantically by writ
 {\color{red}TODO: Check whether there are details for other Lie groups that should be mentioned here.}
 
 \section{An example how to use {\texttt{LieGroups.jl}}}\label{sec:Example}
+
+{\color{red}TODO: Brainstorm over one or two examples with code.}
 \input{bib.tex}
 \end{document}
 %
