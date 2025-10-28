@@ -93,6 +93,7 @@ include("groups/special_galilean_group.jl")
 export AbstractLieGroup
 export LieGroup, LieAlgebra
 export PowerLieGroup, ProductLieGroup
+export NestedPowerRepresentation, NestedReplacingPowerRepresentation
 export LeftSemidirectProductLieGroup, RightSemidirectProductLieGroup
 export ValidationLieGroup
 export DefaultLieAlgebraOrthogonalBasis
