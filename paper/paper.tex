@@ -3,6 +3,11 @@
 \documentclass{juliacon}
 \setcounter{page}{1}
 \usepackage{amsmath,booktabs,mathtools,amssymb}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=1.18}
+
 \newcommand{\term}[1]{\emph{#1}}
 \newcommand{\e}{\ensuremath{\mathrm{e}}}
 \newcommand{\im}{\ensuremath{\mathrm{i}}}
@@ -515,6 +520,46 @@ g_3 &= \begin{pmatrix} R_{\pi} & \begin{pmatrix}
     1 \\ 1 \end{pmatrix} \\
 0 & 1 \end{pmatrix}, \quad
 \end{align*}
+
+\begin{figure}
+    \begin{tikzpicture}
+    \begin{axis}[
+        axis equal,
+        xlabel={$x$},
+        ylabel={$y$},
+        grid=major,
+        width=10cm,
+        height=10cm
+    ]
+
+    % Define arrow length
+    \def\arrowlength{0.15}
+
+    % Load and iterate over CSV data
+    \pgfplotstableread[col sep=comma]{data/bezier_example_se2.csv}\datatable
+
+    % Iterate over rows
+    \pgfplotstableforeachrow{\datatable}{%
+        \pgfplotstablegetelem{\pgfplotstablerow}{x}\of{\datatable}%
+        \pgfmathsetmacro{\x}{\pgfplotsretval}%
+        \pgfplotstablegetelem{\pgfplotstablerow}{y}\of{\datatable}%
+        \pgfmathsetmacro{\y}{\pgfplotsretval}%
+        \pgfplotstablegetelem{\pgfplotstablerow}{u}\of{\datatable}%
+        \pgfmathsetmacro{\u}{\pgfplotsretval}%
+        \pgfplotstablegetelem{\pgfplotstablerow}{v}\of{\datatable}%
+        \pgfmathsetmacro{\v}{\pgfplotsretval}%
+
+        % Normalize vector
+        \pgfmathsetmacro{\norm}{sqrt(\u*\u + \v*\v)}%
+        \pgfmathsetmacro{\dx}{\arrowlength * \u / \norm}%
+        \pgfmathsetmacro{\dy}{\arrowlength * \v / \norm}%
+
+        % Draw arrow
+        \draw[->, thick, blue] (\x,\y) -- ({\x+\dx},{\y+\dy});%
+    }
+    \end{axis}
+\end{tikzpicture}
+\end{figure}
 
 
 
