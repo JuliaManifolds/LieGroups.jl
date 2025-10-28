@@ -146,11 +146,11 @@ For example \verb|identity_element(G)| returns the identity element $e$ of a Lie
 
 The main type for Lie Groups is the \verb|LieGroup{|$\mathbb {F}$\verb|, O, M} <: AbstractLieGroup|, which contains a manifold \verb|M <: AbstractManifold{|$\mathbb F$\verb|}| as well as the group operation \verb| O <: AbstractGroupOperation|, where $\mathbb {F}$ is the set of scalars used in the representation of the manifold, usually \(\mathbb {F} = \mathbb{R}\) and in some cases \(\mathbb {F}\) is the field of complex numbers \(\mathbb{C}\) or the ring of quaternions \(\mathbb H\).
 
-In general, when a function within the interfaces of \verb|JuliaManifolds| returns a point, a tangent vector or any other mutable object, there always exist two variants of the function, one that allocates a new object and returns it, and one that takes an additional argument to write the result into. For example for a function \verb|f(G, g)| that returns a point on the Lie group \verb|G|, there also exists a variant \verb|f!(G, h, g)| that computes the result in-place of \verb|h|, possibly using the memory also for interims results. By default the allocating variant is implemented by allocating memory accordingly and calling the in-place variant. This default can be overriden, for example for performance reasons.
+In general, when a function within the interfaces of \verb|JuliaManifolds| returns a point, a tangent vector or any other mutable object, there always exist two variants of the function, one that allocates a new object and returns it, and one that takes an additional argument to write the result into. For example for a function \verb|f(G, g)| that returns a point on the Lie group \verb|G|, there also exists a variant \verb|f!(G, h, g)| that computes the result in-place of \verb|h|, possibly using the memory also for interims results. All methods are written such that the result is correct even if arguments \verb|h| and \verb|g| use the same memory. By default the allocating variant is implemented by allocating memory accordingly and calling the in-place variant. This default can be overriden, for example for performance reasons.
 
 \subsubsection*{Topological functions}
 Points and tangent vectors can be represented by the same Julia objects, although they are distinct from a topological viewpoint.%
-\footnote{\texttt{LieGroups.jl} introduces a \texttt{AbstractLieGroupPoint <: AbstractManifoldPoint}, that is used to represent points on the Lie group.
+\footnote{\texttt{LieGroups.jl} introduces an abstract type \texttt{AbstractLieGroupPoint <: AbstractManifoldPoint}, that is used to represent points on the Lie group.
 This abstract supertype is not necessary, points can be represented by arrays or other types as well.}
 Separate types are necessary when one Lie group has \emph{different representations} of points, that have to be distinguished. When there are different representations, it is recommended to introduce a point type for each representation and make the default one fall back to (just) using arrays.
 Several functions in the interface return points or tangent vectors, where the type might not be known from the input argument. For such a function, for example again a function \verb|f(G)| a positional argument \verb|T| can be used to specify the desired return type, i.e.\ \verb|f(G, T)| returns a point or tangent vector of type \verb|T|.
@@ -165,9 +165,9 @@ The following functions are available and pass directly to the underlying manifo
 \verb|is_point(G, g; error=:none)| to check if a point is a valid point on the manifold, where the keyword can be used to throw an \verb|:error|, a \verb|:warn| or an \verb|:info|.
 Similarly
 \verb|manifold_dimension(G)| to get the dimension of the manifold,
-\verb|project(G, q)|%
+\verb|project(G, q)|, %
 %\footnote{in-place variant \texttt{project!(G, p, q)}.} to project a point onto the manifold, as well as
-\verb|rand(G)| and \verb|rand(rng, G)|%
+\verb|rand(G)| and \verb|rand(rng, G)| %
 %\footnote{in-place variant \texttt{rand!(G, p)} and \texttt{rand!(rng, G, p)}, respectively.}
 to sample a random point from the manifold using a random number generator \verb|rng| also pass directly on to the manifold.
 To access the underlying manifold of the Lie group one can use \verb|base_manifold(G)|.
@@ -184,7 +184,7 @@ To access the underlying manifold of the Lie group one can use \verb|base_manifo
         \midrule
         \verb|AdditionGroupOperation| & falls back to \verb|+|\\
         \verb|AbelianMultiplicationGroupOperation| & falls back to \verb|*|\\
-        \verb|LeftMatrixMultiplicationGroupOperation| & falls back to \verb|*|\\
+        \verb|MatrixMultiplicationGroupOperation| & falls back to \verb|*|\\
         \verb|PowerGroupOperation{Op}| & \verb|PowerLieGroup|\\
         \verb|ProductGroupOperation{Ops}| & product Lie groups\\
         \verb|SemidirectProductGroupOperation| & semidirect products\\
@@ -199,7 +199,7 @@ On the other hand, specific meta groups like the (direct) product of two or more
 For all these group operations, the following functions have default implementations. They might not be the most performant ones for every case, but provide working implementations out-of-the-box.
 It is always possible to override these by defining a new group operation type and implementing the following functions for a \verb|LieGroup| with that new group operation type.
 
-To avoid unnecessary allocations, the identity element can be used without allocations, calling \verb|e = IdentityElement(G)| or \verb|IdentityElement(op)| where \verb|op| is the group operation of \verb|G|. If the actual value is needed, one can call
+The identity element can be represented as a value of a special type, \verb|e = Identity(G)| or \verb|Identity(op)| where \verb|op| is the group operation of \verb|G|. This allows for dispatching on the type when defining functions and avoiding unnecessary allocations. If the actual value is needed, one can call
 
 \verb|identity_element(G)| or \verb|identity_element(G, typeof(g))|, where \verb|g| is an element of the group. The first variant will always generate a point in the default representation of the group, while the latter will generate a point in the same representation as \verb|g|%
 %\footnote{The in-place variant \texttt{identity\_element!(G, e::T)} infers the representation from the type \texttt{T} of \texttt{e}.}
@@ -227,9 +227,9 @@ for computing $g^{-1}\cdot h$ and \verb|inv_right_compose(G, g, h)|
 %\footnote{in-place variant \texttt{inv\_right\_compose!(G, k, g, h)}
 for computing $g \cdot h^{-1}$. All three fall back to the previously defined functions, but provide an interface to possibly implement more efficient variants in case such exist.
 
-\subsubsection*{Exponential and logarithm.}
+\subsubsection*{Exponential and logarithm}
 
-In \verb|LieGroups.jl|, the exponential function is given by \verb|exp(G,X)|%
+In \verb|LieGroups.jl|, the group exponential function is given by \verb|exp(G,X)|%
 %\footnote{in-place variant \texttt{exp!(G, g, X)}.}
 .
 If we want to “start walking” from another point, we can “move” (or interpret $X$) as being from the tangent space at some point $g$ and obtain by the chain rule the \term{exponential function} $\exp_g\colon\frak g\to\mathcal G$ defined by $\exp_g(X)\coloneqq g \cdot \exp(X)$.
