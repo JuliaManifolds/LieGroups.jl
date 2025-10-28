@@ -59,7 +59,7 @@ Finally, in Section~\ref{sec:Example}, we demonstrate how to get started and use
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.17\textwidth]{logo.png}
+    \includegraphics[width=0.15\textwidth]{logo.png}
     \caption*{\ \\[-.5\baselineskip]Logo of \texttt{LieGroups.jl}.}%
     \label{fig:liegroups_logo}
 \end{figure}
@@ -73,7 +73,7 @@ A smooth manifold \(\mathcal{M}\) is a topological space that is locally isomorp
 We call \(n\) the dimension of the manifold \(\mathcal{M}\), denoted by \(\dim(\mathcal{M}) = n\).
 As an example, take the \(2\)-dimensional sphere
 \begin{equation*}
-\mathbb{S}^2 = \{x \in \mathbb{R}^3 \mid \lVert x\rVert = 1\},
+\mathbb{S}^2 = \bigl\{ p \in \mathbb{R}^3 \bigm| \lVert p\rVert = 1\bigr\},
 \end{equation*}
 
 which locally looks like \(\mathbb{R}^2\), think of charts in an atlas, but globally it is not.
@@ -185,7 +185,7 @@ For these three functions, also the differentials are available: adding a \verb|
 
 Finally, there is a specific function for the differential of the conjugate at the identity $h=e$ called \verb|adjoint(G, g, X)|\footnote{in-place variant \texttt{adjoint!(G, Y, g, X)}.} as well as the combinations \verb|inv_left_compose(G, g, h)|\footnote{in-place variant \texttt{inv\_left\_compose!(G, k, g, h)}} for computing $g^{-1}\cdot h$ and \verb|inv_right_compose(G, g, h)|\footnote{in-place variant \texttt{inv\_right\_compose!(G, k, g, h)}} for computing $g \cdot h^{-1}$. All three fall back to the previously defined functions, but provide an interface to possibly implement more efficient variants in case such exist.
 
-\subsubsection*{exponential and logarithm.}
+\subsubsection*{Exponential and logarithm.}
 An important tool to “move around” on the Lie group is the exponential map.\\
 The (Lie group) exponential function \(\exp\colon \mathfrak{g} \to \mathcal{G}\) maps elements from the Lie algebra to the Lie group, and is formally defined \cite[Def.~9.2.2]{HilgertNeeb:2012} by evaluating the unique curve \(\gamma\colon \mathbb{R} \to \mathcal{G}\) that fulfils the differential equation
 \begin{equation*}
@@ -230,11 +230,11 @@ The main topological function is to test the validity of a tangent vector \verb|
 For the following functions related to vector space features, using the Lie algebra $\frak g$ as first argument is equivalent to specifying the Lie Group $G$ and an arbitrary point $g \in \mathcal G$. This yields that the Lie group complies with the general interface for manifolds.
 
 The inner product and norm on the Lie algebra are available as \verb|inner(|$\frak g$\verb|, X, Y)| and \verb|norm(|$\frak g$\verb|, X)|, respectively.
-furthermore, there are two functions to convert between a coordinate-free representation of $X$ as a tangent vector and its representation in coordinates of a basis.
+Furthermore, there are two functions to convert between a coordinate-free representation of $X$ as a tangent vector and its representation in coordinates of a basis.
 
-Given a vector $c \in \mathbb R^n$, we obtain the tangent vector by calling \verb|get_vector(|$\frak g$\verb|, c, B)| where $B$ is a basis of the tangent space, i.e.\ a subtype of \verb|AbstractBasis| and defaults within \verb|LieGroups.jl| to \verb|DefaultLieAlgebraOrthogonalBasis()|.
-When a Lie group has different representations of points and tangent vectors, these are distinguished by calling \verb|get_vector(|$\frak g$\verb|, c, B, T)| specifying the tangent vector type.\footnote{in-place variant \texttt{get\_vector!($\frak g$, X::T, c, B)} contains the type information directly.}
-Given a tangent vector $X \in \frak g$, we obtain its coordinates by calling \verb|get_coordinates(|$\frak g$\verb|, X, B)|\footnote{in-place variant \texttt{get\_coordinates!($\frak g$, c, X, B)}}, where the Basis is again optional.
+Given a vector $c \in \mathbb R^n$, we obtain the tangent vector by calling \verb|get_vector(|$\frak g$\verb|, c, b)| where \verb|b| is a basis of the tangent space, i.e.\ a subtype of \verb|AbstractBasis| and defaults within \verb|LieGroups.jl| to \verb|DefaultLieAlgebraOrthogonalBasis()|.
+When a Lie group has different representations of points and tangent vectors, these are distinguished by calling \verb|get_vector(|$\frak g$\verb|, c, b, T)| specifying the tangent vector type.\footnote{in-place variant \texttt{get\_vector!($\frak g$, X::T, c, b)} contains the type information directly.}
+Given a tangent vector $X \in \frak g$, we obtain its coordinates by calling \verb|get_coordinates(|$\frak g$\verb|, X, B)|\footnote{in-place variant \texttt{get\_coordinates!($\frak g$, c, X, b)}}, where the Basis is again optional.
 
 For the case of the default, the \verb|DefaultLieAlgebraOrthogonalBasis()| the more commonly used names \verb|hat(|$\frak g$\verb|, c)|\footnote{in-place variant \texttt{hat!($\frak g$, X::T, c)}} (again with an optional vector type \verb|T|) and \verb|vee(|$\frak g$\verb|, X)|\footnote{in-place variant \texttt{vee!($\frak g$, c, X)}} are implemented
 
@@ -242,9 +242,14 @@ For the case of the default, the \verb|DefaultLieAlgebraOrthogonalBasis()| the m
 To the representation of a tangent vector $X \in \frak g$ to be represented in the tangent space at $g \in \mathcal G$ we have to use the push forward of the left multiplication with $g$, i.e.\ $D\lambda_g(e)[X]$. This is implemented as \verb|push_forward_tangent(G, g, X)|\footnote{in-place variant \texttt{push\_forward\_tangent!(G, Y, g, X)}.}
 Conversely, to represent a tangent vector $Y \in T_g\mathcal G$ back in the Lie algebra $\frak g$, we have to use the pull back of the left multiplication with $g^{-1}$, i.e.\ $D\lambda_{g^{-1}}(g)[Y]$. This is implemented as \verb|pull_back_tangent(G, g, Y)|\footnote{in-place variant \texttt{pull\_back\_tangent!(G, X, g, Y)}.}
 
-\subsubsection*{Jacobians.}
-On Euclidean space, the terms differential and Jacobian are often used interchangeably.
-On manifolds, the differential of a smooth map between two manifolds is a map between the corresponding tangent spaces. To represent this map in coordinates, one has to choose bases for the tangent spaces, resulting in a Jacobian matrix.
+\subsubsection*{Jacobians}
+On Euclidean space, the terms differential and Jacobian are often used interchangeably. Within differential geometry, the differential (or push forward) of a smooth map $f\colon \mathcal M \to \mathcal N$ between two manifolds is a map between the corresponding tangent spaces. We denote it by $Df(p)\colon T_p\mathcal M \to T_{f(p)}\mathcal N$, where $p \in \mathcal M$.
+The differential is a linear map between the tangent spaces.
+However, in the coordinate-free representation of tangent vectors, there is no matrix representation of this linear map.
+But as soon as we choose bases for the tangent spaces and we represent tangent vectors in coordinates (cf.~\verb|get_coordinates| previously), we can represent the differential as a matrix, called the Jacobian matrix.
+
+Currently for both \verb|exp| as well as \verb|conjugate|, the Jacobian is implemented. Note that for \verb|exp|, the domain is the Lie algebra. Since that is a vector space, its tangent space(s) can be identified with the Lie algebra again. Hence both Jacobians are maps from the Lie algebra to itself. The signatures are
+\verb|jacobian_exp(G, p, X, b)|\footnote{in-place variant \texttt{jacobian\_exp!($\frak g$, J, p, X, b)}} and \verb|jacobian_conjugate(G, g, X, b)|\footnote{in-place variant \texttt{jacobian\_conjugate!($\frak g$, J, g, X, b)}}, where \verb|b| is again the basis to represent the tangent vectors in coordinates and defaults to \verb|DefaultLieAlgebraOrthogonalBasis()|.
 
 \subsection{Group actions}
 
@@ -253,7 +258,7 @@ On manifolds, the differential of a smooth map between two manifolds is a map be
     \caption{Group actions types available in \texttt{LieGroups.jl}.}
     \begin{tabular}{@{}ll@{}}
         \toprule
-        \textbf{Action type} & comment/code\\
+        \textbf{Group action type} & comment/code\\
         \midrule
         \verb|AdditionGroupAction| & falls back to \verb|+|\\
         \verb|ColumnwiseGroupAction{A}| & of a group action type \verb|A|\\
@@ -267,12 +272,20 @@ On manifolds, the differential of a smooth map between two manifolds is a map be
     \label{tab:GroupActionTypes}
 \end{table}
 
-Table~\ref{tab:GroupActionTypes} summarizes the currently implemented group action types in \verb|LieGroups.jl|.
+Group actions as defined in Subsection~\ref{subsec:GroupActions} are implemented as a struct \verb|GroupAction{G, M, A} <: AbstractGroupAction| containing the Lie group \verb|G <: AbstractLieGroup|, the manifold \verb|M|, and a group action tpe \verb|A| in order to distinguish possible different ways a group could act on a manifold.
+Table~\ref{tab:GroupActionTypes} summarizes the currently available group action types in \verb|LieGroups.jl|.
 
-\verb|apply|,
-\verb|diff_apply|
-\verb|diff_group_apply|
-\verb|inv(A::GroupAction)|
+the main functions then are \verb|apply(a::GroupAction, g, p)|%
+\footnote{in-place variant \texttt{apply!(a::GroupAction, q, g, p)}.}
+to compute \(\sigma(g, p)\) for a group action \verb|a|, where $g\in \mathcal G$ and $p \in \mathcal M$, as well as its differential \verb|diff_apply(a::GroupAction, g, p, X)|%
+\footnote{in-place variant \texttt{diff\_apply!(a::GroupAction, Y, g, p, X)}.}
+to compute \(D\sigma(g, p)[X]\) for a tangent vector \(X \in T_p\mathcal M\) with respect to the manifold argument as well as \verb|diff_group_apply(a::GroupAction, g, p, Y)|%
+\footnote{in-place variant \texttt{diff\_group\_apply!(a::GroupAction, Z, g, p, Y)}.}
+to compute \(D\sigma(g, p)[Y]\) for a Lie algebra element \(Y \in \frak g\).
+
+Due to the property that \(\sigma(g^{-1}, \sigma(g, p)) = p\) for all \(g \in \mathcal{G}\) and \(p \in \mathcal{M}\), there is also an inverse group action available $\sigma^{-1}(g, p) = \sigma(g^{-1}, p)$, which can be obtained by calling \verb|inv(a)|.
+
+{\color{red} TODO: Discuss left and right group actions here?}
 
 \section{Implemented Lie groups}\label{sec:LieGroups}
 
@@ -326,9 +339,12 @@ The \verb|ValidationLieGroup| is implemented as a wrapper around any existing Li
 all input and output of a function is checked for validity, e.g.\ by calling \verb|is_point| and \verb|is_vector| on all points and tangent vectors, respectively. Similarly the inner manifold is wrapped into the similar concept from \verb|ManifoldsBase.jl|, the \verb|ValidationManifold|.
 While by default these checks do result in errors, this can be changed setting the \verb|error=| keyword to either \verb|:warn| or \verb|:info|.
 
-
-
 \subsection{Concrete Lie groups}\label{subsec:ConcreteLieGroups}
+
+For the \verb|CircleGroup()|, three different representations of points are available: as angles in \([0, 2\pi)\), as complex numbers with unit norm, and as points on the unit circle in \(\mathbb{R}^2\).
+These are constructed by specifying the representation of points, i.e. \verb|CircleGroup(|$\mathbb R$\verb|)|, \verb|CircleGroup(|$\mathbb C$\verb|)|, and \verb|CircleGroup(|$\mathbb R^2$\verb|)|, respectively. Note that each of these representations uses a different underlying manifold, namely \verb|Circle(|$\mathbb R$\verb|)|, \verb|Circle(|$\mathbb C$\verb|)|, and \verb|Circle(|$\mathbb R^2$\verb|)|, respectively.
+This is a case, where it is not only the representation of points and tangent vectors that differ, but indeed even the underlying manifold.
+
 
 \section{An example how to use {\texttt{LieGroups.jl}}}\label{sec:Example}
 \input{bib.tex}
