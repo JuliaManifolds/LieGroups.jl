@@ -332,8 +332,26 @@ Table~\ref{tab:available_lie_groups} summarizes the currently implemented Lie gr
 
 There are three Lie groups that are built upon other Lie groups. We mention them here briefly and point out specific functions and features that are additionally available for these.
 
-\subsubsection{Product Lie groups}
+\subsubsection{Product Lie group}
+
+Given two Lie groups \(\mathcal{G} = (\mathcal M, \ast) \) and \(\mathcal{H} = (\mathcal N, \diamond)\), their (direct) product \(\mathcal{G} \times \mathcal{H}\) is again a Lie group \((\mathcal{M} \times \mathcal{N}, \cdot)\) with group operation defined component-wise, i.e.
+\begin{equation*}
+    (g_1, h_1) \cdot (g_2, h_2) = (g_1 \ast g_2, h_1 \diamond h_2)
+\end{equation*}
+for \(g_1, g_2 \in \mathcal{G}\) and \(h_1, h_2 \in \mathcal{H}\).
+Since $\times$ is a binary operator in Julia, given two Lie Groups \verb|G,H|, their product Lie group can be constructed via \verb|G|\,$\times$\,\verb|H|.
+The same applies for more than two groups, i.e. you can construct arbitrary long product Lie groups \verb|G1|\,$\times$\,\verb|G2|\,$\times$\,\verb|G3|\,$\times$\,\ldots.
+
+As for the representation of points and tangent vectors, the default representation requires to load \verb|RecursiveArrayTools.jl|\footnote{see \href{https://docs.sciml.ai/RecursiveArrayTools/stable/}{docs.sciml.ai/RecursiveArrayTools/stable/}}.
+
+If you want to construct nested Products of Lie groups, e.g.\ \((\mathcal G_1 \times \mathcal G_2) \times \mathcal G_3\), the binary operator would not work, since it automatically flattens the input; use \verb|ProductLieGroup(ProductLieGroup(G1, G2), G3)| can be used instead.
+
 \subsubsection{Power Lie groups}
+Though mathematically the case of a product Lie Group, where $G=H$ is also (just) a product, computationally we can benefit from the special structure. Therefore the \verb|Powermanifold(G, n1, n2, ...)| is provided to construct the \(n_1 \times n_2 \times \ldots\)-fold Cartesian product of the Lie group \(G\) with itself.
+As a shortcut, you can use \verb|G^n| to construct the \(n\)-fold Cartesian product of the Lie group \(G\) with itself.
+
+Note that inheriting from the power manifold, there are two different data types to represent data, per default a single large array, or a
+
 \subsubsection{Semidirect product Lie groups}
 
 \subsection{A Lie group for Numerical verification}
