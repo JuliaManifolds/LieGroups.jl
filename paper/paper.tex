@@ -444,7 +444,7 @@ While by default these checks do result in errors, this can be changed setting t
 From the list of available Lie groups in Table~\ref{tab:available_lie_groups}, we want to highlight some specific features of a few of them.
 
 For the \verb|CircleGroup()|, three different representations of points are available: as angles in \([0, 2\pi)\), as complex numbers with unit norm, and as points on the unit circle in \(\mathbb{R}^2\).
-These are constructed by specifying the representation of points, i.e. \verb|CircleGroup(|$\mathbb R$\verb|)|, \verb|CircleGroup(|$\mathbb C$\verb|)|, and \verb|CircleGroup(|$\mathbb R^2$\verb|)|, respectively. Note that each of these representations uses a different underlying manifold, namely \verb|Circle(|$\mathbb R$\verb|)|, \verb|Circle(|$\mathbb C$\verb|)|, and \verb|Circle(|$\mathbb R^2$\verb|)|, respectively.
+These are constructed by specifying the representation of points, i.e. \verb|CircleGroup(|$\mathbb R$\verb|)|, \verb|CircleGroup(|$\mathbb C$\verb|)|, and \verb|CircleGroup(|$\mathbb R^2$\verb|)|, respectively. Note that each of these representations uses a different underlying manifold, namely \verb|Circle(|$\mathbb R$\verb|)|, \verb|Circle(|$\mathbb C$\verb|)|, and \verb|Sphere(1)|, respectively.
 This is a case, where it is not only the representation of points and tangent vectors that differ, but indeed even the underlying manifold.
 
 The special Euclidean group \(\mathcal G = \mathrm{SE}(n)\), there are three different representations avalable:
@@ -527,55 +527,7 @@ For more details on solving differential equations on Lie groups in Julia, see
 
 {\color{red}TODO: Provide code for de-Casteljau algorithm on Lie groups.}
 
-{\color{red}TODO: Brainstorm over one or two examples with code.}
-
+{\color{red}TODO: Do a Forward Euler simulation on a nice physics problem}
 
 \input{bib.tex}
 \end{document}
-%
-% ------------------------------------------------------------------------------------------
-%
-
-
-\subsection{Writing Julia code}
-
-A special environment is already defined for Julia code,
-built on top of \textit{listings} and \textit{jlcode}.
-
-\begin{verbatim}
-\begin{lstlisting}[
-    language = Julia,
-    numbers=left,
-    label={lst:exmplg},
-    caption={Example Code Block.}
-]
-using Plots
-
-x = -3.0:0.01:3.0
-y = rand(length(x))
-plot(x, y)
-\end{lstlisting}
-\end{verbatim}
-\begin{lstlisting}[
-    language = Julia,
-    numbers=left,
-    label={lst:exmplg},
-    caption={Example Code Block.}
-]
-using Plots
-
-x = -3.0:0.01:3.0
-y = rand(length(x))
-plot(x, y)
-\end{lstlisting}
-
-\subsection{Balancing column at last page}
-\label{subsub:Balance}
-For balancing the both column length at last page use :
-\begin{verbatim}
-\vadjust{\vfill\pagebreak}
-\end{verbatim}
-
-%\vadjust{\vfill\pagebreak}
-
-at appropriate place in your \TeX{} file or in bibliography file.
