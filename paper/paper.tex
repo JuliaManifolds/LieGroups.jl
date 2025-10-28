@@ -466,7 +466,69 @@ For all three representations, one can access the component semantically by writ
 \section{An example how to use {\texttt{LieGroups.jl}}}%
 \label{sec:Example}
 
+In this section, we provide examples of how to use the {\texttt{LieGroups.jl}} package in Julia.
+
+\subsection{A Beziér curve on a Lie group}
+
+In the first example we illustrate how to construct and plot a Beziér curve on a Lie group, here the special Euclidean group \(\mathrm{SE}(2)\).
+
+We first can generalize the de-Casteljau algorithm for Beziér curves to Lie groups by replacing the linear interpolation step with using the exponential and logarithmic map.
+
+\begin{lstlisting}[
+    language = Julia,
+    numbers=left,
+    label={lst:deCasteljauLieGroup},
+    caption={de-Casteljau algorithm on a Lie group.}
+]
+using LieGroups, ManifoldsBase, RecursiveArrayTools
+using CairoMakie
+"""
+    deCasteljauLieGroup(G, cp, t)
+
+Evaluate the Beziér curve at parameter `t` given
+a vector of control points `cp` on the Lie group `G`.
+"""
+function deCasteljauLieGroup(
+        G::AbstractLieGroup, cp::Vector{P}, t::Real
+    ) where {P}
+    n = length(cp)
+    points = [copy(G, g) for g in cp]
+    for r in 1:n-1
+        for i in 1:n-r
+            X = log(G, points[i], points[i+1])
+            exp!(G, points[i], points[i], t * X)
+        end
+    end
+    return points[1]
+end
+\end{lstlisting}
+
+In Algorithm~\ref{lst:deCasteljauLieGroup}, define the general de-Casteljau algorithm on a Lie group \verb|G|, given a vector of control points \verb|cp| and a parameter \verb|t| in \([0,1]\).
+
+We can now compare the algorithm on the Lie group \(\mathrm{SE}(2)\) with the corresponding Bézier curve on the (direct) product Lie group $\mathrm{SO}(2) \times \mathbb{R}^2$. Denote by $R_\alpha$ the rotation matrix in \(\mathrm{SO}(2)\) for an angle \(\alpha\in[0,2\pi)\). Then we consider the control points
+\begin{align*}
+    g_1 &= \begin{pmatrix} R_0 & \begin{pmatrix} 0 \\ 0 \end{pmatrix} \\
+    0 & 1 \end{pmatrix}, \quad
+g_2 = \begin{pmatrix} R_{\pi/2} & \begin{pmatrix} 1 \\ 0 \end{pmatrix} \\
+    0 & 1 \end{pmatrix}, \\
+g_3 &= \begin{pmatrix} R_{\pi} & \begin{pmatrix}
+    1 \\ 1 \end{pmatrix} \\
+0 & 1 \end{pmatrix}, \quad
+\end{align*}
+
+
+
+As data we take the points
+
+\subsection{A simple forward Euler integration on a Lie group.}
+
+For more details on solving differential equations on Lie groups in Julia, see
+\verb|ManifoldDiffEq.jl|.
+
+{\color{red}TODO: Provide code for de-Casteljau algorithm on Lie groups.}
+
 {\color{red}TODO: Brainstorm over one or two examples with code.}
+
 
 \input{bib.tex}
 \end{document}
