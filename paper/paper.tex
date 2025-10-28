@@ -92,7 +92,7 @@ The identity element is given by the identity matrix \(I\) (or the angle $\alpha
 
 \subsection{Tangent spaces and the Lie algebra} The tangent space at the identity element \(e \in \mathcal{G}\), denoted by \(\mathfrak{g} = T_e\mathcal{G}\), plays a special role and is called the \term{Lie algebra} of the Lie group \(\mathcal{G}\).
 The reason is that to represent arbitrary tangent vectors $X \in T_g\mathcal{G}$ at a point $g \in \mathcal{G}$ we can use the group operation: we denote by $\lambda_g(h) = g \cdot h$ the left multiplication with $g, h \in \mathcal{G}$.
-Then, using the differential (or push forward) $D\lambda_g(h)\colon T_h\mathcal G \to T_{g\cdot h}\mathcal G$\footnote{\color{red} MB: TODO: does the reader know that a differential is?}, we can generate a so-called \term{left-invariant vector field} $\mathcal X(g) \coloneqq D\lambda_g(e)[X]$ which is uniquely determined by the choice of $X \in \mathfrak{g}$.%
+Then, using the differential (or push forward) $D\lambda_g(h)\colon T_h\mathcal G \to T_{g\cdot h}\mathcal G$\footnote{\color{red} MB: TODO: does the reader know that a differential is? (RB) Sure I can expand on that, I wrote a sentence more further below to get from differential to Jacobian, so I can also add a sentence there as well.}, we can generate a so-called \term{left-invariant vector field} $\mathcal X(g) \coloneqq D\lambda_g(e)[X]$ which is uniquely determined by the choice of $X \in \mathfrak{g}$.%
 \footnote{Analogously, one can use the right multiplication $\rho_g(h) = h \cdot g$ and its differential $D\rho_g(h)$ to define right-invariant vector fields. \texttt{LieGroups.jl} uses left-invariant vector fields as default.}%
 Hence we can identify tangent vectors $\mathcal X(g) \in T_g\mathcal G$ at arbitrary points $g \in \mathcal G$ with $X$ from the Lie algebra $\mathfrak{g}$.
 \\
@@ -146,21 +146,29 @@ For example \verb|identity_element(G)| returns the identity element $e$ of a Lie
 
 The main type for Lie Groups is the \verb|LieGroup{|$\mathbb {F}$\verb|, O, M} <: AbstractLieGroup|, which contains a manifold \verb|M <: AbstractManifold{|$\mathbb F$\verb|}| as well as the group operation \verb| O <: AbstractGroupOperation|, where $\mathbb {F}$ is the set of scalars used in the representation of the manifold, usually \(\mathbb {F} = \mathbb{R}\) and in some cases \(\mathbb {F}\) is the field of complex numbers \(\mathbb{C}\) or the ring of quaternions \(\mathbb H\).
 
+In general, when a function within the interfaces of \verb|JuliaManifolds| returns a point, a tangent vector or any other mutable object, there always exist two variants of the function, one that allocates a new object and returns it, and one that takes an additional argument to write the result into. For example for a function \verb|f(G, g)| that returns a point on the Lie group \verb|G|, there also exists a variant \verb|f!(G, h, g)| that computes the result in-place of \verb|h|, possibly using the memory also for interims results. By default the allocating variant is implemented by allocating memory accordingly and calling the in-place variant. This default can be overriden, for example for performance reasons.
+
 \subsubsection*{Topological functions}
-Points and tangent vectors can be represented by the same Julia objects, although they are distinct from a topological viewpoint.
+Points and tangent vectors can be represented by the same Julia objects, although they are distinct from a topological viewpoint.%
 \footnote{\texttt{LieGroups.jl} introduces a \texttt{AbstractLieGroupPoint <: AbstractManifoldPoint}, that is used to represent points on the Lie group.
 This abstract supertype is not necessary, points can be represented by arrays or other types as well.}
 Separate types are necessary when one Lie group has \emph{different representations} of points, that have to be distinguished. When there are different representations, it is recommended to introduce a point type for each representation and make the default one fall back to (just) using arrays.
-\\
+Several functions in the interface return points or tangent vectors, where the type might not be known from the input argument. For such a function, for example again a function \verb|f(G)| a positional argument \verb|T| can be used to specify the desired return type, i.e.\ \verb|f(G, T)| returns a point or tangent vector of type \verb|T|.
+The in-place variant does not require this, since in its signatgure of the form \verb|f!(G, g::T)| the type \verb|T| is known from the argument \verb|g|.
+
 Alternatively to points, also different manifolds can be used. This is for example the case for the circle group \(\mathbb{S}^1\), which can be represented as angles, points on the unit circle in \(\mathbb{R}^2\) or as complex numbers with unit norm, all three of which are different manifolds to be used internally. To access the underlying manifold, the function \verb|base_manifold(G)| is provided.
 
-Beyond that, the following functions are available and pass directly to the underlying manifold interface from \verb|ManifoldsBase.jl|:
+
+
+The following functions are available and pass directly to the underlying manifold interface from \verb|ManifoldsBase.jl|:
 \verb|is_approx(G, g, h)| to check for (approximate) equality of two points,
 \verb|is_point(G, g; error=:none)| to check if a point is a valid point on the manifold, where the keyword can be used to throw an \verb|:error|, a \verb|:warn| or an \verb|:info|.
 Similarly
 \verb|manifold_dimension(G)| to get the dimension of the manifold,
-\verb|project(G, q)|\footnote{in-place variant \texttt{project!(G, p, q)}.} to project a point onto the manifold, as well as
-\verb|rand(G)| and \verb|rand(rng, G)|\footnote{in-place variant \texttt{rand!(G, p)} and \texttt{rand!(rng, G, p)}, respectively.}
+\verb|project(G, q)|%
+%\footnote{in-place variant \texttt{project!(G, p, q)}.} to project a point onto the manifold, as well as
+\verb|rand(G)| and \verb|rand(rng, G)|%
+%\footnote{in-place variant \texttt{rand!(G, p)} and \texttt{rand!(rng, G, p)}, respectively.}
 to sample a random point from the manifold using a random number generator \verb|rng| also pass directly on to the manifold.
 To access the underlying manifold of the Lie group one can use \verb|base_manifold(G)|.
 
@@ -193,27 +201,54 @@ It is always possible to override these by defining a new group operation type a
 
 To avoid unnecessary allocations, the identity element can be used without allocations, calling \verb|e = IdentityElement(G)| or \verb|IdentityElement(op)| where \verb|op| is the group operation of \verb|G|. If the actual value is needed, one can call
 
-\verb|identity_element(G)| or \verb|identity_element(G, typeof(g))|, where \verb|g| is an element of the group. The first variant will always generate a point in the default representation of the group, while the latter will generate a point in the same representation as \verb|g|.\footnote{The in-place variant \texttt{identity\_element!(G, e)} infers the representation from the type of \texttt{e}.}
+\verb|identity_element(G)| or \verb|identity_element(G, typeof(g))|, where \verb|g| is an element of the group. The first variant will always generate a point in the default representation of the group, while the latter will generate a point in the same representation as \verb|g|.%
+\footnote{The in-place variant \texttt{identity\_element!(G, e::T)} infers the representation from the type \texttt{T} of \texttt{e}.}
 
-The two central functions are \verb|compose(G, g, h)|\footnote{in-place variant \texttt{compose!(G, k, g, h)}.} to compute the group operation \(g \cdot h\) for two points \(g, h \in \mathcal{G}\) and the inverse \verb|inv(G, g)|\footnote{in-place variant \texttt{inv!(G, h, g)}.} which computes \(g^{-1}\) for a point \(g \in \mathcal{G}\).
+The two central functions are \verb|compose(G, g, h)|
+%\footnote{in-place variant \texttt{compose!(G, k, g, h)}.}
+to compute the group operation \(g \cdot h\) for two points \(g, h \in \mathcal{G}\) and the inverse \verb|inv(G, g)|
+%\footnote{in-place variant \texttt{inv!(G, h, g)}.}
+which computes \(g^{-1}\) for a point \(g \in \mathcal{G}\).
 
-Another function is $c_g(h) = g \cdot h \cdot g^{-1}$ called \term{conjugation}, which is available as \verb|conjugate(G, g, h)|\footnote{in-place variant \texttt{conjugate!(G, k, g, h)}.}.
+Another function is $c_g(h) = g \cdot h \cdot g^{-1}$ called \term{conjugation}, which is available as \verb|conjugate(G, g, h)|%
+%\footnote{in-place variant \texttt{conjugate!(G, k, g, h)}.}
+.
 
-For these three functions, also the differentials are available: adding a \verb|diff_| prefix to the function name and a final argument for the Lie algebra tangent vector, for compose additionally the argument with which to  differentiate to, i.e.\ \verb|diff_left_compose(G, g, h, X)| and \verb|diff_right_compose(G, g, h, X)|, respectively.\footnote{in-place variants have a second argument \texttt{Y} to compute the result in.}
+For these three functions, also the differentials are available: adding a \verb|diff_| prefix to the function name and a final argument for the Lie algebra tangent vector, for compose additionally the argument with which to  differentiate to, i.e.\ \verb|diff_left_compose(G, g, h, X)| and \verb|diff_right_compose(G, g, h, X)|, respectively%
+%\footnote{in-place variants have a second argument \texttt{Y} to compute the result in.}
+.
 
-Finally, there is a specific function for the differential of the conjugate at the identity $h=e$ called \verb|adjoint(G, g, X)|\footnote{in-place variant \texttt{adjoint!(G, Y, g, X)}.} as well as the combinations \verb|inv_left_compose(G, g, h)|\footnote{in-place variant \texttt{inv\_left\_compose!(G, k, g, h)}} for computing $g^{-1}\cdot h$ and \verb|inv_right_compose(G, g, h)|\footnote{in-place variant \texttt{inv\_right\_compose!(G, k, g, h)}} for computing $g \cdot h^{-1}$. All three fall back to the previously defined functions, but provide an interface to possibly implement more efficient variants in case such exist.
+Finally, there is a specific function for the differential of the conjugate at the identity $h=e$ called \verb|adjoint(G, g, X)|
+%\footnote{in-place variant \texttt{adjoint!(G, Y, g, X)}.}
+as well as the combinations \verb|inv_left_compose(G, g, h)|
+%\footnote{in-place variant \texttt{inv\_left\_compose!(G, k, g, h)}}
+for computing $g^{-1}\cdot h$ and \verb|inv_right_compose(G, g, h)|
+%\footnote{in-place variant \texttt{inv\_right\_compose!(G, k, g, h)}
+for computing $g \cdot h^{-1}$. All three fall back to the previously defined functions, but provide an interface to possibly implement more efficient variants in case such exist.
 
 \subsubsection*{Exponential and logarithm.}
 
-In \verb|LieGroups.jl|, the exponential function is given by \verb|exp(G,X)|\footnote{in-place variant \texttt{exp!(G, g, X)}.}.
+In \verb|LieGroups.jl|, the exponential function is given by \verb|exp(G,X)|%
+%\footnote{in-place variant \texttt{exp!(G, g, X)}.}
+.
 If we want to “start walking” from another point, we can “move” (or interpret $X$) as being from the tangent space at some point $g$ and obtain by the chain rule the \term{exponential function} $\exp_g\colon\frak g\to\mathcal G$ defined by $\exp_g(X)\coloneqq g \cdot \exp(X)$.
-In \verb|LieGroups.jl|, the exponential map is implemented as \verb|exp(G, g, X)|\footnote{in-place variant \texttt{exp!(G, h, g, X)}.}.
-As a word of carefulness, note that on the underlying manifold, there is a further exponential map, the Riemannian exponential map. The Riemannian exponential map \verb|exp(M, p, X)|\footnote{with the same in-place signature as before \texttt{exp!(M, q, p, X)}.} can be distinguished in that the first argument is a manifold, and the tangent vector \verb|X| has to be from the tangent space at the point \verb|p| on the manifold.
+In \verb|LieGroups.jl|, the exponential map is implemented as \verb|exp(G, g, X)|%
+%\footnote{in-place variant \texttt{exp!(G, h, g, X)}.}
+.
+As a word of carefulness, note that on the underlying manifold, there is a further exponential map, the Riemannian exponential map. The Riemannian exponential map \verb|exp(M, p, X)|
+%\footnote{with the same in-place signature as before \texttt{exp!(M, q, p, X)}.}
+can be distinguished in that the first argument is a manifold, and the tangent vector \verb|X| has to be from the tangent space at the point \verb|p| on the manifold.
 Here, again, to access the Riemannian exponential, one can use the base manifold of the Lie group, i.e.\ \verb|exp(base_manifold(G), g, X)| and have to make sure that \verb|X| is from the tangent space at \verb|g|.
 
-Locally around the identity element $e\in\mathcal G$, the exponential map is a diffeomorphism, i.e.\ there exists an inverse map on some neighbourhood of $e$. The logarithmic function \(\log\colon \mathcal{G} \to \mathfrak{g}\) and logarithmic map \(\log_g\colon \mathcal{G} \to \mathfrak{g}\)have the function signatures \verb|log(G, g)|\footnote{in-place variant \texttt{log!(G, X, g)}.} and \verb|log(G, h, g)|\footnote{in-place variant \texttt{log!(G, X, h, g)}.}, respectively, with the same caveat to the Riemannian logarithmic map as for the exponential.
+Locally around the identity element $e\in\mathcal G$, the exponential map is a diffeomorphism, i.e.\ there exists an inverse map on some neighbourhood of $e$. The logarithmic function \(\log\colon \mathcal{G} \to \mathfrak{g}\) and logarithmic map \(\log_g\colon \mathcal{G} \to \mathfrak{g}\)have the function signatures \verb|log(G, g)|%
+%\footnote{in-place variant \texttt{log!(G, X, g)}.}
+and \verb|log(G, h, g)|%
+%\footnote{in-place variant \texttt{log!(G, X, h, g)}.}
+, respectively, with the same caveat to the Riemannian logarithmic map as for the exponential.
 
-When the exponential and logarithmic map are not known in closed form, it might be beneficial to use retractions and inverse retractions instead, respectively. These are first or second order approximations of the exponential and logarithmic map, respectively and their interface is already provided in \verb|ManifoldsBase.jl|\footnote{see \href{https://juliamanifolds.github.io/ManifoldsBase.jl/stable/retractions/}{juliamanifolds.github.io/ManifoldsBase.jl/stable/retractions/}.}. In \verb|LieGroups.jl|, one can either implement new variants based on a subtype of \verb|AbstractRetractionMethod| and \verb|AbstractInverseRetractionMethod|, resp., or use the wrappers \verb|BaseManifoldRetraction| and \verb|BaseManifoldInverseRetraction|, resp., to directly use the retraction and inverse retraction from the underlying manifold.
+When the exponential and logarithmic map are not known in closed form, it might be beneficial to use retractions and inverse retractions instead, respectively.
+These are first or second order approximations of the exponential and logarithmic map, respectively and their interface is already provided in \verb|ManifoldsBase.jl|\footnote{see \href{https://juliamanifolds.github.io/ManifoldsBase.jl/stable/retractions/}{juliamanifolds.github.io/ManifoldsBase.jl/stable/retractions/}.}.
+In \verb|LieGroups.jl|, one can either implement new variants based on a subtype of \verb|AbstractRetractionMethod| and \verb|AbstractInverseRetractionMethod|, resp., or use the wrappers \verb|BaseManifoldRetraction| and \verb|BaseManifoldInverseRetraction|, resp., to directly use the retraction and inverse retraction from the underlying manifold.
 
 \subsection{Lie algebras}
 
@@ -228,7 +263,7 @@ A major difference to the usual representation of tangent vectors on the underly
 Given a Lie group \verb|G|, we obtain the Lie algebra by calling $\frak g$ \verb|= LieAlgebra(G)|.
 To access the Lie group again, use \verb|base_lie_group(|$\frak g$\verb|)|. Similarly \verb|base_manifold(|$\frak g$\verb|)| returns the underlying manifold of the Lie group.\\
 As a technical detail, the Lie algebra is modelled as a tangent space\footnote{see the documentation of~\href{https://juliamanifolds.github.io/ManifoldsBase.jl/stable/metamanifolds/\#ManifoldsBase.TangentSpace}{ManifoldsBase.TangentSpace}} using the already mentioned \verb|Identity(G)| as base point.
-A zero vector is generated via \verb|zero_vector(|$\frak g$\verb|)| for the default representation and \verb|zero_vector(|$\frak g$\verb|, T)| for a specific representation type \verb|T|.\footnote{the in-place variant \texttt{zero\_vector!($\frak g$, X::T)} contains the type automatically.}
+A zero vector is generated via \verb|zero_vector(|$\frak g$\verb|)| for the default representation and \verb|zero_vector(|$\frak g$\verb|, T)| for a specific representation type \verb|T|.\footnote{the in-place variant \texttt{zero\_vector!($\frak g$, X::T)} can infer the type \texttt{T} of \texttt{X} automatically.}
 
 The main topological function is to test the validity of a tangent vector \verb|is_vector(|$\frak g$\verb|, X; error=:none)| using the same \verb|error=| keyword as \verb|is_point| on the Lie group.
 
@@ -239,8 +274,11 @@ The inner product and norm on the Lie algebra are available as \verb|inner(|$\fr
 Furthermore, there are two functions to convert between a coordinate-free representation of $X$ as a tangent vector and its representation in coordinates of a basis.
 
 Given a vector $c \in \mathbb R^n$, we obtain the tangent vector by calling \verb|get_vector(|$\frak g$\verb|, c, b)| where \verb|b| is a basis of the tangent space, i.e.\ a subtype of \verb|AbstractBasis| and defaults within \verb|LieGroups.jl| to \verb|DefaultLieAlgebraOrthogonalBasis()|.
-When a Lie group has different representations of points and tangent vectors, these are distinguished by calling \verb|get_vector(|$\frak g$\verb|, c, b, T)| specifying the tangent vector type.\footnote{in-place variant \texttt{get\_vector!($\frak g$, X::T, c, b)} contains the type information directly.}
-Given a tangent vector $X \in \frak g$, we obtain its coordinates by calling \verb|get_coordinates(|$\frak g$\verb|, X, B)|\footnote{in-place variant \texttt{get\_coordinates!($\frak g$, c, X, b)}}, where the Basis is again optional.
+When a Lie group has different representations of points and tangent vectors, these are distinguished by calling \verb|get_vector(|$\frak g$\verb|, c, b, T)| specifying the tangent vector type
+\footnote{the in-place variant \texttt{get\_vector!($\frak g$, X::T, c, b)} can infer the type \texttt{T} of \texttt{X} directly.}
+Given a tangent vector $X \in \frak g$, we obtain its coordinates by calling \verb|get_coordinates(|$\frak g$\verb|, X, B)|%
+%\footnote{in-place variant \texttt{get\_coordinates!($\frak g$, c, X, b)}}
+, where the Basis is again optional.
 
 For the case of the default, the \verb|DefaultLieAlgebraOrthogonalBasis()| the more commonly used names \verb|hat(|$\frak g$\verb|, c)|\footnote{in-place variant \texttt{hat!($\frak g$, X::T, c)}} (again with an optional vector type \verb|T|) and \verb|vee(|$\frak g$\verb|, X)|\footnote{in-place variant \texttt{vee!($\frak g$, c, X)}} are implemented
 
