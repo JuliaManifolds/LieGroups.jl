@@ -144,12 +144,13 @@ For example \verb|identity_element(G)| returns the identity element $e$ of a Lie
 
 \subsection{Lie groups}
 
-The main type for Lie Groups is the \verb|LieGroup{|$\mathbb {F}$\verb|, O, M} <: AbstractLieGroup|, which contains a manifold \verb|M <: AbstractManifold{|$\mathbb F$\verb|}| as well as the group operation \verb| O <: AbstractGroupOperation|, where $\mathbb {F}$ is the field of scalars used in the representation of the manifold, usually \(\mathbb {F} = \mathbb{R}\) and in some cases \(\mathbb {F} = \mathbb{C}\) or \(\mathbb F = \mathbb H\).
+The main type for Lie Groups is the \verb|LieGroup{|$\mathbb {F}$\verb|, O, M} <: AbstractLieGroup|, which contains a manifold \verb|M <: AbstractManifold{|$\mathbb F$\verb|}| as well as the group operation \verb| O <: AbstractGroupOperation|, where $\mathbb {F}$ is the set of scalars used in the representation of the manifold, usually \(\mathbb {F} = \mathbb{R}\) and in some cases \(\mathbb {F}\) is the field of complex numbers \(\mathbb{C}\) or the ring of quaternions \(\mathbb H\).
 
 \subsubsection*{Topological functions}
-From a topological viewpoint, one has to first distinguish between points on the Lie group and tangent vectors on the Lie algebra.
-\verb|LieGroups.jl| introduces a \verb|AbstractLieGroupPoint <: AbstractManifoldPoint|, that is used to represent points on the Lie group.
-This abstract supertype is not necessary, points can be represented by arrays or other types as well, but the type allows to introduce special types when one Lie groups has \emph{different representations} of points, that have to be distinguished. When there are different representations, it is recommended to introduce a point type for each representation and make the default one fall back to (just) using arrays.
+Points and tangent vectors can be represented by the same Julia objects, although they are distinct from a topological viewpoint.
+\footnote{\texttt{LieGroups.jl} introduces a \texttt{AbstractLieGroupPoint <: AbstractManifoldPoint}, that is used to represent points on the Lie group.
+This abstract supertype is not necessary, points can be represented by arrays or other types as well.}
+Separate types are necessary when one Lie group has \emph{different representations} of points, that have to be distinguished. When there are different representations, it is recommended to introduce a point type for each representation and make the default one fall back to (just) using arrays.
 \\
 Alternatively to points, also different manifolds can be used. This is for example the case for the circle group \(\mathbb{S}^1\), which can be represented as angles, points on the unit circle in \(\mathbb{R}^2\) or as complex numbers with unit norm, all three of which are different manifolds to be used internally. To access the underlying manifold, the function \verb|base_manifold(G)| is provided.
 
@@ -218,7 +219,7 @@ When the exponential and logarithmic map are not known in closed form, it might 
 
 Similar to points on the Lie group, when representing elements $X \in \frak g$ from a Lie algebra, we do not type the general functions of the interface.
 This allows to use either plain arrays or own structures to represent these in code.
-The optional abstract supertype \verb|AbstractLieAlgebraTangentVector|, which is a \verb|AbstractTangentVector|, is provided to also distinguish different representations here.
+\footnote{The optional abstract supertype \texttt{AbstractLieAlgebraTangentVector}, which is a \texttt{AbstractTangentVector}, is provided to also distinguish different representations here.}
 Keep in mind, that the Lie algebra is a vector space, so that addition and scalar multiplication are assumed to be defined in case you use an individual data type.
 
 A major difference to the usual representation of tangent vectors on the underlying manifold is, that here the usual representation is done in the Lie algebra.
