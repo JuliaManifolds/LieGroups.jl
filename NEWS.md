@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * `NestedPowerRepresentation` and `NestedReplacingPowerRepresentation` are now re-exported from `ManifoldsBase.jl`.
 * `getindex` access to parts of a point of tangent vector represented by a matrix with `:Rotation` and `:Translation` as indices. For example, when `g` is a point on any variant of the special euclidean group, `g[G, :Translation]` will return the translation part of `g` regardless of whether `G` is the left or right semidirect product even when `g` is a matrix.
 
+### Fixed
+
+* Zenodo metadata.
+
 ## [0.1.6] 2025-10-10
 
 ### Fixed
