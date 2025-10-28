@@ -479,7 +479,7 @@ For all three representations, one can access the component semantically by writ
 
 {\color{red}TODO: Check whether there are details for other Lie groups that should be mentioned here.}
 
-\section{An example how to use {\texttt{LieGroups.jl}}}%
+\section{Examples how to use {\texttt{LieGroups.jl}}}%
 \label{sec:Example}
 
 In this section, we provide examples of how to use the {\texttt{LieGroups.jl}} package in Julia.
@@ -534,17 +534,22 @@ We consider the control points
     g_4 &= \Bigl(R_{\pi}, \begin{pmatrix} 1 \\ 0 \end{pmatrix}\Bigr).
 \end{align*}
 
-We evaluate the corresponding Bézier curves on both Lie groups using the code in~\ref{lst:bezierLieGroupExample}.
+We evaluate the corresponding Bézier curves on both Lie groups using the Code~\ref{lst:bezierLieGroupExample}.
 \begin{lstlisting}[
     language = Julia,
     numbers=left,
     label={lst:bezierLieGroupExample},
-    caption={Evaluating Bézier curves on \(\mathrm{SE}(2)\) and \(\mathrm{SO}(2) \times \mathcal T(2)\).}
+    caption={Evaluating Bézier curves on \(\mathrm{SE}(2)\) and \(\mathrm{SO}(2) \times \mathcal T(2)\).},
+    mathescape
 ]
+SO2 = SpecialOrthogonalGroup(2)
+R2 = TranslationGroup(2)
+SO2xR2 = SO2 $\times$ R2
 ts = range(0, 1, length=35)
 q1 = [
     deCasteljauLieGroup(SO2xT2, cp, t) for t in ts
 ]
+SE2 = SpecialEuclideanGroup(2)
 q2 = [deCasteljauLieGroup(SE2, cp, t) for t in ts]
 \end{lstlisting}
 
@@ -599,15 +604,17 @@ q2 = [deCasteljauLieGroup(SE2, cp, t) for t in ts]
     \end{tikzpicture}
     \caption{Bézier curves on the Lie groups \(\mathrm{SE}(2)\) (teal) and \(\mathrm{SO}(2) \times \mathbb{R}^2\) (sand) based on the same control points
     $g_1,\ldots,g_4$ (blue).}
+    \label{fig:Bezier}
 \end{figure}
 
+The resulting Bézier curves on both Lie groups are shown in Figure~\ref{fig:Bezier}.
+One can see that the product Lie group works the same as if one would have done that
+separately component-wise, while the Bézier curve on \(\mathrm{SE}(2)\) behaves differently.
 
 \subsection{A simple forward Euler integration on a Lie group.}
 
 For more details on solving differential equations on Lie groups in Julia, see
 \verb|ManifoldDiffEq.jl|.
-
-{\color{red}TODO: Provide code for de-Casteljau algorithm on Lie groups.}
 
 {\color{red}TODO: Do a Forward Euler simulation on a nice physics problem}
 
