@@ -333,7 +333,7 @@ Table~\ref{tab:available_lie_groups} summarizes the currently implemented Lie gr
 
 There are three Lie groups that are built upon other Lie groups. We mention them here briefly and point out specific functions and features that are additionally available for these.
 
-\subsubsection{Product Lie group}
+\subsubsection*{Product Lie group}
 
 Given two Lie groups \(\mathcal{G} = (\mathcal M, \ast) \) and \(\mathcal{H} = (\mathcal N, \diamond)\), their (direct) product \(\mathcal{G} \times \mathcal{H}\) is again a Lie group \((\mathcal{M} \times \mathcal{N}, \cdot)\) with group operation defined component-wise, i.e.
 \begin{equation*}
@@ -347,13 +347,25 @@ As for the representation of points and tangent vectors, the default representat
 
 If you want to construct nested Products of Lie groups, e.g.\ \((\mathcal G_1 \times \mathcal G_2) \times \mathcal G_3\), the binary operator would not work, since it automatically flattens the input; use \verb|ProductLieGroup(ProductLieGroup(G1, G2), G3)| can be used instead.
 
-\subsubsection{Power Lie groups}
+\subsubsection*{Power Lie groups}
 Though mathematically the case of a product Lie Group, where $G=H$ is also (just) a product, computationally we can benefit from the special structure. Therefore the \verb|Powermanifold(G, n1, n2, ...)| is provided to construct the \(n_1 \times n_2 \times \ldots\)-fold Cartesian product of the Lie group \(G\) with itself.
 As a shortcut, you can use \verb|G^n| to construct the \(n\)-fold Cartesian product of the Lie group \(G\) with itself.
 
-Note that inheriting from the power manifold, there are two different data types to represent data, per default a single large array, or a
+Note that inheriting from the power manifold, there are two different data types to represent data, per default a single large array. Alternatively, one can use the constructor \verb|PowerLieGroup(G, NestedPowerRepresentation(), n)| to represent points and tangent vectors as a vector of points.
 
-\subsubsection{Semidirect product Lie groups}
+To abstract the access of elements here, similar to the \verb|PowerManifold| in \verb|ManifoldsBase.jl|, the access functions \verb|g[G, i]| are available.
+
+\subsubsection*{Semidirect product Lie groups}
+
+Given two Lie groups \(\mathcal{G} = (\mathcal M, \ast)\) and \(\mathcal{H} = (\mathcal N, \diamond)\) as well as a group action \(\sigma\colon \mathcal{G} \times \mathcal{H} \to \mathcal{H}\),
+the \term{(left) semidirect product Lie Group} $\mathcal{G} \ltimes \mathcal{H} = (\mathcal{M} \times \mathcal{N}, \cdot)$ is defined via the group operation given by
+\begin{equation*}
+    (g_1, h_1) \cdot (g_2, h_2) = (g_1 \ast g_2, h_1 \diamond \sigma(g_1, h_2))
+\end{equation*}
+This semidirect product Lie group is constructed calling \verb|LeftSemidirectProductLieGroup(G, H, a)|, where the \verb|GroupAction a| is optional, since one can define a default action by setting \verb|default_left_action(G, H)|.
+With this default, also the shortcut \verb|G|\,$\ltimes$\,\verb|H| is available.
+%
+Similarly, the \term{right semidirect product Lie Group} $\mathcal{H} \rtimes \mathcal{G}$ is defined analogously with the positions of the groups swapped in the group operation and the default for the group action is given by \verb|default_right_action(G, H)|. This can be constructed via \verb|H|\,$\rtimes$\,\verb|G| then as well.
 
 \subsection{A Lie group for Numerical verification}
 
@@ -365,10 +377,27 @@ While by default these checks do result in errors, this can be changed setting t
 
 \subsection{Concrete Lie groups}\label{subsec:ConcreteLieGroups}
 
+From the list of available Lie groups in Table~\ref{tab:available_lie_groups}, we want to highlight some specific features of a few of them.
+
 For the \verb|CircleGroup()|, three different representations of points are available: as angles in \([0, 2\pi)\), as complex numbers with unit norm, and as points on the unit circle in \(\mathbb{R}^2\).
 These are constructed by specifying the representation of points, i.e. \verb|CircleGroup(|$\mathbb R$\verb|)|, \verb|CircleGroup(|$\mathbb C$\verb|)|, and \verb|CircleGroup(|$\mathbb R^2$\verb|)|, respectively. Note that each of these representations uses a different underlying manifold, namely \verb|Circle(|$\mathbb R$\verb|)|, \verb|Circle(|$\mathbb C$\verb|)|, and \verb|Circle(|$\mathbb R^2$\verb|)|, respectively.
 This is a case, where it is not only the representation of points and tangent vectors that differ, but indeed even the underlying manifold.
 
+The special Euclidean group \(\mathcal G = \mathrm{SE}(n)\), there are three different representations avalable:
+\\
+The first one is the matrix representation, where points are represented as \((n+1) \times (n+1)\) matrices combining rotation and translation, i.e.\ as
+\begin{equation*}
+    g = \begin{pmatrix} R & t \\
+    0 & 1 \end{pmatrix},
+\end{equation*}
+where \(R \in \mathrm{SO}(n)\) and \(t \in \mathbb{R}^n\).
+
+The second representation is the tuple representation, where points are represented as tuples \(g' = (R, t)\) and the third is the tuple representation with the translation in the first component, i.e.\ \(g'' = (t, R)\). These two are available when \verb|RecursiveArrayTools.jl| is loaded and specifying the \verb|variant=:left| (default) or \verb|variant=:right|, respectively.
+The first, matrix representation work on either \verb|variant|.
+
+For all three representations, one can access the component semantically by writing \verb|g[G, :Rotation]| and \verb|g[G, :Translation]|, which works independent of the representation used.
+
+{\color{red}TODO: Check whether there are details for other Lie groups that should be mentioned here.}
 
 \section{An example how to use {\texttt{LieGroups.jl}}}\label{sec:Example}
 \input{bib.tex}
