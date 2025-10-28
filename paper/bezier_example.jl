@@ -1,6 +1,15 @@
 using Pkg; Pkg.activate(@__DIR__); Pkg.instantiate()
+cd(@__DIR__)
 using LieGroups, ManifoldsBase, RecursiveArrayTools
 using CairoMakie
+
+n = 35 # number of points to plot arrows at
+N = 500 # number of points to plot the curve
+export_csv = true
+show_figure = true
+export_folder = "data/"
+experiment_name = "bezier_example"
+
 """
     deCasteljauLieGroup(G, cp, t)
 
@@ -89,6 +98,45 @@ arrows2d!(ax,
     [d[2] for d in bezier2_directions];
     lengthscale=0.15, color=:green, shaftwidth=2.0
 )
-fig
+show_figure && display(fig)
 
+if export_csv
+    using CSV, DataFrames
+
+    df1 = DataFrame(
+        x = [p[1] for p in positions],
+        y = [p[2] for p in positions],
+        u = [d[1] for d in directions],
+        v = [d[2] for d in directions],
+    )
+    CSV.write(export_folder * experiment_name * "_control_points.csv", df1)
+
+    df1 = DataFrame(
+        x = [p[1] for p in bezier1_positions],
+        y = [p[2] for p in bezier1_positions],
+        u = [d[1] for d in bezier1_directions],
+        v = [d[2] for d in bezier1_directions],
+    )
+    CSV.write(export_folder * experiment_name * "_se2.csv", df1)
+
+    df1_dense = DataFrame(
+        x = [p[1] for p in bezier1_dense_positions],
+        y = [p[2] for p in bezier1_dense_positions],
+    )
+    CSV.write(export_folder * experiment_name * "_se2_dense_curve.csv", df1_dense)
+
+    df2 = DataFrame(
+        x = [p[1] for p in bezier2_positions],
+        y = [p[2] for p in bezier2_positions],
+        u = [d[1] for d in bezier2_directions],
+        v = [d[2] for d in bezier2_directions],
+    )
+    CSV.write(export_folder * experiment_name * "_so2r2.csv", df2)
+
+    df2_dense = DataFrame(
+        x = [p[1] for p in bezier2_dense_positions],
+        y = [p[2] for p in bezier2_dense_positions],
+    )
+    CSV.write(export_folder * experiment_name * "_so2r2_dense_curve.csv", df2_dense)
+end
 # export CSV, x,y, u ,v and try to quiver these in TikZ

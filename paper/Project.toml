@@ -1,14 +1,15 @@
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 LieGroups = "6774de46-80ba-43f8-ba42-e41071ccfc5f"
 Manifolds = "1cead3c2-87b3-11e9-0ccd-23c62b72b94e"
 ManifoldsBase = "3362f125-f0bb-47a3-aa74-596ffd7ef2fb"
 RecursiveArrayTools = "731186ca-8d62-57ce-b412-fbd966d074cd"
 
 [compat]
-CairoMakie = "0.15"
 CSV = "0.10"
+CairoMakie = "0.15"
 LieGroups = "0.1"
 Manifolds = "0.11"
 ManifoldsBase = "2"

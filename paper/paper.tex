@@ -13,6 +13,17 @@
 \newcommand{\im}{\ensuremath{\mathrm{i}}}
 \newcommand{\LieGroupsVersion}{0.1.6}
 %
+% Define muted colors.
+\definecolor{TolMutedBlue}{HTML}{332288}
+\definecolor{TolMutedCyan}{HTML}{88CCEE}
+\definecolor{TolMutedTeal}{HTML}{44AA99}
+\definecolor{TolMutedGreen}{HTML}{117733}
+\definecolor{TolMutedOlive}{HTML}{999933}
+\definecolor{TolMutedSand}{HTML}{DDCC77}
+\definecolor{TolMutedRose}{HTML}{CC6677}
+\definecolor{TolMutedWine}{HTML}{882255}
+\definecolor{TolMutedPurple}{HTML}{AA4499}
+%
 \hypersetup{colorlinks=true}
 %
 \begin{document}
@@ -508,62 +519,88 @@ function deCasteljauLieGroup(
 end
 \end{lstlisting}
 
-In Algorithm~\ref{lst:deCasteljauLieGroup}, define the general de-Casteljau algorithm on a Lie group \verb|G|, given a vector of control points \verb|cp| and a parameter \verb|t| in \([0,1]\).
+In Code~\ref{lst:deCasteljauLieGroup}, we define the general de-Casteljau algorithm on a Lie group \verb|G|, given a vector of control points \verb|cp| and a parameter \verb|t| in \([0,1]\).
 
-We can now compare the algorithm on the Lie group \(\mathrm{SE}(2)\) with the corresponding Bézier curve on the (direct) product Lie group $\mathrm{SO}(2) \times \mathbb{R}^2$. Denote by $R_\alpha$ the rotation matrix in \(\mathrm{SO}(2)\) for an angle \(\alpha\in[0,2\pi)\). Then we consider the control points
+We can now compare the algorithm on the Lie group \(\mathrm{SE}(2)\) with the corresponding Bézier curve on the (direct) product Lie group $\mathrm{SO}(2) \times \mathcal T(2)$, where \(\mathcal T(2) = (\mathbb{R}^2, +)\) is the \verb|TranslationGroup(2)|.
+Denote by $R_\alpha$ the rotation matrix in \(\mathrm{SO}(2)\) for an angle \(\alpha\in[0,2\pi)\).
+We consider the control points
 \begin{align*}
-    g_1 &= \begin{pmatrix} R_0 & \begin{pmatrix} 0 \\ 0 \end{pmatrix} \\
-    0 & 1 \end{pmatrix}, \quad
-g_2 = \begin{pmatrix} R_{\pi/2} & \begin{pmatrix} 1 \\ 0 \end{pmatrix} \\
-    0 & 1 \end{pmatrix}, \\
-g_3 &= \begin{pmatrix} R_{\pi} & \begin{pmatrix}
-    1 \\ 1 \end{pmatrix} \\
-0 & 1 \end{pmatrix}, \quad
+    g_1 &= \Bigl(R_{\frac{\pi}{2}}, \begin{pmatrix} 0 \\ 0 \end{pmatrix}\Bigr),
+    &\quad
+    g_2 &= \Bigl(R_{\frac{\pi}{4}}, \begin{pmatrix} 1/3 \\ 1/2 \end{pmatrix}\Bigr),
+    \\%\quad
+    g_3 &= \Bigl(R_{\frac{3\pi}{4}}, \begin{pmatrix} 2/3 \\ -1/2 \end{pmatrix}\Bigr),
+    &\quad
+    g_4 &= \Bigl(R_{\pi}, \begin{pmatrix} 1 \\ 0 \end{pmatrix}\Bigr).
 \end{align*}
 
+We evaluate the corresponding Bézier curves on both Lie groups using the code in~\ref{lst:bezierLieGroupExample}.
+\begin{lstlisting}[
+    language = Julia,
+    numbers=left,
+    label={lst:bezierLieGroupExample},
+    caption={Evaluating Bézier curves on \(\mathrm{SE}(2)\) and \(\mathrm{SO}(2) \times \mathcal T(2)\).}
+]
+ts = range(0, 1, length=35)
+q1 = [
+    deCasteljauLieGroup(SO2xT2, cp, t) for t in ts
+]
+q2 = [deCasteljauLieGroup(SE2, cp, t) for t in ts]
+\end{lstlisting}
+
 \begin{figure}
+    % Arrow scale factor
+    \def\arrowscale{0.15}
+
     \begin{tikzpicture}
-    \begin{axis}[
-        axis equal,
-        xlabel={$x$},
-        ylabel={$y$},
-        grid=major,
-        width=10cm,
-        height=10cm
-    ]
-
-    % Define arrow length
-    \def\arrowlength{0.15}
-
-    % Load and iterate over CSV data
-    \pgfplotstableread[col sep=comma]{data/bezier_example_se2.csv}\datatable
-
-    % Iterate over rows
-    \pgfplotstableforeachrow{\datatable}{%
-        \pgfplotstablegetelem{\pgfplotstablerow}{x}\of{\datatable}%
-        \pgfmathsetmacro{\x}{\pgfplotsretval}%
-        \pgfplotstablegetelem{\pgfplotstablerow}{y}\of{\datatable}%
-        \pgfmathsetmacro{\y}{\pgfplotsretval}%
-        \pgfplotstablegetelem{\pgfplotstablerow}{u}\of{\datatable}%
-        \pgfmathsetmacro{\u}{\pgfplotsretval}%
-        \pgfplotstablegetelem{\pgfplotstablerow}{v}\of{\datatable}%
-        \pgfmathsetmacro{\v}{\pgfplotsretval}%
-
-        % Normalize vector
-        \pgfmathsetmacro{\norm}{sqrt(\u*\u + \v*\v)}%
-        \pgfmathsetmacro{\dx}{\arrowlength * \u / \norm}%
-        \pgfmathsetmacro{\dy}{\arrowlength * \v / \norm}%
-
-        % Draw arrow
-        \draw[->, thick, blue] (\x,\y) -- ({\x+\dx},{\y+\dy});%
-    }
-    \end{axis}
-\end{tikzpicture}
+        \begin{axis}[
+            grid=major,
+            width=.5\textwidth,
+            legend style={at={(0.95,0.9)}},
+            xmin=-0.05, xmax=1.05,
+            ymin=-0.525, ymax=0.625,
+            unit vector ratio=1 1,
+            title style={yshift=-.5\baselineskip,},
+            title={Two Bézier curves on different Lie groups},
+        ]
+            % Control points
+            % Quiver plot from CSV file
+            \addplot[
+                quiver={u=\thisrow{u}, v=\thisrow{v}, scale arrows=\arrowscale},
+                -stealth, very thick, TolMutedBlue,
+            ] table[col sep=comma] {data/bezier_example_control_points.csv};
+            \addlegendentry{Control points}
+            % Plot the base points from CSV file
+            \addplot[only marks, mark=*, mark size=2pt, TolMutedBlue, forget plot,
+                ] table[col sep=comma] {data/bezier_example_control_points.csv};
+            % SO2xR2 Curve and quiver
+            \addplot[solid, thick, TolMutedSand, forget plot] table[col sep=comma, x=x, y=y] {data/bezier_example_so2r2_dense_curve.csv};
+            % Quiver plot from CSV file
+            \addplot[
+                quiver={u=\thisrow{u}, v=\thisrow{v}, scale arrows=\arrowscale},
+                -stealth, TolMutedSand,
+            ] table[col sep=comma] {data/bezier_example_so2r2.csv};
+            \addlegendentry{$\mathrm{SO}(2)\times \mathcal T(2)$}
+            % Plot the base points from CSV file
+            \addplot[only marks, mark=*, mark size=1.5pt, TolMutedSand, forget plot,
+                ] table[col sep=comma] {data/bezier_example_so2r2.csv};
+            % SE2 Curve and quiver
+            \addplot[solid, thick, TolMutedTeal, forget plot] table[col sep=comma, x=x, y=y] {data/bezier_example_se2_dense_curve.csv};
+            % Quiver plot from CSV file
+            \addplot[
+                quiver={u=\thisrow{u}, v=\thisrow{v}, scale arrows=\arrowscale},
+                -stealth, TolMutedTeal,
+            ] table[col sep=comma] {data/bezier_example_se2.csv};
+            \addlegendentry{$\mathrm{SE}(2)$}
+            % Plot the base points from CSV file
+            \addplot[only marks, mark=*, mark size=1.5pt, TolMutedTeal, forget plot,
+                ] table[col sep=comma] {data/bezier_example_se2.csv};
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Bézier curves on the Lie groups \(\mathrm{SE}(2)\) (teal) and \(\mathrm{SO}(2) \times \mathbb{R}^2\) (sand) based on the same control points
+    $g_1,\ldots,g_4$ (blue).}
 \end{figure}
 
-
-
-As data we take the points
 
 \subsection{A simple forward Euler integration on a Lie group.}
 
