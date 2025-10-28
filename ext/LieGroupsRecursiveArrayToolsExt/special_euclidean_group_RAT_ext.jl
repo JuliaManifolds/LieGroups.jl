@@ -168,6 +168,35 @@ function ManifoldsBase.exp!(
     return g
 end
 
+function Base.getindex(
+        g::ArrayPartition,
+        G::SpecialEuclideanGroup,
+        s::Union{Symbol, Int},
+    )
+    return submanifold_component(G, g, s)
+end
+function Base.getindex(
+        g::ArrayPartition,
+        G::SpecialEuclideanGroup,
+        ::Colon,
+    )
+    return submanifold_components(G, g)
+end
+function Base.getindex(
+        g::ArrayPartition,
+        𝔤::LieAlgebra{ℝ, <:LieGroups.SpecialEuclideanGroupOperation, <:SpecialEuclideanGroup},
+        s::Union{Symbol, Int},
+    )
+    return submanifold_component(𝔤, g, s)
+end
+function Base.getindex(
+        g::ArrayPartition,
+        𝔤::LieAlgebra{ℝ, <:LieGroups.SpecialEuclideanGroupOperation, <:SpecialEuclideanGroup},
+        ::Colon,
+    )
+    return submanifold_components(𝔤, g)
+end
+
 function LieGroups.identity_element(
         G::SpecialEuclideanGroup, ::Type{<:SpecialEuclideanProductPoint{A}}
     ) where {A <: ArrayPartition}

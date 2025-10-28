@@ -72,6 +72,17 @@ using StaticArrays
                 SpecialEuclideanMatrixTangentVector
             @test ManifoldsBase.tangent_vector_type(G, SpecialEuclideanProductPoint) ==
                 SpecialEuclideanProductTangentVector
+
+            # convenience access
+            @test (pts[1])[G, :Translation] isa AbstractVector
+            @test (pts[1])[G, :] isa Tuple
+            @test (pts[1])[G, :Rotation] isa AbstractMatrix
+
+            𝔤 = LieAlgebra(G)
+
+            @test (vec[1])[𝔤, :Translation] isa AbstractVector
+            @test (vec[1])[𝔤, :] isa Tuple
+            @test (vec[1])[𝔤, :Rotation] isa AbstractMatrix
         end
         #
         # Right variant – exchange product cases

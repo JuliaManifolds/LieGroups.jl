@@ -216,6 +216,12 @@ function ManifoldsBase.exp!(
     return h
 end
 
+Base.@propagate_inbounds function Base.getindex(
+        p::AbstractArray, PoG::LieGroup{𝔽, Op, M}, I::Union{Integer, Colon, AbstractVector}...,
+    ) where {𝔽, Op <: PowerGroupOperation, M <: ManifoldsBase.AbstractPowerManifold}
+    return get_component(base_manifold(PoG), p, I...)
+end
+
 function ManifoldsBase.hat!(
         Po𝔤::LieAlgebra{𝔽, Op, LieGroup{𝔽, Op, M}}, X, c
     ) where {𝔽, Op <: PowerGroupOperation, M <: ManifoldsBase.AbstractPowerManifold}

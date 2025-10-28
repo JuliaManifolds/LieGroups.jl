@@ -460,7 +460,7 @@ Use `:` to access all submanifold components as a unified tuple.
 
 @doc "$(_doc_getindex_SE)"
 function Base.getindex(
-        g::Union{SpecialEuclideanMatrixPoint, SpecialEuclideanProductPoint, Identity},
+        g::Union{SpecialEuclideanMatrixPoint, SpecialEuclideanProductPoint, Identity, AbstractMatrix},
         G::SpecialEuclideanGroup,
         s::Union{Symbol, Int},
     )
@@ -468,7 +468,7 @@ function Base.getindex(
 end
 
 function Base.getindex(
-        g::Union{SpecialEuclideanMatrixPoint, SpecialEuclideanProductPoint, Identity},
+        g::Union{SpecialEuclideanMatrixPoint, SpecialEuclideanProductPoint, Identity, AbstractMatrix},
         G::SpecialEuclideanGroup,
         ::Colon,
     )
@@ -477,7 +477,7 @@ end
 
 @doc "$(_doc_getindex_SE)"
 function Base.getindex(
-        g::Union{SpecialEuclideanMatrixTangentVector, SpecialEuclideanProductTangentVector},
+        g::Union{SpecialEuclideanMatrixTangentVector, SpecialEuclideanProductTangentVector, AbstractMatrix},
         𝔤::LieAlgebra{ℝ, <:SpecialEuclideanGroupOperation, <:SpecialEuclideanGroup},
         s::Union{Symbol, Int},
     )
@@ -486,7 +486,7 @@ end
 
 @doc "$(_doc_getindex_SE)"
 function Base.getindex(
-        g::Union{SpecialEuclideanMatrixTangentVector, SpecialEuclideanProductTangentVector},
+        g::Union{SpecialEuclideanMatrixTangentVector, SpecialEuclideanProductTangentVector, AbstractMatrix},
         𝔤::LieAlgebra{ℝ, <:SpecialEuclideanGroupOperation, <:SpecialEuclideanGroup},
         ::Colon,
     )

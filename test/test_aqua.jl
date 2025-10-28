@@ -6,12 +6,7 @@ using Aqua, LieGroups, Test, LinearAlgebra
         ambiguities = (
             broken = false,
             exclude = [
-                Base.:+, #temporary ambiguities between Manifolds.Identity and LieGroups.Identity
-                Base.:-, #temporary ambiguities between Manifolds.Identity and LieGroups.Identity
-                Base.:*, #temporary ambiguities between Manifolds.Identity and LieGroups.Identity
-                Base.:/, #temporary ambiguities between Manifolds.Identity and LieGroups.Identity
-                Base.:\, #temporary ambiguities between Manifolds.Identity and LieGroups.Identity
-                LinearAlgebra.mul!, #temporary ambiguities between Manifolds.Identity and LieGroups.Identity
+                getindex, # ambiguities from convenience access methods; they were manually verified as safe
             ],
         ),
     )
