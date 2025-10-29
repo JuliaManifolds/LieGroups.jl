@@ -315,6 +315,18 @@ function default_right_action(::TranslationGroup, ::SpecialOrthogonalGroup)
     return LeftMultiplicationGroupAction()
 end
 
+function diff_left_compose!(G::SpecialEuclideanGroup, Y, ::Identity, h, X)
+    Xr = submanifold_component(G, X, :Rotation)
+    Xt = submanifold_component(G, X, :Translation)
+    Yr = submanifold_component(G, Y, :Rotation)
+    Yt = submanifold_component(G, Y, :Translation)
+    R = submanifold_component(G, h, :Rotation)
+    t = submanifold_component(G, h, :Translation)
+    Yr .= Xr
+    Yt .= R * Xt .- Xr * t
+    return Y
+end
+
 _doc_exp_SE2_id = """
     exp(G::SpecialEuclidean, X)
     exp!(G::SpecialEuclidean, g, X)

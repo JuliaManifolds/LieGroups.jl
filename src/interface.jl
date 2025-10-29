@@ -1239,6 +1239,10 @@ function _vector_transport_to_basemanifold(
     return pull_back_tangent(G, g, X)
 end
 
+function ManifoldsBase.zero_vector(G::AbstractLieGroup{𝔽, O}, ::Identity{O}) where {𝔽, O <: AbstractGroupOperation}
+    return zero_vector(LieAlgebra(G))
+end
+
 #
 # Allocation hints - mainly pass-through, especially for power manifolds
 function ManifoldsBase.allocate_on(G::AbstractLieGroup, T::Type{<:AbstractArray})

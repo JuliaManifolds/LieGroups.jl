@@ -87,6 +87,11 @@ function ManifoldsBase.submanifold_components(
     ) where {𝔽, Op <: ProductGroupOperation, M <: ProductManifold}
     return op.operations
 end
+function ManifoldsBase.submanifold_components(
+        PrG::LieGroup{𝔽, Op, M}, ::Identity{Op}
+    ) where {𝔽, Op <: ProductGroupOperation, M <: ProductManifold}
+    return map(Identity, PrG.op.operations)
+end
 
 function _compose!(
         PrG::LieGroup{𝔽, Op, M}, k, g, h
