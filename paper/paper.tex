@@ -610,6 +610,8 @@ q2 = [deCasteljauLieGroup(SE2, cp, t) for t in ts]
 The resulting Bézier curves on both Lie groups are shown in Figure~\ref{fig:Bezier}.
 One can see that the product Lie group works the same as if one would have done that
 separately component-wise, while the Bézier curve on \(\mathrm{SE}(2)\) behaves differently.
+A main feature here is, that due to the generic implementation on arbitrary Lie groups,
+we can easily switch between different Lie groups, where the data is still valid.
 
 \subsection{A simple forward Euler integration on a Lie group.}
 
