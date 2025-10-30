@@ -145,7 +145,7 @@ function sim()
             lines!(ax, [p1[1], p2[1]], [p1[2], p2[2]], color=:black, linewidth=1)
         end
 
-        df_dense = DataFrame(x = x[begin:500:end], y = y[begin:500:end])
+        df_dense = DataFrame(x = vcat(x[begin:500:end], x[end]), y = vcat(y[begin:500:end], y[end]))
         df_rod = DataFrame(
             x = x[idxs],
             y = y[idxs],
