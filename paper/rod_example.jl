@@ -1,6 +1,8 @@
-using LinearAlgebra, Plots
+using LinearAlgebra
 
 using LieGroups, Manifolds, RecursiveArrayTools
+
+using CairoMakie
 
 using DataFrames, CSV
 
@@ -106,9 +108,13 @@ end
 
 # ---------- Simulation ----------
 function sim()
-    plt = plot(title="Charged rod trajectories near ±q charges",
-               xlabel="x (m)", ylabel="y (m)", aspect_ratio=1, legend=false)
-    
+    fig = Figure(size = (800, 800))
+    ax = Axis(fig[1, 1],
+        title = "Charged rod trajectories near ±q charges",
+        xlabel = "x (m)", ylabel = "y (m)",
+        aspect = DataAspect(), 
+    )
+
     SE2 = SpecialEuclideanGroup(2)
     SOxT = ProductLieGroup(SpecialOrthogonalGroup(2), TranslationGroup(2))
     sp = SystemParameters()
@@ -118,39 +124,47 @@ function sim()
            SystemParameters(; initial_rod_angle = 0.6, initial_rod_position=[-0.5, -0.5], tmax=40.0, initial_rod_velocity = [-0.01, 0.15])]
 
     export_folder = "paper/data/"
+    colors = [:red, :blue, :green]
+
     for (isp, sp) in enumerate(sps)
         ang = sp.initial_rod_angle
         pos = sp.initial_rod_position
         centers, Fθs = simulate_trajectory(SOxT, sp, ang, pos, sp.initial_rod_angular_velocity, sp.initial_rod_velocity)
         x = [c[1] for c in centers]
         y = [c[2] for c in centers]
-        plot!(plt, x, y, label="θ₀=$(ang), pos=$(pos)")
+        lines!(ax, x, y, color = colors[isp])
 
         # Draw rods at 10 roughly equidistant times
         nsteps = length(centers)
         idxs = round.(Int, range(1, nsteps, length=10))
         for i in idxs
             c = centers[i]
-            u = Fθs[i][1, :]           # rod's local x-axis
+            u = Fθs[i][1, :]
             p1 = c .- 0.5sp.L .* u
             p2 = c .+ 0.5sp.L .* u
-            # @show u
-            plot!(plt, [p1[1], p2[1]], [p1[2], p2[2]], color=:black, lw=1, label=false)
+            lines!(ax, [p1[1], p2[1]], [p1[2], p2[2]], color=:black, linewidth=1)
         end
 
         df_dense = DataFrame(x = x[begin:10:end], y = y[begin:10:end])
         df_rod = DataFrame(
-            up = [x[i] + 0.5sp.L * Fθs[i][1, 1] for i in idxs],
-            vp = [y[i] + 0.5sp.L * Fθs[i][1, 2] for i in idxs],
-            um = [x[i] - 0.5sp.L * Fθs[i][1, 1] for i in idxs],
-            vm = [y[i] - 0.5sp.L * Fθs[i][1, 2] for i in idxs],
+            x = [x[i] + 0.5sp.L * Fθs[i][1, 1] for i in idxs],
+            y = [y[i] + 0.5sp.L * Fθs[i][1, 2] for i in idxs],
+            up = [0.5sp.L * Fθs[i][1, 1] for i in idxs],
+            vp = [0.5sp.L * Fθs[i][1, 2] for i in idxs],
+            um = [-0.5sp.L * Fθs[i][1, 1] for i in idxs],
+            vm = [-0.5sp.L * Fθs[i][1, 2] for i in idxs],
         )
         CSV.write(export_folder * "ex2_rod_$(isp)_dense.csv", df_dense)
         CSV.write(export_folder * "ex2_rod_$(isp)_sparse.csv", df_rod)
     end
 
-    scatter!(plt, [sp.Rs[1][1] sp.Rs[2][1]], [sp.Rs[1][2] sp.Rs[2][2]], marker_z=sp.qs', markersize=6)
-    display(plt)
+    # scatter the two charges
+    scatter!(ax, [sp.Rs[1][1], sp.Rs[2][1]],
+                 [sp.Rs[1][2], sp.Rs[2][2]],
+                 color = [:red, :blue], markersize = 12)
+
+    display(fig)
+    save("rod_trajectories_makie.png", fig)
 end
 
 sim()
