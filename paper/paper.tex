@@ -635,7 +635,7 @@ The force and the moment of force affecting the rod of length \(L\), mass \(M\),
 where \(u_{\perp}\) is the vector perpendicular to \(u\). The pair \((p, \theta)\) represents a point on \(G_1\), while \((\dot{p}, \dot{\theta})\) is an element of the Lie algebra \(\mathfrak{g}_1\).
 Hence the second order ODE on \(G_1\) can be converted to a first order ODE on \(G = G_1 \times \mathfrak{g}_1\) by introducing \((\dot{p}, \dot{\theta})\) as additional state variables.
 
-This can be solved using Lie groups methods, such as the RKMK variant of the Heun method~\cite{IserlesMunthe-KaasNoersettZanna:2000}.
+This can be solved using Lie groups methods, such as the RKMK variant of the Heun method~\cite[App.~A.1]{IserlesMunthe-KaasNoersettZanna:2000}.
 
 Code~\ref{lst:rod-dynamics} shows functions that calculate the right hand side of the ODE \lstinline{E_field} is a function that calculates electric field strength from the point charges at the given point.
 The function \lstinline{force_and_torque} calculates the force and torque affecting the rod, while \lstinline{dynamics} converts them to the Lie algebra element can be used by the solver.
