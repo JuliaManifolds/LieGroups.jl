@@ -623,19 +623,21 @@ we can easily switch between different Lie groups, where the data is still valid
 \subsection{Simulating a charged rod in a static electric field}
 
 Physical systems can often be described by ordinary differential equations on Lie groups.
-For example, the state of a charged metal rod moving on a plane can be specified by its position, orientation, linear velocity and angular velocity.
+For example, the state of a charged metal rod moving on a plane can be specified by its position, orientation, linear velocity, and angular velocity.
 Such state naturally belongs to a Lie group: a direct product of \(G_1 = \mathrm{SO}(2) \times \mathbb{R}^2\) and its Lie algebra, \(\mathfrak{g}_1\), denoted \(G = G_1 \times \mathfrak{g}_1\).
 The ordinary differential equation governing the dynamics of the system can be derived from the electrostatic approximation, in particular the Coulomb's law.
-Electric point charges \(q_i, i \in {1, \dots, N}\) at positions \(R_i\) generate a static electric field \(E(p)\) at point \(p\).
-The force and the moment of force affecting the rod of length \(L\), mass \(M\), moment of inertia \(I_M\) linear charge density \(\lambda\), with the center at position \(p\), orientation \(\theta\) and where \(u\) is the direction along the rod can be expressed as
-\begin{align}
+Electric point charges \(q_i, i \in {1, \dots, N}\) at positions \(R_i\) generate a static electric field \(E(p)\) at every point \(p\) in the plane.
+The force and the moment of force affecting the rod of length \(L\), mass \(M\), moment of inertia \(I_M\) linear charge density \(\lambda\), with the center at position \(p\), orientation \(\theta\), and where \(u\) is the direction along the rod can be expressed as the following two second order ODEs
+\begin{align*}
     M\ddot{p} &= \lambda \int_{-L/2}^{L/2} E(p + su) ds,  \\
     I_M \ddot{\theta} &= \int_{-L/2}^{L/2} \lambda s u_{\perp} \cdot E(p + su) ds,
-\end{align}
-where \(u_{\perp}\) is the vector perpendicular to \(u\).
-This can be understood as an ODE on \(G\) and solved using Lie groups methods, such as the RKMK variant of the Heun method~\cite{IserlesMunthe-KaasNoersettZanna:2000}.
+\end{align*}
+where \(u_{\perp}\) is the vector perpendicular to \(u\). The pair \((p, \theta)\) represents a point on \(G_1\), while \((\dot{p}, \dot{\theta})\) is an element of the Lie algebra \(\mathfrak{g}_1\).
+Hence the second order ODE on \(G_1\) can be converted to a first order ODE on \(G = G_1 \times \mathfrak{g}_1\) by introducing \((\dot{p}, \dot{\theta})\) as additional state variables.
 
-Listing~\ref{lst:rod-dynamics} shows functions that calculate the right hand side of the ODE \lstinline{E_field} is a function that calculates electric field strength from the point charges at the given point.
+This can be solved using Lie groups methods, such as the RKMK variant of the Heun method~\cite{IserlesMunthe-KaasNoersettZanna:2000}.
+
+Code~\ref{lst:rod-dynamics} shows functions that calculate the right hand side of the ODE \lstinline{E_field} is a function that calculates electric field strength from the point charges at the given point.
 The function \lstinline{force_and_torque} calculates the force and torque affecting the rod, while \lstinline{dynamics} converts them to the Lie algebra element can be used by the solver.
 \begin{lstlisting}[
     language = Julia,
@@ -666,7 +668,7 @@ end
 \end{lstlisting}
 
 The RKMK Heun method is a second order method that can solve ordinary differential equations defined on Lie groups.
-A single step of an RKMK-type Heun solver is implemented in~\ref{lst:heun}.
+A single step of an RKMK-type Heun solver is implemented in Code~\ref{lst:heun}.
 The main advantage of using a Lie group solver for this problem is that we do not have to consider parametrization of the Lie group.
 The presented approach can be easily generalized to three spatial dimensions, where parametrization of rotations would be even more challenging numerically.
 
