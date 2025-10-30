@@ -323,7 +323,7 @@ function diff_left_compose!(G::SpecialEuclideanGroup, Y, ::Identity, h, X)
     R = submanifold_component(G, h, :Rotation)
     t = submanifold_component(G, h, :Translation)
     Yr .= Xr
-    Yt .= R * Xt .- Xr * t
+    Yt .= R * Xt
     return Y
 end
 
