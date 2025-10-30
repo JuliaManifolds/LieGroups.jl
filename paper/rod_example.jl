@@ -136,7 +136,7 @@ function sim()
 
         # Draw rods at 10 roughly equidistant times
         nsteps = length(centers)
-        idxs = round.(Int, range(1, nsteps, length=10))
+        idxs = round.(Int, range(1, nsteps, length=20))
         for i in idxs
             c = centers[i]
             u = Fθs[i][1, :]

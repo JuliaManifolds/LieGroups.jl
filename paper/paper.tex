@@ -617,7 +617,13 @@ separately component-wise, while the Bézier curve on \(\mathrm{SE}(2)\) behaves
 A main feature here is, that due to the generic implementation on arbitrary Lie groups,
 we can easily switch between different Lie groups, where the data is still valid.
 
-\subsection{A simple forward Euler integration on a Lie group.}
+\subsection{Simulating a charged rod in a static electric field}
+
+Physical systems can often be described by ordinary differential equations on Lie groups.
+For example, the state of a charged metal rod moving on a plane can be specified by its position, orientation, linear velocity and angular velocity.
+Such state naturally belongs to a Lie group: a direct product of \(G_1 = \mathrm{SO}(2) \times \mathbb{R}^2\) and its Lie algebra, \(\mathfrak{g}_1\), denoted \(G = G_1 \times \mathfrak{g}_1\).
+
+
 
 {\color{red}TODO: Describe the ODE and have 2-3 code blocks}
 
@@ -674,22 +680,22 @@ we can easily switch between different Lie groups, where the data is still valid
             %
             %
             % Curve and quiver+-
-            \addplot[solid, thick, TolMutedWine] table[col sep=comma, x=x, y=y] {data/ex2_rod_3_dense.csv};
+            \addplot[solid, thick, TolMutedPurple] table[col sep=comma, x=x, y=y] {data/ex2_rod_3_dense.csv};
             \addlegendentry{$\gamma_3$}
             % Quiver plot from CSV file
             \addplot[
-                quiver={u=\thisrow{up}, v=\thisrow{vp}, scale arrows=\arrowscale}, TolMutedWine, forget plot,
+                quiver={u=\thisrow{up}, v=\thisrow{vp}, scale arrows=\arrowscale}, TolMutedPurple, forget plot,
             ] table[col sep=comma] {data/ex2_rod_3_sparse.csv};
             \addplot[
-                quiver={u=\thisrow{um}, v=\thisrow{vm}, scale arrows=\arrowscale}, TolMutedWine, forget plot,
+                quiver={u=\thisrow{um}, v=\thisrow{vm}, scale arrows=\arrowscale}, TolMutedPurple, forget plot,
             ] table[col sep=comma] {data/ex2_rod_3_sparse.csv};
             % Plot the base points from CSV file
             \addplot[
-                only marks, mark=*, mark size=.5pt, TolMutedWine, forget plot,
+                only marks, mark=*, mark size=.5pt, TolMutedPurple, forget plot,
             ] table[col sep=comma] {data/ex2_rod_3_sparse.csv};
         \end{axis}
     \end{tikzpicture}
-    \caption{Three solution curves \(\gamma_1\) (blue), \(\gamma_2\) (green), and \(\gamma_3\) (wine) of a Lie group Heun method on the product of Lie groups \(\mathrm{SO}(2) \times \mathbb R^2\)
+    \caption{Three solution curves \(\gamma_1\) (blue), \(\gamma_2\) (green), and \(\gamma_3\) (purple) of a Lie group Heun method on the product of Lie groups \(\mathrm{SO}(2) \times \mathbb R^2\)
     modelling the movement within an electric field with two point charges located at
     $q_1$ (sand) and $q_2$ (olive). }
     \label{fig:Heun}
