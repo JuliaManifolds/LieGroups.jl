@@ -624,7 +624,7 @@ we can easily switch between different Lie groups, where the data is still valid
 
 Physical systems can often be described by ordinary differential equations on Lie groups.
 For example, the state of a charged metal rod moving on a plane can be specified by its position, orientation, linear velocity, and angular velocity.
-Such state naturally belongs to a Lie group: a direct product of \(G_1 = \mathrm{SO}(2) \times \mathbb{R}^2\) and its Lie algebra, \(\mathfrak{g}_1\), denoted \(G = G_1 \times \mathfrak{g}_1\).
+Such state naturally belongs to a Lie group: a direct product of \(\mathcal G_1 = \mathrm{SO}(2) \times \mathbb{R}^2\) and its Lie algebra, \(\mathfrak{g}_1\), denoted \(\mathcal G = \mathcal G_1 \times \mathfrak{g}_1\).
 The ordinary differential equation governing the dynamics of the system can be derived from the electrostatic approximation, in particular the Coulomb's law.
 Electric point charges \(q_i, i \in {1, \dots, N}\) at positions \(R_i\) generate a static electric field \(E(p)\) at every point \(p\) in the plane.
 The force and the moment of force affecting the rod of length \(L\), mass \(M\), moment of inertia \(I_M\) linear charge density \(\lambda\), with the center at position \(p\), orientation \(\theta\), and where \(u\) is the direction along the rod can be expressed as the following two second order ODEs
@@ -632,12 +632,18 @@ The force and the moment of force affecting the rod of length \(L\), mass \(M\),
     M\ddot{p} &= \lambda \int_{-L/2}^{L/2} E(p + su) ds,  \\
     I_M \ddot{\theta} &= \int_{-L/2}^{L/2} \lambda s u_{\perp} \cdot E(p + su) ds,
 \end{align*}
-where \(u_{\perp}\) is the vector perpendicular to \(u\). The pair \((p, \theta)\) represents a point on \(G_1\), while \((\dot{p}, \dot{\theta})\) is an element of the Lie algebra \(\mathfrak{g}_1\).
-Hence the second order ODE on \(G_1\) can be converted to a first order ODE on \(G = G_1 \times \mathfrak{g}_1\) by introducing \((\dot{p}, \dot{\theta})\) as additional state variables.
+where \(u_{\perp}\) is the vector perpendicular to \(u\). The pair \(g=(p, \theta)\) represents a point on \(\mathcal G_1\), while \(\dot g = (\dot{p}, \dot{\theta})\) is an element of the Lie algebra \(\mathfrak{g}_1\).
+This second order ODE on \(\mathcal G_1\) can be converted to a first order ODE on \(\mathcal G = \mathcal G_1 \times \mathfrak{g}_1\) by introducing \((\dot{p}, \dot{\theta})\) as additional state variables.
 
-This can be solved using Lie groups methods, such as the RKMK variant of the Heun method~\cite[App.~A.1]{IserlesMunthe-KaasNoersettZanna:2000}.
+The overall ODE has the form
+\begin{equation*}
+    \frac{d}{dt}\begin{pmatrix} g \\ \dot{g} \end{pmatrix}
+    = \begin{pmatrix} \dot{g} \\ f(t, g, \dot{g}) \end{pmatrix},
+\end{equation*}
+where \(g \in \mathcal G_1\) and \(f(t, g, \dot{g})\) is derived from the above equations. We further require initial conditions for both \(g\) and \(\dot{g}\) at time \(t_0=0\).
+Then this can be solved using Lie group methods, such as the Runge-Kutta-Munthe-Kaas (RKMK) variant \cite{Munthe-Kaas:1998} of Heun's method~\cite[App.~A.1]{IserlesMunthe-KaasNoersettZanna:2000}.
 
-Code~\ref{lst:rod-dynamics} shows functions that calculate the right hand side of the ODE \lstinline{E_field} is a function that calculates electric field strength from the point charges at the given point.
+Code~\ref{lst:rod-dynamics} shows functions that calculate the right hand side of the ODE, where \lstinline{E_field} is a function that calculates electric field strength from the point charges at the given point.
 The function \lstinline{force_and_torque} calculates the force and torque affecting the rod, while \lstinline{dynamics} converts them to the Lie algebra element can be used by the solver.
 \begin{lstlisting}[
     language = Julia,
@@ -646,7 +652,9 @@ The function \lstinline{force_and_torque} calculates the force and torque affect
     caption={Dynamics of a rod affected by point charges.},
     mathescape
 ]
-function force_and_torque(sp::SystemParameters, Fθ, r)
+function force_and_torque(
+        sp::SystemParameters, Fθ, r
+    )
     u, u$\bot$ = eachrow(Fθ)
     F, $\tau$ = zeros(2), 0.0
     for s in range(-sp.L/2, sp.L/2; length=Nq)
@@ -656,19 +664,21 @@ function force_and_torque(sp::SystemParameters, Fθ, r)
     end
     return F, $\tau$
 end
-
+# f((p,θ), (dp,dθ), t) including system parameters
 function dynamics(state, sp::SystemParameters, t)
     p, dp = state.x
     F, tau = force_and_torque(sp, p.x...)
     a = F ./ sp.M
     coords = [tau / sp.Icm, a...]
-    ddx = hat(se2, coords, ArrayPartition)
+    ddx = hat(se2, coords, ArrayPartition) #TODO se2 from global scope?
     return ArrayPartition(dp, ddx)
 end
 \end{lstlisting}
 
 The RKMK Heun method is a second order method that can solve ordinary differential equations defined on Lie groups.
 A single step of an RKMK-type Heun solver is implemented in Code~\ref{lst:heun}.
+For our special case the \verb|manifold| is equal to the \verb|group|, namely $\mathcal G$, and the group action is the left group operation.
+
 The main advantage of using a Lie group solver for this problem is that we do not have to consider parametrization of the Lie group.
 The presented approach can be easily generalized to three spatial dimensions, where parametrization of rotations on $\mathrm{SO}(3)$ would be even more challenging numerically.
 
@@ -678,8 +688,10 @@ The presented approach can be easily generalized to three spatial dimensions, wh
     label={lst:heun},
     caption={Step calculation for the RKMK Heun method.}
 ]
-function integrator_step!(A::GroupAction,
-    sp::SystemParameters, y, f, t, dt)
+function integrator_step!(
+        A::GroupAction, sp::SystemParameters,
+        y, f, t, dt
+) # TODO how are f and dynamics are they the same related?
     Ie = Identity(A.group)
     F1 = (dt / 2) * f(y, sp, t)
     tmp = zero_vector(A.manifold, y)
@@ -707,8 +719,8 @@ Position and orientation of the rod is indicated at 20 equally spaced times, alo
             width=.5\textwidth,
             legend style={at={(0.95,0.25)}, anchor=east},
             unit vector ratio=1 1,
-            xmin = -2, xmax = 5,
-            ymin = -3.5, ymax = 3.5,
+            xmin = -1.5, xmax = 4.5,
+            ymin = -3.25, ymax = 2.75,
             title style={yshift=-.5\baselineskip,},
             title={Trajectories of a charged rod between two point charges},
         ] %
