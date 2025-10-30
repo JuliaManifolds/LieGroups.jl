@@ -619,6 +619,83 @@ we can easily switch between different Lie groups, where the data is still valid
 
 \subsection{A simple forward Euler integration on a Lie group.}
 
+{\color{red}TODO: Describe the ODE and have 2-3 code blocks}
+
+
+\begin{figure}
+    % Arrow scale factor
+    \def\arrowscale{1.0}
+
+    \begin{tikzpicture}
+        \begin{axis}[
+            grid=major,
+            width=.5\textwidth,
+            legend style={at={(0.95,0.5)}, anchor=east},
+            unit vector ratio=1 1,
+            xmin = -1, xmax = 8,
+            ymin = -4.25, ymax = 2.25,
+            title style={yshift=-.5\baselineskip,},
+            title={Two Bézier curves on different Lie groups},
+        ] %
+            \addplot[only marks, mark=*, mark size=2pt, color=TolMutedSand] coordinates {(-0.5, 0.0)};
+            \addlegendentry{$q_1$};
+            \addplot[only marks, mark=*, mark size=2pt, color=TolMutedOlive] coordinates {(0.5, 0.0)};
+            \addlegendentry{$q_2$};
+            % Curve and quiver+-
+            \addplot[solid, thick, TolMutedBlue] table[col sep=comma, x=x, y=y] {data/ex2_rod_1_dense.csv};
+            \addlegendentry{$\gamma_1$}
+            % Quiver plot from CSV file
+            \addplot[
+                quiver={u=\thisrow{up}, v=\thisrow{vp}, scale arrows=\arrowscale}, TolMutedBlue, forget plot,
+            ] table[col sep=comma] {data/ex2_rod_1_sparse.csv};
+            \addplot[
+                quiver={u=\thisrow{um}, v=\thisrow{vm}, scale arrows=\arrowscale}, TolMutedBlue, forget plot,
+            ] table[col sep=comma] {data/ex2_rod_1_sparse.csv};
+            % Plot the base points from CSV file
+            \addplot[
+                only marks, mark=*, mark size=.5pt, TolMutedBlue, forget plot,
+            ] table[col sep=comma] {data/ex2_rod_1_sparse.csv};
+            %
+            %
+            % Curve and quiver+-
+            \addplot[solid, thick, TolMutedGreen] table[col sep=comma, x=x, y=y] {data/ex2_rod_2_dense.csv};
+            \addlegendentry{$\gamma_2$}
+            % Quiver plot from CSV file
+            \addplot[
+                quiver={u=\thisrow{up}, v=\thisrow{vp}, scale arrows=\arrowscale}, TolMutedGreen, forget plot,
+            ] table[col sep=comma] {data/ex2_rod_2_sparse.csv};
+            \addplot[
+                quiver={u=\thisrow{um}, v=\thisrow{vm}, scale arrows=\arrowscale}, TolMutedGreen, forget plot,
+            ] table[col sep=comma] {data/ex2_rod_2_sparse.csv};
+            % Plot the base points from CSV file
+            \addplot[
+                only marks, mark=*, mark size=.5pt, TolMutedGreen, forget plot,
+            ] table[col sep=comma] {data/ex2_rod_2_sparse.csv};
+            %
+            %
+            % Curve and quiver+-
+            \addplot[solid, thick, TolMutedWine] table[col sep=comma, x=x, y=y] {data/ex2_rod_3_dense.csv};
+            \addlegendentry{$\gamma_3$}
+            % Quiver plot from CSV file
+            \addplot[
+                quiver={u=\thisrow{up}, v=\thisrow{vp}, scale arrows=\arrowscale}, TolMutedWine, forget plot,
+            ] table[col sep=comma] {data/ex2_rod_3_sparse.csv};
+            \addplot[
+                quiver={u=\thisrow{um}, v=\thisrow{vm}, scale arrows=\arrowscale}, TolMutedWine, forget plot,
+            ] table[col sep=comma] {data/ex2_rod_3_sparse.csv};
+            % Plot the base points from CSV file
+            \addplot[
+                only marks, mark=*, mark size=.5pt, TolMutedWine, forget plot,
+            ] table[col sep=comma] {data/ex2_rod_3_sparse.csv};
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Three solution curves \(\gamma_1\) (blue), \(\gamma_2\) (green), and \(\gamma_3\) (wine) of a Lie group Heun method on the product of Lie groups \(\mathrm{SO}(2) \times \mathbb R^2\)
+    modelling the movement within an electric field with two point charges located at
+    $q_1$ (sand) and $q_2$ (olive). }
+    \label{fig:Heun}
+\end{figure}
+
+
 For more details on solving differential equations on Lie groups in Julia, see
 \verb|ManifoldDiffEq.jl|.
 
