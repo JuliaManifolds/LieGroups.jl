@@ -2,6 +2,8 @@ using LinearAlgebra, Plots
 
 using LieGroups, Manifolds, RecursiveArrayTools
 
+using DataFrames, CSV
+
 # ---------- Physical parameters ----------
 
 
@@ -104,9 +106,6 @@ end
 
 # ---------- Simulation ----------
 function sim()
-    # initial_angles = [0.1, 0.3, 0.6]
-    # initial_positions = [[0.0, -1.5], [0.0, -1.0], [-0.5, -1.5]]
-
     plt = plot(title="Charged rod trajectories near ±q charges",
                xlabel="x (m)", ylabel="y (m)", aspect_ratio=1, legend=false)
     
@@ -118,7 +117,8 @@ function sim()
            SystemParameters(; initial_rod_angle = 0.3, initial_rod_position=[-0.5, +1.0], tmax=100.0),
            SystemParameters(; initial_rod_angle = 0.6, initial_rod_position=[-0.5, -0.5], tmax=40.0, initial_rod_velocity = [-0.01, 0.15])]
 
-    for sp in sps
+    export_folder = "paper/data/"
+    for (isp, sp) in enumerate(sps)
         ang = sp.initial_rod_angle
         pos = sp.initial_rod_position
         centers, Fθs = simulate_trajectory(SOxT, sp, ang, pos, sp.initial_rod_angular_velocity, sp.initial_rod_velocity)
@@ -137,6 +137,16 @@ function sim()
             # @show u
             plot!(plt, [p1[1], p2[1]], [p1[2], p2[2]], color=:black, lw=1, label=false)
         end
+
+        df_dense = DataFrame(x = x[begin:10:end], y = y[begin:10:end])
+        df_rod = DataFrame(
+            up = [centers[i][1] + 0.5sp.L * Fθs[i][1, 1] for i in idxs],
+            vp = [centers[i][1] + 0.5sp.L * Fθs[i][1, 2] for i in idxs],
+            um = [centers[i][2] - 0.5sp.L * Fθs[i][1, 1] for i in idxs],
+            vm = [centers[i][2] - 0.5sp.L * Fθs[i][1, 2] for i in idxs],
+        )
+        CSV.write(export_folder * "ex2_rod_$(isp)_dense.csv", df_dense)
+        CSV.write(export_folder * "ex2_rod_$(isp)_sparse.csv", df_rod)
     end
 
     scatter!(plt, [sp.Rs[1][1] sp.Rs[2][1]], [sp.Rs[1][2] sp.Rs[2][2]], marker_z=sp.qs', markersize=6)
