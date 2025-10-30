@@ -641,17 +641,18 @@ The function \lstinline{force_and_torque} calculates the force and torque affect
     language = Julia,
     numbers=left,
     label={lst:rod-dynamics},
-    caption={Dynamics of a rod affected by point charges.}
+    caption={Dynamics of a rod affected by point charges.},
+    mathescape
 ]
 function force_and_torque(sp::SystemParameters, Fθ, r)
-    u, u⊥ = eachrow(Fθ)
-    F, τ = zeros(2), 0.0
+    u, u$\bot$ = eachrow(Fθ)
+    F, $\tau$ = zeros(2), 0.0
     for s in range(-sp.L/2, sp.L/2; length=Nq)
         E = E_field(sp, r .+ s .* u)
-        F .+= sp.λ * E * (sp.L/(Nq-1))
-        τ += sp.λ * s * dot(u⊥, E) * (sp.L/(Nq-1))
+        F .+= sp.$\lambda$ * E * (sp.L/(Nq-1))
+        $\tau$ += sp.$\lambda$ * s * dot(u$\bot$, E) * (sp.L/(Nq-1))
     end
-    return F, τ
+    return F, $\tau$
 end
 
 function dynamics(state, sp::SystemParameters, t)
