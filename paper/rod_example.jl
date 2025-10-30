@@ -147,8 +147,8 @@ function sim()
 
         df_dense = DataFrame(x = x[begin:500:end], y = y[begin:500:end])
         df_rod = DataFrame(
-            x = [x[i] + 0.5sp.L * Fθs[i][1, 1] for i in idxs],
-            y = [y[i] + 0.5sp.L * Fθs[i][1, 2] for i in idxs],
+            x = x[idxs],
+            y = y[idxs],
             up = [0.5sp.L * Fθs[i][1, 1] for i in idxs],
             vp = [0.5sp.L * Fθs[i][1, 2] for i in idxs],
             um = [-0.5sp.L * Fθs[i][1, 1] for i in idxs],
