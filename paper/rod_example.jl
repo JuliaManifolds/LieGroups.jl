@@ -140,10 +140,10 @@ function sim()
 
         df_dense = DataFrame(x = x[begin:10:end], y = y[begin:10:end])
         df_rod = DataFrame(
-            up = [centers[i][1] + 0.5sp.L * Fθs[i][1, 1] for i in idxs],
-            vp = [centers[i][1] + 0.5sp.L * Fθs[i][1, 2] for i in idxs],
-            um = [centers[i][2] - 0.5sp.L * Fθs[i][1, 1] for i in idxs],
-            vm = [centers[i][2] - 0.5sp.L * Fθs[i][1, 2] for i in idxs],
+            up = [x[i] + 0.5sp.L * Fθs[i][1, 1] for i in idxs],
+            vp = [y[i] + 0.5sp.L * Fθs[i][1, 2] for i in idxs],
+            um = [x[i] - 0.5sp.L * Fθs[i][1, 1] for i in idxs],
+            vm = [y[i] - 0.5sp.L * Fθs[i][1, 2] for i in idxs],
         )
         CSV.write(export_folder * "ex2_rod_$(isp)_dense.csv", df_dense)
         CSV.write(export_folder * "ex2_rod_$(isp)_sparse.csv", df_rod)
