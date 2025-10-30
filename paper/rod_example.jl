@@ -13,7 +13,7 @@ SE2 = SpecialEuclideanGroup(2)
 se2 = LieAlgebra(SE2)
 
 Base.@kwdef struct SystemParameters
-    L = 1.0             # rod length (m)
+    L = 0.67             # rod length (m)
     M = 1.0             # rod mass (kg)
     λ = 1e-6            # linear charge density (C/m)
     Icm = M * L^2 / 12  # moment of inertia about center
@@ -119,9 +119,9 @@ function sim()
     SOxT = ProductLieGroup(SpecialOrthogonalGroup(2), TranslationGroup(2))
     sp = SystemParameters()
 
-    sps = [SystemParameters(; initial_rod_angle = 0.1, initial_rod_position=[0.0, -1.5], tmax=150.0),
-           SystemParameters(; initial_rod_angle = 0.3, initial_rod_position=[-0.5, +1.0], tmax=100.0),
-           SystemParameters(; initial_rod_angle = 0.6, initial_rod_position=[-0.5, -0.5], tmax=40.0, initial_rod_velocity = [-0.01, 0.15])]
+    sps = [SystemParameters(; initial_rod_angle = 0.1, initial_rod_position=[0.0, -1.5], tmax=135.0),
+           SystemParameters(; initial_rod_angle = 0.2, initial_rod_position=[-0.2, +1.0], tmax=30.0, initial_rod_velocity = [-0.12, -0.15]),
+           SystemParameters(; initial_rod_angle = 0.6, initial_rod_position=[-0.5, -0.5], tmax=30.0, initial_rod_velocity = [-0.04, 0.12])]
 
     export_folder = "paper/data/"
     colors = [:red, :blue, :green]
