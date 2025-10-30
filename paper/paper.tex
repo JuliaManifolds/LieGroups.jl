@@ -276,6 +276,10 @@ Keep in mind, that the Lie algebra is a vector space, so that addition and scala
 
 A major difference to the usual representation of tangent vectors on the underlying manifold is, that here the usual representation is done in the Lie algebra.
 
+A central function on the Lie algebra is the Lie bracket $[\cdot, \cdot]\colon \frak g \times \frak g \to \frak g$, which is available as \verb|lie_bracket(|$\frak g$\verb|, X, Y)|.
+% \footnote{in-place variant \texttt{lie\_bracket!($\frak g$, Z, X, Y)}.}
+For more details on the Lie bracket see~\cite[Ch.~5]{HilgertNeeb:2012}.
+
 \subsubsection*{Topological basics.}
 Given a Lie group \verb|G|, we obtain the Lie algebra by calling $\frak g$ \verb|= LieAlgebra(G)|.
 To access the Lie group again, use \verb|base_lie_group(|$\frak g$\verb|)|. Similarly \verb|base_manifold(|$\frak g$\verb|)| returns the underlying manifold of the Lie group.\\
