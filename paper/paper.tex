@@ -4,6 +4,7 @@
 \setcounter{page}{1}
 \usepackage{amsmath,booktabs,mathtools,amssymb}
 \usepackage{tikz}
+\usetikzlibrary{arrows.meta}
 \usepackage{pgfplots}
 \usepackage{pgfplotstable}
 \pgfplotsset{compat=1.18}
@@ -644,7 +645,7 @@ Given \(N\) electric charges \(q_i, i \in {1, \dots, N}\) at positions \(R_i\) t
             xmin = -1, xmax = 8,
             ymin = -4.25, ymax = 2.25,
             title style={yshift=-.5\baselineskip,},
-            title={Two Bézier curves on different Lie groups},
+            title={Trajectories of a charged rod between two point charges},
         ] %
             \addplot[only marks, mark=*, mark size=2pt, color=TolMutedSand] coordinates {(-0.5, 0.0)};
             \addlegendentry{$q_1$};
@@ -655,10 +656,10 @@ Given \(N\) electric charges \(q_i, i \in {1, \dots, N}\) at positions \(R_i\) t
             \addlegendentry{$\gamma_1$}
             % Quiver plot from CSV file
             \addplot[
-                quiver={u=\thisrow{up}, v=\thisrow{vp}, scale arrows=\arrowscale}, TolMutedBlue, forget plot,
+                quiver={u=\thisrow{up}, v=\thisrow{vp}, scale arrows=\arrowscale}, -{Bar[width=4pt]}, TolMutedBlue, forget plot,
             ] table[col sep=comma] {data/ex2_rod_1_sparse.csv};
             \addplot[
-                quiver={u=\thisrow{um}, v=\thisrow{vm}, scale arrows=\arrowscale}, TolMutedBlue, forget plot,
+                quiver={u=\thisrow{um}, v=\thisrow{vm}, scale arrows=\arrowscale}, -{Circle[length=2pt]}, TolMutedBlue, forget plot,
             ] table[col sep=comma] {data/ex2_rod_1_sparse.csv};
             % Plot the base points from CSV file
             \addplot[
@@ -671,10 +672,10 @@ Given \(N\) electric charges \(q_i, i \in {1, \dots, N}\) at positions \(R_i\) t
             \addlegendentry{$\gamma_2$}
             % Quiver plot from CSV file
             \addplot[
-                quiver={u=\thisrow{up}, v=\thisrow{vp}, scale arrows=\arrowscale}, TolMutedGreen, forget plot,
+                quiver={u=\thisrow{up}, v=\thisrow{vp}, scale arrows=\arrowscale}, -{Bar[width=4pt]}, TolMutedGreen, forget plot,
             ] table[col sep=comma] {data/ex2_rod_2_sparse.csv};
             \addplot[
-                quiver={u=\thisrow{um}, v=\thisrow{vm}, scale arrows=\arrowscale}, TolMutedGreen, forget plot,
+                quiver={u=\thisrow{um}, v=\thisrow{vm}, scale arrows=\arrowscale}, -{Circle[length=2pt]}, TolMutedGreen, forget plot,
             ] table[col sep=comma] {data/ex2_rod_2_sparse.csv};
             % Plot the base points from CSV file
             \addplot[
@@ -687,10 +688,10 @@ Given \(N\) electric charges \(q_i, i \in {1, \dots, N}\) at positions \(R_i\) t
             \addlegendentry{$\gamma_3$}
             % Quiver plot from CSV file
             \addplot[
-                quiver={u=\thisrow{up}, v=\thisrow{vp}, scale arrows=\arrowscale}, TolMutedPurple, forget plot,
+                quiver={u=\thisrow{up}, v=\thisrow{vp}, scale arrows=\arrowscale}, -{Bar[width=4pt]}, TolMutedPurple, forget plot,
             ] table[col sep=comma] {data/ex2_rod_3_sparse.csv};
             \addplot[
-                quiver={u=\thisrow{um}, v=\thisrow{vm}, scale arrows=\arrowscale}, TolMutedPurple, forget plot,
+                quiver={u=\thisrow{um}, v=\thisrow{vm}, scale arrows=\arrowscale}, -{Circle[length=2pt]}, TolMutedPurple, forget plot,
             ] table[col sep=comma] {data/ex2_rod_3_sparse.csv};
             % Plot the base points from CSV file
             \addplot[
