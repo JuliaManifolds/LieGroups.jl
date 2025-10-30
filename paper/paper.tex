@@ -670,7 +670,7 @@ end
 The RKMK Heun method is a second order method that can solve ordinary differential equations defined on Lie groups.
 A single step of an RKMK-type Heun solver is implemented in Code~\ref{lst:heun}.
 The main advantage of using a Lie group solver for this problem is that we do not have to consider parametrization of the Lie group.
-The presented approach can be easily generalized to three spatial dimensions, where parametrization of rotations would be even more challenging numerically.
+The presented approach can be easily generalized to three spatial dimensions, where parametrization of rotations on $\mathrm{SO}(3)$ would be even more challenging numerically.
 
 \begin{lstlisting}[
     language = Julia,
@@ -771,8 +771,8 @@ Position and orientation of the rod is indicated at 20 equally spaced times, alo
 \end{figure}
 
 
-For more advanced methods of solving differential equations on Lie groups in Julia, see
-\verb|ManifoldDiffEq.jl|.
+For more advanced methods of solving differential equations on Manifolds and Lie groups in Julia, see
+\verb|ManifoldDiffEq.jl|.\footnote{see \href{https://juliamanifolds.github.io/ManifoldDiffEq.jl/stable/}{juliamanifolds.github.io/ManifoldDiffEq.jl/stable/}.}
 
 
 \input{bib.tex}
