@@ -468,7 +468,7 @@ This is an implicit choice of a default metric on the Lie group, that is conside
 
 If more than one metric is used in applications, a second metric can be introduced
 by wrapping the Lie group into a \verb|MetricLieGroup|, i.e.\ \verb|G2 = MetricLieGroup(G, m::M)|, where \verb|M| has to be a subtype of
-\verb|AbstractMetric| available from \verb|Manifolds.jl|\footnote{where the analogously a manifold of type~\texttt{MetricManifold} is defined.}.
+\verb|AbstractMetric| available from \verb|Manifolds.jl|\footnote{where analogously a manifold of type~\texttt{MetricManifold} is defined.}.
 All functions unrelated to the metric are forwarded from \verb|G2| to \verb|G|, while all functions
 related to the inner product have to be specified for \verb|G2| anew.
 
