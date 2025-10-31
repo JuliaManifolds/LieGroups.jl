@@ -10,7 +10,7 @@ RecursiveArrayTools = "731186ca-8d62-57ce-b412-fbd966d074cd"
 [compat]
 CSV = "0.10"
 CairoMakie = "0.15"
-LieGroups = "0.1"
+LieGroups = "0.1.8"
 Manifolds = "0.11"
 ManifoldsBase = "2"
 RecursiveArrayTools = "3.39"

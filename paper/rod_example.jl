@@ -1,3 +1,5 @@
+using Pkg; Pkg.activate(@__DIR__); Pkg.instantiate()
+cd(@__DIR__)
 using LinearAlgebra
 using LieGroups, Manifolds, RecursiveArrayTools
 using CairoMakie
@@ -118,7 +120,7 @@ function sim()
            SystemParameters(; initial_rod_angle = 0.2, initial_rod_position=[-0.2, +1.0], tmax=30.0, initial_rod_velocity = [-0.12, -0.15]),
            SystemParameters(; initial_rod_angle = 0.6, initial_rod_position=[-0.5, -0.5], tmax=30.0, initial_rod_velocity = [-0.04, 0.12])]
 
-    export_folder = "paper/data/"
+    export_folder = "data/"
     colors = [:red, :blue, :green]
 
     for (isp, sp) in enumerate(sps)
@@ -159,7 +161,7 @@ function sim()
                  color = [:red, :blue], markersize = 12)
 
     display(fig)
-    save("rod_trajectories_makie.png", fig)
+    save("img/rod_trajectories_makie.png", fig)
 end
 
 sim()
