@@ -84,6 +84,12 @@ using StaticArrays
             @test (vec[1])[𝔤, :] isa Tuple
             @test (vec[1])[𝔤, :Rotation] isa AbstractMatrix
         end
+
+        @testset "init_constants" begin
+            g = SpecialEuclideanMatrixPoint(NaN .* g1)
+            LieGroups.init_constants!(G2f, g)
+            @test g.value[3, :] == [0, 0, 1]
+        end
         #
         # Right variant – exchange product cases
         G2r = TranslationGroup(2) ⋊ SpecialOrthogonalGroup(2)

@@ -101,7 +101,7 @@ Compute the differential of the group operation ``g$(_math(:∘))h``, on an [`Ab
 with respect to its second (right) argument `h`.
 
 Another interpretation is to consider a function where we do a fixed multiplication from the left with `g`.
-i..e. the left group multiplication function ``λ_g(h) = g$(_math(:∘))h`` (where the _left_ refers to the fixed argument ``g``.).
+i.e. the left group multiplication function ``λ_g(h) = g$(_math(:∘))h`` (where the _left_ refers to the fixed argument ``g``.).
 
 For the [`AdditionGroupOperation`](@ref) it reads ``$(_math(:d))λ_g(h)[X] = X``.
 """
