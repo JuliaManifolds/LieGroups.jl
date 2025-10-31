@@ -325,6 +325,15 @@ function diff_left_compose!(G::ValidationLieGroup, Y, g, h, X; kwargs...)
     return Y
 end
 
+function diff_right_compose(G::ValidationLieGroup{𝔽, O}, g::Identity{O}, h, X; kwargs...) where {𝔽, O <: AbstractGroupOperation}
+    is_point(G, h; within = diff_right_compose, context = (:Input,), kwargs...)
+    is_point(LieAlgebra(G), X; within = diff_right_compose, context = (:Input,), kwargs...)
+    Y = diff_right_compose(
+        G.lie_group, g, unwrap_validation(h), unwrap_validation(X)
+    )
+    is_point(LieAlgebra(G), Y; within = diff_right_compose, context = (:Output,), kwargs...)
+    return ValidationLieAlgebraTangentVector(Y)
+end
 function diff_right_compose(G::ValidationLieGroup, g, h, X; kwargs...)
     is_point(G, g; within = diff_right_compose, context = (:Input,), kwargs...)
     is_point(G, h; within = diff_right_compose, context = (:Input,), kwargs...)

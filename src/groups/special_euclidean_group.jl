@@ -316,7 +316,7 @@ function default_right_action(::TranslationGroup, ::SpecialOrthogonalGroup)
 end
 
 @doc raw"""
-    diff_left_compose(G::SpecialEuclideanGroup, ::Identity, h, X)
+    diff_left_compose(G::SpecialEuclideanGroup, g, h, X)
 
 Compute the differential of left composition by `h` on [`SpecialEuclideanGroup`](@ref)
 for tangent vector `X` at `g`.
@@ -324,22 +324,22 @@ for tangent vector `X` at `g`.
 Let
 ```math
 h=\begin{pmatrix} R & t\\[4pt] 0 & 1\end{pmatrix},\qquad
-X=\begin{pmatrix} X_r & X_t\\[4pt] 0 & 0\end{pmatrix},
+X=\begin{pmatrix} X_{\mathrm{R}} & X_{\mathrm{t}}\\[4pt] 0 & 0\end{pmatrix},
 ```
 
-where ``R\in SO(n)``, ``t\in\mathbb{R}^n``, ``X_r`` is the skew-symmetric rotation block and ``X_t`` the translation column.
+where ``R\in SO(n)``, ``t\in\mathbb{R}^n``, ``X_{\mathrm{R}}`` is the skew-symmetric rotation block and ``X_{\mathrm{t}}`` the translation column.
 Then the differential is the adjoint action by ``h^{-1}``:
 ```math
 \mathrm{D}λ_h(X)=h^{-1}Xh=
 \begin{pmatrix}
-R^\top X_r R & R^\top\bigl(X_r\,t + X_t\bigr)\\[4pt]
+R^\top X_{\mathrm{R}} R & R^\top\bigl(X_{\mathrm{R}}\,t + X_{\mathrm{t}}\bigr)\\[4pt]
 0 & 0
 \end{pmatrix}.
 ```
 
 Component-wise:
 ```math
-Y_r = R^\top X_r R,\qquad Y_t = R^\top\bigl(X_r\,t + X_t\bigr).
+Y_{\mathrm{R}} = R^\top X_{\mathrm{R}} R,\qquad Y_{\mathrm{t}} = R^\top\bigl(X_{\mathrm{R}}\,t + X_{\mathrm{t}}\bigr).
 ```
 """
 diff_left_compose(G::SpecialEuclideanGroup, g, h, X)
@@ -347,14 +347,14 @@ diff_left_compose(G::SpecialEuclideanGroup, g, h, X)
 function diff_left_compose!(G::SpecialEuclideanGroup, Y, g, h, X)
     GA = LieAlgebra(G)
     init_constants!(GA, Y)
-    Xr = submanifold_component(GA, X, Val(:Rotation))
+    XR = submanifold_component(GA, X, Val(:Rotation))
     Xt = submanifold_component(GA, X, Val(:Translation))
-    Yr = submanifold_component(GA, Y, Val(:Rotation))
+    YR = submanifold_component(GA, Y, Val(:Rotation))
     Yt = submanifold_component(GA, Y, Val(:Translation))
     R = submanifold_component(G, h, Val(:Rotation))
     t = submanifold_component(G, h, Val(:Translation))
-    A = R' * Xr
-    mul!(Yr, A, R)
+    A = R' * XR
+    mul!(YR, A, R)
     Yt .= A * t .+ R' * Xt
     return Y
 end

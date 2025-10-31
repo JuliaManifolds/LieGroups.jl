@@ -459,7 +459,8 @@ function diff_right_compose(G::AbstractLieGroup, g, h, X)
     Y = ManifoldsBase.allocate_result(G, diff_right_compose, X, g, h)
     return diff_right_compose!(G, Y, g, h, X)
 end
-function diff_right_compose(G::AbstractLieGroup, g::Identity, h, X)
+
+function diff_right_compose(G::AbstractLieGroup{𝔽, O}, g::Identity{O}, h, X) where {𝔽, O <: AbstractGroupOperation}
     Y = ManifoldsBase.allocate_result(G, diff_right_compose, X, h)
     return diff_right_compose!(G, Y, g, h, X)
 end
