@@ -40,6 +40,7 @@ ValidationLieGroup
 
 ```@docs
 MetricLieGroup
+metric
 ```
 
 ### Internal functions
