@@ -16,6 +16,7 @@ The following functions are expected to be available, since their defaults just 
 module LieGroupsTestSuite
 using LieGroups
 using ManifoldsBase
+using Manifolds: AbstractMetric
 using Test, Random
 using LinearAlgebra: I
 
@@ -30,6 +31,7 @@ struct DummyManifold <: LieGroups.AbstractManifold{LieGroups.ℝ} end
 struct DummyActionType <: AbstractGroupActionType end
 struct DummyLeftActionType <: AbstractLeftGroupActionType end
 struct DummyRightActionType <: AbstractRightGroupActionType end
+struct DummyMetric <: AbstractMetric end
 const DummyLieGroup = LieGroup{LieGroups.ℝ, DummyOperation, DummyManifold}
 DummyLieGroup() = LieGroup(DummyManifold(), DummyOperation())
 LieGroups.switch(a::DummyActionType) = a

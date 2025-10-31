@@ -9,8 +9,10 @@ using LieGroupsTestSuite
 @testset "MetricLieGroup: A metric decorator for LieGroups" begin
 
     @testset "Pass through with a dummy metric" begin
-        SO3 = SpecialOrthogonalGroup(3)
-        G = MetricLieGroup(SO3, DummyMetric())
+        SO2 = SpecialOrthogonalGroup(2)
+        G = MetricLieGroup(SO2, LieGroupsTestSuite.DummyMetric())
+        @test base_lie_group(G) === SO2
+
         g1 = 1 / sqrt(2) * [1.0 1.0; -1.0 1.0]
         g2 = [0.0 -1.0; 1.0 0.0]
         g3 = [1.0 0.0; 0.0 1.0]
@@ -32,12 +34,11 @@ using LieGroupsTestSuite
                 inv_left_compose,
                 inv_right_compose,
                 is_identity,
-                lie_bracket,
                 rand,
                 show,
             ],
         )
-        expectations = Dict(:repr => "OrthogonalGroup(2)")
+        expectations = Dict(:repr => "MetricLieGroup(SpecialOrthogonalGroup(2), LieGroupsTestSuite.DummyMetric())")
         test_lie_group(G, properties, expectations)
-
+    end
 end

@@ -49,32 +49,35 @@ end
 
 Identity(G::MetricLieGroup) = Identity(G.lie_group)
 
-adjoint(G::MetricLieGroup, g, X) = adjoind(G.lie_group, g, X)
+adjoint(G::MetricLieGroup, g, X) = adjoint(G.lie_group, g, X)
 adjoint!(G::MetricLieGroup, Y, g, X) = adjoint!(G.lie_group, Y, g, X)
 
 base_lie_group(G::MetricLieGroup) = G.lie_group
 ManifoldsBase.base_manifold(G::MetricLieGroup) = base_manifold(base_lie_group(G))
 
-_compose(G::MetricLieGroup, k, g, h) = compose(base_lie_group(G), k, g, h)
-_compose!(G::MetricLieGroup, g, h) = compose!(base_lie_group(G), g, h)
+_compose(G::MetricLieGroup, g, h) = compose(base_lie_group(G), g, h)
+_compose!(G::MetricLieGroup, k, g, h) = compose!(base_lie_group(G), k, g, h)
 
 conjugate(G::MetricLieGroup, g, h) = conjugate(base_lie_group(G), g, h)
 conjugate!(G::MetricLieGroup, k, g, h) = conjugate!(base_lie_group(G), k, g, h)
 
-diff_conjugate(G::MetricLieGroup, g, X) = diff_conjugate(base_lie_group(G), g, X)
-diff_conjugate!(G::MetricLieGroup, Y, g, X) = diff_conjugate!(base_lie_group(G), Y, g, X)
+diff_conjugate(G::MetricLieGroup, g, h, X) = diff_conjugate(base_lie_group(G), g, h, X)
+diff_conjugate!(G::MetricLieGroup, Y, g, h, X) = diff_conjugate!(base_lie_group(G), Y, g, h, X)
 
 diff_inv(G::MetricLieGroup, g, X) = diff_inv(base_lie_group(G), g, X)
 diff_inv!(G::MetricLieGroup, Y, g, X) = diff_inv!(base_lie_group(G), Y, g, X)
 
-diff_left_compose(G::MetricLieGroup, g, X) = diff_left_compose(base_lie_group(G), g, X)
-diff_left_compose!(G::MetricLieGroup, Y, g, X) = diff_left_compose!(base_lie_group(G), Y, g, X)
+diff_left_compose(G::MetricLieGroup, g, h, X) = diff_left_compose(base_lie_group(G), g, h, X)
+diff_left_compose!(G::MetricLieGroup, Y, g, h, X) = diff_left_compose!(base_lie_group(G), Y, g, h, X)
 
-diff_right_compose(G::MetricLieGroup, g, X) = diff_right_compose(base_lie_group(G), g, X)
-diff_right_compose!(G::MetricLieGroup, Y, g, X) = diff_right_compose!(base_lie_group(G), Y, g, X)
+diff_right_compose(G::MetricLieGroup, g, h, X) = diff_right_compose(base_lie_group(G), g, h, X)
+diff_right_compose!(G::MetricLieGroup, Y, g, h, X) = diff_right_compose!(base_lie_group(G), Y, g, h, X)
 
 function identity_element(G::MetricLieGroup)
     return identity_element(base_lie_group(G))
+end
+function identity_element(G::MetricLieGroup, T::Type)
+    return identity_element(base_lie_group(G), T)
 end
 function identity_element!(G::MetricLieGroup, e)
     return identity_element!(base_lie_group(G), e)
@@ -82,10 +85,23 @@ end
 
 
 _inv(G::MetricLieGroup, g) = inv(base_lie_group(G), g)
-_inv!(G::MetricLieGroup, g) = inv!(base_lie_group(G), g)
+_inv!(G::MetricLieGroup, k, g) = inv!(base_lie_group(G), k, g)
 
 _inv_left_compose(G::MetricLieGroup, h, g) = _inv_left_compose(base_lie_group(G), h, g)
 _inv_left_compose!(G::MetricLieGroup, k, h, g) = _inv_left_compose!(base_lie_group(G), k, h, g)
 
 _inv_right_compose(G::MetricLieGroup, h, g) = _inv_right_compose(base_lie_group(G), h, g)
 _inv_right_compose!(G::MetricLieGroup, k, h, g) = _inv_right_compose!(base_lie_group(G), k, h, g)
+
+ManifoldsBase.is_point(G::MetricLieGroup, g; kwargs...) = is_point(base_lie_group(G), g; kwargs...)
+ManifoldsBase.is_point(G::MetricLieGroup, e::Identity; kwargs...) = is_point(base_lie_group(G), e; kwargs...)
+
+function ManifoldsBase.is_vector(
+        G::MetricLieGroup{𝔽, O}, e::Identity{O}, X; kwargs...
+    ) where {𝔽, O <: AbstractGroupOperation}
+    return is_vector(base_lie_group(G), e, X; kwargs...)
+end
+
+function Base.show(io::IO, G::MetricLieGroup)
+    return print(io, "MetricLieGroup($(G.lie_group), $(G.metric))")
+end
