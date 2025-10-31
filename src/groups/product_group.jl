@@ -356,7 +356,7 @@ function _inv!(
     )
     return h
 end
-function inv!(
+function Manifolds.inv!(
         PrG::LieGroup{𝔽, Op, M}, h, ::Identity{Op}
     ) where {𝔽, Op <: ProductGroupOperation, M <: ProductManifold}
     PrM = PrG.manifold

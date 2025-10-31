@@ -32,6 +32,7 @@ end
     end
     @testset "Lie Groups" begin
         @testset "Meta Lie Groups" begin
+            include_test("groups/test_metric_group.jl")
             include_test("groups/test_power_group.jl")
             include_test("groups/test_product_group.jl")
             include_test("groups/test_semidirect_product_group.jl")

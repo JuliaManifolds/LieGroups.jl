@@ -435,13 +435,13 @@ function Base.inv(
     is_identity(G.lie_group, e; kwargs...)
     return inv(G.lie_group, e)
 end
-function inv!(G::ValidationLieGroup, h, g; kwargs...)
+function Manifolds.inv!(G::ValidationLieGroup, h, g; kwargs...)
     is_point(G, g; within = inv, context = (:Input,), kwargs...)
     inv!(G.lie_group, unwrap_validation(h), unwrap_validation(g))
     is_point(G, h; within = inv, context = (:Output,), kwargs...)
     return h
 end
-function inv!(
+function Manifolds.inv!(
         G::ValidationLieGroup{𝔽, O}, h, e::Identity{O}; kwargs...
     ) where {𝔽, O <: AbstractGroupOperation}
     is_identity(G.lie_group, e; kwargs...)

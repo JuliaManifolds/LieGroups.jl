@@ -323,7 +323,7 @@ function _inv!(
     end
     return h
 end
-function inv!(
+function Manifolds.inv!(
         PoG::LieGroup{𝔽, Op, M}, h, ::Identity{Op}
     ) where {𝔽, Op <: PowerGroupOperation, M <: ManifoldsBase.AbstractPowerManifold}
     PM = PoG.manifold

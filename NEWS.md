@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+* a `MetricLieGroup` as a meta type to be able to change the metric imposed on the Lie algebra and its effects e.g. on the coordinates, inner product and the exponential and logarithmic map.
 * `diff_left_compose` and `diff_right_compose` for the special Euclidean group.
 * `submanifold_components` now works with `Identity{<:ProductGroupOperation}`.
 * `zero_vector(G, Identity(G))` returns the zero vector in default representation.

@@ -36,6 +36,13 @@ LieGroups.@default_lie_group_fallbacks
 ValidationLieGroup
 ```
 
+## A metric Lie group to change the metric on a Lie Algebra
+
+```@docs
+MetricLieGroup
+metric
+```
+
 ### Internal functions
 
 ```@docs

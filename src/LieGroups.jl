@@ -10,7 +10,7 @@ The package is named after the Norwegian mathematician [Marius Sophus Lie](https
 """
 module LieGroups
 
-using LinearAlgebra, ManifoldsBase, Quaternions, StaticArrays, Random
+using LinearAlgebra, Manifolds, ManifoldsBase, Quaternions, StaticArrays, Random
 
 #
 #
@@ -31,10 +31,12 @@ using Manifolds:
     UnitaryMatrices
 using Manifolds: DeterminantOneMatrixType
 using Manifolds: base_manifold
-
+using Manifolds: DefaultMetric, metric
+import Manifolds: inv!
 import LinearAlgebra: adjoint, adjoint!
 using ManifoldsBase:
-    AbstractBasis, AbstractNumbers, RealNumbers, ComplexNumbers, QuaternionNumbers, ℍ, ℝ, ℂ
+    AbstractBasis, AbstractMetric, AbstractNumbers,
+    RealNumbers, ComplexNumbers, QuaternionNumbers, ℍ, ℝ, ℂ
 using ManifoldsBase:
     allocate_result,
     get_parameter,
@@ -64,6 +66,7 @@ include("group_actions/columnwise_action.jl")
 include("group_actions/rowwise_action.jl")
 
 # Meta Lie groups
+include("groups/metric_group.jl")
 include("groups/power_group.jl")
 include("groups/product_group.jl")
 include("groups/semidirect_product_group.jl")
@@ -92,12 +95,14 @@ include("groups/special_galilean_group.jl")
 
 export AbstractLieGroup
 export LieGroup, LieAlgebra
+export MetricLieGroup
 export PowerLieGroup, ProductLieGroup
 export NestedPowerRepresentation, NestedReplacingPowerRepresentation
 export LeftSemidirectProductLieGroup, RightSemidirectProductLieGroup
 export ValidationLieGroup
 export DefaultLieAlgebraOrthogonalBasis
 export ×, ^, ⋉, ⋊
+export DefaultMetric
 #
 #
 # Group Operations
@@ -143,6 +148,7 @@ export SpecialEuclideanMatrixPoint, SpecialEuclideanMatrixTangentVector
 export SpecialEuclideanProductPoint, SpecialEuclideanProductTangentVector
 export ValidationMPoint, ValidationLieAlgebraTangentVector
 
+
 export BaseManifoldInverseRetraction,
     BaseManifoldRetraction, BaseManifoldVectorTransportMethod
 # Errors
@@ -173,7 +179,7 @@ export injectivity_radius
 export jacobian_conjugate, jacobian_conjugate!
 export jacobian_exp, jacobian_exp!
 export lie_bracket, lie_bracket!, log, log!
-export manifold_dimension
+export manifold_dimension, metric
 export norm, number_of_coordinates
 export push_forward_tangent, push_forward_tangent!, pull_back_tangent, pull_back_tangent!
 export rand, rand!
