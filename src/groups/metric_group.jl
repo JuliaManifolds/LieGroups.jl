@@ -42,7 +42,7 @@ function Base.getindex(
     return getindex(X, LieAlgebra(base_lie_group(base_lie_group(𝔤))), i)
 end
 function Base.getindex(
-        X::AbstractArray, 𝔤::LieAlgebra{𝔽, <:O, <:MetricLieGroup}, i
+        X::AbstractArray, 𝔤::LieAlgebra{𝔽, O, <:MetricLieGroup}, i
     ) where {𝔽, O <: AbstractGroupOperation}
     # unwrap Algebra and metric decorator
     return getindex(X, LieAlgebra(base_lie_group(base_lie_group(𝔤))), i)
