@@ -417,6 +417,10 @@ function diff_left_compose(G::AbstractLieGroup, g, h, X)
     Y = ManifoldsBase.allocate_result(G, diff_left_compose, X, g, h)
     return diff_left_compose!(G, Y, g, h, X)
 end
+function diff_left_compose(G::AbstractLieGroup{𝔽, O}, g::Identity{O}, h, X) where {𝔽, O <: AbstractGroupOperation}
+    Y = ManifoldsBase.allocate_result(G, diff_left_compose, X, h)
+    return diff_left_compose!(G, Y, g, h, X)
+end
 
 function diff_left_compose! end
 @doc "$(_doc_diff_left_compose)"
@@ -453,6 +457,11 @@ $(_math(:d)) λ_g(h)[X] = X ∈ 𝔤.
 @doc "$(_doc_diff_right_compose)"
 function diff_right_compose(G::AbstractLieGroup, g, h, X)
     Y = ManifoldsBase.allocate_result(G, diff_right_compose, X, g, h)
+    return diff_right_compose!(G, Y, g, h, X)
+end
+
+function diff_right_compose(G::AbstractLieGroup{𝔽, O}, g::Identity{O}, h, X) where {𝔽, O <: AbstractGroupOperation}
+    Y = ManifoldsBase.allocate_result(G, diff_right_compose, X, h)
     return diff_right_compose!(G, Y, g, h, X)
 end
 
@@ -1237,6 +1246,10 @@ function _vector_transport_to_basemanifold(
     # now Y is in ThM so we still ave to pull it back to TeM using
     # the left group opp diff.
     return pull_back_tangent(G, g, X)
+end
+
+function ManifoldsBase.zero_vector(G::AbstractLieGroup{𝔽, O}, ::Identity{O}) where {𝔽, O <: AbstractGroupOperation}
+    return zero_vector(LieAlgebra(G))
 end
 
 #
