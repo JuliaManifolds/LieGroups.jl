@@ -32,6 +32,7 @@ using Manifolds:
 using Manifolds: DeterminantOneMatrixType
 using Manifolds: base_manifold
 using Manifolds: DefaultMetric, metric
+import Manifolds: inv!
 import LinearAlgebra: adjoint, adjoint!
 using ManifoldsBase:
     AbstractBasis, AbstractMetric, AbstractNumbers,
