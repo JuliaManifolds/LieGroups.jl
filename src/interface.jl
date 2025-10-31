@@ -629,7 +629,7 @@ end
 
 function inv! end
 @doc "$_doc_inv"
-inv!(G::AbstractLieGroup, h, g) = _inv!(G, h, g)
+Manifolds.inv!(G::AbstractLieGroup, h, g) = _inv!(G, h, g)
 
 function Base.inv(
         ::AbstractLieGroup{𝔽, O}, e::Identity{O}
@@ -637,7 +637,7 @@ function Base.inv(
     return e
 end
 
-function inv!(
+function Manifolds.inv!(
         G::AbstractLieGroup{𝔽, O}, g, ::Identity{O}
     ) where {𝔽, O <: AbstractGroupOperation}
     return identity_element!(G, g)

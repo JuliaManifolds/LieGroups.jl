@@ -5,10 +5,11 @@ All notable Changes to the Julia package `LieGroups.jl` will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.8] unreleased
+## [0.1.8] 2025-10-31
 
 ### Added
 
+* a `MetricLieGroup` as a meta type to be able to change the metric imposed on the Lie algebra and its effects e.g. on the coordinates, inner product and the exponential and logarithmic map.
 * `diff_left_compose` and `diff_right_compose` for the special Euclidean group.
 * `submanifold_components` now works with `Identity{<:ProductGroupOperation}`.
 * `zero_vector(G, Identity(G))` returns the zero vector in default representation.
