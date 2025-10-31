@@ -84,6 +84,12 @@ using StaticArrays
             @test (vec[1])[𝔤, :] isa Tuple
             @test (vec[1])[𝔤, :Rotation] isa AbstractMatrix
         end
+
+        @testset "init_constants" begin
+            g = SpecialEuclideanMatrixPoint(NaN .* g1)
+            LieGroups.init_constants!(G2f, g)
+            @test g.value[3, :] == [0, 0, 1]
+        end
         #
         # Right variant – exchange product cases
         G2r = TranslationGroup(2) ⋊ SpecialOrthogonalGroup(2)
@@ -134,7 +140,7 @@ using StaticArrays
         Y3 = [0.0 0.1 0.0 1.0; -0.1 0.0 0.0 0.0; 0.0 0.0 0.0 0.0; 0.0 0.0 0.0 0.0]
         YL1 = ArrayPartition([0.0 -0.23 0.0; 0.23 0.0 0.0; 0.0 0.0 0.0], [0.0, 1.0, 0.0])
         YL2 = ArrayPartition([0.0 0.3 0.0; -0.3 0.0 0.0; 0.0 0.0 0.0], [1.0, 1.0, 0.0])
-        YL3 = ArrayPartition([9.0 0.1 0.0; -0.1 0.0 0.0; 0.0 0.0 0.0], [1.0, 0.0, 0.0])
+        YL3 = ArrayPartition([0.0 0.1 0.0; -0.1 0.0 0.0; 0.0 0.0 0.0], [1.0, 0.0, 0.0])
         hA = [h1, h2, h3]
         hM = SpecialEuclideanMatrixPoint.(hA)
         hP = [hL1, hL2, hL3]
@@ -143,6 +149,14 @@ using StaticArrays
         YM = SpecialEuclideanMatrixTangentVector.(YA)
         YP = [YL1, YL2, YL3]
         YQ = SpecialEuclideanProductTangentVector.(YP)
+
+        GL4 = GeneralLinearGroup(4)
+        expected_diff_left_compose_id = [diff_left_compose(GL4, Identity(GL4), hi, Yi) for (hi, Yi) in zip(hA, YA)]
+        expected_diff_right_compose_id = [diff_right_compose(GL4, Identity(GL4), hi, Yi) for (hi, Yi) in zip(hA, YA)]
+
+        expected_diff_left_compose_h1 = [diff_left_compose(GL4, h1, hi, Yi) for (hi, Yi) in zip(hA, YA)]
+        expected_diff_right_compose_h1 = [diff_right_compose(GL4, h1, hi, Yi) for (hi, Yi) in zip(hA, YA)]
+
         for G in [G3f, G3p], (pts, vec) in zip([hA, hM, hP, hQ], [YA, YM, YP, YQ])
             properties = Dict(
                 :Name => "The special Euclidean group ($G, $(eltype(pts)))",
@@ -155,6 +169,22 @@ using StaticArrays
                 :repr => "SpecialEuclideanGroup(3)", :atol => 1.0e-14, :is_flat => false
             )
             test_lie_group(G, properties, expectations)
+
+            @testset "diff_left_compose" begin
+                for i in eachindex(vec)
+                    Y = convert(SpecialEuclideanMatrixTangentVector, diff_left_compose(G, Identity(G), pts[i], vec[i]))
+                    @test Y.value ≈ expected_diff_left_compose_id[i]
+
+                    Y = convert(SpecialEuclideanMatrixTangentVector, diff_right_compose(G, Identity(G), pts[i], vec[i]))
+                    @test Y.value ≈ expected_diff_right_compose_id[i]
+
+                    Y = convert(SpecialEuclideanMatrixTangentVector, diff_left_compose(G, pts[1], pts[i], vec[i]))
+                    @test Y.value ≈ expected_diff_left_compose_h1[i]
+
+                    Y = convert(SpecialEuclideanMatrixTangentVector, diff_right_compose(G, pts[1], pts[i], vec[i]))
+                    @test Y.value ≈ expected_diff_right_compose_h1[i]
+                end
+            end
         end
     end
     #

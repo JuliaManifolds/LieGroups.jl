@@ -34,13 +34,14 @@ using LieGroupsTestSuite
             vee,
         ],
     )
+    @test LieGroups.submanifold_components(G, Identity(G)) === (Identity{AdditionGroupOperation}(), Identity{AdditionGroupOperation}())
     expectations = Dict(
         :repr => "ProductLieGroup(Euclidean(2; field=ℝ) × Euclidean(2; field=ℝ), AdditionGroupOperation() × AdditionGroupOperation())",
     )
     test_lie_group(G, properties, expectations)
     @testset "A small additional size check" begin
-        @test ManifoldsBase.check_size(G, Identity(G)) == nothing
-        @test ManifoldsBase.check_size(G, Identity(G), X) == nothing
+        @test ManifoldsBase.check_size(G, Identity(G)) === nothing
+        @test ManifoldsBase.check_size(G, Identity(G), X) === nothing
     end
     @testset "Product Operation generators" begin
         G = LieGroupsTestSuite.DummyLieGroup()

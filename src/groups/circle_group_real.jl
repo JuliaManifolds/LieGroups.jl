@@ -88,10 +88,6 @@ function diff_inv!(G::_RealCircleGroup, Y, g, X)
     return copyto!(LieAlgebra(G), Y, -X)
 end
 
-diff_left_compose(::_RealCircleGroup, g, h, X::Number) = X
-
-diff_right_compose(::_RealCircleGroup, g, h, X::Number) = X
-
 _doc_exp_real_circ = """
     exp(::LieGroup{ℝ, AdditionGroupOperation, Circle{ℝ}}, X)
     exp!(::LieGroup{ℝ, AdditionGroupOperation, Circle{ℝ}}, g, X)

@@ -7,9 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.8] unreleased
 
+### Added
+
+* `diff_left_compose` and `diff_right_compose` for the special Euclidean group.
+* `submanifold_components` now works with `Identity{<:ProductGroupOperation}`.
+* `zero_vector(G, Identity(G))` returns the zero vector in default representation.
+
 ### Fixed
 
 * fixed the contributing.md to mention runic as the code formatter.
+* `diff_left_compose` correctly allocates when `g` is `Identity`.
+* `init_constants!` fixed for `SpecialEuclideanMatrixTangentVector` and `SpecialEuclideanMatrixPoint`.
 
 ## [0.1.7] 2025-10-28
 

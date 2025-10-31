@@ -401,6 +401,8 @@ function test_diff_left_compose(
         𝔤 = LieAlgebra(G)
         Ye = diff_left_compose(G, identity_element(G, typeof(g)), h, X)
         @test is_point(𝔤, Ye; error = :error)
+        Ye2 = diff_left_compose(G, Identity(G), h, X)
+        @test isapprox(𝔤, Ye, Ye2)
         # check that in-place and allocating agree
         Y1 = diff_left_compose(G, g, h, X)
         @test is_point(𝔤, Y1; error = :warn)
@@ -439,6 +441,8 @@ function test_diff_right_compose(
         𝔤 = LieAlgebra(G)
         Ye = diff_right_compose(G, identity_element(G, typeof(g)), h, X)
         @test is_point(𝔤, Ye; error = :error)
+        Ye2 = diff_right_compose(G, Identity(G), h, X)
+        @test isapprox(𝔤, Ye, Ye2)
         # check that in-place and allocating agree
         Y1 = diff_right_compose(G, g, h, X)
         @test is_point(𝔤, Y1; error = :warn)
