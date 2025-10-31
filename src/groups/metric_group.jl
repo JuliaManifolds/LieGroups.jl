@@ -98,12 +98,24 @@ function identity_element!(G::MetricLieGroup, e)
     return identity_element!(base_lie_group(G), e)
 end
 
-
 _inv(G::MetricLieGroup, g) = inv(base_lie_group(G), g)
 _inv!(G::MetricLieGroup, k, g) = inv!(base_lie_group(G), k, g)
 
 ManifoldsBase.is_point(G::MetricLieGroup, g; kwargs...) = is_point(base_lie_group(G), g; kwargs...)
 ManifoldsBase.is_point(G::MetricLieGroup, e::Identity; kwargs...) = is_point(base_lie_group(G), e; kwargs...)
+
+function lie_bracket(
+        𝔤::LieAlgebra{𝔽, O, <:MetricLieGroup}, X, Y
+    ) where {𝔽, O <: AbstractGroupOperation}
+    G = base_lie_group(base_lie_group(𝔤)) # access Lie group without metric decorator
+    return lie_bracket(LieAlgebra(G), X, Y)
+end
+function lie_bracket!(
+        𝔤::LieAlgebra{𝔽, O, <:MetricLieGroup}, Z, X, Y
+    ) where {𝔽, O <: AbstractGroupOperation}
+    G = base_lie_group(base_lie_group(𝔤)) # access Lie group without metric decorator
+    return lie_bracket!(LieAlgebra(G), Z, X, Y)
+end
 
 function Base.show(io::IO, G::MetricLieGroup)
     return print(io, "MetricLieGroup($(G.lie_group), $(G.metric))")

@@ -10,7 +10,7 @@ The package is named after the Norwegian mathematician [Marius Sophus Lie](https
 """
 module LieGroups
 
-using LinearAlgebra, ManifoldsBase, Quaternions, StaticArrays, Random
+using LinearAlgebra, Manifolds, ManifoldsBase, Quaternions, StaticArrays, Random
 
 #
 #
@@ -101,6 +101,7 @@ export LeftSemidirectProductLieGroup, RightSemidirectProductLieGroup
 export ValidationLieGroup
 export DefaultLieAlgebraOrthogonalBasis
 export ×, ^, ⋉, ⋊
+export DefaultMetric
 #
 #
 # Group Operations

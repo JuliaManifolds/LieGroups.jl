@@ -10,7 +10,9 @@ using LieGroupsTestSuite
 
     @testset "Pass through with a dummy metric" begin
         SO2 = SpecialOrthogonalGroup(2)
+        @test metric(SO2) === DefaultMetric()
         G = MetricLieGroup(SO2, LieGroupsTestSuite.DummyMetric())
+        @test metric(G) === LieGroupsTestSuite.DummyMetric()
         @test base_lie_group(G) === SO2
 
         g1 = 1 / sqrt(2) * [1.0 1.0; -1.0 1.0]
