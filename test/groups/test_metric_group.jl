@@ -8,4 +8,36 @@ using LieGroupsTestSuite
 
 @testset "MetricLieGroup: A metric decorator for LieGroups" begin
 
+    @testset "Pass through with a dummy metric" begin
+        SO3 = SpecialOrthogonalGroup(3)
+        G = MetricLieGroup(SO3, DummyMetric())
+        g1 = 1 / sqrt(2) * [1.0 1.0; -1.0 1.0]
+        g2 = [0.0 -1.0; 1.0 0.0]
+        g3 = [1.0 0.0; 0.0 1.0]
+        X1, X2, X3 = [0.0 0.1; -0.1 0.0], [0.0 -0.2; 2.0 0.0], [0.0 0.0; 0.0 0.0]
+        properties = Dict(
+            :Name => "The orthogonal group O(2)",
+            :Points => [g1, g2, g3],
+            :Vectors => [X1, X2, X3],
+            :Rng => Random.MersenneTwister(),
+            :Functions => [
+                adjoint,
+                compose,
+                conjugate,
+                diff_inv,
+                diff_left_compose,
+                diff_right_compose,
+                identity_element,
+                inv,
+                inv_left_compose,
+                inv_right_compose,
+                is_identity,
+                lie_bracket,
+                rand,
+                show,
+            ],
+        )
+        expectations = Dict(:repr => "OrthogonalGroup(2)")
+        test_lie_group(G, properties, expectations)
+
 end
