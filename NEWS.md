@@ -5,6 +5,12 @@ All notable Changes to the Julia package `LieGroups.jl` will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.8] unreleased
+
+### Fixed
+
+* fixed the contributing.md to mention runic as the code formatter.
+
 ## [0.1.7] 2025-10-28
 
 ### Added
