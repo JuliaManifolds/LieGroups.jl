@@ -706,17 +706,6 @@ function integrator_step!(
 end
 \end{lstlisting}
 
-The presented method was applied to a case with two static charges: \SI{1e-6}{C} at position (\SI{-1}{m}, \SI{0}{m}) and \SI{-1e-6}{C} at position (\SI{1}{m}, \SI{0}{m}).
-A rod of length \SI{0.67}{m} with charge density \SI{1e-6}{C/m} and mass \SI{1}{kg} started from three different initial states:
-\begin{enumerate}
-    \item position (\SI{0}{m}, \SI{-1.5}{m}), angle \SI{0.1}{rad}, velocity (\SI{0}{m/s}, \SI{0}{m/s}), angular velocity \SI{0}{rad/s},
-    \item position (\SI{-0.2}{m}, \SI{1}{m}), angle \SI{0.2}{rad}, velocity (\SI{-0.12}{m/s}, \SI{-0.15}{m/s}), angular velocity \SI{0}{rad/s},
-    \item position (\SI{-0.5}{m}, \SI{-0.5}{m}), angle \SI{0.6}{rad}, velocity (\SI{-0.04}{m/s}, \SI{0.12}{m/s}), angular velocity \SI{0}{rad/s}.
-\end{enumerate}
-The trajectories obtained in a simulation with time step \SI{0.001}{s} are presented in Figure~\ref{fig:Heun}.
-Simulation times between \SI{30}{s} and \SI{135}{s} were chosen to have the rod remain relatively close to point charges.
-Position and orientation of the rod is indicated at 20 equally spaced times, along with a densely sampled trajectory of the center of the rod.
-
 \begin{figure}
     % Arrow scale factor
     \def\arrowscale{1.0}
@@ -791,6 +780,17 @@ Position and orientation of the rod is indicated at 20 equally spaced times, alo
     $q_1$ (sand) and $q_2$ (olive). }
     \label{fig:Heun}
 \end{figure}
+
+The presented method was applied to a case with two static charges: \SI{1e-6}{C} at position (\SI{-1}{m}, \SI{0}{m}) and \SI{-1e-6}{C} at position (\SI{1}{m}, \SI{0}{m}).
+A rod of length \SI{0.67}{m} with charge density \SI{1e-6}{C/m} and mass \SI{1}{kg} started from three different initial states:
+\begin{enumerate}
+    \item position (\SI{0}{m}, \SI{-1.5}{m}), angle \SI{0.1}{rad}, velocity (\SI{0}{m/s}, \SI{0}{m/s}), angular velocity \SI{0}{rad/s},
+    \item position (\SI{-0.2}{m}, \SI{1}{m}), angle \SI{0.2}{rad}, velocity (\SI{-0.12}{m/s}, \SI{-0.15}{m/s}), angular velocity \SI{0}{rad/s},
+    \item position (\SI{-0.5}{m}, \SI{-0.5}{m}), angle \SI{0.6}{rad}, velocity (\SI{-0.04}{m/s}, \SI{0.12}{m/s}), angular velocity \SI{0}{rad/s}.
+\end{enumerate}
+The trajectories obtained in a simulation with time step \SI{0.001}{s} are presented in Figure~\ref{fig:Heun}.
+Simulation times between \SI{30}{s} and \SI{135}{s} were chosen to have the rod remain relatively close to point charges.
+Position and orientation of the rod is indicated at 20 equally spaced times, along with a densely sampled trajectory of the center of the rod.
 
 
 For more advanced methods of solving differential equations on Manifolds and Lie groups in Julia, see
