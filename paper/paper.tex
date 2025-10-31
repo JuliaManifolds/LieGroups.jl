@@ -728,56 +728,59 @@ end
             \addplot[only marks, mark=*, mark size=2pt, color=TolMutedOlive] coordinates {(1, 0.0)};
             \addlegendentry{$q_2$};
             % Curve and quiver+-
-            \addplot[solid, thick, TolMutedBlue] table[col sep=comma, x=x, y=y] {data/ex2_rod_1_dense.csv};
+            \addplot[solid, thick, TolMutedBlue] table[col sep=comma, x=x, y=y] {data/ex2_rod_1_dense.csv} node[circle, black, inner sep=1.25pt, fill=TolMutedBlue, pos=0.0] {};
             \addlegendentry{$\gamma_1$}
             % Quiver plot from CSV file
             \addplot[
-                quiver={u=\thisrow{up}, v=\thisrow{vp}, scale arrows=\arrowscale}, -{Bar[width=4pt]}, TolMutedBlue, forget plot,
+                quiver={u=\thisrow{up}, v=\thisrow{vp}, scale arrows=\arrowscale}, -{Bar[width=3pt]}, TolMutedBlue, forget plot,
             ] table[col sep=comma] {data/ex2_rod_1_sparse.csv};
             \addplot[
-                quiver={u=\thisrow{um}, v=\thisrow{vm}, scale arrows=\arrowscale}, -{Circle[length=2pt]}, TolMutedBlue, forget plot,
+                quiver={u=\thisrow{um}, v=\thisrow{vm}, scale arrows=\arrowscale}, -{Circle[length=1.75pt]}, TolMutedBlue, forget plot,
             ] table[col sep=comma] {data/ex2_rod_1_sparse.csv};
             % Plot the base points from CSV file
             \addplot[
-                only marks, mark=*, mark size=.5pt, TolMutedBlue, forget plot,
+                only marks, mark=*, mark size=.0pt, TolMutedBlue, forget plot,
             ] table[col sep=comma] {data/ex2_rod_1_sparse.csv};
             %
             %
             % Curve and quiver+-
-            \addplot[solid, thick, TolMutedGreen] table[col sep=comma, x=x, y=y] {data/ex2_rod_2_dense.csv};
+            \addplot[solid, thick, TolMutedGreen] table[col sep=comma, x=x, y=y] {data/ex2_rod_2_dense.csv}node[circle, black, inner sep=1.25pt, fill=TolMutedGreen, pos=0.0] {};
             \addlegendentry{$\gamma_2$}
             % Quiver plot from CSV file
             \addplot[
-                quiver={u=\thisrow{up}, v=\thisrow{vp}, scale arrows=\arrowscale}, -{Bar[width=4pt]}, TolMutedGreen, forget plot,
+                quiver={u=\thisrow{up}, v=\thisrow{vp}, scale arrows=\arrowscale}, -{Bar[width=3pt]}, TolMutedGreen, forget plot,
             ] table[col sep=comma] {data/ex2_rod_2_sparse.csv};
             \addplot[
-                quiver={u=\thisrow{um}, v=\thisrow{vm}, scale arrows=\arrowscale}, -{Circle[length=2pt]}, TolMutedGreen, forget plot,
+                quiver={u=\thisrow{um}, v=\thisrow{vm}, scale arrows=\arrowscale}, -{Circle[length=1.75pt]}, TolMutedGreen, forget plot,
             ] table[col sep=comma] {data/ex2_rod_2_sparse.csv};
             % Plot the base points from CSV file
             \addplot[
-                only marks, mark=*, mark size=.5pt, TolMutedGreen, forget plot,
+                only marks, mark=*, mark size=.0pt, TolMutedGreen, forget plot,
             ] table[col sep=comma] {data/ex2_rod_2_sparse.csv};
             %
             %
             % Curve and quiver+-
-            \addplot[solid, thick, TolMutedPurple] table[col sep=comma, x=x, y=y] {data/ex2_rod_3_dense.csv};
+            \addplot[solid, thick, TolMutedPurple] table[col sep=comma, x=x, y=y] {data/ex2_rod_3_dense.csv} node[circle, black, inner sep=1.25pt, fill=TolMutedPurple, pos=0.0] {};
             \addlegendentry{$\gamma_3$}
             % Quiver plot from CSV file
             \addplot[
-                quiver={u=\thisrow{up}, v=\thisrow{vp}, scale arrows=\arrowscale}, -{Bar[width=4pt]}, TolMutedPurple, forget plot,
+                quiver={u=\thisrow{up}, v=\thisrow{vp}, scale arrows=\arrowscale}, -{Bar[width=3pt]}, TolMutedPurple, forget plot,
             ] table[col sep=comma] {data/ex2_rod_3_sparse.csv};
             \addplot[
-                quiver={u=\thisrow{um}, v=\thisrow{vm}, scale arrows=\arrowscale}, -{Circle[length=2pt]}, TolMutedPurple, forget plot,
+                quiver={u=\thisrow{um}, v=\thisrow{vm}, scale arrows=\arrowscale}, -{Circle[length=1.75pt]}, TolMutedPurple, forget plot,
             ] table[col sep=comma] {data/ex2_rod_3_sparse.csv};
             % Plot the base points from CSV file
             \addplot[
-                only marks, mark=*, mark size=.5pt, TolMutedPurple, forget plot,
+                only marks, mark=*, mark size=.0pt, TolMutedPurple, forget plot,
             ] table[col sep=comma] {data/ex2_rod_3_sparse.csv};
         \end{axis}
     \end{tikzpicture}
     \caption{Three solution curves \(\gamma_1\) (blue), \(\gamma_2\) (green), and \(\gamma_3\) (purple) of a Lie group Heun method on the product of Lie groups \(\mathrm{SO}(2) \times \mathbb R^2\)
     modelling the movement within an electric field with two point charges located at
-    $q_1$ (sand) and $q_2$ (olive). }
+    $q_1$ (sand) and $q_2$ (olive).
+    The initial start points of the rods are indicated by circles, the rods themselves have two
+    different end markers to indicate their orientation.
+    }
     \label{fig:Heun}
 \end{figure}
 
