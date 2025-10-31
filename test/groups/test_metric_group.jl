@@ -55,8 +55,8 @@ using LieGroupsTestSuite
         @test X[se2, :Translation] === X[𝔤, :Translation]
         gT = SpecialEuclideanMatrixPoint(g)
         XT = SpecialEuclideanMatrixTangentVector(X)
-        @test gT[SE2, :Rotation] == g[G, :Rotation]
-        @test gT[SE2, :Translation] == g[G, :Translation]
+        @test gT[SE2, :Rotation] == gT[G, :Rotation]
+        @test gT[SE2, :Translation] == gT[G, :Translation]
         @test XT[se2, :Rotation] == XT[𝔤, :Rotation]
         @test XT[se2, :Translation] == XT[𝔤, :Translation]
     end
