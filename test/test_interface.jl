@@ -93,6 +93,7 @@ end
         @test project(G, p) == project(M, p)
         @test project(𝔤, X) == project(M, p, X)
         @test project(𝔤, X, X) == project(M, p, X)
+        @test zero_vector(G, Identity(G)) == [0.0, 0.0]
 
         # B2
         B2 = DefaultLieAlgebraOrthogonalBasis()

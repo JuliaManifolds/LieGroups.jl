@@ -86,6 +86,7 @@ Here it simplifies for [`AdditionGroupOperation`](@ref) to ``$(_math(:d))ρ_h(g)
 
 @doc "$(_doc_diff_left_compose_add)"
 diff_left_compose(G::LieGroup{𝔽, AdditionGroupOperation}, g, h, X) where {𝔽} = X
+diff_left_compose(G::LieGroup{𝔽, AdditionGroupOperation}, ::Identity{AdditionGroupOperation}, h, X) where {𝔽} = X
 
 @doc "$(_doc_diff_left_compose_add)"
 function diff_left_compose!(G::LieGroup{𝔽, AdditionGroupOperation}, Y, g, h, X) where {𝔽}
@@ -100,7 +101,7 @@ Compute the differential of the group operation ``g$(_math(:∘))h``, on an [`Ab
 with respect to its second (right) argument `h`.
 
 Another interpretation is to consider a function where we do a fixed multiplication from the left with `g`.
-i..e. the left group multiplication function ``λ_g(h) = g$(_math(:∘))h`` (where the _left_ refers to the fixed argument ``g``.).
+i.e. the left group multiplication function ``λ_g(h) = g$(_math(:∘))h`` (where the _left_ refers to the fixed argument ``g``.).
 
 For the [`AdditionGroupOperation`](@ref) it reads ``$(_math(:d))λ_g(h)[X] = X``.
 """
