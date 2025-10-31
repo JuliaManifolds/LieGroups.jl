@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-* `diff_left_compose` at the identity for the special Euclidean group.
+* `diff_left_compose` and `diff_right_compose` for the special Euclidean group.
 * `submanifold_components` now works with `Identity{<:ProductGroupOperation}`.
 * `zero_vector(G, Identity(G))` returns the zero vector in default representation.
 

@@ -86,6 +86,7 @@ Here it simplifies for [`AdditionGroupOperation`](@ref) to ``$(_math(:d))ρ_h(g)
 
 @doc "$(_doc_diff_left_compose_add)"
 diff_left_compose(G::LieGroup{𝔽, AdditionGroupOperation}, g, h, X) where {𝔽} = X
+diff_left_compose(G::LieGroup{𝔽, AdditionGroupOperation}, ::Identity{AdditionGroupOperation}, h, X) where {𝔽} = X
 
 @doc "$(_doc_diff_left_compose_add)"
 function diff_left_compose!(G::LieGroup{𝔽, AdditionGroupOperation}, Y, g, h, X) where {𝔽}

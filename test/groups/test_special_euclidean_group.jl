@@ -145,7 +145,11 @@ using StaticArrays
         YQ = SpecialEuclideanProductTangentVector.(YP)
 
         GL4 = GeneralLinearGroup(4)
-        expected_diff_left_compose = [diff_left_compose(GL4, Identity(GL4), hi, Yi) for (hi, Yi) in zip(hA, YA)]
+        expected_diff_left_compose_id = [diff_left_compose(GL4, Identity(GL4), hi, Yi) for (hi, Yi) in zip(hA, YA)]
+        expected_diff_right_compose_id = [diff_right_compose(GL4, Identity(GL4), hi, Yi) for (hi, Yi) in zip(hA, YA)]
+
+        expected_diff_left_compose_h1 = [diff_left_compose(GL4, h1, hi, Yi) for (hi, Yi) in zip(hA, YA)]
+        expected_diff_right_compose_h1 = [diff_right_compose(GL4, h1, hi, Yi) for (hi, Yi) in zip(hA, YA)]
 
         for G in [G3f, G3p], (pts, vec) in zip([hA, hM, hP, hQ], [YA, YM, YP, YQ])
             properties = Dict(
@@ -163,7 +167,16 @@ using StaticArrays
             @testset "diff_left_compose" begin
                 for i in eachindex(vec)
                     Y = convert(SpecialEuclideanMatrixTangentVector, diff_left_compose(G, Identity(G), pts[i], vec[i]))
-                    @test Y.value ≈ expected_diff_left_compose[i]
+                    @test Y.value ≈ expected_diff_left_compose_id[i]
+
+                    Y = convert(SpecialEuclideanMatrixTangentVector, diff_right_compose(G, Identity(G), pts[i], vec[i]))
+                    @test Y.value ≈ expected_diff_right_compose_id[i]
+
+                    Y = convert(SpecialEuclideanMatrixTangentVector, diff_left_compose(G, pts[1], pts[i], vec[i]))
+                    @test Y.value ≈ expected_diff_left_compose_h1[i]
+
+                    Y = convert(SpecialEuclideanMatrixTangentVector, diff_right_compose(G, pts[1], pts[i], vec[i]))
+                    @test Y.value ≈ expected_diff_right_compose_h1[i]
                 end
             end
         end

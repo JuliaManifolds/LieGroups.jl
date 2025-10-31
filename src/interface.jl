@@ -459,6 +459,10 @@ function diff_right_compose(G::AbstractLieGroup, g, h, X)
     Y = ManifoldsBase.allocate_result(G, diff_right_compose, X, g, h)
     return diff_right_compose!(G, Y, g, h, X)
 end
+function diff_right_compose(G::AbstractLieGroup, g::Identity, h, X)
+    Y = ManifoldsBase.allocate_result(G, diff_right_compose, X, h)
+    return diff_right_compose!(G, Y, g, h, X)
+end
 
 function diff_right_compose! end
 @doc "$(_doc_diff_right_compose)"
