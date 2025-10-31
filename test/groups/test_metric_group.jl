@@ -26,6 +26,7 @@ using LieGroupsTestSuite
                 adjoint,
                 compose,
                 conjugate,
+                diff_conjugate,
                 diff_inv,
                 diff_left_compose,
                 diff_right_compose,
@@ -43,12 +44,20 @@ using LieGroupsTestSuite
     end
     @testset "Passthrough for index access" begin
         SE2 = SpecialEuclideanGroup(2)
+        se2 = LieAlgebra(SE2)
         G = MetricLieGroup(SE2, LieGroupsTestSuite.DummyMetric())
+        𝔤 = LieAlgebra(G)
         g = [1.0 0.0 2.0; 0.0 1.0 3.0; 0.0 0.0 1.0]
         X = [0.0 -0.1 0.5; 0.1 0.0 1.0; 0.0 0.0 0.0]
         @test g[SE2, :Rotation] === g[G, :Rotation]
         @test g[SE2, :Translation] === g[G, :Translation]
-        @test X[SE2, :Rotation] === X[G, :Rotation]
-        @test X[SE2, :Translation] === X[G, :Translation]
+        @test X[se2, :Rotation] === X[𝔤, :Rotation]
+        @test X[se2, :Translation] === X[𝔤, :Translation]
+        gT = SpecialEuclideanMatrixPoint(g)
+        XT = SpecialEuclideanMatrixTangentVector(X)
+        @test gT[SE2, :Rotation] == g[G, :Rotation]
+        @test gT[SE2, :Translation] == g[G, :Translation]
+        @test XT[se2, :Rotation] == XT[𝔤, :Rotation]
+        @test XT[se2, :Translation] == XT[𝔤, :Translation]
     end
 end
