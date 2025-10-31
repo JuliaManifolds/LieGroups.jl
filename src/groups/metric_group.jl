@@ -1,9 +1,12 @@
 """
-    MetricLieGroup{𝔽,M<:AbstractLieGroup{𝔽},G<:AbstractMetric} <: AbstractDecoratorManifold{𝔽}
+    MetricLieGroup{
+        𝔽, O <: AbstractGroupOperation, M <: ManifoldsBase.AbstractManifold{𝔽},
+        L <: LieGroup{𝔽, O, M}, G <: AbstractMetric
+    } <: AbstractLieGroup{𝔽, O, M}}
 
-Equip an [`AbstractLieGroup`](@ref) `L` explicitly with an [`AbstractMetric`](@extref `ManifoldsBase.AbstractMetric`) `G`.
+Equip an [`AbstractLieGroup`](@ref) ``$(_math(:G))`` explicitly with an [`AbstractMetric`](@extref `ManifoldsBase.AbstractMetric`) `⟨⋅,⋅⟩`.
 
-By default every [`AbstractLieGroup`](@ref) `L` is assumed to implicitly
+By default every [`AbstractLieGroup`](@ref) ``$(_math(:G))`` is assumed to implicitly
 implement all functions on their [`LieAlgebra`](@ref) with respect to a metric,
 that corresponds to a certain “default metric”, either because it is a widely recognized metric
 or because the first implementation within `LieGroups.jl` was done with respect to this metric.
@@ -18,20 +21,27 @@ or functions that are already otherwise passed on to the inner manifold like [`m
 
 # Constructor
 
-    MetricManifold(M, G)
+    MetricLieGroup(G::AbstractLieGroup, metric::AbstractMetric)
 
-Generate the [`AbstractLieGroup`](https://juliamanifolds.github.io/Manifolds.jl/latest/interface.html#ManifoldsBase.AbstractLieGroup) `M` as a manifold with the `AbstractMetric` `G`.
+Generate the [`AbstractLieGroup`](@ref) equipped explicitly with the [`AbstractMetric`](@extref `ManifoldsBase.AbstractMetric`) `metric`.
 """
 struct MetricLieGroup{
         𝔽,
         O <: AbstractGroupOperation,
         M <: ManifoldsBase.AbstractManifold{𝔽},
-        L <: LieGroup{𝔽, O, M},
-        G <: AbstractMetric,
+        G <: LieGroup{𝔽, O, M},
+        Metric <: AbstractMetric,
     } <: AbstractLieGroup{𝔽, O, M}
-    lie_group::L
-    metric::G
+    lie_group::G
+    metric::Metric
 end
+
+"""
+    metric(G::MetricLieGroup)
+
+Get the [`AbstractMetric`](@extref `ManifoldsBase.AbstractMetric`) associated with the [`MetricLieGroup`](@ref) ``$(_math(:G))``.
+"""
+Manifolds.metric(G::MetricLieGroup) = G.metric
 
 Base.getindex(g, G::MetricLieGroup, i) = getindex(g, base_lie_group(G), i)
 Base.getindex(g::AbstractArray, G::MetricLieGroup, i) = getindex(g, base_lie_group(G), i)

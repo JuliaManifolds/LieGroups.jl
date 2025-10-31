@@ -31,7 +31,7 @@ using Manifolds:
     UnitaryMatrices
 using Manifolds: DeterminantOneMatrixType
 using Manifolds: base_manifold
-using Manifolds: DefaultMetric
+using Manifolds: DefaultMetric, metric
 import LinearAlgebra: adjoint, adjoint!
 using ManifoldsBase:
     AbstractBasis, AbstractMetric, AbstractNumbers,
@@ -177,7 +177,7 @@ export injectivity_radius
 export jacobian_conjugate, jacobian_conjugate!
 export jacobian_exp, jacobian_exp!
 export lie_bracket, lie_bracket!, log, log!
-export manifold_dimension
+export manifold_dimension, metric
 export norm, number_of_coordinates
 export push_forward_tangent, push_forward_tangent!, pull_back_tangent, pull_back_tangent!
 export rand, rand!
