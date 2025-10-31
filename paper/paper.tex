@@ -15,7 +15,7 @@
 \newcommand{\term}[1]{\emph{#1}}
 \newcommand{\e}{\ensuremath{\mathrm{e}}}
 \newcommand{\im}{\ensuremath{\mathrm{i}}}
-\newcommand{\LieGroupsVersion}{0.1.7}
+\newcommand{\LieGroupsVersion}{0.1.8}
 %
 % Define muted colors.
 \definecolor{TolMutedBlue}{HTML}{332288}
@@ -500,7 +500,7 @@ where \(R \in \mathrm{SO}(n)\) and \(t \in \mathbb{R}^n\).
 The second representation is the tuple representation, where points are represented as tuples \(g' = (R, t)\) and the third is the tuple representation with the translation in the first component, i.e.\ \(g'' = (t, R)\). These two are available when \verb|RecursiveArrayTools.jl| is loaded and specifying the \verb|variant=:left| (default) or \verb|variant=:right|, respectively.
 The first, matrix representation work on either \verb|variant|.
 
-For all three representations, one can access the component semantically by writing \verb|g[G, :Rotation]| and \verb|g[G, :Translation]|, which works independent of the representation used. This allows to implement algorithgms wotking on \(\mathrm{SE}(n)\) indepentently of the chosen representation.
+For all three representations, one can access the component semantically by writing \verb|g[G, :Rotation]| and \verb|g[G, :Translation]|, which works independent of the representation used.
 
 \section{Examples how to use {\texttt{LieGroups.jl}}}%
 \label{sec:Example}
@@ -508,9 +508,6 @@ For all three representations, one can access the component semantically by writ
 In this section, we provide examples of how to use the {\texttt{LieGroups.jl}} package in Julia.
 
 \subsection{A Beziér curve on a Lie group}
-
-In the first example we illustrate how to construct and plot a Beziér curve on a Lie group, here the special Euclidean group \(\mathrm{SE}(2)\).
-
 
 \begin{lstlisting}[
     float=tbp,
@@ -541,6 +538,8 @@ function deCasteljauLieGroup(
     return points[1]
 end
 \end{lstlisting}
+
+In the first example we illustrate how to construct and plot a Beziér curve on a Lie group, here the special Euclidean group \(\mathrm{SE}(2)\).
 
 We first can generalize the de-Casteljau algorithm for Beziér curves to Lie groups by replacing the linear interpolation step with using the exponential and logarithmic map.
 
@@ -814,11 +813,11 @@ A rod of length \SI{0.67}{m} with charge density \SI{1e-6}{C/m} and mass \SI{1}{
 The trajectories obtained in a simulation with time step \SI{0.001}{s} are presented in Figure~\ref{fig:Heun}.
 Simulation times between \SI{30}{s} and \SI{135}{s} were chosen to have the rod remain relatively close to point charges.
 Position and orientation of the rod is indicated at 20 equally spaced times, along with a densely sampled trajectory of the center of the rod.
-
-
+\\
 For more advanced methods of solving differential equations on Manifolds and Lie groups in Julia, see
 \verb|ManifoldDiffEq.jl|.\footnote{see \href{https://juliamanifolds.github.io/ManifoldDiffEq.jl/stable/}{juliamanifolds.github.io/ManifoldDiffEq.jl/stable/}.}
 
- \balance
+%\balance
+\newpage
 \input{bib.tex}
 \end{document}
