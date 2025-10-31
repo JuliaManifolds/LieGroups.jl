@@ -33,15 +33,8 @@ struct MetricLieGroup{
     metric::G
 end
 
-function ManifoldsBase.submanifold_component(G::MetricLieGroup, g, i::Val)
-    return submanifold_component(base_lie_group(G), g, i)
-end
-function ManifoldsBase.submanifold_component(G::MetricLieGroup, g, i::Integer)
-    return submanifold_component(base_lie_group(G), g, i)
-end
-function ManifoldsBase.submanifold_components(G::MetricLieGroup, g)
-    return submanifold_components(G.lie_group, g)
-end
+Base.getindex(g, G::MetricLieGroup, i) = getindex(g, base_lie_group(G), i)
+Base.getindex(g::AbstractArray, G::MetricLieGroup, i) = getindex(g, base_lie_group(G), i)
 
 #
 #
@@ -87,20 +80,8 @@ end
 _inv(G::MetricLieGroup, g) = inv(base_lie_group(G), g)
 _inv!(G::MetricLieGroup, k, g) = inv!(base_lie_group(G), k, g)
 
-_inv_left_compose(G::MetricLieGroup, h, g) = _inv_left_compose(base_lie_group(G), h, g)
-_inv_left_compose!(G::MetricLieGroup, k, h, g) = _inv_left_compose!(base_lie_group(G), k, h, g)
-
-_inv_right_compose(G::MetricLieGroup, h, g) = _inv_right_compose(base_lie_group(G), h, g)
-_inv_right_compose!(G::MetricLieGroup, k, h, g) = _inv_right_compose!(base_lie_group(G), k, h, g)
-
 ManifoldsBase.is_point(G::MetricLieGroup, g; kwargs...) = is_point(base_lie_group(G), g; kwargs...)
 ManifoldsBase.is_point(G::MetricLieGroup, e::Identity; kwargs...) = is_point(base_lie_group(G), e; kwargs...)
-
-function ManifoldsBase.is_vector(
-        G::MetricLieGroup{𝔽, O}, e::Identity{O}, X; kwargs...
-    ) where {𝔽, O <: AbstractGroupOperation}
-    return is_vector(base_lie_group(G), e, X; kwargs...)
-end
 
 function Base.show(io::IO, G::MetricLieGroup)
     return print(io, "MetricLieGroup($(G.lie_group), $(G.metric))")

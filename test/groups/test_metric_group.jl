@@ -41,4 +41,14 @@ using LieGroupsTestSuite
         expectations = Dict(:repr => "MetricLieGroup(SpecialOrthogonalGroup(2), LieGroupsTestSuite.DummyMetric())")
         test_lie_group(G, properties, expectations)
     end
+    @testset "Passthrough for index access" begin
+        SE2 = SpecialEuclideanGroup(2)
+        G = MetricLieGroup(SE2, LieGroupsTestSuite.DummyMetric())
+        g = [1.0 0.0 2.0; 0.0 1.0 3.0; 0.0 0.0 1.0]
+        X = [0.0 -0.1 0.5; 0.1 0.0 1.0; 0.0 0.0 0.0]
+        @test g[SE2, :Rotation] === g[G, :Rotation]
+        @test g[SE2, :Translation] === g[G, :Translation]
+        @test X[SE2, :Rotation] === X[G, :Rotation]
+        @test X[SE2, :Translation] === X[G, :Translation]
+    end
 end
