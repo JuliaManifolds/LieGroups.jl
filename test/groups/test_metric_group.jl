@@ -1,10 +1,23 @@
 using LieGroups, ManifoldsBase, Random, Test, RecursiveArrayTools
 
 using LieGroups: MetricLieGroup
+using Manifolds
 
 s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
 !(s in LOAD_PATH) && (push!(LOAD_PATH, s))
 using LieGroupsTestSuite
+
+struct CustomTranslationMetric <: ManifoldsBase.AbstractMetric end
+
+function ManifoldsBase.exp!(
+        ::MetricLieGroup{ℝ, AdditionGroupOperation, <:Euclidean, <:TranslationGroup, CustomTranslationMetric},
+        q,
+        p,
+        X,
+    )
+    return q .= p .+ 2 .* X
+end
+
 
 @testset "MetricLieGroup: A metric decorator for LieGroups" begin
 
@@ -62,5 +75,12 @@ using LieGroupsTestSuite
         @test gT[SE2, :Translation] == gT[G, :Translation]
         @test XT[se2, :Rotation] == XT[𝔤, :Rotation]
         @test XT[se2, :Translation] == XT[𝔤, :Translation]
+    end
+    @testset "Testing that correct defaults for metric functions are used" begin
+        T2 = TranslationGroup(2)
+        G = MetricLieGroup(T2, CustomTranslationMetric())
+        p = [0.0, 2.0]
+        X = [1.0, -2.0]
+        @test exp(G, p, X) == [2.0, -2.0]
     end
 end
