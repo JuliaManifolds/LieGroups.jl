@@ -5,10 +5,26 @@ All notable Changes to the Julia package `LieGroups.jl` will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.7] 2025-10-14
+## [0.1.8] unreleased
 
 ### Added
+
 * a `MetricLieGroup` as a meta type to be able to change the metric imposed on the Lie algebra and its effects e.g. on the coordinates, inner product and the exponential and logarithmic map.
+
+### Fixed
+
+* fixed the contributing.md to mention runic as the code formatter.
+
+## [0.1.7] 2025-10-28
+
+### Added
+
+* `NestedPowerRepresentation` and `NestedReplacingPowerRepresentation` are now re-exported from `ManifoldsBase.jl`.
+* `getindex` access to parts of a point of tangent vector represented by a matrix with `:Rotation` and `:Translation` as indices. For example, when `g` is a point on any variant of the special euclidean group, `g[G, :Translation]` will return the translation part of `g` regardless of whether `G` is the left or right semidirect product even when `g` is a matrix.
+
+### Fixed
+
+* Zenodo metadata.
 
 ## [0.1.6] 2025-10-10
 

@@ -96,6 +96,7 @@ export AbstractLieGroup
 export LieGroup, LieAlgebra
 export MetricLieGroup
 export PowerLieGroup, ProductLieGroup
+export NestedPowerRepresentation, NestedReplacingPowerRepresentation
 export LeftSemidirectProductLieGroup, RightSemidirectProductLieGroup
 export ValidationLieGroup
 export DefaultLieAlgebraOrthogonalBasis
