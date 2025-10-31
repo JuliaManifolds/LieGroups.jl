@@ -83,9 +83,15 @@ diff_inv(G::MetricLieGroup, g, X) = diff_inv(base_lie_group(G), g, X)
 diff_inv!(G::MetricLieGroup, Y, g, X) = diff_inv!(base_lie_group(G), Y, g, X)
 
 diff_left_compose(G::MetricLieGroup, g, h, X) = diff_left_compose(base_lie_group(G), g, h, X)
+function diff_left_compose(G::MetricLieGroup{𝔽, O}, g::Identity{O}, h, X) where {𝔽, O <: AbstractGroupOperation}
+    return diff_left_compose(base_lie_group(G), g, h, X)
+end
 diff_left_compose!(G::MetricLieGroup, Y, g, h, X) = diff_left_compose!(base_lie_group(G), Y, g, h, X)
 
 diff_right_compose(G::MetricLieGroup, g, h, X) = diff_right_compose(base_lie_group(G), g, h, X)
+function diff_right_compose(G::MetricLieGroup{𝔽, O}, g::Identity{O}, h, X) where {𝔽, O <: AbstractGroupOperation}
+    return diff_right_compose(base_lie_group(G), g, h, X)
+end
 diff_right_compose!(G::MetricLieGroup, Y, g, h, X) = diff_right_compose!(base_lie_group(G), Y, g, h, X)
 
 function identity_element(G::MetricLieGroup)

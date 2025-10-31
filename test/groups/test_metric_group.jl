@@ -18,7 +18,6 @@ function ManifoldsBase.exp!(
     return q .= p .+ 2 .* X
 end
 
-
 @testset "MetricLieGroup: A metric decorator for LieGroups" begin
 
     @testset "Pass through with a dummy metric" begin
