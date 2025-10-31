@@ -1,9 +1,6 @@
 using LinearAlgebra
-
 using LieGroups, Manifolds, RecursiveArrayTools
-
 using CairoMakie
-
 using DataFrames, CSV
 
 # ---------- Physical parameters ----------
@@ -110,7 +107,7 @@ function sim()
     ax = Axis(fig[1, 1],
         title = "Charged rod trajectories near ±q charges",
         xlabel = "x (m)", ylabel = "y (m)",
-        aspect = DataAspect(), 
+        aspect = DataAspect(),
     )
 
     SE2 = SpecialEuclideanGroup(2)

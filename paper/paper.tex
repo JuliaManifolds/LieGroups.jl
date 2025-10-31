@@ -7,6 +7,7 @@
 \usetikzlibrary{arrows.meta}
 \usepackage{pgfplots}
 \usepackage{pgfplotstable}
+\usepackage{balance}
 \pgfplotsset{compat=1.18}
 
 \usepackage{siunitx}
@@ -638,9 +639,9 @@ This second order ODE on \(\mathcal G_1\) can be converted to a first order ODE 
 The overall ODE has the form
 \begin{equation*}
     \frac{d}{dt}\begin{pmatrix} g \\ \dot{g} \end{pmatrix}
-    = \begin{pmatrix} \dot{g} \\ f(t, g, \dot{g}) \end{pmatrix},
+    = \begin{pmatrix} \dot{g} \\ f(g, \dot{g}, t) \end{pmatrix},
 \end{equation*}
-where \(g \in \mathcal G_1\) and \(f(t, g, \dot{g})\) is derived from the above equations. We further require initial conditions for both \(g\) and \(\dot{g}\) at time \(t_0=0\).
+where \(g \in \mathcal G_1\) and \(f(g, \dot{g}, t)\) is derived from the above equations. We further require initial conditions for both \(g\) and \(\dot{g}\) at time \(t_0=0\).
 Then this can be solved using Lie group methods, such as the Runge-Kutta-Munthe-Kaas (RKMK) variant \cite{Munthe-Kaas:1998} of Heun's method~\cite[App.~A.1]{IserlesMunthe-KaasNoersettZanna:2000}.
 
 Code~\ref{lst:rod-dynamics} shows functions that calculate the right hand side of the ODE, where \lstinline{E_field} is a function that calculates electric field strength from the point charges at the given point.
@@ -793,6 +794,6 @@ Position and orientation of the rod is indicated at 20 equally spaced times, alo
 For more advanced methods of solving differential equations on Manifolds and Lie groups in Julia, see
 \verb|ManifoldDiffEq.jl|.\footnote{see \href{https://juliamanifolds.github.io/ManifoldDiffEq.jl/stable/}{juliamanifolds.github.io/ManifoldDiffEq.jl/stable/}.}
 
-
+ \balance
 \input{bib.tex}
 \end{document}
