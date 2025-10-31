@@ -655,12 +655,12 @@ The function \lstinline{force_and_torque} calculates the force and torque affect
 function force_and_torque(
         sp::SystemParameters, Fθ, r
     )
-    u, u$\bot$ = eachrow(Fθ)
+    u, u${}_\perp$ = eachrow(Fθ)
     F, $\tau$ = zeros(2), 0.0
     for s in range(-sp.L/2, sp.L/2; length=Nq)
         E = E_field(sp, r .+ s .* u)
         F .+= sp.$\lambda$ * E * (sp.L/(Nq-1))
-        $\tau$ += sp.$\lambda$ * s * dot(u$\bot$, E) * (sp.L/(Nq-1))
+        $\tau$ += sp.$\lambda$ * s * dot(u${}_\perp$, E) * (sp.L/(Nq-1))
     end
     return F, $\tau$
 end
@@ -670,7 +670,7 @@ function dynamics(state, sp::SystemParameters, t)
     F, tau = force_and_torque(sp, p.x...)
     a = F ./ sp.M
     coords = [tau / sp.Icm, a...]
-    ddx = hat(se2, coords, ArrayPartition) #TODO se2 from global scope?
+    ddx = hat(sp.se2, coords, ArrayPartition)
     return ArrayPartition(dp, ddx)
 end
 \end{lstlisting}
@@ -691,7 +691,7 @@ The presented approach can be easily generalized to three spatial dimensions, wh
 function integrator_step!(
         A::GroupAction, sp::SystemParameters,
         y, f, t, dt
-) # TODO how are f and dynamics are they the same related?
+) # The dynamics function is passed as f
     Ie = Identity(A.group)
     F1 = (dt / 2) * f(y, sp, t)
     tmp = zero_vector(A.manifold, y)
@@ -704,7 +704,12 @@ end
 \end{lstlisting}
 
 The presented method was applied to a case with two static charges: \SI{1e-6}{C} at position (\SI{-1}{m}, \SI{0}{m}) and \SI{-1e-6}{C} at position (\SI{1}{m}, \SI{0}{m}).
-A rod of length \SI{0.67}{m} with charge density \SI{1e-6}{C/m} and mass \SI{1}{kg} started from three different initial positions.
+A rod of length \SI{0.67}{m} with charge density \SI{1e-6}{C/m} and mass \SI{1}{kg} started from three different initial states:
+\begin{enumerate}
+    \item position (\SI{0}{m}, \SI{-1.5}{m}), angle \SI{0.1}{rad}, velocity (\SI{0}{m/s}, \SI{0}{m/s}), angular velocity \SI{0}{rad/s},
+    \item position (\SI{-0.2}{m}, \SI{1}{m}), angle \SI{0.2}{rad}, velocity (\SI{-0.12}{m/s}, \SI{-0.15}{m/s}), angular velocity \SI{0}{rad/s},
+    \item position (\SI{-0.5}{m}, \SI{-0.5}{m}), angle \SI{0.6}{rad}, velocity (\SI{-0.04}{m/s}, \SI{0.12}{m/s}), angular velocity \SI{0}{rad/s}.
+\end{enumerate}
 The trajectories obtained in a simulation with time step \SI{0.001}{s} are presented in Figure~\ref{fig:Heun}.
 Simulation times between \SI{30}{s} and \SI{135}{s} were chosen to have the rod remain relatively close to point charges.
 Position and orientation of the rod is indicated at 20 equally spaced times, along with a densely sampled trajectory of the center of the rod.
