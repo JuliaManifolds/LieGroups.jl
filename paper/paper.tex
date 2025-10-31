@@ -665,13 +665,15 @@ function force_and_torque(
     end
     return F, $\tau$
 end
-# f((p,θ), (dp,dθ), t) including system parameters
+# f((p,θ), (dp,dθ), t) where (p,θ) and (dp,dθ) are
+# passed as the first argument, system parameters
+# as the second one and time as the last one
 function dynamics(state, sp::SystemParameters, t)
     p, dp = state.x
     F, tau = force_and_torque(sp, p.x...)
     a = F ./ sp.M
-    coords = [tau / sp.Icm, a...]
-    ddx = hat(sp.se2, coords, ArrayPartition)
+    c = [tau / sp.Icm, a...]
+    ddx = hat(sp.lie_algebra, c, ArrayPartition)
     return ArrayPartition(dp, ddx)
 end
 \end{lstlisting}

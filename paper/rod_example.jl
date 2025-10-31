@@ -6,8 +6,8 @@ using DataFrames, CSV
 # ---------- Physical parameters ----------
 
 Base.@kwdef struct SystemParameters
-    SE2 = SpecialEuclideanGroup(2)
-    se2 = LieAlgebra(SE2)
+    group = ProductLieGroup(SpecialOrthogonalGroup(2), TranslationGroup(2))
+    lie_algebra = LieAlgebra(group)
     L = 0.67             # rod length (m)
     M = 1.0             # rod mass (kg)
     λ = 1e-6            # linear charge density (C/m)
@@ -54,7 +54,7 @@ function dynamics(state, sp::SystemParameters, t)
     p, dp = state.x
     F, τ = force_and_torque(sp, p.x...)
     a = F ./ sp.M
-    ddx = hat(sp.se2, [τ / sp.Icm, a...], ArrayPartition)
+    ddx = hat(sp.lie_algebra, [τ / sp.Icm, a...], ArrayPartition)
     return ArrayPartition(dp, ddx)
 end
 
