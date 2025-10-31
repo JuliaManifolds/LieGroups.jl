@@ -315,6 +315,49 @@ function default_right_action(::TranslationGroup, ::SpecialOrthogonalGroup)
     return LeftMultiplicationGroupAction()
 end
 
+@doc raw"""
+    diff_left_compose(G::SpecialEuclideanGroup, ::Identity, h, X)
+
+Compute the differential of left composition by `h` on Lie-algebra elements.
+
+Let
+````
+h=\begin{pmatrix} R & t\\[4pt] 0 & 1\end{pmatrix},\qquad
+X=\begin{pmatrix} X_r & X_t\\[4pt] 0 & 0\end{pmatrix},
+````
+
+where ``R\in SO(n)``, ``t\in\mathbb{R}^n``, ``X_r`` is the skew-symmetric rotation block and ``X_t`` the translation column.
+Then the differential is the adjoint action by ``h^{-1}``:
+````
+\mathrm{D}L_h(X)=h^{-1}Xh=
+\begin{pmatrix}
+R^\top X_r R & R^\top\bigl(X_r\,t + X_t\bigr)\\[4pt]
+0 & 0
+\end{pmatrix}.
+````
+
+Component-wise:
+````
+Y_r = R^\top X_r R,\qquad Y_t = R^\top\bigl(X_r\,t + X_t\bigr).
+````
+"""
+diff_left_compose(G::SpecialEuclideanGroup, ::Identity, h, X)
+
+function diff_left_compose!(G::SpecialEuclideanGroup, Y, ::Identity, h, X)
+    GA = LieAlgebra(G)
+    init_constants!(GA, Y)
+    Xr = submanifold_component(GA, X, Val(:Rotation))
+    Xt = submanifold_component(GA, X, Val(:Translation))
+    Yr = submanifold_component(GA, Y, Val(:Rotation))
+    Yt = submanifold_component(GA, Y, Val(:Translation))
+    R = submanifold_component(G, h, Val(:Rotation))
+    t = submanifold_component(G, h, Val(:Translation))
+    A = R' * Xr
+    mul!(Yr, A, R)
+    Yt .= A * t .+ R' * Xt
+    return Y
+end
+
 _doc_exp_SE2_id = """
     exp(G::SpecialEuclidean, X)
     exp!(G::SpecialEuclidean, g, X)
@@ -538,6 +581,10 @@ function init_constants!(G::SpecialEuclideanGroup, g::AbstractMatrix)
     g[n + 1, n + 1] = 1
     return g
 end
+function init_constants!(G::SpecialEuclideanGroup, g::SpecialEuclideanMatrixPoint)
+    init_constants!(G, g.value)
+    return g
+end
 
 @doc "$(_doc_init_constants)"
 function init_constants!(
@@ -546,6 +593,13 @@ function init_constants!(
     )
     n = get_parameter(G.manifold.manifold[1].size)[1]
     X[(n + 1), :] .= 0
+    return X
+end
+function init_constants!(
+        G::LieAlgebra{ℝ, <:SpecialEuclideanGroupOperation, <:SpecialEuclideanGroup},
+        X::SpecialEuclideanMatrixTangentVector,
+    )
+    init_constants!(G, X.value)
     return X
 end
 

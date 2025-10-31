@@ -397,7 +397,7 @@ function _compose!(
     # this is inplace if both are not aliased and creates a copy G otherwise to avoid overwriting hG
     _semidirect_maybe_inv!(AO, a, G, kG, submanifold_component(SDPG, g, Val(g_ind)))
     # a) group action (first to avoid side effects in g, set kH to σ_{gG}(hH) - since we might have inverted, we have to use kG
-    apply!(a, kH, kG, submanifold_component(PM, h, h_ind)) #accidentially overwriting hH is fine, we do not need it.
+    apply!(a, kH, kG, submanifold_component(PM, h, h_ind)) #accidentally overwriting hH is fine, we do not need it.
     # b) group operation on G
     _compose!(G, submanifold_component(PM, k, g_ind), submanifold_component(PM, g, g_ind), submanifold_component(PM, h, g_ind))
     # c) group operation on H (note that the action on hH is already in kH
