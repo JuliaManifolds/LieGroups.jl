@@ -77,7 +77,7 @@ Finally, in Section~\ref{sec:Example}, we demonstrate how to get started and use
 \section{Mathematical Background}%
 \label{sec:Notation}
 
-\begin{figure}
+\begin{figure}[tbp]
     \centering
     \includegraphics[width=0.12\textwidth]{logo.png}
     \vspace{.5\baselineskip}
@@ -511,11 +511,9 @@ In this section, we provide examples of how to use the {\texttt{LieGroups.jl}} p
 
 In the first example we illustrate how to construct and plot a Beziér curve on a Lie group, here the special Euclidean group \(\mathrm{SE}(2)\).
 
-We first can generalize the de-Casteljau algorithm for Beziér curves to Lie groups by replacing the linear interpolation step with using the exponential and logarithmic map.
-
-In Code~\ref{lst:deCasteljauLieGroup}, we define the general de-Casteljau algorithm on a Lie group \verb|G|, given a vector of control points \verb|cp| and a parameter \verb|t| in \([0,1]\).
 
 \begin{lstlisting}[
+    float=tbp,
     language = Julia,
     numbers=left,
     label={lst:deCasteljauLieGroup},
@@ -544,6 +542,10 @@ function deCasteljauLieGroup(
 end
 \end{lstlisting}
 
+We first can generalize the de-Casteljau algorithm for Beziér curves to Lie groups by replacing the linear interpolation step with using the exponential and logarithmic map.
+
+In Code~\ref{lst:deCasteljauLieGroup}, we define the general de-Casteljau algorithm on a Lie group \verb|G|, given a vector of control points \verb|cp| and a parameter \verb|t| in \([0,1]\).
+
 We can now compare the algorithm on the Lie group \(\mathrm{SE}(2)\) with the corresponding Bézier curve on the (direct) product Lie group $\mathrm{SO}(2) \times \mathcal T(2)$, where \(\mathcal T(2) = (\mathbb{R}^2, +)\) is the \verb|TranslationGroup(2)|.
 Denote by $R_\alpha$ the rotation matrix in \(\mathrm{SO}(2)\) for an angle \(\alpha\in[0,2\pi)\).
 We consider the control points
@@ -557,8 +559,27 @@ We consider the control points
     g_4 &= \Bigl(R_{\pi}, \begin{pmatrix} 1 \\ 0 \end{pmatrix}\Bigr).
 \end{align*}
 
+We evaluate the corresponding Bézier curves on both Lie groups using the Code~\ref{lst:bezierLieGroupExample}.
+\begin{lstlisting}[
+    float=tbp,
+    language = Julia,
+    numbers=left,
+    label={lst:bezierLieGroupExample},
+    caption={Evaluating Bézier curves on \(\mathrm{SE}(2)\) and \(\mathrm{SO}(2) \times \mathcal T(2)\).},
+    mathescape
+]
+SO2 = SpecialOrthogonalGroup(2)
+R2 = TranslationGroup(2)
+SO2xR2 = SO2 $\times$ R2
+ts = range(0, 1, length=35)
+q1 = [
+    deCasteljauLieGroup(SO2xT2, cp, t) for t in ts
+]
+SE2 = SpecialEuclideanGroup(2)
+q2 = [deCasteljauLieGroup(SE2, cp, t) for t in ts]
+\end{lstlisting}
 
-\begin{figure}
+\begin{figure}[tbp]
     % Arrow scale factor
     \def\arrowscale{0.15}
 
@@ -612,25 +633,6 @@ We consider the control points
     \label{fig:Bezier}
 \end{figure}
 
-We evaluate the corresponding Bézier curves on both Lie groups using the Code~\ref{lst:bezierLieGroupExample}.
-\begin{lstlisting}[
-    language = Julia,
-    numbers=left,
-    label={lst:bezierLieGroupExample},
-    caption={Evaluating Bézier curves on \(\mathrm{SE}(2)\) and \(\mathrm{SO}(2) \times \mathcal T(2)\).},
-    mathescape
-]
-SO2 = SpecialOrthogonalGroup(2)
-R2 = TranslationGroup(2)
-SO2xR2 = SO2 $\times$ R2
-ts = range(0, 1, length=35)
-q1 = [
-    deCasteljauLieGroup(SO2xT2, cp, t) for t in ts
-]
-SE2 = SpecialEuclideanGroup(2)
-q2 = [deCasteljauLieGroup(SE2, cp, t) for t in ts]
-\end{lstlisting}
-
 The resulting Bézier curves on both Lie groups are shown in Figure~\ref{fig:Bezier}.
 One can see that the product Lie group works the same as if one would have done that
 separately component-wise, while the Bézier curve on \(\mathrm{SE}(2)\) behaves differently.
@@ -663,6 +665,7 @@ Then this can be solved using Lie group methods, such as the Runge-Kutta-Munthe-
 Code~\ref{lst:rod-dynamics} shows functions that calculate the right hand side of the ODE, where \lstinline{E_field} is a function that calculates electric field strength from the point charges at the given point.
 The function \lstinline{force_and_torque} calculates the force and torque affecting the rod, while \lstinline{dynamics} converts them to the Lie algebra element can be used by the solver.
 \begin{lstlisting}[
+    float=tbp,
     language = Julia,
     numbers=left,
     label={lst:rod-dynamics},
@@ -702,6 +705,7 @@ The main advantage of using a Lie group solver for this problem is that we do no
 The presented approach can be easily generalized to three spatial dimensions, where parametrization of rotations on $\mathrm{SO}(3)$ would be even more challenging numerically.
 
 \begin{lstlisting}[
+    float=tbp,
     language = Julia,
     numbers=left,
     label={lst:heun},
@@ -722,7 +726,7 @@ function integrator_step!(
 end
 \end{lstlisting}
 
-\begin{figure}
+\begin{figure}[tbp]
     % Arrow scale factor
     \def\arrowscale{1.0}
 
