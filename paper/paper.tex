@@ -166,7 +166,7 @@ For example \verb|identity_element(G)| returns the identity element $e$ of a Lie
 
 \subsection{Lie groups}
 
-The main type for Lie Groups is the \verb|LieGroup{|$\mathbb {F}$\verb|, O, M} <: AbstractLieGroup|, which contains a manifold \verb|M <: AbstractManifold{|$\mathbb F$\verb|}| as well as the group operation \verb| O <: AbstractGroupOperation|, where $\mathbb {F}$ is the set of scalars used in the representation of the manifold, usually \(\mathbb {F} = \mathbb{R}\) and in some cases \(\mathbb {F}\) is the field of complex numbers \(\mathbb{C}\) or the ring of quaternions \(\mathbb H\).
+The main type for Lie Groups is the \verb|LieGroup{|$\mathbb {F}$\verb|, O, M} <: AbstractLieGroup{|$\mathbb {F}$\verb|, O, M}|, which contains a manifold \verb|M <: AbstractManifold{|$\mathbb F$\verb|}| as well as the group operation \verb| O <: AbstractGroupOperation|, where $\mathbb {F}$ is the set of scalars used in the representation of the manifold, usually \(\mathbb {F} = \mathbb{R}\) and in some cases \(\mathbb {F}\) is the field of complex numbers \(\mathbb{C}\) or the ring of quaternions \(\mathbb H\).
 
 In general, when a function within the interfaces of \verb|JuliaManifolds| returns a point, a tangent vector or any other mutable object, there always exist two variants of the function, one that allocates a new object and returns it, and one that takes an additional argument to write the result into. For example for a function \verb|f(G, g)| that returns a point on the Lie group \verb|G|, there also exists a variant \verb|f!(G, h, g)| that computes the result in-place of \verb|h|, possibly using the memory also for interims results. All methods are written such that the result is correct even if arguments \verb|h| and \verb|g| use the same memory. By default the allocating variant is implemented by allocating memory accordingly and calling the in-place variant. This default can be overridden, for example for performance reasons.
 
@@ -663,8 +663,8 @@ The overall ODE has the form
 where \(g \in \mathcal G_1\) and \(f(g, \dot{g}, t)\) is derived from the above equations. We further require initial conditions for both \(g\) and \(\dot{g}\) at time \(t_0=0\).
 Then this can be solved using Lie group methods, such as the Runge-Kutta-Munthe-Kaas (RKMK) variant \cite{Munthe-Kaas:1998} of Heun's method~\cite[App.~A.1]{IserlesMunthe-KaasNoersettZanna:2000}.
 
-Code~\ref{lst:rod-dynamics} shows functions that calculate the right hand side of the ODE, where \lstinline{E_field} is a function that calculates electric field strength from the point charges at the given point.
-The function \lstinline{force_and_torque} calculates the force and torque affecting the rod, while \lstinline{dynamics} converts them to the Lie algebra element can be used by the solver.
+Code~\ref{lst:rod-dynamics} shows functions that calculate the right hand side of the ODE, where \verb|E_field| is a function that calculates electric field strength from the point charges at the given point.
+The function \verb|force_and_torque| calculates the force and torque affecting the rod, while \verb|dynamics| converts them to the Lie algebra element can be used by the solver.
 \begin{lstlisting}[
     float=tbp,
     language = Julia,
