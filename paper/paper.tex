@@ -166,7 +166,7 @@ In notation, we use typewriter font to denote functions in the interface, but we
 The interface follows the philosophy of \verb|ManifoldsBase.jl|, that the Lie group or algebra is the first argument and even a mutated argument comes second.
 Similarly, if a function computes something like a new point on the Lie group or a tangent vector, there also exists a variant, that computes this in-place.
 For example \verb|identity_element(G)| returns the identity element $e$ of a Lie group $G$ in a default representation, \verb|identity_element!(G, e)| writes the result into the pre-allocated variable \verb|e|, which can also be used with other representation types.
-To generate a point in a specific representation by objects of type \verb|T|, one can use \verb|identity_element(G, T)|.
+To generate the identity in a specific representation by objects of type \verb|T|, one can use \verb|identity_element(G, T)|.
 For example, a points on the special Euclidean group $\mathrm{SE}(n)$ can be represented either as a $(n+1) \times (n+1)$ matrix or a \verb|ArrayPartition| with rotation and translation stored separately.
 
 \subsection{Lie groups}
@@ -193,7 +193,7 @@ The following functions are available and pass directly to the underlying manifo
 Similarly
 \verb|manifold_dimension(G)| to get the dimension of the manifold,
 \verb|project(G, q)|, to project a point onto the manifold, as well as %
-%\footnote{in-place variant \texttt{project!(G, p, q)}.} 
+%\footnote{in-place variant \texttt{project!(G, p, q)}.}
 \verb|rand(G)| and \verb|rand(rng, G)| %
 %\footnote{in-place variant \texttt{rand!(G, p)} and \texttt{rand!(rng, G, p)}, respectively.}
 to sample a random point from the manifold using a random number generator \verb|rng| also pass directly on to the manifold.
