@@ -1,8 +1,8 @@
 title: "Groups and smooth geometry using LieGroups.jl"
 keywords:
-  - Riemannian manifolds
   - Lie groups
   - differential geometry
+  - Riemannian manifolds
   - numerical analysis
   - scientific computing
 authors:
