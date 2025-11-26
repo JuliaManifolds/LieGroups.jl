@@ -1,13 +1,7 @@
 using LieGroups, Random, Test
-
 using ManifoldsBase: ℂ, ℝ
 using Manifolds: Circle, Sphere
-
 using StaticArrays
-
-s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
-!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
-using LieGroupsTestSuite
 
 @testset "The Circle group" begin
     @testset "Complex Circle" begin
@@ -43,13 +37,13 @@ using LieGroupsTestSuite
             ],
         )
         expectations = Dict(:repr => "CircleGroup()")
-        test_lie_group(C1, properties, expectations)
+        LieGroups.Test.test_lie_group(C1, properties, expectations)
 
         properties[:Name] = "IsBit-representation of Points and Vectors"
         properties[:Mutating] = false
         properties[:Points] = [z1, z2, z3]
         properties[:Vectors] = [X1, X2, X3]
-        test_lie_group(C1, properties, expectations)
+        LieGroups.Test.test_lie_group(C1, properties, expectations)
     end
     @testset "Real Circle" begin
         C2 = CircleGroup(Circle(ℝ))
@@ -82,13 +76,13 @@ using LieGroupsTestSuite
             ],
         )
         expectations = Dict(:repr => "CircleGroup(ℝ)")
-        test_lie_group(C2, properties, expectations)
+        LieGroups.Test.test_lie_group(C2, properties, expectations)
 
         properties[:Name] = "IsBit-representation of Points and Vectors"
         properties[:Mutating] = false
         properties[:Points] = [x1, x2, x3]
         properties[:Vectors] = [X1, X2, X3]
-        test_lie_group(C2, properties, expectations)
+        LieGroups.Test.test_lie_group(C2, properties, expectations)
 
         @testset "Edge cases" begin
             @test compose(C2, 1.0, fill(1.0)) == 2.0
@@ -142,7 +136,7 @@ using LieGroupsTestSuite
             ],
         )
         expectations = Dict(:repr => "CircleGroup(Sphere(1))")
-        test_lie_group(C1, properties, expectations)
+        LieGroups.Test.test_lie_group(C1, properties, expectations)
         @test identity_element(C1) == [1.0, 0.0]
     end
 

@@ -3,10 +3,6 @@ using LieGroups, ManifoldsBase, Random, Test, RecursiveArrayTools
 using LieGroups: MetricLieGroup
 using Manifolds
 
-s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
-!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
-using LieGroupsTestSuite
-
 struct CustomTranslationMetric <: ManifoldsBase.AbstractMetric end
 
 function ManifoldsBase.exp!(
@@ -23,8 +19,8 @@ end
     @testset "Pass through with a dummy metric" begin
         SO2 = SpecialOrthogonalGroup(2)
         @test metric(SO2) === DefaultMetric()
-        G = MetricLieGroup(SO2, LieGroupsTestSuite.DummyMetric())
-        @test metric(G) === LieGroupsTestSuite.DummyMetric()
+        G = MetricLieGroup(SO2, LieGroups.Test.DummyMetric())
+        @test metric(G) === LieGroups.Test.DummyMetric()
         @test base_lie_group(G) === SO2
 
         g1 = 1 / sqrt(2) * [1.0 1.0; -1.0 1.0]
@@ -54,13 +50,13 @@ end
                 show,
             ],
         )
-        expectations = Dict(:repr => "MetricLieGroup(SpecialOrthogonalGroup(2), LieGroupsTestSuite.DummyMetric())")
-        test_lie_group(G, properties, expectations)
+        expectations = Dict(:repr => "MetricLieGroup(SpecialOrthogonalGroup(2), LieGroups.Test.DummyMetric())")
+        LieGroups.Test.test_lie_group(G, properties, expectations)
     end
     @testset "Passthrough for index access" begin
         SE2 = SpecialEuclideanGroup(2)
         se2 = LieAlgebra(SE2)
-        G = MetricLieGroup(SE2, LieGroupsTestSuite.DummyMetric())
+        G = MetricLieGroup(SE2, LieGroups.Test.DummyMetric())
         𝔤 = LieAlgebra(G)
         g = [1.0 0.0 2.0; 0.0 1.0 3.0; 0.0 0.0 1.0]
         X = [0.0 -0.1 0.5; 0.1 0.0 1.0; 0.0 0.0 0.0]

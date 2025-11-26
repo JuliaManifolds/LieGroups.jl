@@ -1,10 +1,6 @@
 using LieGroups, Test
 using Manifolds: Euclidean
 
-s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
-!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
-using LieGroupsTestSuite
-
 @testset "Columnwise Actions" begin
     G = SpecialOrthogonalGroup(3)
     M = Euclidean(3, 3)

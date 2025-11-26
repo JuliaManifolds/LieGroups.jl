@@ -1,0 +1,24 @@
+[deps]
+Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
+LieGroups = "6774de46-80ba-43f8-ba42-e41071ccfc5f"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Manifolds = "1cead3c2-87b3-11e9-0ccd-23c62b72b94e"
+ManifoldsBase = "3362f125-f0bb-47a3-aa74-596ffd7ef2fb"
+Quaternions = "94ee1d12-ae83-5a48-8b1c-48b8ff168ae0"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+RecursiveArrayTools = "731186ca-8d62-57ce-b412-fbd966d074cd"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[sources]
+LieGroups = {path = ".."}
+
+[compat]
+Aqua = "0.8"
+Manifolds = "0.11"
+ManifoldsBase = "2"
+Quaternions = "0.7.6"
+RecursiveArrayTools = "2, 3"
+StaticArrays = "1.5"
+Test = "1.10"
+julia = "1.10"

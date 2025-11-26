@@ -1,10 +1,6 @@
 using LieGroups, Test
 using Manifolds: Euclidean
 
-s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
-!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
-using LieGroupsTestSuite
-
 @testset "Addition Action" begin
     G = TranslationGroup(3)
     M = Euclidean(3)

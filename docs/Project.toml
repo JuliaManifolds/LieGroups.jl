@@ -5,6 +5,10 @@ DocumenterInterLinks = "d12716ef-a0f6-4df4-a9f1-a5a34e75c656"
 LieGroups = "6774de46-80ba-43f8-ba42-e41071ccfc5f"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 RecursiveArrayTools = "731186ca-8d62-57ce-b412-fbd966d074cd"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[sources]
+LieGroups = {path = ".."}
 
 [compat]
 Documenter = "1"
@@ -12,6 +16,3 @@ DocumenterCitations = "1.3"
 DocumenterInterLinks = "1"
 LieGroups = "0.1.5"
 LinearAlgebra = "1.11"
-
-[sources]
-LieGroups = { path = ".." }
