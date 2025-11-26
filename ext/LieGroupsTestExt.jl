@@ -25,11 +25,7 @@ function LieGroups.Test.test_adjoint(
         expected = missing, test_mutating::Bool = true, test_aliased::Bool = test_mutating
     )
     @testset "adjoint" begin
-        v = if ismissing(expected)
-            diff_conjugate(G, g, identity_element(G, typeof(g)), X)
-        else
-            expected
-        end
+        v = ismissing(expected) ? diff_conjugate(G, g, identity_element(G, typeof(g)), X) : expected
         𝔤 = LieAlgebra(G)
         Y1 = adjoint(G, g, X)
         @test is_point(𝔤, Y1)
@@ -172,12 +168,8 @@ Test  `conjugate`.
 * `test_mutating::Bool=true`: test the mutating functions
 """
 function LieGroups.Test.test_conjugate(
-        G::AbstractLieGroup,
-        g,
-        h;
-        expected = missing,
-        test_default::Bool = true,
-        test_mutating::Bool = true,
+        G::AbstractLieGroup, g, h;
+        expected = missing, test_default::Bool = true, test_mutating::Bool = true,
     )
     @testset "conjugate" begin
         k1 = conjugate(G, g, h)
