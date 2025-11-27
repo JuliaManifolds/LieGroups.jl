@@ -2,10 +2,6 @@ using LieGroups, Random, Test
 
 using ManifoldsBase: ℝ, ℂ
 
-s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
-!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
-using LieGroupsTestSuite
-
 @testset "Special linear group" begin
     @testset "Real SL(2)" begin
         G = SpecialLinearGroup(2)
@@ -37,7 +33,7 @@ using LieGroupsTestSuite
             ],
         )
         expectations = Dict(:repr => "SpecialLinearGroup(2, ℝ)", :atol => 1.0e-10)
-        test_lie_group(G, properties, expectations)
+        LieGroups.Test.LieGroups.Test.test_lie_group(G, properties, expectations)
     end
     @testset "Complex SL(2)" begin
         G = SpecialLinearGroup(2, ℂ)
@@ -69,7 +65,7 @@ using LieGroupsTestSuite
             ],
         )
         expectations = Dict(:repr => "SpecialLinearGroup(2, ℂ)", :atol => 1.0e-14)
-        test_lie_group(G, properties, expectations)
+        LieGroups.Test.test_lie_group(G, properties, expectations)
     end
     @test repr(SpecialLinearGroup(2; parameter = :field)) ===
         "SpecialLinearGroup(2, ℝ; parameter=:field)"

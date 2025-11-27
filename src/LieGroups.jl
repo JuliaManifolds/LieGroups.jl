@@ -93,6 +93,8 @@ include("groups/special_orthogonal_group.jl")
 include("groups/special_euclidean_group.jl")
 include("groups/special_galilean_group.jl")
 
+include("test_suite/test_suite.jl")
+
 export AbstractLieGroup
 export LieGroup, LieAlgebra
 export MetricLieGroup

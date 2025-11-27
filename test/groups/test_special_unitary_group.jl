@@ -1,9 +1,5 @@
 using LieGroups, Random, Test
 
-s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
-!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
-using LieGroupsTestSuite
-
 @testset "Special Unitary Group" begin
     G = SpecialUnitaryGroup(2)
     g1 = 1 / sqrt(2) * ComplexF64[1.0 1.0; -1.0 1.0]
@@ -39,5 +35,5 @@ using LieGroupsTestSuite
         ],
     )
     expectations = Dict(:repr => "SpecialUnitaryGroup(2)")
-    test_lie_group(G, properties, expectations)
+    LieGroups.Test.test_lie_group(G, properties, expectations)
 end

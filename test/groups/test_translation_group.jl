@@ -1,9 +1,5 @@
 using LieGroups, Random, Test, StaticArrays
 
-s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
-!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
-using LieGroupsTestSuite
-
 begin
     G = TranslationGroup(3)
     g1, g2, g3 = [1.0, 0.0, 0.0], [0.0, 3.0, 0.0], [1.1, 1.2, 3.3]
@@ -44,7 +40,7 @@ begin
         :diff_right_compose => X1,
         :lie_bracket => zero(X1),
     )
-    test_lie_group(G, properties, expectations)
+    LieGroups.Test.test_lie_group(G, properties, expectations)
 
     properties2 = Dict(
         :AlgebraVectors => [X1, X2, X3],
@@ -68,7 +64,7 @@ begin
             properties2[:Name] = "with $A"
             properties2[:Aliased] = false # + does not work aliased, hence apply! does not, here, either.
             expectations2[:repr] = "GroupOperationAction($G; type=$t)"
-            test_group_action(A, properties2, expectations2)
+            LieGroups.Test.test_group_action(A, properties2, expectations2)
         end
     end
 

@@ -1,2 +1,4 @@
 ignore:
   - "src/documentation_glossary.jl" # exclude this since it is just use to create the docs and code cov goes bogus on this.
+  - "src/test_suite/test_suite.jl" # excluded since we do not write tests for tests
+  - "ext/LieGroupsTestExt.jl"

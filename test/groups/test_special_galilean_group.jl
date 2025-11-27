@@ -1,10 +1,5 @@
 using LieGroups, ManifoldsBase, Random, Test, RecursiveArrayTools
-
 using LieGroups: SpecialGalileanGroup
-
-s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
-!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
-using LieGroupsTestSuite
 
 using StaticArrays
 using LinearAlgebra
@@ -75,7 +70,7 @@ using LinearAlgebra
                 # :repr => "SpecialGalileanGroup(3)",
                 # :is_flat => false
             )
-            test_lie_group(G, properties, expectations)
+            LieGroups.Test.test_lie_group(G, properties, expectations)
         end
     end
 

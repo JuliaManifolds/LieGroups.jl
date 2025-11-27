@@ -1,9 +1,5 @@
 using LieGroups, LinearAlgebra, Test
 
-s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
-!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
-using LieGroupsTestSuite
-
 @testset "Multiplication Operation" begin
     @testset "Base.:* and Base.:* with the Identity" begin
         # Generic & Number
@@ -23,7 +19,7 @@ using LieGroupsTestSuite
         ea = Identity(AdditionGroupOperation)
         @test ea * e === ea #Id(Add)*Id(Mul) = Id(Add) or 0*1 = 0
         @test e * ea === ea
-        M = LieGroupsTestSuite.DummyManifold()
+        M = LieGroups.Test.DummyManifold()
         G = LieGroup(M, MatrixMultiplicationGroupOperation())
         # Zero-dimensional array
         g2 = fill(2.0, ())
@@ -49,7 +45,7 @@ using LieGroupsTestSuite
     end
     @testset "Abelian Multiplication edge cases" begin
         G = LieGroup(
-            LieGroupsTestSuite.DummyManifold(), AbelianMultiplicationGroupOperation()
+            LieGroups.Test.DummyManifold(), AbelianMultiplicationGroupOperation()
         )
         # Edge case: Number element
         @test identity_element(G, Float64) == 1.0

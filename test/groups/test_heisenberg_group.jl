@@ -1,10 +1,5 @@
 using LieGroups, Random, Test
-
 using ManifoldsBase: ℂ
-
-s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
-!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
-using LieGroupsTestSuite
 
 @testset "Heisenberg group" begin
     G = HeisenbergGroup(1)
@@ -48,7 +43,7 @@ using LieGroupsTestSuite
         :lie_bracket => X1 * X2 - X2 * X1,
         :injectivity_radius => Inf,
     )
-    test_lie_group(G, properties, expectations)
+    LieGroups.Test.test_lie_group(G, properties, expectations)
 
     @test is_point(G, Identity(G); error = :error)
     @test_throws DomainError is_point(G, Identity(AdditionGroupOperation()); error = :error)

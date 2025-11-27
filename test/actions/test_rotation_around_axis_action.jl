@@ -1,10 +1,6 @@
 using LieGroups, Test
 using Manifolds: Circle, Euclidean, ℝ
 
-s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
-!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
-using LieGroupsTestSuite
-
 @testset "Rotation around axis action" begin
     M = Euclidean(3)
     G = CircleGroup(Circle(ℝ))
@@ -33,7 +29,7 @@ using LieGroupsTestSuite
         )
         expectations = Dict(:manifold => M, :group => G, :atol => 1.0e-15)
 
-        test_group_action(A, properties, expectations)
+        LieGroups.Test.test_group_action(A, properties, expectations)
     end
     # make sure angle can be in a one-element vector
     @test apply(A, [π / 2], [0.0, 1.0, 0.0]) ≈ [0.5, 0.5, sqrt(2) / 2]

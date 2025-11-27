@@ -1,9 +1,5 @@
 using LieGroups, Test
 
-s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
-!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
-using LieGroupsTestSuite
-
 @testset "Group Operation as a Group Action" begin
     a1 = RightGroupOperationAction()
     a2 = LeftGroupOperationAction()
@@ -16,8 +12,8 @@ using LieGroupsTestSuite
     @test switch(a3) == a4
     @test switch(a4) == a3
 
-    M = LieGroupsTestSuite.DummyManifold()
-    op = LieGroupsTestSuite.DummyOperation()
+    M = LieGroups.Test.DummyManifold()
+    op = LieGroups.Test.DummyOperation()
     G = LieGroup(M, op)
     A1 = GroupOperationAction(G, a1)
     A2 = GroupOperationAction(G, a2)

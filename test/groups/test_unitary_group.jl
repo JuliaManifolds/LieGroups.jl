@@ -1,10 +1,6 @@
 using LieGroups, ManifoldsBase, Quaternions, Random, Test
 using ManifoldsBase: ℝ, ℂ, ℍ
 
-s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
-!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
-using LieGroupsTestSuite
-
 @testset "Unitary Group" begin
     @testset "Complex Unitary group" begin
         G = UnitaryGroup(2)
@@ -41,10 +37,10 @@ using LieGroupsTestSuite
             ],
         )
         expectations = Dict(:repr => "UnitaryGroup(2)", :atol => 1.0e-14)
-        test_lie_group(G, properties, expectations)
+        LieGroups.Test.test_lie_group(G, properties, expectations)
         G2 = UnitaryGroup(2; parameter = :field)
         expectations2 = Dict(:repr => "UnitaryGroup(2; parameter=:field)", :atol => 1.0e-14)
-        test_lie_group(G2, properties, expectations2)
+        LieGroups.Test.test_lie_group(G2, properties, expectations2)
     end
     @testset "Quaternion Unitary group (Numbers)" begin
         G = UnitaryGroup(1, ℍ)
@@ -60,11 +56,11 @@ using LieGroupsTestSuite
             :Functions => [compose, inv, exp, log, rand, show],
         )
         expectations = Dict(:repr => "UnitaryGroup(1, ℍ)", :atols => Dict(exp => 1.0e-15))
-        test_lie_group(G, properties, expectations)
+        LieGroups.Test.test_lie_group(G, properties, expectations)
         G2 = UnitaryGroup(1, ℍ; parameter = :field)
 
         expectations2 = Dict(:repr => "UnitaryGroup(1, ℍ; parameter=:field)")
-        test_lie_group(
+        LieGroups.Test.test_lie_group(
             G2,
             Dict(:Name => "The quaternion unitary group", :Functions => [show]),
             expectations2,
@@ -85,11 +81,11 @@ using LieGroupsTestSuite
             :Functions => [compose, inv, exp, log, rand, show],
         )
         expectations = Dict(:repr => "UnitaryGroup(1, ℍ)")
-        test_lie_group(G, properties, expectations)
+        LieGroups.Test.test_lie_group(G, properties, expectations)
         G2 = UnitaryGroup(1, ℍ; parameter = :field)
 
         expectations2 = Dict(:repr => "UnitaryGroup(1, ℍ; parameter=:field)")
-        test_lie_group(
+        LieGroups.Test.test_lie_group(
             G2,
             Dict(:Name => "The quaternion unitary group", :Functions => [show]),
             expectations2,
