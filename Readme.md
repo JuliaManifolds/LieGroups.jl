@@ -30,3 +30,7 @@ in the Julia REPL. For a first start, see the [get started tutorial](https://jul
 > See [transition from Manifolds.jl](https://juliamanifolds.github.io/LieGroups.jl/stable/tutorials/transition/) for a comprehensive list how to update your code.
 > This especially also includes a few different choices in default behaviour that
 is different from the [`Manifolds.jl`](https://juliamanifolds.github.io/Manifolds.jl/stable/) one. For purely manifold-based operations, any Lie group still is “build upon” a Riemannian manifold.
+
+## Contributing
+
+Contributions are encouraged and appreciated! See [the Contributing page](https://juliamanifolds.github.io/LieGroups.jl/stable/contributing/) in the documentation for further notes, for example the code style.
