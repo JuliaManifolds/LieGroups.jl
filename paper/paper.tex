@@ -106,12 +106,22 @@ As an example, take the \(2\)-dimensional sphere
 \end{equation*}
 % MB: maybe it would be better to replace it with an example that can have a group structure? For example the 3-dimensional sphere?
 
-which locally looks like \(\mathbb{R}^2\), think of charts in an atlas, but globally it is not.
-Finally we denote the tangent space at a point \(p \in \mathcal{M}\) by \(T_p\mathcal{M}\). This can be thought of as all “velocities” (direction and speed) in which a curve can “pass through” a point. Formally it is set the equivalence classes of derivatives of smooth curves. Each tangent space $T_p\mathcal M$ is a $n$-dimensional vector space and we call the disjoint union of all tangent spaces
+which locally looks like \(\mathbb{R}^2\), the corresponding charts $\varphi_i$ are what you would expect in a classical atlas,
+but globally it is not homeomorphic to \(\mathbb{R}^2\).
+
+Finally we denote the \term{tangent space} at a point \(p \in \mathcal{M}\) by \(T_p\mathcal{M}\).
+This can be thought of as all “velocities” (direction and speed) in which a smooth curve $c(t)$ on the manifold can “pass through” the point $p = c(0)$ at time $t=0$.
+Formally these velocities can be obtained by looking at the curve “through a chart” $\varphi\in\mathcal A$ and consider the derivative of $\varphi \circ c\colon \mathbb R \to \mathbb R^n$.
+Since we consider smooth manifolds, this derivative can be defined independent of the chosen chart due to the smoothness of the transition maps.
+Finally, the set of all “velocities” is set the equivalence classes of derivatives of these smooth curves~\cite[Sec.~8.4]{Boumal:2023}.
+Each such tangent space $T_p\mathcal M$ is a $n$-dimensional vector space.
+We call the disjoint union of all tangent spaces
 \begin{equation*}
     T\mathcal M = \dot\bigcup_{p \in \mathcal M} T_p\mathcal M
 \end{equation*}
 the \term{tangent bundle} of $\mathcal M$.
+For the example of the $2$-dimensional sphere $\mathbb S^2$, the tangent space at a point $p \in \mathbb S^2$ is given by all vectors in $\mathbb R^3$ that are orthogonal to $p$,
+or in other words the plane that is tangent to the sphere at $p$.
 \\
 A group operation \(\cdot\colon\mathcal{G} \times \mathcal{G} \to \mathcal{G}\) is a function that satisfies the group axioms: associativity, existence of an identity element \(e \in \mathcal{G}\), and existence of inverses \(g^{-1} \in \mathcal{G}\) for all \(g \in \mathcal{G}\). Furthermore the group operation \(\cdot\) (on \( \mathcal{G}\times\mathcal{G} \)) and the inversion map \(\iota\colon\mathcal{G} \to \mathcal{G}, g \mapsto g^{-1}\) have to be smooth maps.
 As an example, consider the special orthogonal group \(\mathrm{SO}(n)\), consisting of all \(n \times n\) orthogonal matrices, with determinant \(1\), that is, for \(p\in \mathrm{SO}(n)\), we have \(p^{\mathrm{T}} p = I\) and \(\det(p) = 1\) together with the group operation \(\cdot\) given by matrix multiplication.
@@ -837,6 +847,5 @@ For more advanced methods of solving differential equations on Manifolds and Lie
 \verb|ManifoldDiffEq.jl|.\footnote{see \href{https://juliamanifolds.github.io/ManifoldDiffEq.jl/stable/}{juliamanifolds.github.io/ManifoldDiffEq.jl/stable/}.}
 
 %\balance
-\newpage
 \input{bib.tex}
 \end{document}
