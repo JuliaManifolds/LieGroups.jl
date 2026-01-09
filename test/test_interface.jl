@@ -1,18 +1,14 @@
 using LieGroups, Test, ManifoldsBase, Random
 
-s = joinpath(@__DIR__, "LieGroupsTestSuite.jl")
-!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
-using LieGroupsTestSuite
-
 @testset "Generic Lie Group Interface functions" begin
-    M = LieGroupsTestSuite.DummyManifold()
-    op = LieGroupsTestSuite.DummyOperation()
+    M = LieGroups.Test.DummyManifold()
+    op = LieGroups.Test.DummyOperation()
     G = LieGroup(M, op)
-    rs = "LieGroup(LieGroupsTestSuite.DummyManifold(), LieGroupsTestSuite.DummyOperation())"
+    rs = "LieGroup(LieGroups.Test.DummyManifold(), LieGroups.Test.DummyOperation())"
     @test repr(G) == rs
     𝔤 = LieAlgebra(G)
-    op2 = LieGroupsTestSuite.DummySecondOperation()
-    rs2 = "LieAlgebra(LieGroup(LieGroupsTestSuite.DummyManifold(), LieGroupsTestSuite.DummyOperation()))"
+    op2 = LieGroups.Test.DummySecondOperation()
+    rs2 = "LieAlgebra(LieGroup(LieGroups.Test.DummyManifold(), LieGroups.Test.DummyOperation()))"
     @test repr(𝔤) == rs2
     @test is_identity(G, Identity(op))
     @test !is_identity(G, Identity(op2))
@@ -113,7 +109,7 @@ end
     end
     @testset "Defaults on a nearly empty (non-implemented) Lie group" begin
         G = LieGroup(
-            LieGroupsTestSuite.DummyManifold(), LieGroupsTestSuite.DummyOperation()
+            LieGroups.Test.DummyManifold(), LieGroups.Test.DummyOperation()
         )
         # Locally define zero vector
         LieGroups.zero_vector(::typeof(LieAlgebra(G))) = :id

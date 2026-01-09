@@ -1,9 +1,5 @@
 using LieGroups, Test, ManifoldsBase, Random, RecursiveArrayTools
 
-s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
-!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
-using LieGroupsTestSuite
-
 @testset "Generic product Lie group" begin
     G = TranslationGroup(2) × TranslationGroup(2)
     g, h = ArrayPartition([1.0, 0.0], [0.0, 3.0]), ArrayPartition([0.0, 1.0], [2.0, 0.0])
@@ -38,17 +34,17 @@ using LieGroupsTestSuite
     expectations = Dict(
         :repr => "ProductLieGroup(Euclidean(2; field=ℝ) × Euclidean(2; field=ℝ), AdditionGroupOperation() × AdditionGroupOperation())",
     )
-    test_lie_group(G, properties, expectations)
+    LieGroups.Test.test_lie_group(G, properties, expectations)
     @testset "A small additional size check" begin
         @test ManifoldsBase.check_size(G, Identity(G)) === nothing
         @test ManifoldsBase.check_size(G, Identity(G), X) === nothing
     end
     @testset "Product Operation generators" begin
-        G = LieGroupsTestSuite.DummyLieGroup()
+        G = LieGroups.Test.DummyLieGroup()
         G2 = G × G
         @test ProductLieGroup(G2) === G2 #Product groups are not “wrapped twice”
-        op = LieGroupsTestSuite.DummyOperation()
-        op2 = LieGroupsTestSuite.DummySecondOperation()
+        op = LieGroups.Test.DummyOperation()
+        op2 = LieGroups.Test.DummySecondOperation()
         O1 = op × op2
         O2 = op2 × op
         @test (O1 × op) == (op × O2)
@@ -59,7 +55,7 @@ using LieGroupsTestSuite
         @test O1[:] == LieGroups.submanifold_components(G2, O1)
     end
     @testset "× splashes" begin
-        G = LieGroupsTestSuite.DummyLieGroup()
+        G = LieGroups.Test.DummyLieGroup()
         G2 = G × G
         G3 = G × G × G
         H = G × G × G × G

@@ -1,9 +1,5 @@
 using LieGroups, Random, Test, ManifoldsBase
 
-s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
-!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
-using LieGroupsTestSuite
-
 @testset "Validation Lie group" begin
     G = TranslationGroup(3)
     g1, g2, g3 = [1.0, 0.0, 0.0], [0.0, 3.0, 0.0], [1.1, 1.2, 3.3]
@@ -47,7 +43,7 @@ using LieGroupsTestSuite
         :diff_right_compose => X1,
         :lie_bracket => zero(X1),
     )
-    test_lie_group(VG, properties, expectations)
+    LieGroups.Test.test_lie_group(VG, properties, expectations)
 
     properties = Dict(
         :Name => "Validation of Translation group with types points/vectors",
@@ -62,7 +58,7 @@ using LieGroupsTestSuite
         :diff_right_compose => X1,
         :lie_bracket => zero(X1),
     )
-    test_lie_group(VG, properties, expectations)
+    LieGroups.Test.test_lie_group(VG, properties, expectations)
     @testset "Constructors and corner cases" begin
         # Constructor that does not also wrap the manifold
         @test ValidationLieGroup(G, false).lie_group isa TranslationGroup

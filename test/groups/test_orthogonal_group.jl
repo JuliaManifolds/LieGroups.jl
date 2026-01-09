@@ -1,11 +1,5 @@
 using LieGroups, Random, Test
-
-s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
-!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
-using LieGroupsTestSuite
-using LieGroupsTestSuite: rotation_matrix
 using LinearAlgebra: I
-
 using ManifoldsBase
 using StaticArrays
 
@@ -42,7 +36,7 @@ using StaticArrays
         ],
     )
     expectations = Dict(:repr => "OrthogonalGroup(2)")
-    test_lie_group(G, properties, expectations)
+    LieGroups.Test.test_lie_group(G, properties, expectations)
 
     @testset "StaticArrays specializations for O(2)" begin
         ps = SMatrix{2, 2, Float64}(I)
@@ -76,9 +70,9 @@ using StaticArrays
     #
     # O(3)
     H = OrthogonalGroup(3)
-    h1 = rotation_matrix(3, 2, 1, π / 4)
-    h2 = rotation_matrix(3, 2, 1, π / 8) * rotation_matrix(3, 3, 1, π / 4)
-    h3 = rotation_matrix(3, 3, 1, π / 4) * rotation_matrix(3, 3, 2, π / 8)
+    h1 = LieGroups.Test.rotation_matrix(3, 2, 1, π / 4)
+    h2 = LieGroups.Test.rotation_matrix(3, 2, 1, π / 8) * LieGroups.Test.rotation_matrix(3, 3, 1, π / 4)
+    h3 = LieGroups.Test.rotation_matrix(3, 3, 1, π / 4) * LieGroups.Test.rotation_matrix(3, 3, 2, π / 8)
     Y1 = [0.0 0.1 0.0; -0.1 0.0 0.0; 0.0 0.0 0.0]
     Y2 = [0.0 0.0 -0.2; 0.0 0.0 0.0; 0.2 0.0 0.0]
     Y3 = [0.0 0.3 0.0; -0.3 0.0 0.4; 0.0 -0.4 0.0]
@@ -90,7 +84,7 @@ using StaticArrays
         :Functions => [exp, hat, log, show, vee],
     )
     expectations2 = Dict(:repr => "OrthogonalGroup(3)", :atols => Dict(exp => 1.0e-15))
-    test_lie_group(H, properties2, expectations2)
+    LieGroups.Test.test_lie_group(H, properties2, expectations2)
     @testset "O(3) special cases" begin
         @test is_identity(H, exp(H, zeros(3, 3)))
     end
@@ -120,9 +114,9 @@ using StaticArrays
     #
     # O(4)
     J = OrthogonalGroup(4)
-    j1 = rotation_matrix(4, 3, 1, π / 4)
-    j2 = rotation_matrix(4, 4, 1, π / 8) * rotation_matrix(4, 3, 2, π / 4)
-    j3 = rotation_matrix(4, 4, 1, π / 4) * rotation_matrix(4, 4, 2, π / 8)
+    j1 = LieGroups.Test.rotation_matrix(4, 3, 1, π / 4)
+    j2 = LieGroups.Test.rotation_matrix(4, 4, 1, π / 8) * LieGroups.Test.rotation_matrix(4, 3, 2, π / 4)
+    j3 = LieGroups.Test.rotation_matrix(4, 4, 1, π / 4) * LieGroups.Test.rotation_matrix(4, 4, 2, π / 8)
     Z1 = [0.0 0.1 0.0 0.0; -0.1 0.0 0.0 0.0; 0.0 0.0 0.0 0.0; 0.0 0.0 0.0 0.0]
     Z2 = [0.0 0.0 0.2 0.0; 0.0 0.0 0.0 0.0; -0.2 0.0 0.0 0.0; 0.0 0.0 0.0 0.0]
     Z3 = [0.0 0.1 0.0 0.3; 0.0 0.0 -0.4 0.0; 0.0 0.4 0.0 0.0; -0.3 0.0 0.0 0.0]
@@ -134,14 +128,14 @@ using StaticArrays
         :Functions => [exp, hat, log, show, vee],
     )
     expectations3 = Dict(:repr => "OrthogonalGroup(4)", :atols => Dict(exp => 1.0e-15))
-    test_lie_group(J, properties3, expectations3)
+    LieGroups.Test.test_lie_group(J, properties3, expectations3)
     @testset "𝔬(4) edge cases" begin
         𝔧 = LieAlgebra(J)
         e = Identity(J)
         X = zero_vector(𝔧)
         d = vee(𝔧, X)
         p = exp(J, X)
-        for c in LieGroupsTestSuite.𝔰𝔬4_edges_cases_explog
+        for c in LieGroups.Test.𝔰𝔬4_edges_cases_explog
             @testset "$c on $J" begin
                 hat!(𝔧, X, c)
                 vee!(𝔧, d, X)

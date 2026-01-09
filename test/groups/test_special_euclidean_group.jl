@@ -1,10 +1,5 @@
 using LieGroups, ManifoldsBase, Random, Test, RecursiveArrayTools
 using Manifolds: Euclidean
-
-s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
-!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
-using LieGroupsTestSuite
-
 using StaticArrays
 
 @testset "Special Euclidean" begin
@@ -62,7 +57,7 @@ using StaticArrays
             expectations = Dict(
                 :repr => "SpecialEuclideanGroup(2)", :atol => 1.0e-14, :is_flat => true
             )
-            test_lie_group(G, properties, expectations)
+            LieGroups.Test.test_lie_group(G, properties, expectations)
             @test ManifoldsBase.tangent_vector_type(G, typeof(pts[1])) == typeof(vec[1])
             @test ManifoldsBase.tangent_vector_type(G, SpecialEuclideanMatrixPoint) ==
                 SpecialEuclideanMatrixTangentVector
@@ -118,7 +113,7 @@ using StaticArrays
             expectations = Dict(
                 :repr => "SpecialEuclideanGroup(2; variant=:right)", :atol => 1.0e-14
             )
-            test_lie_group(G, properties, expectations)
+            LieGroups.Test.test_lie_group(G, properties, expectations)
         end
     end
     #
@@ -168,7 +163,7 @@ using StaticArrays
             expectations = Dict(
                 :repr => "SpecialEuclideanGroup(3)", :atol => 1.0e-14, :is_flat => false
             )
-            test_lie_group(G, properties, expectations)
+            LieGroups.Test.test_lie_group(G, properties, expectations)
 
             @testset "diff_left_compose" begin
                 for i in eachindex(vec)

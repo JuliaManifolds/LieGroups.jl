@@ -2,10 +2,6 @@ using LieGroups, Random, Test
 
 using ManifoldsBase: ℂ
 
-s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
-!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
-using LieGroupsTestSuite
-
 @testset "General Linear" begin
     @testset "GL(2)" begin
         G = GeneralLinearGroup(2)
@@ -41,7 +37,7 @@ using LieGroupsTestSuite
         expectations = Dict(
             :repr => "GeneralLinearGroup(2; field=ℝ)", :lie_bracket => X1 * X2 - X2 * X1
         )
-        test_lie_group(G, properties, expectations)
+        LieGroups.Test.test_lie_group(G, properties, expectations)
 
         @test is_point(G, Identity(G); error = :error)
         @test_throws DomainError is_point(

@@ -1,15 +1,11 @@
 using LieGroups, Test, ManifoldsBase, RecursiveArrayTools
 
-s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
-!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
-using LieGroupsTestSuite
-
 @testset "Generic semidirect product Lie group" begin
     @testset "Show" begin
-        M = LieGroupsTestSuite.DummyManifold()
-        op1 = LieGroupsTestSuite.DummyOperation()
+        M = LieGroups.Test.DummyManifold()
+        op1 = LieGroups.Test.DummyOperation()
         G1 = LieGroup(M, op1)
-        op2 = LieGroupsTestSuite.DummySecondOperation()
+        op2 = LieGroups.Test.DummySecondOperation()
         G2 = LieGroup(M, op2)
         # The rest requires tests with a concrete semi-direct one
         fcts = [show]
@@ -22,7 +18,7 @@ using LieGroupsTestSuite
         expectations = Dict(
             :repr => "LeftSemidirectProductLieGroup($(G1), $(G2), LeftGroupOperationAction())",
         )
-        test_lie_group(Gl, properties, expectations)
+        LieGroups.Test.test_lie_group(Gl, properties, expectations)
 
         Gr = RightSemidirectProductLieGroup(G1, G2, RightGroupOperationAction())
         properties = Dict(
@@ -33,14 +29,14 @@ using LieGroupsTestSuite
         expectations = Dict(
             :repr => "RightSemidirectProductLieGroup($(G1), $(G2), RightGroupOperationAction())",
         )
-        test_lie_group(Gr, properties, expectations)
+        LieGroups.Test.test_lie_group(Gr, properties, expectations)
     end
     @testset "Interaction os semidirect and product" begin
         # Make sure the inner product manifold stays “nested” and does not collapse to a 4-product manifold
-        M = LieGroupsTestSuite.DummyManifold()
-        op1 = LieGroupsTestSuite.DummyOperation()
+        M = LieGroups.Test.DummyManifold()
+        op1 = LieGroups.Test.DummyOperation()
         G1 = LieGroup(M, op1)
-        op2 = LieGroupsTestSuite.DummySecondOperation()
+        op2 = LieGroups.Test.DummySecondOperation()
         G2 = LieGroup(M, op2)
 
 
@@ -135,7 +131,7 @@ using LieGroupsTestSuite
                 :atol => 1.0e-14,
                 :inv => ArrayPartition(inv_g1, inv_h1),
             )
-            test_lie_group(G, properties, expectations)
+            LieGroups.Test.test_lie_group(G, properties, expectations)
 
             G = RightSemidirectProductLieGroup(TranslationGroup(2), SpecialOrthogonalGroup(2), action; action_on)
             q1 = ArrayPartition(copy(h1), copy(g1))
@@ -154,7 +150,7 @@ using LieGroupsTestSuite
                 :inv => ArrayPartition(inv_h1, inv_g1),
             )
 
-            test_lie_group(G, properties, expectations)
+            LieGroups.Test.test_lie_group(G, properties, expectations)
         end
     end
 end

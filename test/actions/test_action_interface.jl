@@ -1,15 +1,11 @@
 using LieGroups, Test
 
-s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
-!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
-using LieGroupsTestSuite
-
 @testset "Group Action Interface" begin
-    M = LieGroupsTestSuite.DummyManifold()
-    T = LieGroupsTestSuite.DummyLeftActionType()
-    G = LieGroupsTestSuite.DummyLieGroup(M, LieGroupsTestSuite.DummyOperation())
+    M = LieGroups.Test.DummyManifold()
+    T = LieGroups.Test.DummyLeftActionType()
+    G = LieGroups.Test.DummyLieGroup(M, LieGroups.Test.DummyOperation())
     a = GroupAction(G, M, T)
     @test repr(a) === "GroupAction($G, $M, $T)"
-    @test switch(T) === LieGroupsTestSuite.DummyRightActionType()
+    @test switch(T) === LieGroups.Test.DummyRightActionType()
     @test switch(a) === GroupAction(G, M, switch(T))
 end

@@ -1,9 +1,5 @@
 using LieGroups, Random, Test
 
-s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
-!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
-using LieGroupsTestSuite
-
 @testset "The symplectic group" begin
     G = SymplecticGroup(2)
     # on S(2) points are of the form [a c; c b] such that ab-c^2=1
@@ -43,7 +39,7 @@ using LieGroupsTestSuite
     expectations = Dict(
         :atols => Dict(rand => 1.0e-8, log => 1.0e-10), :repr => "SymplecticGroup(2, ℝ)"
     )
-    test_lie_group(G, properties, expectations)
+    LieGroups.Test.test_lie_group(G, properties, expectations)
     # Test second show variant
     @test repr(SymplecticGroup(2; parameter = :field)) ==
         "SymplecticGroup(2, ℝ; parameter=:field)"

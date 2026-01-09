@@ -1,20 +1,16 @@
 using LieGroups, Test, ManifoldsBase, Random
 
-s = joinpath(@__DIR__, "..", "LieGroupsTestSuite.jl")
-!(s in LOAD_PATH) && (push!(LOAD_PATH, s))
-using LieGroupsTestSuite
-
 @testset "Generic power Lie group" begin
-    M = LieGroupsTestSuite.DummyManifold()
-    op = LieGroupsTestSuite.DummyOperation()
+    M = LieGroups.Test.DummyManifold()
+    op = LieGroups.Test.DummyOperation()
     G = LieGroup(M, op)
     pG = G^2
 
     properties1 = Dict(:Name => "The generic Power Manifold", :Functions => [show])
     expectations1 = Dict(
-        :repr => "PowerLieGroup(LieGroup(LieGroupsTestSuite.DummyManifold(), LieGroupsTestSuite.DummyOperation()), 2)",
+        :repr => "PowerLieGroup(LieGroup(LieGroups.Test.DummyManifold(), LieGroups.Test.DummyOperation()), 2)",
     )
-    test_lie_group(pG, properties1, expectations1)
+    LieGroups.Test.test_lie_group(pG, properties1, expectations1)
 
     # Explicit one to test element-wise methods
     pG2 = PowerLieGroup(TranslationGroup(2), NestedPowerRepresentation(), 2)
@@ -50,9 +46,9 @@ using LieGroupsTestSuite
         ],
     )
     expectations2 = Dict(
-        :repr => "PowerLieGroup(LieGroup(LieGroupsTestSuite.DummyManifold(), LieGroupsTestSuite.DummyOperation()), 2)",
+        :repr => "PowerLieGroup(LieGroup(LieGroups.Test.DummyManifold(), LieGroups.Test.DummyOperation()), 2)",
     )
-    test_lie_group(pG2, properties2, expectations2)
+    LieGroups.Test.test_lie_group(pG2, properties2, expectations2)
     @testset "Special cases with identity" begin
         e = Identity(pG)
         @test ManifoldsBase.check_size(pG, e) == nothing

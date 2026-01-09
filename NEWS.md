@@ -5,6 +5,14 @@ All notable Changes to the Julia package `LieGroups.jl` will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.9] 2025-11-27
+
+### Changed
+
+* the formerly internal `LieGroupsTestSuite` module inside tests is now available as `LieGroups.Test` as soon as `Test.jl` is loaded.
+* refactored the Project.toml to use a `[workspace]`
+* moved the test dependencies into a separate `test/Project.toml`
+
 ## [0.1.8] 2025-10-31
 
 ### Added
