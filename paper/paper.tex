@@ -90,8 +90,16 @@ for more details on Riemannian manifolds, see also~\cite{DoCarmo:1992}.
 
 \subsection{Lie groups}
 We denote a Lie group by \(\mathcal{G} = (\mathcal{M}, \cdot)\) where \(\mathcal{M}\) is a smooth manifold and \(\cdot\) is the group operation.
-A smooth manifold \(\mathcal{M}\) is a topological space that is locally homeomorphic to an Euclidean space \(\mathbb{R}^n\) for some \(n \in \mathbb{N}\), but globally may have a different topology.
 We call \(n\) the dimension of the manifold \(\mathcal{M}\), denoted by \(\dim(\mathcal{M}) = n\).
+A manifold \(\mathcal{M}\) is a topological space that locally looks like an Euclidean space \(\mathbb{R}^n\) for some \(n \in \mathbb{N}\), but globally may have a different topology.
+We further require \(\mathcal{M}\) to be second-countable and Hausdorff, see~\cite[Sec.~8.2]{Boumal:2023} for details.
+
+That a manifold locally looks like \(\mathbb{R}^n\) means that there exist a collection of \term{charts}
+\(\varphi_i\colon U_i \to V_i \subseteq \mathbb{R}^n\) for open sets \(U_i \subseteq \mathcal{M}\) and \(V_i \subseteq \mathbb{R}^n\) such that the union of all \(U_i\) covers \(\mathcal{M}\).
+Such a collection is called an \term{atlas} $\mathcal{A}$. If for any two charts \(\varphi_i,\varphi_j\) the transition map \(\varphi_j \circ \varphi_i^{-1}\colon \varphi_i(U_i \cap U_j) \to \varphi_j(U_i \cap U_j)\) is smooth,
+then the atlas $\mathcal A$ is called a \term{smooth atlas} and the manifold $\mathcal M$ is called a \term{smooth manifold}.
+We refer to \cite[Sec.~8.1]{Boumal:2023} for more details on charts and atlases.
+
 As an example, take the \(2\)-dimensional sphere
 \begin{equation*}
 \mathbb{S}^2 = \bigl\{ p \in \mathbb{R}^3 \bigm| \lVert p\rVert = 1\bigr\},
