@@ -87,3 +87,41 @@ While it seems to be limited to rotation groups \(\mathrm{SO}(n)\), \(n=2,3\), t
 
 Citation: Maybe the DOI from CRAN? https://cran.r-project.org/web/packages/rotations/index.html
 URL: https://github.com/stanfill/rotationsC
+
+## References
+
+```
+@article{EngoeMarthinsenMunthe-Kaas:2001,
+  Title = {DiffMan: An object-oriented MATLAB toolbox for solving differential equations on manifolds},
+  Volume = {39},
+  Doi = {10.1016/s0168-9274(00)00042-8},
+  Number = {3?4},
+  Journal = {Appl. Numer. Math.},
+  Author = {Engè©Ã, Kenth and Marthinsen, Arne and Munthe-Kaas, Hans Z.},
+  Year = {2001},
+  Pages = {323?347}
+}
+
+@article{fornasier2023equivariant,
+  title={Equivariant Symmetries for Inertial Navigation Systems},
+  author={Fornasier, Alessandro and Ge, Yixiao and van Goor, Pieter and Mahony, Robert and Weiss, Stephan},
+  journal={arXiv preprint arXiv:2309.03765},
+  year={2023}
+}
+
+@article{fornasier2023msceqf,
+  title={MSCEqF: A Multi State Constraint Equivariant Filter for Vision-aided Inertial Navigation},
+  author={Fornasier, Alessandro and van Goor, Pieter and Allak, Eren and Mahony, Robert and Weiss, Stephan},
+  journal={arXiv preprint arXiv:2311.11649},
+  year={2023}
+}
+
+@inproceedings{YiLeeKlossMartinMartinBohg:2021,
+  title = {Differentiable Factor Graph Optimization for Learning Smoothers},
+  doi = {10.1109/iros51168.2021.9636300},
+  booktitle = {2021 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
+  author = {Yi, Brent and Lee, Michelle A. and Kloss, Alina and Martin-Martin, Roberto and Bohg, Jeannette},
+  year = {2021},
+  pages = {1339?1345}
+}
+```
