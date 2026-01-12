@@ -74,6 +74,22 @@ we present the interface in Section~\ref{sec:Interface} for the Lie group, the L
 Section~\ref{sec:LieGroups} provides an overview of all currently implemented Lie groups.
 Finally, in Section~\ref{sec:Example}, we demonstrate how to get started and use \verb|LieGroups.jl|.
 
+\subsection*{Statement of Need}
+
+Several software packages for solving problems involving Lie groups exist, especially in the context of robotics and when solving differential equations or working with statistics on Lie groups.
+These then often contain Lie groups as a part or sub-module.
+Similar to the standalone packages like Lie++~\cite{FornasierGeGoorMahonyWeiss:2023}, Sophus~\cite{Strasdat:2024} in C++
+or jaxlie~\cite{YiLeeKlossMartinMartinBohg:2021} in Python/JAX or manif~\cite{DeraySola:2020},
+these mainly focus on a small set of Lie groups, mostly \(\mathrm{SO}(n)\) and \(\mathrm{SE}(n)\) for \(n = 2, 3\), sometimes also including simple product groups or the Gallilean group.
+
+Two approaches that are a bit broader are the Lie groups defined within DiffMan~\cite{EngoeMarthinsenMunthe-Kaas:2001} in MATLAB to solve differential equations on manifolds,
+and the Lie group implementations within the Python package geomstats~\cite{MiolaneGuiguiLeBrigantMatheHouThanwerdasHeyderPeltreKoepZaatitiHajriCabanesGeraldChauchatShewmakeBrooksKainzDonnatHolmesPennec:2020},
+though they are a bit hard to explore within the documentation, since they are not distinguished from geometry interfaces, manifolds or metrics.
+
+Formerly, the Julia package \texttt{Manifolds.jl}~\cite{AxenBaranBergmannRzecki:2023} contained some group operations, extending a few manifolds to Lie groups as well; the interface however ended up being too close to Riemannian features.
+
+\texttt{LieGroups.jl} addresses this gap by providing both a flexible interface for defining new Lie groups and a comprehensive library of implementations, fully integrated within the \texttt{JuliaManifolds} ecosystem.
+
 \section{Mathematical Background}%
 \label{sec:Notation}
 
@@ -835,6 +851,7 @@ end
 
 The presented method was applied to a case with two static charges: \SI{1e-6}{C} at position (\SI{-1}{m}, \SI{0}{m}) and \SI{-1e-6}{C} at position (\SI{1}{m}, \SI{0}{m}).
 A rod of length \SI{0.67}{m} with charge density \SI{1e-6}{C/m} and mass \SI{1}{kg} started from three different initial states:
+\newpage
 \begin{enumerate}
     \item position (\SI{0}{m}, \SI{-1.5}{m}), angle \SI{0.1}{rad}, velocity (\SI{0}{m/s}, \SI{0}{m/s}), angular velocity \SI{0}{rad/s},
     \item position (\SI{-0.2}{m}, \SI{1}{m}), angle \SI{0.2}{rad}, velocity (\SI{-0.12}{m/s}, \SI{-0.15}{m/s}), angular velocity \SI{0}{rad/s},
@@ -847,6 +864,6 @@ Position and orientation of the rod is indicated at 20 equally spaced times, alo
 For more advanced methods of solving differential equations on Manifolds and Lie groups in Julia, see
 \verb|ManifoldDiffEq.jl|.\footnote{see \href{https://juliamanifolds.github.io/ManifoldDiffEq.jl/stable/}{juliamanifolds.github.io/ManifoldDiffEq.jl/stable/}.}
 
-%\balance
 \input{bib.tex}
+\balance
 \end{document}
