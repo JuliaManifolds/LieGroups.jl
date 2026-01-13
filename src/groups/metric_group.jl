@@ -11,7 +11,7 @@ implement all functions on their [`LieAlgebra`](@ref) with respect to a metric,
 that corresponds to a certain “default metric”, either because it is a widely recognized metric
 or because the first implementation within `LieGroups.jl` was done with respect to this metric.
 
-This default is usually indicated by checking that [`metric(L)`](@extref `Manifolds`) returns [`DefaultMetric`](@extref `Manifolds.DefaultMetric`).
+This default is usually indicated by checking that [`metric(L)`](@extref `Manifolds`) returns [`DefaultMetric`](@extref `ManifoldsBase.DefaultMetric`).
 
 This decorator type allows to explicitly equip the Lie group with a different metric.
 Note that for any functions unrelated to the metric, this new Lie group will simply forward
