@@ -500,7 +500,7 @@ function LieGroups.Test.test_exp_log(
                     end
                 end
             end
-            @test is_point(G, k1; error = :error)
+            @test is_point(G, k1; error = :error, atol = atol)
         end
         if test_log
             # Lie group log
