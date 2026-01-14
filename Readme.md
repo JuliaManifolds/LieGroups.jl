@@ -24,6 +24,12 @@ using Pkg; Pkg.add("LieGroups")
 
 in the Julia REPL. For a first start, see the [get started tutorial](https://juliamanifolds.github.io/LieGroups.jl/stable/tutorials/getstarted/).
 
+You can also watch an introduction given at JuliaCon 2025
+
+[<img src ="https://img.youtube.com/vi/_L9u8r42oSQ/maxresdefault.jpg" style="width:66%;">](https://youtu.be/_L9u8r42oSQ)
+
+or look at the slides from the presentation [here](https://ronnybergmann.net/talks/2025-LieGroups-JuliaCon.pdf).
+
 ## Contributing
 
 Contributions are encouraged and appreciated! See [the Contributing page](https://juliamanifolds.github.io/LieGroups.jl/stable/contributing/) in the documentation for further notes, for example the code style.
