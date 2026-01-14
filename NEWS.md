@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 * There is now a [JuliaCon proceedings paper](https://doi.org/10.21105/jcon.00195) about `LieGroups.jl`, see the citation in the Readme.md.
+* add a link to the JuliaCon 2025 presentation video to the Readme.md
 
 ## [0.1.9] 2025-11-27
 
