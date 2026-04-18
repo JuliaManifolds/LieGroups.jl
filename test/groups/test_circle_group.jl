@@ -151,6 +151,6 @@ using StaticArrays
 
     @testset "issue #94" begin
         M = CircleGroup()
-        @test inv(M, [1.0]) == [1.0]
+        @test inv(M, [1.0im]) == [-1.0im]
     end
 end
