@@ -148,4 +148,9 @@ using StaticArrays
         @test a === SA[2.0]
         @test compose(C, SA[0], SA[π]) == SA[-π]
     end
+
+    @testset "issue #94" begin
+        M = CircleGroup()
+        @test inv(M, [1.0im]) == [-1.0im]
+    end
 end
