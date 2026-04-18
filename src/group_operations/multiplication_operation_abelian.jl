@@ -240,7 +240,7 @@ end
 inv!(::LieGroup{𝔽, <:AbelianMultiplicationGroupOperation}, h, g) where {𝔽}
 
 function _inv!(G::LieGroup{𝔽, <:AbelianMultiplicationGroupOperation}, h, g) where {𝔽}
-    copyto!(h, inv(G, g))
+    h .= inv.(g)
     return h
 end
 
