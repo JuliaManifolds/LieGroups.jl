@@ -178,7 +178,7 @@ end
 function SpecialEuclideanGroup(n::Int; variant::Symbol = :left, kwargs...)
     SOn = SpecialOrthogonalGroup(n; kwargs...)
     Tn = TranslationGroup(n; kwargs...)
-    variant ∉ SA[:left, :right] && error(
+    variant ∉ (:left, :right) && error(
         "SE(n) requires a  variant ∉ [:left, :right] but you provided `variant=:$variant`",
     )
     return variant === :left ? SOn ⋉ Tn : Tn ⋊ SOn
