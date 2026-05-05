@@ -154,7 +154,7 @@ the base point, we obtain the left-invariant metric
 ```
 
 since it is invariant if you use the differential of the left composition to identify tangent vectors.
-We can even “spare” the pullbacks in this definition, when representing tangent vector alsways by their correspnding representants in the Lie algebra.
+We can even “spare” the pullbacks in this definition, when representing tangent vector alsways by their corresponding representants in the Lie algebra.
 This is the default in `LieGroups.jl`.
 
 Alternatively one can start with the right composition and its ``[differential](@ref diff_right_compose(G::AbstractLieGroup, h, g, X))``{=commonmark} to arrive an right-invariant vector fields and a right-invariant metric.
