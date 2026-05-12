@@ -53,7 +53,8 @@ If you use `LieGroups.jl` in your work, please cite the following open access Ju
     Journal = {Proceedings of the JuliaCon Conferences},
     Volume = {8},
     Number = {79},
-    Pages = {195}, Year = {2026},
+    Pages = {195},
+    Year = {2026},
     Publisher = {The Open Journal},
     Title = {Groups and smooth geometry using LieGroups.jl},
 }
