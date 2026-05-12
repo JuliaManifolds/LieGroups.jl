@@ -36,7 +36,15 @@ Contributions are encouraged and appreciated! See [the Contributing page](https:
 
 ## Citation
 
-If you use `LieGroups.jl` in your work, please cite the following open access JuliaCon proceedings paper
+If you use `LieGroups.jl` in your work, please cite the following open access JuliaCon proceedings paper:
+
+> _Bergmann, R., Baran, M._ (2026).
+> **Groups and smooth geometry using LieGroups.jl**,
+> Proceedings of the JuliaCon Conferences, Volume 8, Number 49, page 195.
+> doi: [10.21105/jcon.00195](https://doi.org/10.21105/jcon.00195).
+<details>
+
+  <summary><code>BergmannBaran:2026</code>(BibLaTeX)</summary>
 
 ```biblatex
 @article{BergmannBaran:2026,
@@ -45,30 +53,39 @@ If you use `LieGroups.jl` in your work, please cite the following open access Ju
     Journal = {Proceedings of the JuliaCon Conferences},
     Volume = {8},
     Number = {79},
-    Pages = {195}, Year = {2026},
+    Pages = {195},
+    Year = {2026},
     Publisher = {The Open Journal},
     Title = {Groups and smooth geometry using LieGroups.jl},
 }
 ```
 
+</details>
+
 To refer to a certain version, we recommend to also cite for example
 
+> Axen, S. D., Baran, M., Bergmann, R. Tu, Y.-H, Verdier, O._ (2026) **LieGroups.jl**, Zenodo.<br>
+> doi: [10.5281/zenodo.15343362](https://doi.org/10.5281/zenodo.15343362)
+
+<details>
+
+  <summary><code>LieGroupsjl-zenodo-mostrecent</code> (BibLaTeX)</summary>
+
 ```biblatex
-@software{axen_2025_17737448,
+@software{liegroupsjl-zenodo-mostrecent,
   Author = {Axen, Seth D. and Baran, Mateusz and Bergmann, Ronny and Tu, Yueh-Hua and Verdier, Olivier},
   Doi = {10.5281/zenodo.15343362},
   Publisher    = {Zenodo},
   Title        = {LieGroups.jl},
-  Year         = {2025},
+  Year         = {2026},
 }
 ```
 
-for the most recent version or a corresponding version specific DOI, see [the list of all versions](https://zenodo.org/search?q=parent.id%3A15343362&f=allversions%3Atrue&l=list&p=1&s=10&sort=version).
-Note that both citations are in [BibLaTeX](https://ctan.org/pkg/biblatex) format.
+</details>
 
+for the most recent version or a corresponding version specific DOI, see [the list of all versions](https://zenodo.org/search?q=parent.id%3A15343362&f=allversions%3Atrue&l=list&p=1&s=10&sort=version).
 
 > [!NOTE]
 > This is a rework of the features from [`Manifolds.jl`](https://juliamanifolds.github.io/Manifolds.jl/stable/).
 > See [transition from Manifolds.jl](https://juliamanifolds.github.io/LieGroups.jl/stable/tutorials/transition/) for a comprehensive list how to update your code.
-> This especially also includes a few different choices in default behaviour that
-is different from the [`Manifolds.jl`](https://juliamanifolds.github.io/Manifolds.jl/stable/) one. For purely manifold-based operations, any Lie group still is “build upon” a Riemannian manifold.
+> This especially also includes a few different choices in default behaviour that is different from the [`Manifolds.jl`](https://juliamanifolds.github.io/Manifolds.jl/stable/) one. For purely manifold-based operations, any Lie group still is “build upon” a Riemannian manifold.
