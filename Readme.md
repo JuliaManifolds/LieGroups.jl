@@ -75,7 +75,7 @@ To refer to a certain version, we recommend to also cite for example
   Doi = {10.5281/zenodo.15343362},
   Publisher    = {Zenodo},
   Title        = {LieGroups.jl},
-  Year         = {2025},
+  Year         = {2026},
 }
 ```
 </details>
