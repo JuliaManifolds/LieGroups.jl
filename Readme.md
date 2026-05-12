@@ -45,6 +45,7 @@ If you use `LieGroups.jl` in your work, please cite the following open access Ju
 <details>
 
   <summary><code>BergmannBaran:2026</code>(BibLaTeX)</summary>
+
 ```biblatex
 @article{BergmannBaran:2026,
     Author = {Bergmann, Ronny and Baran, Mateusz},
@@ -78,6 +79,7 @@ To refer to a certain version, we recommend to also cite for example
   Year         = {2026},
 }
 ```
+
 </details>
 
 for the most recent version or a corresponding version specific DOI, see [the list of all versions](https://zenodo.org/search?q=parent.id%3A15343362&f=allversions%3Atrue&l=list&p=1&s=10&sort=version).
