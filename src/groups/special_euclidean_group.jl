@@ -817,6 +817,203 @@ function _log_SE3!(G::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}
     return X
 end
 
+# rotation coordinates come first in the Lie algebra basis of the left semidirect
+# variant SO(n)⋉T(n), translation coordinates first for the right variant T(n)⋊SO(n)
+_se_translation_first(::LeftSpecialEuclideanGroup) = false
+_se_translation_first(::RightSpecialEuclideanGroup) = true
+
+_doc_jacobian_exp_SE2 = raw"""
+    jacobian_exp(G::SpecialEuclideanGroup{TypeParameter{Tuple{2}}}, g, X, ::DefaultLieAlgebraOrthogonalBasis)
+    jacobian_exp!(G::SpecialEuclideanGroup{TypeParameter{Tuple{2}}}, J, g, X, ::DefaultLieAlgebraOrthogonalBasis)
+
+Compute the Jacobian of the Lie group exponential in a basis of the Lie algebra on the
+[`SpecialEuclideanGroup`](@ref)`(2)`.
+
+For ``X ∈ 𝔰𝔢(2)`` with translation component ``v = (x, y)`` and rotation angle ``θ``,
+the closed form follows from summing the series
+``J = \sum_{k ≥ 0} \frac{(-\mathrm{ad}_X)^k}{(k+1)!}`` block-wise
+(compare [Chirikjian:2012](@cite) and [SolaDerayAtchuthan:2021](@cite), Appendix A).
+In the coordinate order ``(x, y, θ)`` of the right variant ``\mathrm{T}(2) ⋊ \mathrm{SO}(2)``
+it reads
+
+````math
+J = \begin{pmatrix}
+\frac{\sin θ}{θ} & \frac{1-\cos θ}{θ} & W_2 x - W_1 y \\
+-\frac{1-\cos θ}{θ} & \frac{\sin θ}{θ} & W_1 x + W_2 y \\
+0 & 0 & 1
+\end{pmatrix},
+\qquad
+W_1 = \frac{1-\cos θ}{θ^2},\quad W_2 = \frac{θ-\sin θ}{θ^2},
+````
+
+with the corresponding Taylor expansions used near ``θ = 0``. For the left variant
+``\mathrm{SO}(2) ⋉ \mathrm{T}(2)`` the rows and columns are permuted to the coordinate
+order ``(θ, x, y)``.
+"""
+
+@doc "$(_doc_jacobian_exp_SE2)"
+jacobian_exp(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, g, X, basis = DefaultLieAlgebraOrthogonalBasis())
+
+@doc "$(_doc_jacobian_exp_SE2)"
+function jacobian_exp!(
+        G::SpecialEuclideanGroup{<:ManifoldsBase.TypeParameter{Tuple{2}}},
+        J::AbstractMatrix,
+        g,
+        X::AbstractMatrix,
+        ::DefaultLieAlgebraOrthogonalBasis,
+    )
+    return _jacobian_exp_SE2!(G, J, X)
+end
+function jacobian_exp!(
+        G::SpecialEuclideanGroup{<:ManifoldsBase.TypeParameter{Tuple{2}}},
+        J::AbstractMatrix,
+        g,
+        X::SpecialEuclideanMatrixTangentVector,
+        B::DefaultLieAlgebraOrthogonalBasis,
+    )
+    return jacobian_exp!(G, J, g, ManifoldsBase.internal_value(X), B)
+end
+
+function _jacobian_exp_SE2!(
+        G::SpecialEuclideanGroup{<:ManifoldsBase.TypeParameter{Tuple{2}}}, J, X
+    )
+    Y = submanifold_component(G, X, :Rotation)
+    v = submanifold_component(G, X, :Translation)
+    θ = Y[2, 1]
+    x, y = v[1], v[2]
+    if abs(θ) < 1.0e-4 # Taylor expansions, numerically robust near θ = 0
+        A = 1 - θ^2 / 6
+        B = θ / 2 - θ^3 / 24
+        W₁ = 1 / 2 - θ^2 / 24
+        W₂ = θ / 6 - θ^3 / 120
+    else
+        sθ, cθ = sincos(θ)
+        A = sθ / θ
+        B = (1 - cθ) / θ
+        W₁ = (1 - cθ) / θ^2
+        W₂ = (θ - sθ) / θ^2
+    end
+    q₁ = W₂ * x - W₁ * y
+    q₂ = W₁ * x + W₂ * y
+    fill!(J, 0)
+    if _se_translation_first(G) # coordinate order (x, y, θ)
+        J[1, 1] = A
+        J[1, 2] = B
+        J[1, 3] = q₁
+        J[2, 1] = -B
+        J[2, 2] = A
+        J[2, 3] = q₂
+        J[3, 3] = 1
+    else # coordinate order (θ, x, y)
+        J[1, 1] = 1
+        J[2, 1] = q₁
+        J[2, 2] = A
+        J[2, 3] = B
+        J[3, 1] = q₂
+        J[3, 2] = -B
+        J[3, 3] = A
+    end
+    return J
+end
+
+_doc_jacobian_exp_SE3 = raw"""
+    jacobian_exp(G::SpecialEuclideanGroup{TypeParameter{Tuple{3}}}, g, X, ::DefaultLieAlgebraOrthogonalBasis)
+    jacobian_exp!(G::SpecialEuclideanGroup{TypeParameter{Tuple{3}}}, J, g, X, ::DefaultLieAlgebraOrthogonalBasis)
+
+Compute the Jacobian of the Lie group exponential in a basis of the Lie algebra on the
+[`SpecialEuclideanGroup`](@ref)`(3)`.
+
+For ``X = (Y, v) ∈ 𝔰𝔢(3)`` with rotation component ``Y`` and translation component ``v``,
+the Jacobian has the block structure (coordinate order ``(v, ω)`` of the right variant
+``\mathrm{T}(3) ⋊ \mathrm{SO}(3)``, ``ω = Y^{\vee}``)
+
+````math
+J = \begin{pmatrix} J_{\mathrm{SO}(3)}(Y) & Q_r(v, ω) \\ 0 & J_{\mathrm{SO}(3)}(Y) \end{pmatrix},
+````
+
+where ``J_{\mathrm{SO}(3)}`` is the [`jacobian_exp`](@ref) on ``\mathrm{SO}(3)`` and the
+coupling block is ``Q_r(v, ω) = Q(-v, -ω)`` with the ``Q``-matrix of the left Jacobian
+from [Chirikjian:2012](@cite) (see also [SolaDerayAtchuthan:2021](@cite) and
+[Kelly:2025; equation (35)](@cite)). For the left variant ``\mathrm{SO}(3) ⋉ \mathrm{T}(3)``
+the rows and columns are permuted to the coordinate order ``(ω, v)``, moving ``Q_r`` to
+the lower left block.
+"""
+
+@doc "$(_doc_jacobian_exp_SE3)"
+jacobian_exp(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, g, X, basis = DefaultLieAlgebraOrthogonalBasis())
+
+@doc "$(_doc_jacobian_exp_SE3)"
+function jacobian_exp!(
+        G::SpecialEuclideanGroup{<:ManifoldsBase.TypeParameter{Tuple{3}}},
+        J::AbstractMatrix,
+        g,
+        X::AbstractMatrix,
+        ::DefaultLieAlgebraOrthogonalBasis,
+    )
+    return _jacobian_exp_SE3!(G, J, X)
+end
+function jacobian_exp!(
+        G::SpecialEuclideanGroup{<:ManifoldsBase.TypeParameter{Tuple{3}}},
+        J::AbstractMatrix,
+        g,
+        X::SpecialEuclideanMatrixTangentVector,
+        B::DefaultLieAlgebraOrthogonalBasis,
+    )
+    return jacobian_exp!(G, J, g, ManifoldsBase.internal_value(X), B)
+end
+
+function _jacobian_exp_SE3!(
+        G::SpecialEuclideanGroup{<:ManifoldsBase.TypeParameter{Tuple{3}}}, J, X
+    )
+    Y = submanifold_component(G, X, :Rotation)
+    v = submanifold_component(G, X, :Translation)
+    ω₁, ω₂, ω₃ = Y[3, 2], Y[1, 3], Y[2, 1]
+    θ = sqrt(ω₁^2 + ω₂^2 + ω₃^2)
+    if θ < 1.0e-4 # Taylor expansions, numerically robust near θ = 0
+        a = -1 / 2 + θ^2 / 24
+        b = 1 / 6 - θ^2 / 120
+    else
+        sθ, cθ = sincos(θ)
+        a = (cθ - 1) / θ^2
+        b = (θ - sθ) / θ^3
+    end
+    R = LinearAlgebra.I + a .* Y .+ b .* (Y * Y) # jacobian_exp on SO(3)
+    # right Jacobian coupling block is the left Jacobian Q-matrix evaluated at -X
+    Q = _jacobian_exp_SE3_Q(-v[1], -v[2], -v[3], -ω₁, -ω₂, -ω₃)
+    fill!(J, 0)
+    if _se_translation_first(G) # coordinate order (v, ω)
+        J[1:3, 1:3] .= R
+        J[1:3, 4:6] .= Q
+        J[4:6, 4:6] .= R
+    else # coordinate order (ω, v)
+        J[1:3, 1:3] .= R
+        J[4:6, 1:3] .= Q
+        J[4:6, 4:6] .= R
+    end
+    return J
+end
+
+# The Q-matrix coupling translation and rotation of the left Jacobian on SE(3),
+# see [Chirikjian:2012] and [SolaDerayAtchuthan:2021], in the coordinate order (ρ, φ)
+function _jacobian_exp_SE3_Q(ρ₁, ρ₂, ρ₃, φ₁, φ₂, φ₃)
+    θ = sqrt(φ₁^2 + φ₂^2 + φ₃^2)
+    ρx = [0 -ρ₃ ρ₂; ρ₃ 0 -ρ₁; -ρ₂ ρ₁ 0.0]
+    φx = [0 -φ₃ φ₂; φ₃ 0 -φ₁; -φ₂ φ₁ 0.0]
+    if θ < 1.0e-4 # Taylor expansions, numerically robust near θ = 0
+        c₁ = 1 / 6 - θ^2 / 120
+        c₂ = 1 / 24 - θ^2 / 720
+        c₃ = (c₂ - 3 * (-1 / 120 + θ^2 / 5040)) / 2
+    else
+        sθ, cθ = sincos(θ)
+        c₁ = (θ - sθ) / θ^3
+        c₂ = (1 - θ^2 / 2 - cθ) / θ^4
+        c₃ = (c₂ - 3 * (θ - sθ - θ^3 / 6) / θ^5) / 2
+    end
+    return ρx ./ 2 .+ c₁ .* (φx * ρx + ρx * φx + φx * ρx * φx) .-
+        c₂ .* (φx * φx * ρx + ρx * φx * φx - 3 .* (φx * ρx * φx)) .-
+        c₃ .* (φx * ρx * φx * φx + φx * φx * ρx * φx)
+end
+
 function LinearAlgebra.norm(
         𝔤::LieAlgebra{ℝ, <:SpecialEuclideanGroupOperation, <:SpecialEuclideanGroup},
         X::AbstractMatrix,

@@ -26,6 +26,7 @@ begin
             inv_right_compose,
             is_identity,
             jacobian_conjugate,
+            jacobian_exp,
             lie_bracket,
             log,
             rand,
@@ -38,6 +39,8 @@ begin
         :diff_inv => -X1,
         :diff_left_compose => X1,
         :diff_right_compose => X1,
+        # flat and Abelian: the Jacobian of exp is the identity
+        :jacobian_exp => [1.0 0.0 0.0; 0.0 1.0 0.0; 0.0 0.0 1.0],
         :lie_bracket => zero(X1),
     )
     LieGroups.Test.test_lie_group(G, properties, expectations)

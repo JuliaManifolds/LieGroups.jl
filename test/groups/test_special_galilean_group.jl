@@ -4,6 +4,22 @@ using LieGroups: SpecialGalileanGroup
 using StaticArrays
 using LinearAlgebra
 
+# --- independent ground truths built from LieGroups primitives (no magic numbers) ---
+
+# small adjoint matrix ad_X and the right-Jacobian series ground truth for `jacobian_exp`
+include("jacobian_exp_series_reference.jl")
+
+# reference Lie bracket via the matrix commutator of the 5×5 screw representation
+# (see the `hat` docstring), an independent check for the closed-form `lie_bracket`
+_sgal3_skew(a) = [0.0 -a[3] a[2]; a[3] 0.0 -a[1]; -a[2] a[1] 0.0]
+_sgal3_screw(c) = [_sgal3_skew(c[7:9]) c[4:6] c[1:3]; zeros(1, 3) 0.0 c[10]; zeros(1, 5)]
+_sgal3_coords(Z) = [Z[1:3, 5]; Z[1:3, 4]; Z[3, 2]; Z[1, 3]; Z[2, 1]; Z[4, 5]]
+function _lie_bracket_ref(G, X, Y)
+    𝔤 = LieAlgebra(G)
+    Xm, Ym = _sgal3_screw(vee(𝔤, X)), _sgal3_screw(vee(𝔤, Y))
+    return hat(𝔤, _sgal3_coords(Xm * Ym - Ym * Xm))
+end
+
 @testset "Special Galilean" begin
     𝔰 = sqrt(2)
     fcts = [
@@ -16,6 +32,8 @@ using LinearAlgebra
         inv,
         # is_flat,
         is_identity,
+        jacobian_exp,
+        lie_bracket,
         log,
         norm,
         rand,
@@ -69,8 +87,28 @@ using LinearAlgebra
                 :atol => 1.0e-14,
                 # :repr => "SpecialGalileanGroup(3)",
                 # :is_flat => false
+                # jacobian_exp (on vec[1]) and lie_bracket (on vec[1], vec[2]) are validated
+                # against independent ground truths built from LieGroups primitives (see the
+                # helpers at the top of this file) rather than hard-coded magic numbers
+                :jacobian_exp => _jacobian_exp_series(G, vec[1]),
+                :lie_bracket => _lie_bracket_ref(G, vec[1], vec[2]),
             )
             LieGroups.Test.test_lie_group(G, properties, expectations)
+        end
+    end
+
+    # jacobian_exp: exercise BOTH the truncated-series branch (φ < 0.15) and the
+    # closed-form branch, each validated against the series ground truth
+    @testset "jacobian_exp series and closed-form branches" begin
+        G = SpecialGalileanGroup(3)
+        g = identity_element(G)
+        mkX = φ -> ArrayPartition(
+            ArrayPartition([0.0 -φ 0.0; φ 0.0 0.0; 0.0 0.0 0.0], [1.0, 0.5, 0.0]),
+            ArrayPartition([0.3, 0.0, 0.2], [0.4]),
+        )
+        for φ in (1.0e-3, 0.23)  # 1e-3 → series branch (φ<0.15), 0.23 → closed form
+            X = mkX(φ)
+            @test isapprox(jacobian_exp(G, g, X), _jacobian_exp_series(G, X); atol = 1.0e-12)
         end
     end
 

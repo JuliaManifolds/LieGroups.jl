@@ -142,6 +142,28 @@ end
     return convert(T, c)
 end
 
+_doc_jacobian_exp_add = """
+    jacobian_exp(G::LieGroup{𝔽,AdditionGroupOperation}, g, X, ::DefaultLieAlgebraOrthogonalBasis)
+    jacobian_exp!(G::LieGroup{𝔽,AdditionGroupOperation}, J, g, X, ::DefaultLieAlgebraOrthogonalBasis)
+
+Compute the Jacobian of the Lie group exponential in a basis of the Lie algebra on a
+[`LieGroup`](@ref) with an [`AdditionGroupOperation`](@ref).
+
+Since such a group is Abelian and flat, the differential of the exponential map is the
+identity, so ``J = I_n`` for every ``X``.
+"""
+
+@doc "$(_doc_jacobian_exp_add)"
+jacobian_exp(::LieGroup{𝔽, AdditionGroupOperation}, g, X, basis = DefaultLieAlgebraOrthogonalBasis()) where {𝔽}
+
+@doc "$(_doc_jacobian_exp_add)"
+function jacobian_exp!(
+        ::LieGroup{𝔽, AdditionGroupOperation}, J::AbstractMatrix, g, X, ::DefaultLieAlgebraOrthogonalBasis
+    ) where {𝔽}
+    copyto!(J, LinearAlgebra.I)
+    return J
+end
+
 _doc_identity_element_add = """
     identity_element(G::LieGroup{𝔽,AdditionGroupOperation})
     identity_element!(G::LieGroup{𝔽,AdditionGroupOperation}, e)

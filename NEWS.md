@@ -5,6 +5,17 @@ All notable Changes to the Julia package `LieGroups.jl` will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.12] unreleased
+
+### Added
+
+* `jacobian_exp` for the `TranslationGroup` (identity), the `SpecialEuclideanGroup` in
+  both variants and dimensions 2 and 3, and the `SpecialGalileanGroup(3)`
+  (closed form from Kelly, arXiv:2312.07555, section 8). All closed forms fall back to
+  numerically robust expansions near zero rotation angles.
+* `jacobian_exp` for a (direct) `ProductLieGroup`, assembled block-diagonally from the
+  `jacobian_exp` of its factors.
+
 ## [0.1.11] 2026-05-05
 
 ### Added

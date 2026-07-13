@@ -2,6 +2,9 @@ using LieGroups, ManifoldsBase, Random, Test, RecursiveArrayTools
 using Manifolds: Euclidean
 using StaticArrays
 
+# independent series ground truth for `jacobian_exp` (see the file for details)
+include("jacobian_exp_series_reference.jl")
+
 @testset "Special Euclidean" begin
     fcts = [
         compose,
@@ -13,6 +16,7 @@ using StaticArrays
         inv,
         is_flat,
         is_identity,
+        jacobian_exp,
         lie_bracket,
         log,
         norm,
@@ -55,7 +59,11 @@ using StaticArrays
                 :Functions => fcts,
             )
             expectations = Dict(
-                :repr => "SpecialEuclideanGroup(2)", :atol => 1.0e-14, :is_flat => true
+                :repr => "SpecialEuclideanGroup(2)", :atol => 1.0e-14, :is_flat => true,
+                # jacobian_exp (on vec[1]) is validated against an independent series
+                # ground truth built from LieGroups primitives (see the helper at the top
+                # of this file).
+                :jacobian_exp => _jacobian_exp_series(G, vec[1]),
             )
             LieGroups.Test.test_lie_group(G, properties, expectations)
             @test ManifoldsBase.tangent_vector_type(G, typeof(pts[1])) == typeof(vec[1])
@@ -111,7 +119,10 @@ using StaticArrays
                 :Functions => fcts,
             )
             expectations = Dict(
-                :repr => "SpecialEuclideanGroup(2; variant=:right)", :atol => 1.0e-14
+                :repr => "SpecialEuclideanGroup(2; variant=:right)", :atol => 1.0e-14,
+                # same Lie algebra element as the left variant test above, but in the
+                # right variant coordinate order; validated against the series ground truth
+                :jacobian_exp => _jacobian_exp_series(G, vec[1]),
             )
             LieGroups.Test.test_lie_group(G, properties, expectations)
         end
@@ -161,7 +172,11 @@ using StaticArrays
                 :Functions => fcts,
             )
             expectations = Dict(
-                :repr => "SpecialEuclideanGroup(3)", :atol => 1.0e-14, :is_flat => false
+                :repr => "SpecialEuclideanGroup(3)", :atol => 1.0e-14, :is_flat => false,
+                # jacobian_exp (on vec[1]) is validated against an independent series
+                # ground truth built from LieGroups primitives (see the helper at the top
+                # of this file)
+                :jacobian_exp => _jacobian_exp_series(G, vec[1]),
             )
             LieGroups.Test.test_lie_group(G, properties, expectations)
 
@@ -179,6 +194,26 @@ using StaticArrays
                     Y = convert(SpecialEuclideanMatrixTangentVector, diff_right_compose(G, pts[1], pts[i], vec[i]))
                     @test Y.value ≈ expected_diff_right_compose_h1[i]
                 end
+            end
+        end
+    end
+    #
+    # jacobian_exp: exercise BOTH the small-angle Taylor branch (rotation θ < 1e-4) and the
+    # closed-form branch, each validated against the series ground truth
+    @testset "jacobian_exp small- and large-angle branches" begin
+        for (G, mkX) in (
+                (SpecialEuclideanGroup(2), θ -> [0.0 -θ 1.0; θ 0.0 0.5; 0.0 0.0 0.0]),
+                (
+                    SpecialEuclideanGroup(3),
+                    θ -> [0.0 -θ 0.0 1.0; θ 0.0 0.0 0.5; 0.0 0.0 0.0 0.3; 0.0 0.0 0.0 0.0],
+                ),
+            )
+            g = identity_element(G)
+            for θ in (1.0e-6, 0.23)  # 1e-6 → Taylor branch, 0.23 → closed form
+                X = mkX(θ)
+                @test isapprox(
+                    jacobian_exp(G, g, X), _jacobian_exp_series(G, X); atol = 1.0e-12
+                )
             end
         end
     end
