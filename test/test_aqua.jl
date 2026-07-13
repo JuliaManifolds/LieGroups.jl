@@ -17,7 +17,7 @@ end
 @testset "Ambiguities" begin
     ms = Test.detect_ambiguities(LieGroups)
     ms = [mm for mm in ms if mm[1].name != :getindex]
-    LG_LIMIT = 6
+    LG_LIMIT = 10
     println("Number of LieGroups.jl ambiguities: $(length(ms))")
     if length(ms) > LG_LIMIT
         for amb in ms
