@@ -822,32 +822,35 @@ end
 _se_translation_first(::LeftSpecialEuclideanGroup) = false
 _se_translation_first(::RightSpecialEuclideanGroup) = true
 
-_doc_jacobian_exp_SE2 = raw"""
+_doc_jacobian_exp_SE2 = """
     jacobian_exp(G::SpecialEuclideanGroup{TypeParameter{Tuple{2}}}, g, X, ::DefaultLieAlgebraOrthogonalBasis)
     jacobian_exp!(G::SpecialEuclideanGroup{TypeParameter{Tuple{2}}}, J, g, X, ::DefaultLieAlgebraOrthogonalBasis)
 
 Compute the Jacobian of the Lie group exponential in a basis of the Lie algebra on the
 [`SpecialEuclideanGroup`](@ref)`(2)`.
 
-For ``X ∈ 𝔰𝔢(2)`` with translation component ``v = (x, y)`` and rotation angle ``θ``,
+For ``X ∈ $(_math(:se))(2)`` with translation component ``v = (x, y)`` and rotation angle ``θ``,
 the closed form follows from summing the series
-``J = \sum_{k ≥ 0} \frac{(-\mathrm{ad}_X)^k}{(k+1)!}`` block-wise
+``J = $(_tex(:sum))_{k ≥ 0} $(_tex(:frac, "(-$(_tex(:rm, "ad"))_X)^k", "(k+1)!"))`` block-wise
 (compare [Chirikjian:2012](@cite) and [SolaDerayAtchuthan:2021](@cite), Appendix A).
-In the coordinate order ``(x, y, θ)`` of the right variant ``\mathrm{T}(2) ⋊ \mathrm{SO}(2)``
+In the coordinate order ``(x, y, θ)`` of the right variant ``$(_math(:T))(2) ⋊ $(_math(:SO))(2)``
 it reads
 
-````math
-J = \begin{pmatrix}
-\frac{\sin θ}{θ} & \frac{1-\cos θ}{θ} & W_2 x - W_1 y \\
--\frac{1-\cos θ}{θ} & \frac{\sin θ}{θ} & W_1 x + W_2 y \\
-0 & 0 & 1
-\end{pmatrix},
-\qquad
-W_1 = \frac{1-\cos θ}{θ^2},\quad W_2 = \frac{θ-\sin θ}{θ^2},
-````
+```math
+J = $(
+    _tex(
+        :pmatrix,
+        "$(_tex(:frac, "$(_tex(:sin)) θ", "θ")) & $(_tex(:frac, "1-$(_tex(:cos)) θ", "θ")) & W_2 x - W_1 y",
+        "-$(_tex(:frac, "1-$(_tex(:cos)) θ", "θ")) & $(_tex(:frac, "$(_tex(:sin)) θ", "θ")) & W_1 x + W_2 y",
+        "0 & 0 & 1",
+    )
+),
+$(_tex(:qquad))
+W_1 = $(_tex(:frac, "1-$(_tex(:cos)) θ", "θ^2")),$(_tex(:quad)) W_2 = $(_tex(:frac, "θ-$(_tex(:sin)) θ", "θ^2")),
+```
 
 with the corresponding Taylor expansions used near ``θ = 0``. For the left variant
-``\mathrm{SO}(2) ⋉ \mathrm{T}(2)`` the rows and columns are permuted to the coordinate
+``$(_math(:SO))(2) ⋉ $(_math(:T))(2)`` the rows and columns are permuted to the coordinate
 order ``(θ, x, y)``.
 """
 
@@ -913,25 +916,25 @@ function _jacobian_exp_SE2!(
     return J
 end
 
-_doc_jacobian_exp_SE3 = raw"""
+_doc_jacobian_exp_SE3 = """
     jacobian_exp(G::SpecialEuclideanGroup{TypeParameter{Tuple{3}}}, g, X, ::DefaultLieAlgebraOrthogonalBasis)
     jacobian_exp!(G::SpecialEuclideanGroup{TypeParameter{Tuple{3}}}, J, g, X, ::DefaultLieAlgebraOrthogonalBasis)
 
 Compute the Jacobian of the Lie group exponential in a basis of the Lie algebra on the
 [`SpecialEuclideanGroup`](@ref)`(3)`.
 
-For ``X = (Y, v) ∈ 𝔰𝔢(3)`` with rotation component ``Y`` and translation component ``v``,
+For ``X = (Y, v) ∈ $(_math(:se))(3)`` with rotation component ``Y`` and translation component ``v``,
 the Jacobian has the block structure (coordinate order ``(v, ω)`` of the right variant
-``\mathrm{T}(3) ⋊ \mathrm{SO}(3)``, ``ω = Y^{\vee}``)
+``$(_math(:T))(3) ⋊ $(_math(:SO))(3)``, ``ω = Y^{\\vee}``)
 
-````math
-J = \begin{pmatrix} J_{\mathrm{SO}(3)}(Y) & Q_r(v, ω) \\ 0 & J_{\mathrm{SO}(3)}(Y) \end{pmatrix},
-````
+```math
+J = $(_tex(:pmatrix, "J_{$(_math(:SO))(3)}(Y) & Q_r(v, ω)", "0 & J_{$(_math(:SO))(3)}(Y)")),
+```
 
-where ``J_{\mathrm{SO}(3)}`` is the [`jacobian_exp`](@ref) on ``\mathrm{SO}(3)`` and the
+where ``J_{$(_math(:SO))(3)}`` is the [`jacobian_exp`](@ref) on ``$(_math(:SO))(3)`` and the
 coupling block is ``Q_r(v, ω) = Q(-v, -ω)`` with the ``Q``-matrix of the left Jacobian
 from [Chirikjian:2012](@cite) (see also [SolaDerayAtchuthan:2021](@cite) and
-[Kelly:2025; equation (35)](@cite)). For the left variant ``\mathrm{SO}(3) ⋉ \mathrm{T}(3)``
+[Kelly:2025; equation (35)](@cite)). For the left variant ``$(_math(:SO))(3) ⋉ $(_math(:T))(3)``
 the rows and columns are permuted to the coordinate order ``(ω, v)``, moving ``Q_r`` to
 the lower left block.
 """
