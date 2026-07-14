@@ -21,6 +21,12 @@ Base.:-(e::Identity{AdditionGroupOperation}, ::Identity{AdditionGroupOperation})
 Base.:-(::Identity{AdditionGroupOperation}, g) = -g
 Base.:-(g, ::Identity{AdditionGroupOperation}) = g
 
+# Identity{AdditionGroupOperation} is a valid point on a Lie algebra and the same as the zero vector.
+Base.:+(e::Identity{AdditionGroupOperation}, ::ManifoldsBase.ZeroVector) = e
+Base.:+(::ManifoldsBase.ZeroVector, e::Identity{AdditionGroupOperation}) = e
+Base.:-(e::Identity{AdditionGroupOperation}, ::ManifoldsBase.ZeroVector) = e
+Base.:-(::ManifoldsBase.ZeroVector, e::Identity{AdditionGroupOperation}) = e
+
 _doc_compose_add = """
     compose(G::LieGroup{𝔽,AdditionGroupOperation}, g, h)
     compose!(G::LieGroup{𝔽,AdditionGroupOperation}, k, g, h)

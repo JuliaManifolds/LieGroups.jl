@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   numerically robust expansions near zero rotation angles.
 * `jacobian_exp` for a (direct) `ProductLieGroup`, assembled block-diagonally from the
   `jacobian_exp` of its factors.
+* Fix ambiguities with `ZeroVector`and `Identity{AdditionGroupOperation}` in addition operations. `ZeroVector` was introduced in ManifoldsBase v2.5.
 
 ## [0.1.11] 2026-05-05
 
