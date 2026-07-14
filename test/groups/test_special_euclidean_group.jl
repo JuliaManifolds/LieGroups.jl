@@ -199,21 +199,24 @@ include("jacobian_exp_series_reference.jl")
     end
     #
     # jacobian_exp: exercise BOTH the small-angle Taylor branch (rotation θ < 1e-4) and the
-    # closed-form branch, each validated against the series ground truth
+    # closed-form branch, each validated against the series ground truth. Both semidirect
+    # variants are covered so both coordinate orders of the block assembly are hit: the left
+    # variant SO(n)⋉T(n) (order (ω, v)) and the right variant T(n)⋊SO(n) (translation first,
+    # order (v, ω)).
     @testset "jacobian_exp small- and large-angle branches" begin
-        for (G, mkX) in (
-                (SpecialEuclideanGroup(2), θ -> [0.0 -θ 1.0; θ 0.0 0.5; 0.0 0.0 0.0]),
-                (
-                    SpecialEuclideanGroup(3),
-                    θ -> [0.0 -θ 0.0 1.0; θ 0.0 0.0 0.5; 0.0 0.0 0.0 0.3; 0.0 0.0 0.0 0.0],
-                ),
-            )
-            g = identity_element(G)
-            for θ in (1.0e-6, 0.23)  # 1e-6 → Taylor branch, 0.23 → closed form
-                X = mkX(θ)
-                @test isapprox(
-                    jacobian_exp(G, g, X), _jacobian_exp_series(G, X); atol = 1.0e-12
+        for variant in (:left, :right)
+            for (n, mkX) in (
+                    (2, θ -> [0.0 -θ 1.0; θ 0.0 0.5; 0.0 0.0 0.0]),
+                    (3, θ -> [0.0 -θ 0.0 1.0; θ 0.0 0.0 0.5; 0.0 0.0 0.0 0.3; 0.0 0.0 0.0 0.0]),
                 )
+                G = SpecialEuclideanGroup(n; variant)
+                g = identity_element(G)
+                for θ in (1.0e-6, 0.23)  # 1e-6 → Taylor branch, 0.23 → closed form
+                    X = mkX(θ)
+                    @test isapprox(
+                        jacobian_exp(G, g, X), _jacobian_exp_series(G, X); atol = 1.0e-12
+                    )
+                end
             end
         end
     end
