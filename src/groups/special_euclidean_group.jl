@@ -857,10 +857,7 @@ jacobian_exp(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, g, 
 @doc "$(_doc_jacobian_exp_SE2)"
 function jacobian_exp!(
         G::SpecialEuclideanGroup{<:ManifoldsBase.TypeParameter{Tuple{2}}},
-        J::AbstractMatrix,
-        g,
-        X::AbstractMatrix,
-        ::DefaultLieAlgebraOrthogonalBasis,
+        J::AbstractMatrix, g, X::AbstractMatrix, ::DefaultLieAlgebraOrthogonalBasis,
     )
     return _jacobian_exp_SE2!(G, J, X)
 end
