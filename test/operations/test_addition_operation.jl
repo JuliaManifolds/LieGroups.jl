@@ -1,5 +1,6 @@
 using LieGroups, Test
 using StaticArrays
+using ManifoldsBase
 
 @testset "Addition Operation" begin
     @testset "Base.:+ and Base.:- with the Identity" begin
@@ -17,5 +18,10 @@ using StaticArrays
         @test identity_element(G, Float64) == 0.0
         @test identity_element(G, Array{Float64, 0}) == fill(0.0)
         @test identity_element(G, SArray{Tuple{}, Float64}) == @SArray fill(0.0)
+        z = ManifoldsBase.ZeroVector()
+        @test (e + z) === e
+        @test (z + e) === e
+        @test (e - z) === e
+        @test (z - e) === e
     end
 end
