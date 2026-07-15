@@ -891,9 +891,32 @@ _doc_jac_exp = """
     jacobian_exp(G::AbstractLieGroup, X, b)
     jacobian_exp!(G::AbstractLieGroup, J, X, b)
 
-Compute the Jacobian of the [`exp`](@ref) ``$(_tex(:exp))(X)``, the left-trivialized
-differential of the Lie group exponential, with respect to
-an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`) of the [`LieAlgebra`](@ref).
+Compute the Jacobian of the [Lie group exponential function](@ref exp(::AbstractLieGroup, ::Identity, :Any))
+``$(_tex(:exp))_{$(_math(:G))}: $(_math(:𝔤)) → $(_math(:G))`` at ``X ∈ $(_math(:𝔤))``,
+represented in an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`) ``b`` of the [`LieAlgebra`](@ref) ``$(_math(:𝔤))``.
+
+The (classical) differential ``$(_math(:D))$(_tex(:exp))_{$(_math(:G))}(X): $(_math(:𝔤)) → T_{$(_tex(:exp))_{$(_math(:G))}(X)}$(_math(:G))``
+maps a tangent vector of the Lie algebra to a tangent vector at the point ``$(_tex(:exp))_{$(_math(:G))}(X)``.
+To turn this into a map ``$(_math(:𝔤)) → $(_math(:𝔤))``, that is representable as a matrix in a basis of ``$(_math(:𝔤))``,
+we _left-trivialize_ it: analogous to [`diff_right_compose`](@ref) we “pull back” the resulting tangent vector
+by multiplying with ``$(_tex(:exp))_{$(_math(:G))}(X)^{-1}`` from the left.
+The resulting left-trivialized differential ``$(_math(:d))$(_tex(:exp))_{$(_math(:G))}(X): $(_math(:𝔤)) → $(_math(:𝔤))``
+has the series representation
+
+```math
+$(_math(:d))$(_tex(:exp))_{$(_math(:G))}(X) = $(_tex(:sum))_{k ≥ 0} $(_tex(:frac, "(-$(_tex(:rm, "ad"))_X)^k", "(k+1)!")),
+```
+
+where ``$(_tex(:rm, "ad"))_X = [X, ⋅]`` denotes the adjoint of the [`LieAlgebra`](@ref), see [`lie_bracket`](@ref).
+The Jacobian ``J`` is the matrix of this map with respect to the basis ``b``: its ``j``th column contains the
+coordinates of ``$(_math(:d))$(_tex(:exp))_{$(_math(:G))}(X)[X_j]``, where ``X_j`` is the ``j``th basis vector of ``b``.
+Since it only depends on ``X``, this Jacobian is independent of a base point, which is why no point is passed.
+
+!!! note
+    In the robotics and state-estimation literature this left-trivialized differential is often called the
+    _right Jacobian_ ``J_r``, for example in [SolaDerayAtchuthan:2021](@cite) and [Chirikjian:2012](@cite).
+    It is related to the _left Jacobian_ ``J_ℓ`` by ``J_r(X) = J_ℓ(-X)``, which is the right-trivialized
+    differential ``$(_tex(:sum))_{k ≥ 0} $(_tex(:frac, "($(_tex(:rm, "ad"))_X)^k", "(k+1)!"))``.
 """
 
 "$(_doc_jac_exp)"
