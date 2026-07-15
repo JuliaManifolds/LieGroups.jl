@@ -219,6 +219,30 @@ include("jacobian_exp_series_reference.jl")
             end
         end
     end
+    
+    # TODO deprecated in v0.1.12, remove in v0.2.0
+    # the old jacobian_exp(G, g, X, b)/jacobian_exp!(G, J, g, X, b) signatures (with the
+    # unused base point g) are deprecated in favor of jacobian_exp(G, X, b); check both the
+    # default-basis and explicit-basis deprecated methods still forward to the same result
+    @testset "jacobian_exp deprecated g argument" begin
+        G = SpecialEuclideanGroup(2)
+        g = identity_element(G)
+        X = [0.0 -0.23 1.0; 0.23 0.0 0.5; 0.0 0.0 0.0]
+        basis = DefaultLieAlgebraOrthogonalBasis()
+        J = jacobian_exp(G, X)
+
+        J_old = Test.@test_deprecated jacobian_exp(G, g, X)
+        @test isapprox(J, J_old)
+        J_old_basis = Test.@test_deprecated jacobian_exp(G, g, X, basis)
+        @test isapprox(J, J_old_basis)
+
+        J2 = similar(J)
+        Test.@test_deprecated jacobian_exp!(G, J2, g, X)
+        @test isapprox(J, J2)
+        J3 = similar(J)
+        Test.@test_deprecated jacobian_exp!(G, J3, g, X, basis)
+        @test isapprox(J, J3)
+    end
     #
     #
     # SE(4)
