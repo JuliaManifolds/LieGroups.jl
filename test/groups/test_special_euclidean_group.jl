@@ -219,7 +219,7 @@ include("jacobian_exp_series_reference.jl")
             end
         end
     end
-    
+
     # TODO deprecated in v0.1.12, remove in v0.2.0
     # the old jacobian_exp(G, g, X, b)/jacobian_exp!(G, J, g, X, b) signatures (with the
     # unused base point g) are deprecated in favor of jacobian_exp(G, X, b); check both the
