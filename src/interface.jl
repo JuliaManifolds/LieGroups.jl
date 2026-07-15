@@ -888,27 +888,39 @@ function jacobian_conjugate!(
 end
 
 _doc_jac_exp = """
-    jacobian_exp(G::AbstractLieGroup, g, X, b)
-    jacobian_exp!(G::AbstractLieGroup, J, g, X, b)
+    jacobian_exp(G::AbstractLieGroup, X, b)
+    jacobian_exp!(G::AbstractLieGroup, J, X, b)
 
-Compute the Jacobian of the [`exp`](@ref) ``$(_tex(:exp))_g(X)`` with respect to
+Compute the Jacobian of the [`exp`](@ref) ``$(_tex(:exp))(X)``, the left-trivialized
+differential of the Lie group exponential, with respect to
 an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`) of the [`LieAlgebra`](@ref).
 """
 
 "$(_doc_jac_exp)"
 function jacobian_exp(
-        G::AbstractLieGroup, g, X, B::AbstractBasis = DefaultLieAlgebraOrthogonalBasis()
+        G::AbstractLieGroup, X, B::AbstractBasis = DefaultLieAlgebraOrthogonalBasis()
     )
-    J = ManifoldsBase.allocate_result(G, jacobian_exp, g, X, B)
-    return jacobian_exp!(G, J, g, X, B)
+    J = ManifoldsBase.allocate_result(G, jacobian_exp, X, B)
+    return jacobian_exp!(G, J, X, B)
 end
+
+#TODO deprecated in v0.1.12, remove in v0.2.0
+@deprecate jacobian_exp(
+    G::AbstractLieGroup, g, X, B::AbstractBasis = DefaultLieAlgebraOrthogonalBasis()
+) jacobian_exp(G, X, B)
 
 function jacobian_exp! end
 @doc "$(_doc_jac_exp)"
 jacobian_exp!(
-    G::AbstractLieGroup, J, g, X,
+    G::AbstractLieGroup, J, X,
     B::AbstractBasis = DefaultLieAlgebraOrthogonalBasis()
 )
+
+#TODO deprecated in v0.1.12, remove in v0.2.0
+@deprecate jacobian_exp!(
+    G::AbstractLieGroup, J, g, X,
+    B::AbstractBasis = DefaultLieAlgebraOrthogonalBasis()
+) jacobian_exp!(G, J, X, B)
 
 _doc_log = """
     log(G::AbstractLieGroup, g, h)
@@ -1269,9 +1281,9 @@ function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(jacobian_conjugate
     n = number_of_coordinates(G.manifold, B)
     return zeros(float(number_eltype(g)), n, n)
 end
-function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(jacobian_exp), g, X, B)
+function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(jacobian_exp), X, B)
     n = number_of_coordinates(G.manifold, B)
-    return zeros(float(number_eltype(g)), n, n)
+    return zeros(float(number_eltype(X)), n, n)
 end
 function ManifoldsBase.allocate_result(G::AbstractLieGroup, f::typeof(log), args...)
     return ManifoldsBase.allocate_result(base_manifold(G), f, args...)

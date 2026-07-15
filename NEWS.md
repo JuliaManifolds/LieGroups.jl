@@ -9,13 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-* `jacobian_exp` for the `TranslationGroup` (identity), the `SpecialEuclideanGroup` in
-  both variants and dimensions 2 and 3, and the `SpecialGalileanGroup(3)`
-  (closed form from Kelly, arXiv:2312.07555, section 8). All closed forms fall back to
-  numerically robust expansions near zero rotation angles.
-* `jacobian_exp` for a (direct) `ProductLieGroup`, assembled block-diagonally from the
-  `jacobian_exp` of its factors.
+* `jacobian_exp` for the `TranslationGroup` (identity), the `SpecialEuclideanGroup` in both variants and dimensions 2 and 3, and the `SpecialGalileanGroup(3)` (closed form from Kelly, arXiv:2312.07555, section 8). All closed forms fall back to numerically robust expansions near zero rotation angles.
+* `jacobian_exp` for a (direct) `ProductLieGroup`, assembled block-diagonally from the `jacobian_exp` of its factors.
 * Fix ambiguities with `ZeroVector`and `Identity{AdditionGroupOperation}` in addition operations. `ZeroVector` was introduced in ManifoldsBase v2.5.
+
+### Changed
+
+* `jacobian_exp(G, g, X, b)` and `jacobian_exp!(G, J, g, X, b)` no longer take the base point `g`, since the Jacobian of the group exponential map does not depend on it: use `jacobian_exp(G, X, b)` and `jacobian_exp!(G, J, X, b)` instead. The old signatures are deprecated and still work.
 
 ## [0.1.11] 2026-05-05
 

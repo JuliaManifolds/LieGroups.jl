@@ -101,14 +101,13 @@ end
     # closed-form branch, each validated against the series ground truth
     @testset "jacobian_exp series and closed-form branches" begin
         G = SpecialGalileanGroup(3)
-        g = identity_element(G)
         mkX = φ -> ArrayPartition(
             ArrayPartition([0.0 -φ 0.0; φ 0.0 0.0; 0.0 0.0 0.0], [1.0, 0.5, 0.0]),
             ArrayPartition([0.3, 0.0, 0.2], [0.4]),
         )
         for φ in (1.0e-3, 0.23)  # 1e-3 → series branch (φ<0.15), 0.23 → closed form
             X = mkX(φ)
-            @test isapprox(jacobian_exp(G, g, X), _jacobian_exp_series(G, X); atol = 1.0e-12)
+            @test isapprox(jacobian_exp(G, X), _jacobian_exp_series(G, X); atol = 1.0e-12)
         end
     end
 

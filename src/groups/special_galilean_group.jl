@@ -235,8 +235,8 @@ ManifoldsBase.vee!(
 )
 
 _doc_jacobian_exp_SGal3 = raw"""
-    jacobian_exp(G::SpecialGalileanGroup, g, X, ::DefaultLieAlgebraOrthogonalBasis)
-    jacobian_exp!(G::SpecialGalileanGroup, J, g, X, ::DefaultLieAlgebraOrthogonalBasis)
+    jacobian_exp(G::SpecialGalileanGroup, X, ::DefaultLieAlgebraOrthogonalBasis)
+    jacobian_exp!(G::SpecialGalileanGroup, J, X, ::DefaultLieAlgebraOrthogonalBasis)
 
 Compute the Jacobian of the Lie group exponential in a basis of the Lie algebra on the
 [`SpecialGalileanGroup`](@ref)`(3)`.
@@ -267,10 +267,10 @@ matrix [Kelly:2025; equation (28)](@cite), which is numerically robust there.
 """
 
 @doc "$(_doc_jacobian_exp_SGal3)"
-jacobian_exp(::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, g, X, basis = DefaultLieAlgebraOrthogonalBasis())
+jacobian_exp(::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, X, basis = DefaultLieAlgebraOrthogonalBasis())
 
 @doc "$(_doc_jacobian_exp_SGal3)"
-jacobian_exp!(::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, J, g, X, basis = DefaultLieAlgebraOrthogonalBasis())
+jacobian_exp!(::SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, J, X, basis = DefaultLieAlgebraOrthogonalBasis())
 
 # Internal function to compute the skew-symmetric matrix as an SMatrix used for performance.
 # Can be replaced with hat(SO(3), v) once that works without allocations.

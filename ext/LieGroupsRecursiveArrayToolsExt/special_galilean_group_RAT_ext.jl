@@ -324,7 +324,6 @@ end
 function LieGroups.jacobian_exp!(
         ::LieGroups.SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
         J::AbstractMatrix,
-        g,
         X::ArrayPartition,
         ::DefaultLieAlgebraOrthogonalBasis,
     )

@@ -298,8 +298,8 @@ function ManifoldsBase.exp!(
 end
 
 _doc_jacobian_exp_product = raw"""
-    jacobian_exp(G::ProductLieGroup, g, X, ::DefaultLieAlgebraOrthogonalBasis)
-    jacobian_exp!(G::ProductLieGroup, J, g, X, ::DefaultLieAlgebraOrthogonalBasis)
+    jacobian_exp(G::ProductLieGroup, X, ::DefaultLieAlgebraOrthogonalBasis)
+    jacobian_exp!(G::ProductLieGroup, J, X, ::DefaultLieAlgebraOrthogonalBasis)
 
 Compute the Jacobian of the Lie group exponential in a basis of the Lie algebra on a
 [`ProductLieGroup`](@ref).
@@ -311,27 +311,26 @@ diagonal,
 
 ````math
 J = \begin{pmatrix} J_1 & & \\ & \ddots & \\ & & J_n \end{pmatrix},
-\qquad J_i = \text{jacobian\_exp}(G_i, g_i, X_i).
+\qquad J_i = \text{jacobian\_exp}(G_i, X_i).
 ````
 """
 
 @doc "$(_doc_jacobian_exp_product)"
 jacobian_exp(
-    ::LieGroup{𝔽, <:ProductGroupOperation, <:ProductManifold}, g, X, ::AbstractBasis
+    ::LieGroup{𝔽, <:ProductGroupOperation, <:ProductManifold}, X, ::AbstractBasis
 ) where {𝔽}
 
 @doc "$(_doc_jacobian_exp_product)"
 function jacobian_exp!(
-        PrG::LieGroup{𝔽, Op, M}, J, g, X, B::DefaultLieAlgebraOrthogonalBasis
+        PrG::LieGroup{𝔽, Op, M}, J, X, B::DefaultLieAlgebraOrthogonalBasis
     ) where {𝔽, Op <: ProductGroupOperation, M <: ProductManifold}
     PrM = PrG.manifold
     dims = map(manifold_dimension, PrM.manifolds)
     dim_ranges = ManifoldsBase._get_dim_ranges(dims)
     fill!(J, 0)
     foreach(
-        (Gi, gi, Xi, dr) -> jacobian_exp!(Gi, view(J, dr, dr), gi, Xi, B),
+        (Gi, Xi, dr) -> jacobian_exp!(Gi, view(J, dr, dr), Xi, B),
         map(LieGroup, PrM.manifolds, PrG.op.operations),
-        submanifold_components(PrM, g),
         submanifold_components(PrM, X),
         dim_ranges,
     )

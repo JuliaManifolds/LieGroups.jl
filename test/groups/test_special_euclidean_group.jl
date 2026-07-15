@@ -210,11 +210,10 @@ include("jacobian_exp_series_reference.jl")
                     (3, θ -> [0.0 -θ 0.0 1.0; θ 0.0 0.0 0.5; 0.0 0.0 0.0 0.3; 0.0 0.0 0.0 0.0]),
                 )
                 G = SpecialEuclideanGroup(n; variant)
-                g = identity_element(G)
                 for θ in (1.0e-6, 0.23)  # 1e-6 → Taylor branch, 0.23 → closed form
                     X = mkX(θ)
                     @test isapprox(
-                        jacobian_exp(G, g, X), _jacobian_exp_series(G, X); atol = 1.0e-12
+                        jacobian_exp(G, X), _jacobian_exp_series(G, X); atol = 1.0e-12
                     )
                 end
             end

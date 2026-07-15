@@ -823,8 +823,8 @@ _se_translation_first(::LeftSpecialEuclideanGroup) = false
 _se_translation_first(::RightSpecialEuclideanGroup) = true
 
 _doc_jacobian_exp_SE2 = """
-    jacobian_exp(G::SpecialEuclideanGroup{TypeParameter{Tuple{2}}}, g, X, ::DefaultLieAlgebraOrthogonalBasis)
-    jacobian_exp!(G::SpecialEuclideanGroup{TypeParameter{Tuple{2}}}, J, g, X, ::DefaultLieAlgebraOrthogonalBasis)
+    jacobian_exp(G::SpecialEuclideanGroup{TypeParameter{Tuple{2}}}, X, ::DefaultLieAlgebraOrthogonalBasis)
+    jacobian_exp!(G::SpecialEuclideanGroup{TypeParameter{Tuple{2}}}, J, X, ::DefaultLieAlgebraOrthogonalBasis)
 
 Compute the Jacobian of the Lie group exponential in a basis of the Lie algebra on the
 [`SpecialEuclideanGroup`](@ref)`(2)`.
@@ -855,23 +855,22 @@ order ``(θ, x, y)``.
 """
 
 @doc "$(_doc_jacobian_exp_SE2)"
-jacobian_exp(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, g, X, basis = DefaultLieAlgebraOrthogonalBasis())
+jacobian_exp(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{2}}}, X, basis = DefaultLieAlgebraOrthogonalBasis())
 
 @doc "$(_doc_jacobian_exp_SE2)"
 function jacobian_exp!(
         G::SpecialEuclideanGroup{<:ManifoldsBase.TypeParameter{Tuple{2}}},
-        J::AbstractMatrix, g, X::AbstractMatrix, ::DefaultLieAlgebraOrthogonalBasis,
+        J::AbstractMatrix, X::AbstractMatrix, ::DefaultLieAlgebraOrthogonalBasis,
     )
     return _jacobian_exp_SE2!(G, J, X)
 end
 function jacobian_exp!(
         G::SpecialEuclideanGroup{<:ManifoldsBase.TypeParameter{Tuple{2}}},
         J::AbstractMatrix,
-        g,
         X::SpecialEuclideanMatrixTangentVector,
         B::DefaultLieAlgebraOrthogonalBasis,
     )
-    return jacobian_exp!(G, J, g, ManifoldsBase.internal_value(X), B)
+    return jacobian_exp!(G, J, ManifoldsBase.internal_value(X), B)
 end
 
 function _jacobian_exp_SE2!(
@@ -917,8 +916,8 @@ function _jacobian_exp_SE2!(
 end
 
 _doc_jacobian_exp_SE3 = """
-    jacobian_exp(G::SpecialEuclideanGroup{TypeParameter{Tuple{3}}}, g, X, ::DefaultLieAlgebraOrthogonalBasis)
-    jacobian_exp!(G::SpecialEuclideanGroup{TypeParameter{Tuple{3}}}, J, g, X, ::DefaultLieAlgebraOrthogonalBasis)
+    jacobian_exp(G::SpecialEuclideanGroup{TypeParameter{Tuple{3}}}, X, ::DefaultLieAlgebraOrthogonalBasis)
+    jacobian_exp!(G::SpecialEuclideanGroup{TypeParameter{Tuple{3}}}, J, X, ::DefaultLieAlgebraOrthogonalBasis)
 
 Compute the Jacobian of the Lie group exponential in a basis of the Lie algebra on the
 [`SpecialEuclideanGroup`](@ref)`(3)`.
@@ -940,13 +939,12 @@ the lower left block.
 """
 
 @doc "$(_doc_jacobian_exp_SE3)"
-jacobian_exp(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, g, X, basis = DefaultLieAlgebraOrthogonalBasis())
+jacobian_exp(::SpecialEuclideanGroup{ManifoldsBase.TypeParameter{Tuple{3}}}, X, basis = DefaultLieAlgebraOrthogonalBasis())
 
 @doc "$(_doc_jacobian_exp_SE3)"
 function jacobian_exp!(
         G::SpecialEuclideanGroup{<:ManifoldsBase.TypeParameter{Tuple{3}}},
         J::AbstractMatrix,
-        g,
         X::AbstractMatrix,
         ::DefaultLieAlgebraOrthogonalBasis,
     )
@@ -955,11 +953,10 @@ end
 function jacobian_exp!(
         G::SpecialEuclideanGroup{<:ManifoldsBase.TypeParameter{Tuple{3}}},
         J::AbstractMatrix,
-        g,
         X::SpecialEuclideanMatrixTangentVector,
         B::DefaultLieAlgebraOrthogonalBasis,
     )
-    return jacobian_exp!(G, J, g, ManifoldsBase.internal_value(X), B)
+    return jacobian_exp!(G, J, ManifoldsBase.internal_value(X), B)
 end
 
 function _jacobian_exp_SE3!(

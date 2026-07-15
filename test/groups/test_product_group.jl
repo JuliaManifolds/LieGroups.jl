@@ -45,8 +45,7 @@ using LieGroups, Test, ManifoldsBase, Random, RecursiveArrayTools, LinearAlgebra
         𝔤c = LieAlgebra(Gc)
         Xcc = [0.3, -0.2, 0.5, 0.7, -0.4, 0.6]
         Xt = hat(𝔤c, Xcc)
-        gc = exp(Gc, Xt)
-        Jc = jacobian_exp(Gc, gc, Xt)
+        Jc = jacobian_exp(Gc, Xt)
         @test size(Jc) == (6, 6)
         # off-diagonal coupling blocks vanish
         @test iszero(Jc[1:3, 4:6])
@@ -54,13 +53,13 @@ using LieGroups, Test, ManifoldsBase, Random, RecursiveArrayTools, LinearAlgebra
         # diagonal blocks equal each factor's own jacobian_exp
         Gc1 = SpecialOrthogonalGroup(3)
         Xc1 = hat(LieAlgebra(Gc1), Xcc[1:3])
-        @test isapprox(Jc[1:3, 1:3], jacobian_exp(Gc1, exp(Gc1, Xc1), Xc1))
+        @test isapprox(Jc[1:3, 1:3], jacobian_exp(Gc1, Xc1))
         Gc2 = SpecialEuclideanGroup(2; variant = :right)
         Xc2 = hat(LieAlgebra(Gc2), Xcc[4:6])
-        @test isapprox(Jc[4:6, 4:6], jacobian_exp(Gc2, exp(Gc2, Xc2), Xc2))
+        @test isapprox(Jc[4:6, 4:6], jacobian_exp(Gc2, Xc2))
         # mutating matches allocating
         Jc2 = copy(Jc)
-        jacobian_exp!(Gc, Jc2, gc, Xt, B)
+        jacobian_exp!(Gc, Jc2, Xt, B)
         @test isapprox(Jc, Jc2)
     end
     @testset "A small additional size check" begin

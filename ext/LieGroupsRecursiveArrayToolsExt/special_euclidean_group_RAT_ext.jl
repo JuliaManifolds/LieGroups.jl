@@ -235,7 +235,6 @@ end
 function LieGroups.jacobian_exp!(
         G::SpecialEuclideanGroup{<:ManifoldsBase.TypeParameter{Tuple{2}}},
         J::AbstractMatrix,
-        g,
         X::ArrayPartition,
         ::DefaultLieAlgebraOrthogonalBasis,
     )
@@ -245,7 +244,6 @@ end
 function LieGroups.jacobian_exp!(
         G::SpecialEuclideanGroup{<:ManifoldsBase.TypeParameter{Tuple{3}}},
         J::AbstractMatrix,
-        g,
         X::ArrayPartition,
         ::DefaultLieAlgebraOrthogonalBasis,
     )
@@ -255,11 +253,10 @@ end
 function LieGroups.jacobian_exp!(
         G::SpecialEuclideanGroup,
         J::AbstractMatrix,
-        g,
         X::SpecialEuclideanProductTangentVector,
         B::DefaultLieAlgebraOrthogonalBasis,
     )
-    return LieGroups.jacobian_exp!(G, J, g, ManifoldsBase.internal_value(X), B)
+    return LieGroups.jacobian_exp!(G, J, ManifoldsBase.internal_value(X), B)
 end
 
 function LinearAlgebra.norm(
