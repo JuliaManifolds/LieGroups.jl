@@ -194,13 +194,26 @@ function LieGroups.compose(::SpecialGalileanGroup, g::ArrayPartition, h::ArrayPa
     )
 end
 
-# Lie bracket [X, Y] on 𝔰𝔤𝔞𝔩(3): the matrix commutator of the 5×5 screw representation
-# (see the `hat` docstring), expressed in the ((Ω, ν), (ρ, ι)) blocks
-# [Kelly:2025; eq. (14) basis](@cite):
-#   [X, Y]_Ω = Ω_X Ω_Y - Ω_Y Ω_X   (equivalently ω_X × ω_Y)
-#   [X, Y]_ν = Ω_X ν_Y - Ω_Y ν_X
-#   [X, Y]_ρ = Ω_X ρ_Y - Ω_Y ρ_X + ι_Y ν_X - ι_X ν_Y
-#   [X, Y]_ι = 0
+_doc_lie_bracket_SGal3 = """
+    lie_bracket(𝔰𝔤𝔞𝔩::LieAlgebra{ℝ,<:LeftSpecialGalileanGroupOperation,<:SpecialGalileanGroup}, X, Y)
+    lie_bracket!(𝔰𝔤𝔞𝔩::LieAlgebra{ℝ,<:LeftSpecialGalileanGroupOperation,<:SpecialGalileanGroup}, Z, X, Y)
+
+Compute the Lie bracket ``[X, Y] = XY - YX`` of two tangent vectors `X`, `Y` of the Lie algebra of the
+[`SpecialGalileanGroup`](@ref)`(3)`, i.e. the matrix commutator of their ``5×5`` `hat` representations.
+
+In the ``((\\Omega, \\nu), (\\rho, \\iota))`` block form (see [`hat`](@ref)) this reduces to
+```math
+[X, Y] = \\bigl(
+(\\Omega_X \\Omega_Y - \\Omega_Y \\Omega_X,\\ \\Omega_X \\nu_Y - \\Omega_Y \\nu_X),\\
+(\\Omega_X \\rho_Y - \\Omega_Y \\rho_X + \\iota_Y \\nu_X - \\iota_X \\nu_Y,\\ 0)
+\\bigr).
+```
+The basis is defined in eq. (14) of [Kelly:2025](@cite).
+
+This can be computed in-place of `Z`.
+"""
+
+"$(_doc_lie_bracket_SGal3)"
 function LieGroups.lie_bracket(
         ::typeof(LieAlgebra(SpecialGalileanGroup(3))),
         X::ArrayPartition,
@@ -220,6 +233,7 @@ function LieGroups.lie_bracket(
     )
 end
 
+"$(_doc_lie_bracket_SGal3)"
 function LieGroups.lie_bracket!(
         ::typeof(LieAlgebra(SpecialGalileanGroup(3))),
         Z::ArrayPartition,
