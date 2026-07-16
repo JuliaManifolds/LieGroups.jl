@@ -16,7 +16,7 @@ SpecialEuclideanProductTangentVector
 # Specific functions
 
 ```@autodocs
-Modules = [LieGroups]
-Pages = ["groups/special_euclidean_group.jl"]
+Modules = [LieGroups, Base.get_extension(LieGroups, :LieGroupsRecursiveArrayToolsExt)]
+Pages = ["groups/special_euclidean_group.jl", "ext/LieGroupsRecursiveArrayToolsExt/special_euclidean_group_RAT_ext.jl"]
 Order = [:function]
 ```
