@@ -897,11 +897,11 @@ represented in an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`) ``b``
 
 The (classical) differential ``$(_math(:D))$(_tex(:exp))_{$(_math(:G))}(X): $(_math(:𝔤)) → T_{$(_tex(:exp))_{$(_math(:G))}(X)}$(_math(:G))``
 maps a tangent vector of the Lie algebra to a tangent vector at the point ``$(_tex(:exp))_{$(_math(:G))}(X)``.
-To turn this into a map ``$(_math(:𝔤)) → $(_math(:𝔤))``, that is representable as a matrix in a basis of ``$(_math(:𝔤))``,
-we _left-trivialize_ it: analogous to [`diff_right_compose`](@ref) we “pull back” the resulting tangent vector
-by multiplying with ``$(_tex(:exp))_{$(_math(:G))}(X)^{-1}`` from the left.
-The resulting left-trivialized differential ``$(_math(:d))$(_tex(:exp))_{$(_math(:G))}(X): $(_math(:𝔤)) → $(_math(:𝔤))``
-has the series representation
+To express this as a map on the Lie algebra ``$(_math(:𝔤)) → $(_math(:𝔤))``, which (in the finite-dimensional case) can be represented as a matrix in a basis of ``$(_math(:𝔤))``,
+we push forward the output tangent vector from the tangent space back to the Lie algebra via the differential of the left translation by ``$(_tex(:exp))_{$(_math(:G))}(X)^{-1}``. 
+For a matrix Lie group, this action corresponds to multiplying the tangent vector from the left.
+The resulting map ``$(_math(:d))$(_tex(:exp))_{$(_math(:G))}(X): $(_math(:𝔤)) → $(_math(:𝔤))``
+has the convergent series representation
 
 ```math
 $(_math(:d))$(_tex(:exp))_{$(_math(:G))}(X) = $(_tex(:sum))_{k ≥ 0} $(_tex(:frac, "(-$(_tex(:rm, "ad"))_X)^k", "(k+1)!")),
