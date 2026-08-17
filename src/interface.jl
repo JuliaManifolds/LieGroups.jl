@@ -907,7 +907,7 @@ has the convergent series representation
 $(_math(:d))$(_tex(:exp))_{$(_math(:G))}(X) = $(_tex(:sum))_{k ≥ 0} $(_tex(:frac, "(-$(_tex(:rm, "ad"))_X)^k", "(k+1)!")),
 ```
 
-where ``$(_tex(:rm, "ad"))_X = [X, ⋅]`` denotes the adjoint of the [`LieAlgebra`](@ref), see [`lie_bracket`](@ref).
+where ``$(_tex(:rm, "ad"))_X = [X, ⋅]`` denotes the adjoint of the [`LieAlgebra`](@ref), see [`lie_bracket`](@ref), see [Hall:2015; Theorem 5.4](@cite).
 The Jacobian ``J`` is the matrix of this map with respect to the basis ``b``: its ``j``th column contains the
 coordinates of ``$(_math(:d))$(_tex(:exp))_{$(_math(:G))}(X)[X_j]``, where ``X_j`` is the ``j``th basis vector of ``b``.
 Since it only depends on ``X``, this Jacobian is independent of a base point, which is why no point is passed.
