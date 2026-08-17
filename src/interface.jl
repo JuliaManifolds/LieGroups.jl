@@ -913,10 +913,10 @@ coordinates of ``$(_math(:d))$(_tex(:exp))_{$(_math(:G))}(X)[X_j]``, where ``X_j
 Since it only depends on ``X``, this Jacobian is independent of a base point, which is why no point is passed.
 
 !!! note
-    In the robotics and state-estimation literature this left-trivialized differential is often called the
-    _right Jacobian_ ``J_r``, for example in [SolaDerayAtchuthan:2021](@cite) and [Chirikjian:2012](@cite).
-    It is related to the _left Jacobian_ ``J_ℓ`` by ``J_r(X) = J_ℓ(-X)``, which is the right-trivialized
-    differential ``$(_tex(:sum))_{k ≥ 0} $(_tex(:frac, "($(_tex(:rm, "ad"))_X)^k", "(k+1)!"))``.
+    In the literature this same Jacobian is sometimes called the _left-trivialized_ differential of the
+    Lie group exponential, since the output is pushed back to the Lie algebra by a left translation.
+    It is also named the _right Jacobian_ ``J_r``, for example in [SolaDerayAtchuthan:2021](@cite)
+    and [Chirikjian:2012](@cite), with the _left Jacobian_ given by ``J_l(X) = J_r(-X)``.
 """
 
 "$(_doc_jac_exp)"
