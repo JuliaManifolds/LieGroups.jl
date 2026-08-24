@@ -232,6 +232,33 @@ function ManifoldsBase.log!(
     return X
 end
 
+function LieGroups.jacobian_exp!(
+        G::SpecialEuclideanGroup{<:ManifoldsBase.TypeParameter{Tuple{2}}},
+        J::AbstractMatrix,
+        X::ArrayPartition,
+        ::DefaultLieAlgebraOrthogonalBasis,
+    )
+    return LieGroups._jacobian_exp_SE2!(G, J, X)
+end
+
+function LieGroups.jacobian_exp!(
+        G::SpecialEuclideanGroup{<:ManifoldsBase.TypeParameter{Tuple{3}}},
+        J::AbstractMatrix,
+        X::ArrayPartition,
+        ::DefaultLieAlgebraOrthogonalBasis,
+    )
+    return LieGroups._jacobian_exp_SE3!(G, J, X)
+end
+
+function LieGroups.jacobian_exp!(
+        G::SpecialEuclideanGroup,
+        J::AbstractMatrix,
+        X::SpecialEuclideanProductTangentVector,
+        B::DefaultLieAlgebraOrthogonalBasis,
+    )
+    return LieGroups.jacobian_exp!(G, J, ManifoldsBase.internal_value(X), B)
+end
+
 function LinearAlgebra.norm(
         𝔤::LieAlgebra{
             ℝ, <:LieGroups.SpecialEuclideanGroupOperation, <:LieGroups.SpecialEuclideanGroup,

@@ -892,7 +892,7 @@ end
 
 """
     LieGroups.Test.test_jacobian_exp(
-        G::AbstractLieGroup, g, X;
+        G::AbstractLieGroup, X;
         basis = DefaultLieAlgebraOrthogonalBasis(),
         expected = missing,
         test_mutating = true,
@@ -903,19 +903,19 @@ test `jacobian_exp`.
 
 """
 function LieGroups.Test.test_jacobian_exp(
-        G::AbstractLieGroup, g, X;
+        G::AbstractLieGroup, X;
         basis = DefaultLieAlgebraOrthogonalBasis(),
         expected = missing,
         test_mutating::Bool = true,
         kwargs...,
     )
     @testset "Jacobian of the exponential map with respect to its argument" begin
-        J = jacobian_exp(G, g, X, basis)
+        J = jacobian_exp(G, X, basis)
         n = manifold_dimension(base_manifold(G))
         @test size(J) == (n, n)
         if test_mutating
             J2 = copy(J)
-            jacobian_exp!(G, J2, g, X, basis)
+            jacobian_exp!(G, J2, X, basis)
             @test isapprox(J, J2; kwargs...)
         end
         !ismissing(expected) && (@test isapprox(J, expected; kwargs...))
@@ -1343,7 +1343,7 @@ function LieGroups.Test.test_lie_group(G::AbstractLieGroup, properties::Dict, ex
         end
         if (jacobian_exp in functions)
             expected = get(expectations, :jacobian_exp, missing)
-            LieGroups.Test.test_jacobian_exp(G, points[1], vectors[1]; expected = expected)
+            LieGroups.Test.test_jacobian_exp(G, vectors[1]; expected = expected)
         end
         #
         #

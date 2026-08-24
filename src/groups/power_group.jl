@@ -256,6 +256,23 @@ Base.@propagate_inbounds function Base.getindex(
     return get_component(base_manifold(PoG), p, I...)
 end
 
+function jacobian_exp!(
+        PoG::LieGroup{𝔽, Op, M}, J, X, B::DefaultLieAlgebraOrthogonalBasis
+    ) where {𝔽, Op <: PowerGroupOperation, M <: ManifoldsBase.AbstractPowerManifold}
+    PM = PoG.manifold
+    rep_size = representation_size(PM)
+    dim = manifold_dimension(PM.manifold)
+    G = LieGroup(PM.manifold, PoG.op.op)
+    fill!(J, 0)
+    v_iter = 1
+    for i in ManifoldsBase.get_iterator(PM)
+        dr = v_iter:(v_iter + dim - 1)
+        jacobian_exp!(G, view(J, dr, dr), ManifoldsBase._read(PM, rep_size, X, i), B)
+        v_iter += dim
+    end
+    return J
+end
+
 function ManifoldsBase.hat!(
         Po𝔤::LieAlgebra{𝔽, Op, LieGroup{𝔽, Op, M}}, X, c
     ) where {𝔽, Op <: PowerGroupOperation, M <: ManifoldsBase.AbstractPowerManifold}

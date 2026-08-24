@@ -2,6 +2,9 @@ using LieGroups, ManifoldsBase, Random, Test, RecursiveArrayTools
 using Manifolds: Euclidean
 using StaticArrays
 
+# independent series ground truth for `jacobian_exp` (see the file for details)
+include("jacobian_exp_series_reference.jl")
+
 @testset "Special Euclidean" begin
     fcts = [
         compose,
@@ -13,6 +16,7 @@ using StaticArrays
         inv,
         is_flat,
         is_identity,
+        jacobian_exp,
         lie_bracket,
         log,
         norm,
@@ -55,7 +59,11 @@ using StaticArrays
                 :Functions => fcts,
             )
             expectations = Dict(
-                :repr => "SpecialEuclideanGroup(2)", :atol => 1.0e-14, :is_flat => true
+                :repr => "SpecialEuclideanGroup(2)", :atol => 1.0e-14, :is_flat => true,
+                # jacobian_exp (on vec[1]) is validated against an independent series
+                # ground truth built from LieGroups primitives (see the helper at the top
+                # of this file).
+                :jacobian_exp => _jacobian_exp_series(G, vec[1]),
             )
             LieGroups.Test.test_lie_group(G, properties, expectations)
             @test ManifoldsBase.tangent_vector_type(G, typeof(pts[1])) == typeof(vec[1])
@@ -111,7 +119,10 @@ using StaticArrays
                 :Functions => fcts,
             )
             expectations = Dict(
-                :repr => "SpecialEuclideanGroup(2; variant=:right)", :atol => 1.0e-14
+                :repr => "SpecialEuclideanGroup(2; variant=:right)", :atol => 1.0e-14,
+                # same Lie algebra element as the left variant test above, but in the
+                # right variant coordinate order; validated against the series ground truth
+                :jacobian_exp => _jacobian_exp_series(G, vec[1]),
             )
             LieGroups.Test.test_lie_group(G, properties, expectations)
         end
@@ -161,7 +172,11 @@ using StaticArrays
                 :Functions => fcts,
             )
             expectations = Dict(
-                :repr => "SpecialEuclideanGroup(3)", :atol => 1.0e-14, :is_flat => false
+                :repr => "SpecialEuclideanGroup(3)", :atol => 1.0e-14, :is_flat => false,
+                # jacobian_exp (on vec[1]) is validated against an independent series
+                # ground truth built from LieGroups primitives (see the helper at the top
+                # of this file)
+                :jacobian_exp => _jacobian_exp_series(G, vec[1]),
             )
             LieGroups.Test.test_lie_group(G, properties, expectations)
 
@@ -181,6 +196,52 @@ using StaticArrays
                 end
             end
         end
+    end
+    #
+    # jacobian_exp: exercise BOTH the small-angle Taylor branch (rotation θ < 1e-4) and the
+    # closed-form branch, each validated against the series ground truth. Both semidirect
+    # variants are covered so both coordinate orders of the block assembly are hit: the left
+    # variant SO(n)⋉T(n) (order (ω, v)) and the right variant T(n)⋊SO(n) (translation first,
+    # order (v, ω)).
+    @testset "jacobian_exp small- and large-angle branches" begin
+        for variant in (:left, :right)
+            for (n, mkX) in (
+                    (2, θ -> [0.0 -θ 1.0; θ 0.0 0.5; 0.0 0.0 0.0]),
+                    (3, θ -> [0.0 -θ 0.0 1.0; θ 0.0 0.0 0.5; 0.0 0.0 0.0 0.3; 0.0 0.0 0.0 0.0]),
+                )
+                G = SpecialEuclideanGroup(n; variant)
+                for θ in (1.0e-6, 0.23)  # 1e-6 → Taylor branch, 0.23 → closed form
+                    X = mkX(θ)
+                    @test isapprox(
+                        jacobian_exp(G, X), _jacobian_exp_series(G, X); atol = 1.0e-12
+                    )
+                end
+            end
+        end
+    end
+
+    # TODO deprecated in v0.1.12, remove in v0.2.0
+    # the old jacobian_exp(G, g, X, b)/jacobian_exp!(G, J, g, X, b) signatures (with the
+    # unused base point g) are deprecated in favor of jacobian_exp(G, X, b); check both the
+    # default-basis and explicit-basis deprecated methods still forward to the same result
+    @testset "jacobian_exp deprecated g argument" begin
+        G = SpecialEuclideanGroup(2)
+        g = identity_element(G)
+        X = [0.0 -0.23 1.0; 0.23 0.0 0.5; 0.0 0.0 0.0]
+        basis = DefaultLieAlgebraOrthogonalBasis()
+        J = jacobian_exp(G, X)
+
+        J_old = Test.@test_deprecated jacobian_exp(G, g, X)
+        @test isapprox(J, J_old)
+        J_old_basis = Test.@test_deprecated jacobian_exp(G, g, X, basis)
+        @test isapprox(J, J_old_basis)
+
+        J2 = similar(J)
+        Test.@test_deprecated jacobian_exp!(G, J2, g, X)
+        @test isapprox(J, J2)
+        J3 = similar(J)
+        Test.@test_deprecated jacobian_exp!(G, J3, g, X, basis)
+        @test isapprox(J, J3)
     end
     #
     #

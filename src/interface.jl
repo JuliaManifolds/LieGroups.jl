@@ -888,27 +888,62 @@ function jacobian_conjugate!(
 end
 
 _doc_jac_exp = """
-    jacobian_exp(G::AbstractLieGroup, g, X, b)
-    jacobian_exp!(G::AbstractLieGroup, J, g, X, b)
+    jacobian_exp(G::AbstractLieGroup, X, b)
+    jacobian_exp!(G::AbstractLieGroup, J, X, b)
 
-Compute the Jacobian of the [`exp`](@ref) ``$(_tex(:exp))_g(X)`` with respect to
-an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`) of the [`LieAlgebra`](@ref).
+Compute the Jacobian of the [Lie group exponential function](@ref exp(::AbstractLieGroup, ::Identity, :Any))
+``$(_tex(:exp))_{$(_math(:G))}: $(_math(:𝔤)) → $(_math(:G))`` at ``X ∈ $(_math(:𝔤))``,
+represented in an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`) ``b`` of the [`LieAlgebra`](@ref) ``$(_math(:𝔤))``.
+
+The (classical) differential ``$(_math(:D))$(_tex(:exp))_{$(_math(:G))}(X): $(_math(:𝔤)) → T_{$(_tex(:exp))_{$(_math(:G))}(X)}$(_math(:G))``
+maps a tangent vector of the Lie algebra to a tangent vector at the point ``$(_tex(:exp))_{$(_math(:G))}(X)``.
+To express this as a map on the Lie algebra ``$(_math(:𝔤)) → $(_math(:𝔤))``, which (in the finite-dimensional case) can be represented as a matrix in a basis of ``$(_math(:𝔤))``,
+we push forward the output tangent vector from the tangent space back to the Lie algebra via the differential of the left translation by ``$(_tex(:exp))_{$(_math(:G))}(X)^{-1}``. 
+For a matrix Lie group, this action corresponds to multiplying the tangent vector from the left.
+The resulting map ``$(_math(:d))$(_tex(:exp))_{$(_math(:G))}(X): $(_math(:𝔤)) → $(_math(:𝔤))``
+has the convergent series representation
+
+```math
+$(_math(:d))$(_tex(:exp))_{$(_math(:G))}(X) = $(_tex(:sum))_{k ≥ 0} $(_tex(:frac, "(-$(_tex(:rm, "ad"))_X)^k", "(k+1)!")),
+```
+
+where ``$(_tex(:rm, "ad"))_X = [X, ⋅]`` denotes the adjoint of the [`LieAlgebra`](@ref), see [`lie_bracket`](@ref), see [Hall:2015; Theorem 5.4](@cite).
+The Jacobian ``J`` is the matrix of this map with respect to the basis ``b``: its ``j``th column contains the
+coordinates of ``$(_math(:d))$(_tex(:exp))_{$(_math(:G))}(X)[X_j]``, where ``X_j`` is the ``j``th basis vector of ``b``.
+Since it only depends on ``X``, this Jacobian is independent of a base point, which is why no point is passed.
+
+!!! note
+    In the literature this same Jacobian is sometimes called the _left-trivialized_ differential of the
+    Lie group exponential, since the output is pushed back to the Lie algebra by a left translation.
+    It is also named the _right Jacobian_ ``J_r``, for example in [SolaDerayAtchuthan:2021](@cite)
+    and [Chirikjian:2012](@cite), with the _left Jacobian_ given by ``J_l(X) = J_r(-X)``.
 """
 
 "$(_doc_jac_exp)"
 function jacobian_exp(
-        G::AbstractLieGroup, g, X, B::AbstractBasis = DefaultLieAlgebraOrthogonalBasis()
+        G::AbstractLieGroup, X, B::AbstractBasis = DefaultLieAlgebraOrthogonalBasis()
     )
-    J = ManifoldsBase.allocate_result(G, jacobian_exp, g, X, B)
-    return jacobian_exp!(G, J, g, X, B)
+    J = ManifoldsBase.allocate_result(G, jacobian_exp, X, B)
+    return jacobian_exp!(G, J, X, B)
 end
+
+#TODO deprecated in v0.1.12, remove in v0.2.0
+@deprecate jacobian_exp(
+    G::AbstractLieGroup, g, X, B::AbstractBasis = DefaultLieAlgebraOrthogonalBasis()
+) jacobian_exp(G, X, B)
 
 function jacobian_exp! end
 @doc "$(_doc_jac_exp)"
 jacobian_exp!(
-    G::AbstractLieGroup, J, g, X,
+    G::AbstractLieGroup, J, X,
     B::AbstractBasis = DefaultLieAlgebraOrthogonalBasis()
 )
+
+#TODO deprecated in v0.1.12, remove in v0.2.0
+@deprecate jacobian_exp!(
+    G::AbstractLieGroup, J, g, X,
+    B::AbstractBasis = DefaultLieAlgebraOrthogonalBasis()
+) jacobian_exp!(G, J, X, B)
 
 _doc_log = """
     log(G::AbstractLieGroup, g, h)
@@ -1269,9 +1304,9 @@ function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(jacobian_conjugate
     n = number_of_coordinates(G.manifold, B)
     return zeros(float(number_eltype(g)), n, n)
 end
-function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(jacobian_exp), g, X, B)
+function ManifoldsBase.allocate_result(G::LieGroup, f::typeof(jacobian_exp), X, B)
     n = number_of_coordinates(G.manifold, B)
-    return zeros(float(number_eltype(g)), n, n)
+    return zeros(float(number_eltype(X)), n, n)
 end
 function ManifoldsBase.allocate_result(G::AbstractLieGroup, f::typeof(log), args...)
     return ManifoldsBase.allocate_result(base_manifold(G), f, args...)

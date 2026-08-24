@@ -21,6 +21,12 @@ Base.:-(e::Identity{AdditionGroupOperation}, ::Identity{AdditionGroupOperation})
 Base.:-(::Identity{AdditionGroupOperation}, g) = -g
 Base.:-(g, ::Identity{AdditionGroupOperation}) = g
 
+# Identity{AdditionGroupOperation} is a valid point on a Lie algebra and the same as the zero vector.
+Base.:+(e::Identity{AdditionGroupOperation}, ::ManifoldsBase.ZeroVector) = e
+Base.:+(::ManifoldsBase.ZeroVector, e::Identity{AdditionGroupOperation}) = e
+Base.:-(e::Identity{AdditionGroupOperation}, ::ManifoldsBase.ZeroVector) = e
+Base.:-(::ManifoldsBase.ZeroVector, e::Identity{AdditionGroupOperation}) = e
+
 _doc_compose_add = """
     compose(G::LieGroup{𝔽,AdditionGroupOperation}, g, h)
     compose!(G::LieGroup{𝔽,AdditionGroupOperation}, k, g, h)
@@ -140,6 +146,28 @@ end
         T::Type{<:SArray},
     )
     return convert(T, c)
+end
+
+_doc_jacobian_exp_add = """
+    jacobian_exp(G::LieGroup{𝔽,AdditionGroupOperation}, X, ::DefaultLieAlgebraOrthogonalBasis)
+    jacobian_exp!(G::LieGroup{𝔽,AdditionGroupOperation}, J, X, ::DefaultLieAlgebraOrthogonalBasis)
+
+Compute the Jacobian of the Lie group exponential in a basis of the Lie algebra on a
+[`LieGroup`](@ref) with an [`AdditionGroupOperation`](@ref).
+
+Since such a group is Abelian and flat, the differential of the exponential map is the
+identity, so ``J = I_n`` for every ``X``.
+"""
+
+@doc "$(_doc_jacobian_exp_add)"
+jacobian_exp(::LieGroup{𝔽, AdditionGroupOperation}, X, basis = DefaultLieAlgebraOrthogonalBasis()) where {𝔽}
+
+@doc "$(_doc_jacobian_exp_add)"
+function jacobian_exp!(
+        ::LieGroup{𝔽, AdditionGroupOperation}, J::AbstractMatrix, X, ::DefaultLieAlgebraOrthogonalBasis
+    ) where {𝔽}
+    copyto!(J, LinearAlgebra.I)
+    return J
 end
 
 _doc_identity_element_add = """

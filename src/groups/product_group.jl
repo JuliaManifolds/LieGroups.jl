@@ -297,6 +297,46 @@ function ManifoldsBase.exp!(
     return h
 end
 
+_doc_jacobian_exp_product = raw"""
+    jacobian_exp(G::ProductLieGroup, X, ::DefaultLieAlgebraOrthogonalBasis)
+    jacobian_exp!(G::ProductLieGroup, J, X, ::DefaultLieAlgebraOrthogonalBasis)
+
+Compute the Jacobian of the Lie group exponential in a basis of the Lie algebra on a
+[`ProductLieGroup`](@ref).
+
+Since on a (direct) product ``G = G_1 × ⋯ × G_n`` the exponential map acts componentwise
+and the basis of the [`LieAlgebra`](@ref) is the concatenation of the bases of the factors,
+the Jacobian is block-diagonal with the [`jacobian_exp`](@ref) of the factors on its
+diagonal,
+
+````math
+J = \begin{pmatrix} J_1 & & \\ & \ddots & \\ & & J_n \end{pmatrix},
+\qquad J_i = \text{jacobian\_exp}(G_i, X_i).
+````
+"""
+
+@doc "$(_doc_jacobian_exp_product)"
+jacobian_exp(
+    ::LieGroup{𝔽, <:ProductGroupOperation, <:ProductManifold}, X, ::AbstractBasis
+) where {𝔽}
+
+@doc "$(_doc_jacobian_exp_product)"
+function jacobian_exp!(
+        PrG::LieGroup{𝔽, Op, M}, J, X, B::DefaultLieAlgebraOrthogonalBasis
+    ) where {𝔽, Op <: ProductGroupOperation, M <: ProductManifold}
+    PrM = PrG.manifold
+    dims = map(manifold_dimension, PrM.manifolds)
+    dim_ranges = ManifoldsBase._get_dim_ranges(dims)
+    fill!(J, 0)
+    foreach(
+        (Gi, Xi, dr) -> jacobian_exp!(Gi, view(J, dr, dr), Xi, B),
+        map(LieGroup, PrM.manifolds, PrG.op.operations),
+        submanifold_components(PrM, X),
+        dim_ranges,
+    )
+    return J
+end
+
 function get_vector_lie!(
         Pr𝔤::LieAlgebra{𝔽, Op, LieGroup{𝔽, Op, M}}, X, c, B::DefaultLieAlgebraOrthogonalBasis
     ) where {𝔽, Op <: AbstractProductGroupOperation, M <: ProductManifold}

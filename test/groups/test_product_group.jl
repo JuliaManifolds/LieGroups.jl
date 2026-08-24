@@ -1,4 +1,4 @@
-using LieGroups, Test, ManifoldsBase, Random, RecursiveArrayTools
+using LieGroups, Test, ManifoldsBase, Random, RecursiveArrayTools, LinearAlgebra
 
 @testset "Generic product Lie group" begin
     G = TranslationGroup(2) × TranslationGroup(2)
@@ -23,6 +23,7 @@ using LieGroups, Test, ManifoldsBase, Random, RecursiveArrayTools
             inv_left_compose,
             inv_right_compose,
             is_identity,
+            jacobian_exp,
             lie_bracket,
             log,
             rand,
@@ -33,8 +34,34 @@ using LieGroups, Test, ManifoldsBase, Random, RecursiveArrayTools
     @test LieGroups.submanifold_components(G, Identity(G)) === (Identity{AdditionGroupOperation}(), Identity{AdditionGroupOperation}())
     expectations = Dict(
         :repr => "ProductLieGroup(Euclidean(2; field=ℝ) × Euclidean(2; field=ℝ), AdditionGroupOperation() × AdditionGroupOperation())",
+        # both factors are flat and Abelian, so the Jacobian of exp is the identity
+        :jacobian_exp => Matrix{Float64}(LinearAlgebra.I, 4, 4),
     )
     LieGroups.Test.test_lie_group(G, properties, expectations)
+    @testset "jacobian_exp is block-diagonal over the factors" begin
+        B = DefaultLieAlgebraOrthogonalBasis()
+        # a product with curvature: SO(3) × SE(2) (right variant)
+        Gc = SpecialOrthogonalGroup(3) × SpecialEuclideanGroup(2; variant = :right)
+        𝔤c = LieAlgebra(Gc)
+        Xcc = [0.3, -0.2, 0.5, 0.7, -0.4, 0.6]
+        Xt = hat(𝔤c, Xcc)
+        Jc = jacobian_exp(Gc, Xt)
+        @test size(Jc) == (6, 6)
+        # off-diagonal coupling blocks vanish
+        @test iszero(Jc[1:3, 4:6])
+        @test iszero(Jc[4:6, 1:3])
+        # diagonal blocks equal each factor's own jacobian_exp
+        Gc1 = SpecialOrthogonalGroup(3)
+        Xc1 = hat(LieAlgebra(Gc1), Xcc[1:3])
+        @test isapprox(Jc[1:3, 1:3], jacobian_exp(Gc1, Xc1))
+        Gc2 = SpecialEuclideanGroup(2; variant = :right)
+        Xc2 = hat(LieAlgebra(Gc2), Xcc[4:6])
+        @test isapprox(Jc[4:6, 4:6], jacobian_exp(Gc2, Xc2))
+        # mutating matches allocating
+        Jc2 = copy(Jc)
+        jacobian_exp!(Gc, Jc2, Xt, B)
+        @test isapprox(Jc, Jc2)
+    end
     @testset "A small additional size check" begin
         @test ManifoldsBase.check_size(G, Identity(G)) === nothing
         @test ManifoldsBase.check_size(G, Identity(G), X) === nothing

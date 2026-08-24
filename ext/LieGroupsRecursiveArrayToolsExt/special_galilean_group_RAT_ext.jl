@@ -1,12 +1,6 @@
-using LieGroups: SpecialGalileanGroup
+using LieGroups: SpecialGalileanGroup, _skew
 using StaticArrays
 using LinearAlgebra
-
-# Internal function to compute the skew-symmetric matrix as an SMatrix used for performance.
-# Can be replaced with hat(SO(3), v) once that works without allocations.
-function _skew(v::AbstractVector{T}) where {T <: Real}
-    return SMatrix{3, 3, T}(0, v[3], -v[2], -v[3], 0, v[1], v[2], -v[1], 0)
-end
 
 # Internal function to compute the matrix Q used in the exponential and logarithm maps for the Special Galilean group. (D matrix in Kelly:2025)
 function _Q(θ⃗)
@@ -200,6 +194,61 @@ function LieGroups.compose(::SpecialGalileanGroup, g::ArrayPartition, h::ArrayPa
     )
 end
 
+_doc_lie_bracket_SGal3 = """
+    lie_bracket(𝔰𝔤𝔞𝔩::LieAlgebra{ℝ,<:LeftSpecialGalileanGroupOperation,<:SpecialGalileanGroup}, X, Y)
+    lie_bracket!(𝔰𝔤𝔞𝔩::LieAlgebra{ℝ,<:LeftSpecialGalileanGroupOperation,<:SpecialGalileanGroup}, Z, X, Y)
+
+Compute the Lie bracket ``[X, Y] = XY - YX`` of two tangent vectors `X`, `Y` of the Lie algebra of the
+[`SpecialGalileanGroup`](@ref)`(3)`, i.e. the matrix commutator of their ``5×5`` `hat` representations.
+
+In the ``((\\Omega, \\nu), (\\rho, \\iota))`` block form (see [`hat`](@ref)) this reduces to
+```math
+[X, Y] = \\bigl(
+(\\Omega_X \\Omega_Y - \\Omega_Y \\Omega_X,\\ \\Omega_X \\nu_Y - \\Omega_Y \\nu_X),\\
+(\\Omega_X \\rho_Y - \\Omega_Y \\rho_X + \\iota_Y \\nu_X - \\iota_X \\nu_Y,\\ 0)
+\\bigr).
+```
+The basis is defined in eq. (14) of [Kelly:2025](@cite).
+
+This can be computed in-place of `Z`.
+"""
+
+"$(_doc_lie_bracket_SGal3)"
+function LieGroups.lie_bracket(
+        ::typeof(LieAlgebra(SpecialGalileanGroup(3))),
+        X::ArrayPartition,
+        Y::ArrayPartition,
+    )
+    ΩX, νX, ρX, ιX = X.x[1].x[1], X.x[1].x[2], X.x[2].x[1], X.x[2].x[2][1]
+    ΩY, νY, ρY, ιY = Y.x[1].x[1], Y.x[1].x[2], Y.x[2].x[1], Y.x[2].x[2][1]
+    return ArrayPartition(
+        ArrayPartition(
+            ΩX * ΩY - ΩY * ΩX,                        # Ω
+            ΩX * νY - ΩY * νX,                         # ν
+        ),
+        ArrayPartition(
+            ΩX * ρY - ΩY * ρX + ιY * νX - ιX * νY,     # ρ
+            zero(X.x[2].x[2]),                        # ι
+        ),
+    )
+end
+
+"$(_doc_lie_bracket_SGal3)"
+function LieGroups.lie_bracket!(
+        ::typeof(LieAlgebra(SpecialGalileanGroup(3))),
+        Z::ArrayPartition,
+        X::ArrayPartition,
+        Y::ArrayPartition,
+    )
+    ΩX, νX, ρX, ιX = X.x[1].x[1], X.x[1].x[2], X.x[2].x[1], X.x[2].x[2][1]
+    ΩY, νY, ρY, ιY = Y.x[1].x[1], Y.x[1].x[2], Y.x[2].x[1], Y.x[2].x[2][1]
+    Z.x[1].x[1] .= ΩX * ΩY .- ΩY * ΩX
+    Z.x[1].x[2] .= ΩX * νY .- ΩY * νX
+    Z.x[2].x[1] .= ΩX * ρY .- ΩY * ρX .+ ιY .* νX .- ιX .* νY
+    Z.x[2].x[2] .= 0
+    return Z
+end
+
 # Dev NOTE: hat and vee use a different bases order than that of the underlining semidirect + direct product groups,
 # therefore, get_vector_lie and get_coordinates_lie are implemented explicitly. see hat/vee docstrings for details.
 function LieGroups.get_vector_lie(
@@ -284,4 +333,18 @@ function LieGroups.get_coordinates_lie!(
     c[9] = X.x[1].x[1][2, 1] # θ⃗ₓ[2,1]
     c[10] = X.x[2].x[2][]   # Δt
     return c
+end
+
+function LieGroups.jacobian_exp!(
+        ::LieGroups.SpecialGalileanGroup{ManifoldsBase.TypeParameter{Tuple{3}}},
+        J::AbstractMatrix,
+        X::ArrayPartition,
+        ::DefaultLieAlgebraOrthogonalBasis,
+    )
+    Ω = X.x[1].x[1]
+    ν = X.x[1].x[2]
+    ρ = X.x[2].x[1]
+    ι = X.x[2].x[2][]
+    ω = [Ω[3, 2], Ω[1, 3], Ω[2, 1]]
+    return LieGroups._jacobian_exp_left_SGal3!(J, -ρ, -ν, -ω, -ι)
 end
