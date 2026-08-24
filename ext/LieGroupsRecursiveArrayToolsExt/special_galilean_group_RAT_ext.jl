@@ -346,7 +346,5 @@ function LieGroups.jacobian_exp!(
     ρ = X.x[2].x[1]
     ι = X.x[2].x[2][]
     ω = [Ω[3, 2], Ω[1, 3], Ω[2, 1]]
-    # jacobian_exp is the left-trivialized differential of exp (the right Jacobian),
-    # obtained from the left Jacobian of [Kelly:2025, eq. (31)] as J_r(ξ) = J_ℓ(-ξ)
     return LieGroups._jacobian_exp_left_SGal3!(J, -ρ, -ν, -ω, -ι)
 end

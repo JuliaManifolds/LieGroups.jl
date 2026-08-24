@@ -241,9 +241,9 @@ _doc_jacobian_exp_SGal3 = raw"""
 Compute the Jacobian of the Lie group exponential in a basis of the Lie algebra on the
 [`SpecialGalileanGroup`](@ref)`(3)`.
 
-The closed form of the left Jacobian ``\mathbf{J}_ℓ`` from
-[Kelly:2025; section 8, equations (31)–(36)](@cite) is used. In the coordinate order
-``ξ = (ρ, ν, ϕ, ι)`` (see [`hat`](@ref)) it has the block structure
+The closed form ``\mathbf{J}_ℓ`` of [Kelly:2025; section 8, equations (31)–(36)](@cite) is
+used, evaluated at ``-ξ`` to match the convention of [`jacobian_exp`](@ref).
+In the coordinate order ``ξ = (ρ, ν, ϕ, ι)`` (see [`hat`](@ref)) it has the block structure
 
 ````math
 \mathbf{J}_ℓ(ξ) = \begin{pmatrix}
@@ -254,16 +254,14 @@ The closed form of the left Jacobian ``\mathbf{J}_ℓ`` from
 \end{pmatrix} ∈ ℝ^{10×10},
 ````
 
-where ``\mathbf{D}`` is the left Jacobian of ``\mathrm{SO}(3)``, ``\mathbf{E}`` and
+where ``\mathbf{D}`` is the corresponding matrix for ``\mathrm{SO}(3)``, ``\mathbf{E}`` and
 ``\mathbf{L}`` are given by [Kelly:2025; equations (19) and (32)](@cite),
 ``\mathbf{M}`` and ``\mathbf{N} = \mathbf{N}_1 - \mathbf{N}_2`` by
-[Kelly:2025; equations (33)–(36)](@cite). Consistent with the convention used for
-[`jacobian_exp`](@ref) on the other groups (the left-trivialized differential of the
-exponential), this function returns the right Jacobian ``\mathbf{J}_r(ξ) = \mathbf{J}_ℓ(-ξ)``.
+[Kelly:2025; equations (33)–(36)](@cite).
 
 For small rotation angles the Jacobian is evaluated by truncating the series
-``\mathbf{J}_ℓ(ξ) = \sum_{n ≥ 0} \frac{1}{(n+1)!} \operatorname{ad}_ξ^n`` of the adjoint
-matrix [Kelly:2025; equation (28)](@cite), which is numerically robust there.
+``\sum_{n ≥ 0} \frac{1}{(n+1)!} \operatorname{ad}_ξ^n`` of the adjoint matrix
+[Kelly:2025; equation (28)](@cite), which is numerically robust there.
 """
 
 @doc "$(_doc_jacobian_exp_SGal3)"
@@ -278,7 +276,7 @@ function _skew(v::AbstractVector{T}) where {T <: Real}
     return SMatrix{3, 3, T}(0, v[3], -v[2], -v[3], 0, v[1], v[2], -v[1], 0)
 end
 
-# left Jacobian of SGal(3), [Kelly:2025, eqs. (31)-(36)], coordinate order (ρ, ν, ϕ, ι);
+# Jacobian of SGal(3), [Kelly:2025, eqs. (31)-(36)], coordinate order (ρ, ν, ϕ, ι);
 # the blocks M and N₁ share one closed form with different arguments, see _sgal3_MN₁
 function _jacobian_exp_left_SGal3!(J::AbstractMatrix, ρ, ν, ω, ι)
     φ = sqrt(ω[1]^2 + ω[2]^2 + ω[3]^2)

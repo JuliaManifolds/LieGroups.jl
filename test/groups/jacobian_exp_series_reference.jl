@@ -21,7 +21,7 @@ function _adjoint_algebra_matrix(G, X)
     return A
 end
 
-# Left-trivialized Jacobian of exp via its series J_exp(X) = ∑_k (-ad_X)^k / (k+1)!
+# Jacobian of exp via its series J_exp(X) = ∑_k (-ad_X)^k / (k+1)!
 # [Kelly:2025, eq. (28)], an independent check for the closed-form `jacobian_exp`
 function _jacobian_exp_series(G, X; order = 20)
     ad = _adjoint_algebra_matrix(G, X)
