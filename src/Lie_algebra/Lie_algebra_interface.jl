@@ -242,6 +242,8 @@ Technically, `hat` is a specific case of [`get_vector`](@ref) and is implemented
 function ManifoldsBase.hat(𝔤::LieAlgebra, c)
     return get_vector(𝔤, c, DefaultLieAlgebraOrthogonalBasis())
 end
+
+@doc "$(_doc_hat)"
 function ManifoldsBase.hat(𝔤::LieAlgebra, c, T::Type)
     return get_vector(𝔤, c, DefaultLieAlgebraOrthogonalBasis(); tangent_vector_type = T)
 end
@@ -277,7 +279,7 @@ function ManifoldsBase.is_point(𝔤::LieAlgebra, X::T, b::Bool = false; kwargs.
 end
 
 _doc_lie_bracket = """
-    lie_bracket!(𝔤::LieAlgebra, X, Y)
+    lie_bracket(𝔤::LieAlgebra, X, Y)
     lie_bracket!(𝔤::LieAlgebra, Z, X, Y)
 
 Compute the Lie bracket ``[⋅,⋅]: $(_math(:𝔤))×$(_math(:𝔤)) → $(_math(:𝔤))`` which fulfills
