@@ -493,7 +493,7 @@ function LieGroups.Test.test_exp_log(
                         k4 = identity_element(G, typeof(g))
                         k4 = exp(G, k4, X)
                         @test isapprox(G, k4, k3, atol = atol)
-                        # and a second time to avoid that this was just due strating at the identity
+                        # and a second time to avoid that this was just due starting at the identity
                         exp!(G, k3, k3, X)
                         k4 = exp(G, k4, X)
                         @test isapprox(G, k4, k3, atol = atol)
@@ -865,7 +865,7 @@ end
     )
 
 Test  `jacobian_conjugate`.
-The `kwargs...` are passed down to the `isapprox` check for the expeced value
+The `kwargs...` are passed down to the `isapprox` check for the expected value
 """
 function LieGroups.Test.test_jacobian_conjugate(
         G::AbstractLieGroup,

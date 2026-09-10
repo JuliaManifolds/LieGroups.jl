@@ -318,10 +318,10 @@ function ManifoldsBase.inner(
     rep_size = representation_size(PM.manifold)
     return sum(
         inner(
-                𝔤,
-                ManifoldsBase._read(PM, rep_size, X, i),
-                ManifoldsBase._read(PM, rep_size, Y, i),
-            ) for i in ManifoldsBase.get_iterator(PM)
+            𝔤,
+            ManifoldsBase._read(PM, rep_size, X, i),
+            ManifoldsBase._read(PM, rep_size, Y, i),
+        ) for i in ManifoldsBase.get_iterator(PM)
     )
 end
 
