@@ -91,7 +91,8 @@ end
 
 # (d) load necessary packages for the docs
 using Documenter
-using DocumenterCitations, DocumenterInterLinks
+using DocumenterCitations, DocumenterCodeBlocks, DocumenterInterLinks
+using DocumenterLandingPage
 using LinearAlgebra
 using LieGroups
 using RecursiveArrayTools, Test
@@ -187,7 +188,7 @@ makedocs(;
         "Changelog" => "news.md",
         "References" => "references.md",
     ],
-    plugins = [bib, links],
+    plugins = [bib, links, CodeBlocks(), LandingPage()],
 )
 deploydocs(; repo = "github.com/JuliaManifolds/LieGroups.jl", push_preview = true)
 #back to main env

@@ -51,7 +51,7 @@ Elements $g, h ∈ \mathrm{SO}(2)$ we generate as
 
 ```{julia}
 g = [1.0 0.0; 0.0 1.0]
-h = 1/sqrt(2) .* [1.0 -1.0; 1.0 1.0]
+h = 1 / sqrt(2) .* [1.0 -1.0; 1.0 1.0]
 ```
 
 A first thing to do is to use [`is_point`](@ref) to verify they are valid.
@@ -65,7 +65,7 @@ function available, [`compose`](@ref) as well as its in-place variant [`compose!
 The following two yield the same matrix
 
 ```{julia}
-[ compose(SO2, g, h), g*h ]
+[compose(SO2, g, h), g * h]
 ```
 
 Furthermore a lot of of functions are “passed down” tp the manifold, which is stored within
@@ -85,8 +85,8 @@ maybe a bit “dull” point on this Lie group is the identity matrix `e`.
 
 ```{julia}
 SO3 = SpecialOrthogonalGroup(3)
-g = RotZ(π/3)*RotY(π/4)
-e = Matrix{Float64}(I,3,3)
+g = RotZ(π / 3) * RotY(π / 4)
+e = Matrix{Float64}(I, 3, 3)
 g
 ```
 The element `g` can be seen as a rotation by $π/3$ in the x-y-plane combined with a rotation by $π/4$ in the x-z plane.
@@ -99,12 +99,12 @@ to a point on the Lie group. This is implemented in [`exp(G::LieGroup, X)`](@ref
 is the Lie group logarithmic function [`log(G::LieGroup, g)`](@ref).
 
 ```{julia}
-X = log(SO3,g)
+X = log(SO3, g)
 is_point(LieAlgebra(SO3), X)
 ```
 
 ```{julia}
-exp(SO3,X)
+exp(SO3, X)
 ```
 
 The term “exponential” has at least three different meanings throughout Lie groups and Riemannian manifolds.
@@ -136,7 +136,7 @@ c = vee(LieAlgebra(SO3), X)
 and its inverse, [`hat(G::LieAlgebra, c)`](@ref)
 
 ```{julia}
-X_ = hat(LieAlgebra(SO3),c)
+X_ = hat(LieAlgebra(SO3), c)
 ```
 
 ## Representing tangent vectors
