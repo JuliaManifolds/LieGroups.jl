@@ -15,27 +15,18 @@ using StaticArrays
         :Vectors => [X1, X2, X3],
         :Rng => Random.MersenneTwister(),
         :Functions => [
-            adjoint,
-            compose,
-            conjugate,
-            diff_inv,
-            diff_left_compose,
-            diff_right_compose,
+            adjoint, compose, conjugate,
+            diff_inv, diff_left_compose, diff_right_compose,
             exp,
             hat,
-            identity_element,
-            inv,
-            inv_left_compose,
-            inv_right_compose,
+            identity_element, inv, inv_left_compose, inv_right_compose,
             is_identity,
-            lie_bracket,
-            log,
-            rand,
-            show,
+            lie_bracket, log,
+            rand, show,
             vee,
         ],
     )
-    expectations = Dict(:repr => "OrthogonalGroup(2)")
+    expectations = Dict(:repr => "OrthogonalGroup(2)", :atols => Dict(log => 1.0e-15))
     LieGroups.Test.test_lie_group(G, properties, expectations)
 
     @testset "StaticArrays specializations for O(2)" begin
