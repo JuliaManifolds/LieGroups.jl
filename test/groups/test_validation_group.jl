@@ -103,22 +103,22 @@ using LieGroups, Random, Test, ManifoldsBase
         VG3 = ValidationLieGroup(G; ignore_contexts = [:Input])
         # VG1: checks disabled for all of exp
         @test !LieGroups._vLc(VG1, exp, :Input)
-        @test !LieGroups._vLc(VG1, exp, :Ouput)
+        @test !LieGroups._vLc(VG1, exp, :Output)
         # but others are not
         @test LieGroups._vLc(VG1, log, :Input)
-        @test LieGroups._vLc(VG1, log, :Ouput)
-        @test LieGroups._vLc(VG1, nothing, :Ouput)
+        @test LieGroups._vLc(VG1, log, :Output)
+        @test LieGroups._vLc(VG1, nothing, :Output)
         # VG2: checks disabled for input of exp, but not :Output
         @test !LieGroups._vLc(VG2, exp, :Input)
-        @test LieGroups._vLc(VG2, exp, :Ouput)
+        @test LieGroups._vLc(VG2, exp, :Output)
         # VG3: checks disabled for all Inputs
         @test !LieGroups._vLc(VG3, exp, :Input)
-        @test LieGroups._vLc(VG3, exp, :Ouput)
+        @test LieGroups._vLc(VG3, exp, :Output)
         @test !LieGroups._vLc(VG3, log, :Input)
-        @test LieGroups._vLc(VG3, log, :Ouput)
-        @test LieGroups._vLc(VG3, log, (:Ouput, :Point))
-        @test !LieGroups._vLc(VG3, log, (:Ouput, :Input))
-        @test LieGroups._vLc(VG3, nothing, :Ouput)
+        @test LieGroups._vLc(VG3, log, :Output)
+        @test LieGroups._vLc(VG3, log, (:Output, :Point))
+        @test !LieGroups._vLc(VG3, log, (:Output, :Input))
+        @test LieGroups._vLc(VG3, nothing, :Output)
         # generic fallbacks
         @test LieGroups._vLc(:a, :b)
         @test !LieGroups._vLc((:a, :b), :b)

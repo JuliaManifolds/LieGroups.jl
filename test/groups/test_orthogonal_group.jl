@@ -78,7 +78,7 @@ using StaticArrays
     Y3 = [0.0 0.3 0.0; -0.3 0.0 0.4; 0.0 -0.4 0.0]
     # Test only specialized functions here
     properties2 = Dict(
-        :Name => "The orthogonal group O(3) – specialised funcions",
+        :Name => "The orthogonal group O(3) – specialised functions",
         :Points => [h1, h2, h3],
         :Vectors => [Y1, Y2, Y3],
         :Functions => [exp, hat, log, show, vee],
@@ -122,7 +122,7 @@ using StaticArrays
     Z3 = [0.0 0.1 0.0 0.3; 0.0 0.0 -0.4 0.0; 0.0 0.4 0.0 0.0; -0.3 0.0 0.0 0.0]
     # Test only specialized functions here
     properties3 = Dict(
-        :Name => "The orthogonal group O(4) – specialised funcions",
+        :Name => "The orthogonal group O(4) – specialised functions",
         :Points => [j1, j2, j3],
         :Vectors => [Z1, Z2, Z3],
         :Functions => [exp, hat, log, show, vee],
