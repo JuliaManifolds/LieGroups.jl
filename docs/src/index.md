@@ -5,7 +5,7 @@ layout: home
 hero:
   name: LieGroups.jl
   text: Lie groups and Lie algebras in Julia
-  tagline: Work with Lie groups, their Lie algebras, and group actions – on top of the manifolds interface.
+  tagline: Work with Lie groups, their Lie algebras, and group actions
   actions:
     - theme: brand
       text: Get started
@@ -22,38 +22,38 @@ hero:
     alt: LieGroups.jl         # accessibility text
 
 features:
-  - icon: 🎬
-    title: Lie groups
-    details: A library of Lie groups, from the classical matrix groups to power, product, and semidirect product groups, all with a common interface.
-    link: /groups/index.html
+  - icon: 🪶
+    title: Lightweight Interface
+    details: This package provides a lightweight interface to define Lie groups based on the `LieGroup` combining a `AbstractManifold` from `ManifoldsBase.jl` with a `GroupOperation`. Especially the `exp` and `log` maps are here the Lie group ones.
+    link: interface/group.html
   - icon: 🧮
-    title: Lie algebras
-    details: Every Lie group comes with its Lie algebra, including the Lie bracket, `hat` and `vee`, and the adjoint representation.
-    link: /interface/algebra/index.html
-  - icon: 🎯
-    title: Group actions
-    details: Left and right group actions on manifolds are available as their own interface, so groups can act on the data your problem lives on.
-    link: /interface/actions/index.html
+    title: Lie Algebra and group actions
+    details: The `LieAlgebra` is generically provided including an . Furthermore `GroupActions` allow Lie groups to act on other manifolds.
+    link: interface/algebra.html
+  - icon: ⚡️
+    title: Efficient
+    details: When possible, functions are available working in-place, like `exp!` or `log!` to reduce memory allocations. The neutral element, the `Identity{<:GroupOperation}` provides an allocation free implementation that can “materialise” into the correct actual point on the Lie group when necessary.
+    link: /interface/operations.html
   - icon:
-        light: /logo-manifoldsbase.png
-        dark: /logo-manifoldsbase-dark.png
-        alt: ManifoldsBase.jl
+        light: /logo.png
+        dark: /logo-dark.png
+        alt: LieGroups.jl
         wrap: true
-    title: ManifoldsBase.jl
-    details: "Lie groups here are built on the manifolds interface of [ManifoldsBase.jl](https://juliamanifolds.github.io/ManifoldsBase.jl/stable/), so every Lie group is also a manifold and all functions from that interface are available."
+    title: Library of Lie groups
+    details: This package provides a library of Lie groups. On the one hand there are abstract product- and power- as well as semidirect product Lie groups. On the other hand a library of concrete Lie groups is available as well.
+    link: /groups/index.html
+  - icon: 📚
+    title: Well-documented and -tested
+    details: All Lie groups are documented – both their theoretical foundation and all numerical functionality. The theoretical background also refers to further literature. A test suite provides a comprehensive verification for any Lie group, existing and newly written, as well.
+    link: test_suite.html
   - icon:
         light: /logo-manifolds.png
         dark: /logo-manifolds-dark.png
         alt: Manifolds.jl
         wrap: true
     title: Manifolds.jl
-    details: "The manifolds a Lie group is based on are taken from [Manifolds.jl](https://juliamanifolds.github.io/Manifolds.jl/stable/), which provides a comprehensive library of Riemannian manifolds."
-  - icon:
-        src: /logo-manopt.png
-        alt: Manopt.jl
-        wrap: true
-    title: Manopt.jl
-    details: "Since every Lie group is a manifold, the optimization algorithms in [Manopt.jl](https://manoptjl.org/stable/) can be used to solve optimization problems on Lie groups."
+    details: "The manifolds from [Manifolds.jl](https://juliamanifolds.github.io/Manifolds.jl/stable/) build the foundation of the Lie groups implemented here. At the same time every `LieGroup` is also a manifold (with a different connection), so they can for example be used with [Manopt.jl](https://manoptjl.org/stable/).
+    "
 ---
 ```
 
