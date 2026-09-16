@@ -16,9 +16,11 @@ LieGroups = {path = ".."}
 [compat]
 Aqua = "0.8"
 LieGroups = "0.1.8"
+LinearAlgebra = "1.10"
 Manifolds = "0.11"
 ManifoldsBase = "2"
 Quaternions = "0.7.6"
+Random = "1.10"
 RecursiveArrayTools = "2, 3, 4"
 StaticArrays = "1.5"
 Test = "1.10"
