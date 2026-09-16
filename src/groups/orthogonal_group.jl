@@ -328,8 +328,9 @@ _doc_get_vector_On = """
     get_vector!(G::OrthogonalLieAlgebra, X, e, c, ::DefaultLieAlgebraOrthogonalBasis)
     get_vector!(G::SpecialOrthogonalLieAlgebra, X, e, c, ::DefaultLieAlgebraOrthogonalBasis)
 
-Compute the tangent vector ``X ∈ 𝔬(n)`` based on a vector of coordinates ``c ∈ ℝ^d``,
-where ``d`` is the dimension of the Lie algebra of the [`OrthogonalGroup`](@ref) `O(n)`
+Compute the tangent vector ``X ∈ 𝔬(n)`` from a vector of coordinates ``c ∈ ℝ^d``.
+
+Here ``d`` is the dimension of the Lie algebra of the [`OrthogonalGroup`](@ref) `O(n)`
 and the coordinates are with respect to the [`DefaultLieAlgebraOrthogonalBasis`](@ref).
 This is also the version used in [`hat`](@ref).
 

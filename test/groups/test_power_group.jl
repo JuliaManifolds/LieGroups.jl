@@ -16,7 +16,7 @@ using LieGroups, Test, ManifoldsBase, Random, LinearAlgebra
     pG2 = PowerLieGroup(TranslationGroup(2), NestedPowerRepresentation(), 2)
     g, h = [[1.0, 0.0], [0.0, 3.0]], [[0.0, 1.0], [2.0, 0.0]]
     X, Y = [[0.0, 0.1], [0.2, 0.0]], [[0.1, 0.2], [0.0, 0.3]]
-    @testset "convencience access" begin
+    @testset "convenience access" begin
         @test g[pG2, 1] === g[1]
     end
 

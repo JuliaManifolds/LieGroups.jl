@@ -157,13 +157,13 @@ with the properties
 **Identity.** ``α($(_math(:e)), p) = p`` holds for all ``p ∈ $(_math(:M))``
 
 **Compatibility.**
-If ``α`` is a [``AbstractLeftGroupActionType``](@ref) we usually denote it by ``σ`` and the compatibility reads
+If ``α`` is a [`AbstractLeftGroupActionType`](@ref) we usually denote it by ``σ`` and the compatibility reads
 
 ```math
 σ_g(σ_h(p)) = σ_{g$(_math(:∘))h}(p) $(_tex(:text, " holds for all")) g,h ∈ $(_math(:G)) $(_tex(:text, " and")) p ∈ $(_math(:M))
 ```
 
-If ``α`` is a [``AbstractRightGroupActionType``](@ref) we usually denote it by ``τ`` and the compatibility reads
+If ``α`` is a [`AbstractRightGroupActionType`](@ref) we usually denote it by ``τ`` and the compatibility reads
 
 ```math
 τ_g(τ_h(p)) = τ_{h$(_math(:∘))g}(p)`` holds for all ``g,h ∈ $(_math(:G)) $(_tex(:text, " for all")) p ∈ $(_math(:M))

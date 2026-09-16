@@ -801,10 +801,11 @@ end
     isapprox(M::AbstractLieGroup, g, h; kwargs...)
 
 Check if points `g` and `h` from [`AbstractLieGroup`](@ref) are approximately equal.
-this function calls the corresponding $(_link(:isapprox)) on the $(_link(:AbstractManifold))
+
+This function calls the corresponding $(_link(:isapprox)) on the $(_link(:AbstractManifold))
 after handling the cases where one or more
 of the points are the [`Identity`](@ref).
-All keyword argments are passed to this function as well.
+All keyword arguments are passed to this function as well.
 """
 ManifoldsBase.isapprox(G::AbstractLieGroup, g, h; kwargs...) =
     isapprox(base_manifold(G), g, h; kwargs...)
@@ -898,7 +899,7 @@ represented in an [`AbstractBasis`](@extref `ManifoldsBase.AbstractBasis`) ``b``
 The (classical) differential ``$(_math(:D))$(_tex(:exp))_{$(_math(:G))}(X): $(_math(:𝔤)) → T_{$(_tex(:exp))_{$(_math(:G))}(X)}$(_math(:G))``
 maps a tangent vector of the Lie algebra to a tangent vector at the point ``$(_tex(:exp))_{$(_math(:G))}(X)``.
 To express this as a map on the Lie algebra ``$(_math(:𝔤)) → $(_math(:𝔤))``, which (in the finite-dimensional case) can be represented as a matrix in a basis of ``$(_math(:𝔤))``,
-we push forward the output tangent vector from the tangent space back to the Lie algebra via the differential of the left translation by ``$(_tex(:exp))_{$(_math(:G))}(X)^{-1}``. 
+we push forward the output tangent vector from the tangent space back to the Lie algebra via the differential of the left translation by ``$(_tex(:exp))_{$(_math(:G))}(X)^{-1}``.
 For a matrix Lie group, this action corresponds to multiplying the tangent vector from the left.
 The resulting map ``$(_math(:d))$(_tex(:exp))_{$(_math(:G))}(X): $(_math(:𝔤)) → $(_math(:𝔤))``
 has the convergent series representation

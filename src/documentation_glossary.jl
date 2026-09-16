@@ -11,7 +11,7 @@
 #
 # to keep naming, notation, and formatting in a unified way
 
-# In general every dictionary here can be either `:Symbol-> String` or `:Symbol -> Dictionary enrties`
+# In general every dictionary here can be either `:Symbol-> String` or `:Symbol -> Dictionary entries`
 
 _LIEGROUPS_DOC_TYPE = Dict{Symbol, Union{String, Dict, Function}}
 

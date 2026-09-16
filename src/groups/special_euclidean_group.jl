@@ -22,7 +22,9 @@ const RightSpecialEuclideanGroup{T} = LieGroup{
 """
     SpecialEuclideanGroup{T}
 
-The special Euclidean group ``$(_math(:SE))(n) = $(_math(:SO))(n) ⋉ $(_math(:T))(n)`` is the Lie group consisting of the
+The special Euclidean group ``$(_math(:SE))(n) = $(_math(:SO))(n) ⋉ $(_math(:T))(n)`` is the group of rigid motions of ``ℝ^n``.
+
+It is the Lie group consisting of the
 [`LeftSemidirectProductGroupOperation`](@ref) of the [`SpecialOrthogonalGroup`](@ref) and the
 [`TranslationGroup`](@ref) together with the [`GroupOperationAction`](@ref)`{`[`LeftGroupOperationAction`](@ref)`}`.
 
@@ -642,7 +644,7 @@ end
 
 _doc_inv_SEn = """
     inv(G::SpecialEuclideanGroup, g)
-    inv(G::SpecialEuclideanGroup, h, g)
+    inv!(G::SpecialEuclideanGroup, h, g)
 
 Compute the inverse element of a ``g ∈ $(_math(:SE))(n)`` from the [`SpecialEuclideanGroup`](@ref)`(n)`.
 
@@ -1316,10 +1318,11 @@ _doc_diff_apply_SE_Rn = """
     diff_apply(::GroupAction{LeftMultiplicationGroupAction,SpecialEuclideanGroup,Euclidean}, g, p, X)
     diff_apply!(::GroupAction{LeftMultiplicationGroupAction,SpecialEuclideanGroup,Euclidean}, Y, g, p, X)
 
-Given the Lie group [`SpecialEuclideanGroup`](@ref)  and the [`Euclidean`](@extref `Manifolds.Euclidean`) manifold ``ℝ^n``,
-the differential of the group action
-this action performs both the rotation and translation on a vector ``p ∈ ℝ^n``,
-that is, for ``g = (R, t) ∈ $(_math(:SE))(n)``, the differential is given by
+Compute the differential of the group action of ``$(_math(:SE))(n)`` on ``ℝ^n``.
+
+The action of the [`SpecialEuclideanGroup`](@ref) on the [`Euclidean`](@extref `Manifolds.Euclidean`)
+manifold ``ℝ^n`` performs both the rotation and the translation on a vector ``p ∈ ℝ^n``,
+so for ``g = (R, t) ∈ $(_math(:SE))(n)`` the differential is given by
 
 
 ```math

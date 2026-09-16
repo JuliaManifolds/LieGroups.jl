@@ -17,7 +17,7 @@ end
 
 _doc_diff_left_compose_complex_circ = """
     diff_left_compose(::LieGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, g, h, X)
-    diff_left_compose(::LieGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, Y, g, h, X)
+    diff_left_compose!(::LieGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, Y, g, h, X)
 
 Compute the differential of the group operation ``gh`` with respeect to the lefy argument `g`.
 
@@ -37,7 +37,7 @@ end
 
 _doc_diff_right_compose_complex_circ = """
     diff_right_compose(::LieGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, g, h, X)
-    diff_right_compose(::LieGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, Y, g, h, X)
+    diff_right_compose!(::LieGroup{ℂ, AbelianMultiplicationGroupOperation, Circle{ℂ}}, Y, g, h, X)
 
 Compute the differential of the group operation ``g$(_math(:∘))h``, on an [`AbstractLieGroup`](@ref) `G`
 with respect to its second (right) argument `h`.
