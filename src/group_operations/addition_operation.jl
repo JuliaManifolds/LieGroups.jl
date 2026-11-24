@@ -69,8 +69,8 @@ _doc_diff_inv_add = """
     diff_inv(G::LieGroup{𝔽,AdditionGroupOperation}, g, X)
     diff_inv!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, X)
 
-Compute the differential of the inverse operation ``ι_{$(_math(:G))}(g) = g^-1 = -g``,
-which simplifies for [`AdditionGroupOperation`](@ref) to ``$(_math(:d))ι_{$(_math(:G))}(g)[X] = -X``
+Compute the differential of the inverse operation ``ι_{$(_math(:G))}(g) = g^{-1} = -g``,
+which simplifies for [`AdditionGroupOperation`](@ref) to ``$(_math(:d))ι_{$(_math(:G))}(g)[X] = -X``.
 """
 
 @doc "$(_doc_diff_inv_add)"
@@ -86,7 +86,7 @@ _doc_diff_left_compose_add = """
     diff_left_compose(G::LieGroup{𝔽,AdditionGroupOperation}, g, h, X)
     diff_left_compose!(G::LieGroup{𝔽,AdditionGroupOperation}, Y, g, h, X)
 
-Compute the differential of the the group operation ``g+h`` with respect to the left argument `g`.
+Compute the differential of the group operation ``g+h`` with respect to the left argument `g`.
 Here it simplifies for [`AdditionGroupOperation`](@ref) to ``$(_math(:d))ρ_h(g)[X] = X``.
 """
 
@@ -174,7 +174,7 @@ _doc_identity_element_add = """
     identity_element(G::LieGroup{𝔽,AdditionGroupOperation})
     identity_element!(G::LieGroup{𝔽,AdditionGroupOperation}, e)
 
-Return the a point representation of the [`Identity`](@ref),
+Return a point representation of the [`Identity`](@ref),
 which for the [`AdditionGroupOperation`](@ref) is the zero element or array.
 """
 
@@ -234,7 +234,7 @@ _doc_lie_bracket_add = """
     lie_bracket!(𝔤::LieAlgebra{𝔽,AdditionGroupOperation}, Z, X, Y)
 
 Compute the Lie bracket ``[⋅,⋅]: $(_math(:𝔤))×$(_math(:𝔤)) → $(_math(:𝔤))``,
-which for the for the [`AdditionGroupOperation`](@ref) simplifies to the
+which for the [`AdditionGroupOperation`](@ref) simplifies to the
 corresponding $(_link(:zero_vector)).
 The computation can be done in-place of `Z`.
 """

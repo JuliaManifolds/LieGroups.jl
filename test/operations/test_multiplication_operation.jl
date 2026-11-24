@@ -1,7 +1,7 @@
 using LieGroups, LinearAlgebra, Test
 
 @testset "Multiplication Operation" begin
-    @testset "Base.:* and Base.:* with the Identity" begin
+    @testset "Base.:*, Base.:/, and Base.:\\ with the Identity" begin
         # Generic & Number
         e = Identity(MatrixMultiplicationGroupOperation())
         @test (e * e) === e
