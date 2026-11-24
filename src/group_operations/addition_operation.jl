@@ -184,7 +184,7 @@ identity_element(::LieGroup{𝔽, AdditionGroupOperation}) where {𝔽}
 function identity_element(
         G::LieGroup{𝔽, AdditionGroupOperation}, ::Type{T}
     ) where {𝔽, T <: AbstractArray}
-    return zeros(representation_size(G.manifold))
+    return zeros(eltype(T), representation_size(G.manifold))
 end
 function identity_element(
         ::LieGroup{𝔽, AdditionGroupOperation}, ::Type{T}

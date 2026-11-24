@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 * `push_forward_tangent` works on Lie groups with an `AdditionGroupOperation`, such as the `TranslationGroup`.
+* `identity_element(G, T)` for the `AbelianMultiplicationGroupOperation` accepts zero-dimensional array types `T`.
+* `identity_element(G, T)` for the `AdditionGroupOperation` returns an array with the element type of `T`.
+* `Identity(MatrixMultiplicationGroupOperation()) * v` returns `v` for a vector `v`, so the in-place `apply!` of the `LeftMultiplicationGroupAction` accepts the `Identity`.
 
 ## [0.1.12] 2026-08-24
 

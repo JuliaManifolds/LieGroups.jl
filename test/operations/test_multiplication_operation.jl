@@ -1,4 +1,4 @@
-using LieGroups, LinearAlgebra, Test
+using LieGroups, LinearAlgebra, StaticArrays, Test
 
 @testset "Multiplication Operation" begin
     @testset "Base.:*, Base.:/, and Base.:\\ with the Identity" begin
@@ -52,5 +52,6 @@ using LieGroups, LinearAlgebra, Test
         # Edge case: Mixed compose
         @test compose(G, fill(1.0), 1.0) == 1.0
         @test compose(G, 1.0, fill(1.0)) == 1.0
+        @test identity_element(G, SArray{Tuple{}, Float64, 0, 1}) == fill(1.0)
     end
 end

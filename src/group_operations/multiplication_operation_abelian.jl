@@ -297,13 +297,18 @@ This can be computed in `e` if `e` is `mutable`.
 @doc "$(_doc_identity_element_abelian_mult)"
 function identity_element(
         ::LieGroup{𝔽, AbelianMultiplicationGroupOperation}, ::Type{T}
-    ) where {𝔽, T <: Union{Number, AbstractArray{0, <:Number}}}
+    ) where {𝔽, T <: Number}
     return one(T)
 end
 function identity_element(
         ::LieGroup{𝔽, AbelianMultiplicationGroupOperation}, ::Type{Array{T, 0}}
     ) where {𝔽, T <: Number}
     return fill(one(T))
+end
+function identity_element(
+        ::LieGroup{𝔽, AbelianMultiplicationGroupOperation}, ::Type{T}
+    ) where {𝔽, T <: AbstractArray{<:Number, 0}}
+    return convert(T, fill(one(eltype(T))))
 end
 
 @doc "$(_doc_identity_element_abelian_mult)"
