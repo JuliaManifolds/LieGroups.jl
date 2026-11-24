@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [DocumenterCodeBlocks.jl](https://fredrikekre.github.io/DocumenterCodeBlocks.jl/stable/) plugin added to the documentation
 * [DocumenterLandingPage.jl](https://csvance.github.io/DocumenterLandingPage.jl/) enhances the start page with a short teaser for the package now.
 
+### Fixed
+
+* `push_forward_tangent` works on Lie groups with an `AdditionGroupOperation`, such as the `TranslationGroup`.
+
 ## [0.1.12] 2026-08-24
 
 ### Added

@@ -1088,7 +1088,7 @@ then this function simplifies to the identity. This is for example the case for 
 @doc "$(_doc_pull_back_t)"
 function pull_back_tangent(G::AbstractLieGroup, g, X; e = identity_element(G, typeof(g)))
     Y = zero_vector(LieAlgebra(G), typeof(X))
-    return pull_back_tangent!(G, Y, g, X)
+    return pull_back_tangent!(G, Y, g, X; e = e)
 end
 
 function pull_back_tangent! end

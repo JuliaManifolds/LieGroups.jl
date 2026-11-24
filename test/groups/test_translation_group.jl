@@ -29,6 +29,8 @@ begin
             jacobian_exp,
             lie_bracket,
             log,
+            pull_back_tangent,
+            push_forward_tangent,
             rand,
             show,
             vee,
