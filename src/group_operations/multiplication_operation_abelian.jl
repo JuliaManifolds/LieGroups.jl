@@ -113,13 +113,13 @@ Compute the differential of the group operation ``g$(_math(:∘))h``, on an [`Ab
 with respect to its first (left) argument `g`.
 
 Another interpretation is to consider a function where we do a fixed multiplication from the right with `h`.
-i..e. the right group multiplication function ``ρ_h(g) = g$(_math(:∘))h``.
+i.e. the right group multiplication function ``ρ_h(g) = g$(_math(:∘))h``.
 
 The differential simplifies for an [`AbelianMultiplicationGroupOperation`](@ref) to the identity, i.e.
 ``$(_math(:d))ρ_h(g)[X] = X``.
 
 This can be computed in-place of `Y` if `Y` is `mutable`.
-""" #
+"""
 
 @doc "$(_doc_diff_left_compose_abelmult)"
 function diff_left_compose(
@@ -146,7 +146,7 @@ Compute the differential of the group operation ``g$(_math(:∘))h``, on an [`Ab
 with respect to its second (right) argument `h`.
 
 Another interpretation is to consider a function where we do a fixed multiplication from the left with `g`.
-i..e. the left group multiplication function ``λ_g(h) = g$(_math(:∘))h``.
+i.e. the left group multiplication function ``λ_g(h) = g$(_math(:∘))h``.
 
 The differential simplifies for an [`AbelianMultiplicationGroupOperation`](@ref) to the identity, i.e.
 ``$(_math(:d))λ_g(h)[X] = X``.
@@ -217,8 +217,8 @@ function ManifoldsBase.exp!(
 end
 
 _doc_inv_abelmult = """
-    inv(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g)
-    inv!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, h, g)
+    inv(G::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, g)
+    inv!(G::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, h, g)
 
 Compute the inverse group element ``g^{-1}``, which for the [`AbelianMultiplicationGroupOperation`](@ref) simplifies for a scalar input to the ordinary scalar inverse ``g^{-1}``.
 
@@ -297,13 +297,18 @@ This can be computed in `e` if `e` is `mutable`.
 @doc "$(_doc_identity_element_abelian_mult)"
 function identity_element(
         ::LieGroup{𝔽, AbelianMultiplicationGroupOperation}, ::Type{T}
-    ) where {𝔽, T <: Union{Number, AbstractArray{0, <:Number}}}
+    ) where {𝔽, T <: Number}
     return one(T)
 end
 function identity_element(
         ::LieGroup{𝔽, AbelianMultiplicationGroupOperation}, ::Type{Array{T, 0}}
     ) where {𝔽, T <: Number}
     return fill(one(T))
+end
+function identity_element(
+        ::LieGroup{𝔽, AbelianMultiplicationGroupOperation}, ::Type{T}
+    ) where {𝔽, T <: AbstractArray{<:Number, 0}}
+    return convert(T, fill(one(eltype(T))))
 end
 
 @doc "$(_doc_identity_element_abelian_mult)"
@@ -320,7 +325,7 @@ _doc_lie_bracket_abelmult = """
     lie_bracket!(::LieAlgebra{𝔽,AbelianMultiplicationGroupOperation}, Z, X, Y)
 
 Compute the Lie bracket ``[⋅,⋅]: $(_math(:𝔤))×$(_math(:𝔤)) → $(_math(:𝔤))``,
-which for the for the [`AbelianMultiplicationGroupOperation`](@ref) yields the zero vector of the [`LieAlgebra`](@ref) due to commutativity.
+which for the [`AbelianMultiplicationGroupOperation`](@ref) yields the zero vector of the [`LieAlgebra`](@ref) due to commutativity.
 
 ```math
 [X, Y] = XY-YX = 0
@@ -346,8 +351,8 @@ end
 _doc_log_abelmult = """
     log(G::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, h)
     log(G::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, g, h)
-    log!(G::LieGroup{𝔽,<:AbeliantMultiplicationGroupOperation}, X, g)
-    log!(G::LieGroup{𝔽,<:AbeliantMultiplicationGroupOperation}, X, g, h)
+    log!(G::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, X, g)
+    log!(G::LieGroup{𝔽,<:AbelianMultiplicationGroupOperation}, X, g, h)
 
 Compute the Lie group logarithm on a [`LieGroup`](@ref) at a point `g` or the [`Identity`](@ref) with a concrete instance of [`AbelianMultiplicationGroupOperation`](@ref).
 

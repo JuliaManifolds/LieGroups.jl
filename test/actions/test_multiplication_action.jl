@@ -20,4 +20,7 @@ using Manifolds: Euclidean
     diff_group_apply!(A, Z, Identity(G), p, X)
     @test Z ≈ X * p
     @test diff_group_apply(A, Identity(G), p, X) ≈ X * p
+    q2 = copy(p)
+    apply!(A, q2, Identity(G), q2)
+    @test q2 == p
 end

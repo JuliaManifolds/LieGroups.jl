@@ -29,6 +29,8 @@ begin
             jacobian_exp,
             lie_bracket,
             log,
+            pull_back_tangent,
+            push_forward_tangent,
             rand,
             show,
             vee,
@@ -44,6 +46,7 @@ begin
         :lie_bracket => zero(X1),
     )
     LieGroups.Test.test_lie_group(G, properties, expectations)
+    @test identity_element(G, Vector{Float32}) isa Vector{Float32}
 
     properties2 = Dict(
         :AlgebraVectors => [X1, X2, X3],

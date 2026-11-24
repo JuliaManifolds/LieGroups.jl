@@ -14,7 +14,7 @@ A group operation that is realised by a matrix multiplication.
 """
 struct MatrixMultiplicationGroupOperation <: AbstractMultiplicationGroupOperation end
 
-Base.:*(::Identity{MatrixMultiplicationGroupOperation}, p::Union{AbstractMatrix, Number}) = p
+Base.:*(::Identity{MatrixMultiplicationGroupOperation}, p::Union{AbstractVecOrMat, Number}) = p
 function Base.:*(
         p::Union{AbstractMatrix, Number}, ::Identity{MatrixMultiplicationGroupOperation}
     )
@@ -59,7 +59,7 @@ _doc_compose_mult = """
     compose(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, g, h)
     compose!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, k, g, h)
 
-Compute the group operation composition of `g` and `h` on an [`LieGroup`](@ref) `G`.
+Compute the group operation composition of `g` and `h` on a [`LieGroup`](@ref) `G`.
 
 For an [`AbstractMultiplicationGroupOperation`](@ref) this falls back to calling
 `g*h`, where `*` is assumed to be overloaded accordingly.
@@ -76,7 +76,7 @@ compose!(
 
 function _compose!(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, k, g, h) where {𝔽}
     # perform the multiplication “safe”, that is, even when providing
-    # one of the inputs `g,h`` and as output `k`
+    # one of the inputs `g`, `h` also as output `k`
     (k === g || k === h) ? copyto!(k, g * h) : mul!(k, g, h)
     return k
 end
@@ -90,7 +90,7 @@ _doc_diff_conjugate_mul = """
     diff_conjugate!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, Y, g, h, X)
 
 Compute the differential of the conjugate ``c_g(h) = g$(_math(:∘))h$(_math(:∘))g^{-1} = ghg^{-1}``,
-which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref)to ``$(_math(:d))(c_g(h))[X] = gXg^{-1}``.
+which simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to ``$(_math(:d))(c_g(h))[X] = gXg^{-1}``.
 """
 
 @doc "$(_doc_diff_conjugate_mul)"
@@ -158,7 +158,7 @@ Compute the differential of the group operation ``g$(_math(:∘))h``, on an [`Ab
 with respect to its first (left) argument `g`.
 
 Another interpretation is to consider a function where we do a fixed multiplication from the right with `h`.
-i..e. the right group multiplication function ``ρ_h(g) = g$(_math(:∘))h``.
+i.e. the right group multiplication function ``ρ_h(g) = g$(_math(:∘))h``.
 
 The differential simplifies for an [`AbstractMultiplicationGroupOperation`](@ref) to
 
@@ -187,7 +187,7 @@ Compute the differential of the group operation ``g$(_math(:∘))h``, on an [`Ab
 with respect to its second (right) argument `h`.
 
 Another interpretation is to consider a function where we do a fixed multiplication from the left with `g`.
-i..e. the left group multiplication function ``λ_g(h) = g$(_math(:∘))h``.
+i.e. the left group multiplication function ``λ_g(h) = g$(_math(:∘))h``.
 
 It reads for an [`AbstractMultiplicationGroupOperation`](@ref) ``$(_math(:d))λ_g(h)[X] = X``.
 """
@@ -227,7 +227,7 @@ _doc_identity_element_mult = """
     identity_element(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation})
     identity_element!(G::LieGroup{𝔽,<:AbstractMultiplicationGroupOperation}, e)
 
-Return the a point representation of the [`Identity`](@ref),
+Return a point representation of the [`Identity`](@ref),
 which for an [`AbstractMultiplicationGroupOperation`](@ref) is the one-element or identity array.
 """
 
@@ -237,7 +237,7 @@ identity_element(::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}) where
 function identity_element(
         G::LieGroup{𝔽, <:AbstractMultiplicationGroupOperation}, ::Type{<:AbstractArray{T, 2}}
     ) where {𝔽, T}
-    (N, M) = representation_size(G.manifold)
+    N = first(representation_size(G.manifold))
     return Matrix{T}(I(N))
 end
 
@@ -292,7 +292,7 @@ _doc_lie_bracket_mult = """
     lie_bracket!(::LieAlgebra{𝔽,MatrixMultiplicationGroupOperation}, Z, X, Y)
 
 Compute the Lie bracket ``[⋅,⋅]: $(_math(:𝔤))×$(_math(:𝔤)) → $(_math(:𝔤))``,
-which for the for the [`MatrixMultiplicationGroupOperation`](@ref) yields the
+which for the [`MatrixMultiplicationGroupOperation`](@ref) yields the
 commutator bracket
 
 ```math
